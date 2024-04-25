@@ -4,7 +4,7 @@ module.exports = {
 
     addOne:async function(req,res){
         try {
-            const user= await db.User.create(req.body)
+            const user= await db.Coffee.create(req.body)
             res.status(200).send(user)
             
         } catch (error) {
@@ -16,7 +16,7 @@ module.exports = {
      },
      getAll :async function(req,res){
         try {
-            const user= await db.User.findAll({})
+            const user= await db.Coffee.findAll({})
             res.status(200).send(user)
     
         } catch (error) {
@@ -26,7 +26,7 @@ module.exports = {
      },
      deleteOne:async (req, res) => {
         try {
-        const product = await db.User.destroy({
+        const product = await db.Coffee.destroy({
             where: { id: req.params.id },
         })
     
@@ -38,7 +38,7 @@ module.exports = {
 
      updateOne:async function(req,res){
         try {
-            const user= await db.User.update({
+            const user= await db.Coffee.update({
                 FirstName:req.body.FirstName,
                 LastName:req.body.LastName,
                 Adress:req.body.Adress,              
@@ -46,7 +46,7 @@ module.exports = {
                 Email:req.body.Email,
                 password:req.body.password,
                 PhoneNumber:req.body.PhoneNumber,
-                size:req.body.size
+             
                 
             },{
                 where:{
