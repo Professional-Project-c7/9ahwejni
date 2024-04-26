@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, TextInput, StyleSheet, FlatList, Image, TouchableOpacity } from 'react-native';
+import { View, Text, TextInput, StyleSheet, FlatList, Image, TouchableOpacity,Button } from 'react-native';
 // import { FontAwesome } from 'react-native-vector-icons';
 
 const coffeeShopsData = [
@@ -39,6 +39,7 @@ const CoffeeShopsList = () => {
               style={styles.image}
               source={{ uri: item.imageUrl }}
             />
+   
             <View style={styles.info}>
               <Text style={styles.name}>{item.name}</Text>
               <View style={styles.ratingSection}>
