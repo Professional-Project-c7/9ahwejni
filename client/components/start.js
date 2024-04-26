@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { SafeAreaView, StyleSheet, Text, TouchableOpacity, useColorScheme, View, ImageBackground, ActivityIndicator } from 'react-native';
 import { Colors } from 'react-native/Libraries/NewAppScreen';
+import { useNavigation } from '@react-navigation/native';
 
+import { RefreshControl } from "react-native";
 
 
 
@@ -34,6 +36,7 @@ function App() {
       setIsLoading(false);
     }, 3000); // Adjust the timeout as needed
   }, []);
+ 
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
@@ -80,7 +83,7 @@ const styles = StyleSheet.create({
     // justifyContent: 'center',
     alignItems: 'center',
     marginTop: 520,
-    backgroundColor: '#c1a01d',
+    backgroundColor: '#B08149',
   },
 
   buttonText: {
@@ -99,3 +102,9 @@ const styles = StyleSheet.create({
 });
 
 export default App;
+
+
+
+
+
+
