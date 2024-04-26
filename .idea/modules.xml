@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/client/android/.gradle/.gradle.iml" filepath="$PROJECT_DIR$/client/android/.gradle/.gradle.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/9ahwejni.iml" filepath="$PROJECT_DIR$/.idea/9ahwejni.iml" />
+      <module fileurl="file://$PROJECT_DIR$/client/android/app/src/app.iml" filepath="$PROJECT_DIR$/client/android/app/src/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/client/android/app/build/generated/source/generated.iml" filepath="$PROJECT_DIR$/client/android/app/build/generated/source/generated.iml" />
+      <module fileurl="file://$PROJECT_DIR$/client/android/app/build/generated/rncli/rncli.iml" filepath="$PROJECT_DIR$/client/android/app/build/generated/rncli/rncli.iml" />
+    </modules>
+  </component>
+</project>
