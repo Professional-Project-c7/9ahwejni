@@ -23,7 +23,7 @@ function App() {
   <Button icon="dots-vertical" size={20} textColor='black' onPress={() => navigation.goBack()}>
   </Button>
 </View>
-      <Login/>
+      <SignCofee/>
     </SafeAreaView>
   );
 }
