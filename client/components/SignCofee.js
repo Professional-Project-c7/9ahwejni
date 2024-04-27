@@ -3,7 +3,7 @@ import { StyleSheet, Text, View, TextInput, TouchableOpacity, Image } from 'reac
 import { Button } from 'react-native-paper';
 import axios from 'axios';
 
-const SignUser = () => {
+const SignCofee = () => {
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [email, setEmail] = useState('');
@@ -160,4 +160,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default SignUser;
+export default SignCofee;

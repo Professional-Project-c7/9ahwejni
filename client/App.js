@@ -6,6 +6,7 @@ import Profile from './components/UserProfile'
 import SignACC from './components/Signacc';
 import SignUser from './components/SignUser';
 import SignCofee from './components/SignCofee';
+import Login from './components/Login';
 
 
 function App() {
@@ -22,7 +23,7 @@ function App() {
   <Button icon="dots-vertical" size={20} textColor='black' onPress={() => navigation.goBack()}>
   </Button>
 </View>
-      <SignUser/>
+      <Login/>
     </SafeAreaView>
   );
 }
