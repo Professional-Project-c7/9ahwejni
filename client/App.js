@@ -10,7 +10,6 @@ function App() {
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
-    
       <NAV/>
     </SafeAreaView>
   );
