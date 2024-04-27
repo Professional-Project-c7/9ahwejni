@@ -4,23 +4,23 @@ import { Button } from 'react-native-paper';
 import axios from 'axios';
 import { useNavigation } from '@react-navigation/native';
 
-const Login = () => {
+const Login = ({ navigation }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  // const navigation = useNavigation(); 
-
+  
+  console.log(email,password);
   const handleSubmit = async () => {
     try {
       const response = await axios.post(
-        "http://localhost:3000/api/user/login",
+        "http://localhost:3000/api/auth/login",
         { Email: email, Password: password }
+        
       );
-      const { user, token } = response.data;
+       
       
-      console.log(response.data);
     } catch (error) {
-      
-      console.error(error.response.data.error);
+      throw error
+      console.log(error);
     }
   };
 

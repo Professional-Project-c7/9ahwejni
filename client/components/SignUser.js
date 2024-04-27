@@ -3,7 +3,7 @@ import { StyleSheet, Text, View, TextInput, TouchableOpacity, Image } from 'reac
 import { Button } from 'react-native-paper';
 import axios from 'axios';
 
-const SignUser = () => {
+const SignUser = ({navigation}) => {
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [email, setEmail] = useState('');
@@ -23,29 +23,29 @@ const SignUser = () => {
         Address: Address,
         ImageUrl: profilePicture,
       };
+      console.log(body);
 
-      console.log("Request body:", body);
+     
 
       const response = await axios.post(
         "http://localhost:3000/api/auth/register",
         body
       );
+     
+      console.log("Response data:", response);
 
-      console.log("Response data:", response.data);
-
-    } catch (err) {
-      console.log("Error:", err);
-      if (err.response && err.response.data && err.response.data.error) {
-        setError(err.response.data.error);
-      } else {
-        setError("An unexpected error occurred. Please try again later.");
-      }
+    }    catch (error) {
+      throw(error);
+     
     }
   };
 
+  const navigateToUserAccount = () => {
+    navigation.navigate('Login'); 
+  };
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Sign Up</Text>
+     
       
       <TouchableOpacity
         style={styles.profileImagePlaceholder}
@@ -88,6 +88,13 @@ const SignUser = () => {
           onChangeText={setPassword}
           secureTextEntry
         />
+        <TextInput
+          style={styles.input}
+          placeholder="Adress"
+          value={Address}
+          onChangeText={setAddress}
+          secureTextEntry
+        />
       </View>
       
       {error ? <Text style={styles.error}>{error}</Text> : null}
@@ -95,7 +102,13 @@ const SignUser = () => {
       <Button style={styles.button} mode="contained" onPress={handleSignIn}>
         Sign Up
       </Button>
-    </View>
+    
+    <TouchableOpacity
+    onPress={navigateToUserAccount}
+   >
+     <Text style={styles.createAccount}>do you  have an account? </Text>
+   </TouchableOpacity>
+   </View>
   );
 };
 
@@ -134,6 +147,12 @@ const styles = StyleSheet.create({
   inputContainer: {
     marginBottom: 20,
     width: '80%',
+  },
+  
+  createAccount: {
+    color: '#dba617',
+    fontWeight: 'bold',
+    fontSize: 16,
   },
   input: {
     height: 50,
