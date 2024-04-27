@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput,SafeAreaView, StyleSheet,ScrollView, Image } from 'react-native';
 import { IconButton ,Button} from 'react-native-paper';
 import Profile from './components/AllCoffeShops';
-
+import ProductList from './components/ProductList';
 
 function App() {
    
@@ -19,7 +19,7 @@ function App() {
   <Button icon="dots-vertical" size={20} textColor='black' onPress={() => navigation.goBack()}>
   </Button>
 </View>
-      <Profile/>
+      <ProductList/>
     </SafeAreaView>
   );
 }
