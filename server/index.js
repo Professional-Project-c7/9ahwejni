@@ -11,9 +11,11 @@ app.use(express.urlencoded({extended: true}));
 const User = require('./Routers/user.routes.js')
 const ProductRoutes=require("./Routers/products.routes.js")
 const Cofee = require('./Routers/cofee.routes.js')
+const Authentication = require('./Routers/login.routers.js');
 
 
 
+app.use("/api/auth", Authentication);
 
 app.use('/api/user', User);
 app.use("/api/product", ProductRoutes);
