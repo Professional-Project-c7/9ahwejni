@@ -3,30 +3,30 @@ import { StyleSheet, Text, View, TextInput, TouchableOpacity, Image } from 'reac
 import { Button } from 'react-native-paper';
 import axios from 'axios';
 
-const SignCofee = () => {
+const SignUser = () => {
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
-  const [profilePicture, setProfilePicture] = useState(null);
+  
   const [Adress, setAdress] = useState('');
 
   const HandleSubmit = async () => {
     try {
       const body = {
-        UserType: 'cofee', 
+        UserType: 'coffee', 
         Adress:Adress,
         Email: email,
         Password: password,
         FirstName: firstName,
         LastName: lastName,
-        PhoneNumber: phoneNumber,
-        imageUrl: profilePicture, 
+      
+      
       };
 
       const response = await axios.post(
-        "http://localhost:3000/api/user/register",
+        "http://localhost:3000/api/auth/register",
         body
       );
       
@@ -48,11 +48,7 @@ const SignCofee = () => {
          
         }}
       >
-        {profilePicture ? (
-          <Image source={{ uri: profilePicture }} style={styles.profileImage} />
-        ) : (
-          <Text style={styles.profileImageText}>Add Profile Picture</Text>
-        )}
+      
       </TouchableOpacity>
 
       <View style={styles.inputContainer}>
@@ -160,4 +156,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default SignCofee;
+export default SignUser;

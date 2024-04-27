@@ -8,41 +8,44 @@ const SignUser = () => {
   const [lastName, setLastName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-
-  const [phoneNumber, setPhoneNumber] = useState('');
+  const [Address, setAddress] = useState('');
   const [profilePicture, setProfilePicture] = useState(null);
   const [error, setError] = useState('');
 
   const handleSignIn = async () => {
     try {
       const body = {
-       
+        UserType: "client",
         Email: email,
         Password: password,
         FirstName: firstName,
         LastName: lastName,
-        PhoneNumber: phoneNumber,
-        imageUrl: profilePicture,
-     
+        Address: Address,
+        ImageUrl: profilePicture,
       };
 
+      console.log("Request body:", body);
+
       const response = await axios.post(
-        "http://localhost:4000/api/user/register",
+        "http://localhost:3000/api/auth/register",
         body
       );
-      
-      console.log(response.data);
-      
+
+      console.log("Response data:", response.data);
+
     } catch (err) {
-      console.log(err);
-      setError(err.response.data.error);
+      console.log("Error:", err);
+      if (err.response && err.response.data && err.response.data.error) {
+        setError(err.response.data.error);
+      } else {
+        setError("An unexpected error occurred. Please try again later.");
+      }
     }
   };
 
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Sign Up</Text>
-      
       
       <TouchableOpacity
         style={styles.profileImagePlaceholder}
@@ -85,20 +88,10 @@ const SignUser = () => {
           onChangeText={setPassword}
           secureTextEntry
         />
-   
-        <TextInput
-          style={styles.input}
-          placeholder="Phone Number"
-          value={phoneNumber}
-          onChangeText={setPhoneNumber}
-          keyboardType="phone-pad"
-        />
       </View>
       
-     
       {error ? <Text style={styles.error}>{error}</Text> : null}
 
-      
       <Button style={styles.button} mode="contained" onPress={handleSignIn}>
         Sign Up
       </Button>
