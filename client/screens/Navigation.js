@@ -8,12 +8,12 @@ import SignACC from '../components/Signacc';
 import Start from '../components/start';
 const Stack = createNativeStackNavigator();
 
-function NAV() {
+function NAVSTART() {
   return (
 
     <NavigationContainer>
       <Stack.Navigator>
-      <Stack.Screen name="Home" component={Start}  />
+      <Stack.Screen name="Start" component={Start}  />
       <Stack.Screen name="Login" component={Login} />
         <Stack.Screen name="UserSignUp" component={SignUser} />
         <Stack.Screen name="CoffeeShopSignUp" component={SignCofee} />
@@ -24,4 +24,4 @@ function NAV() {
   );
 }
 
-export default NAV;
+export default NAVSTART;
