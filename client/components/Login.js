@@ -1,23 +1,57 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { StyleSheet, Text, View, TextInput, TouchableOpacity, Image } from 'react-native';
-import { Button, IconButton } from 'react-native-paper';
+import { Button } from 'react-native-paper';
+import axios from 'axios';
+import { useNavigation } from '@react-navigation/native';
 
 const Login = () => {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  // const navigation = useNavigation(); 
+
+  const handleSubmit = async () => {
+    try {
+      const response = await axios.post(
+        "http://localhost:3000/api/user/login",
+        { Email: email, Password: password }
+      );
+      const { user, token } = response.data;
+      
+      console.log(response.data);
+    } catch (error) {
+      
+      console.error(error.response.data.error);
+    }
+  };
+
+  const navigateToUserAccount = () => {
+    navigation.navigate('UserAccount'); 
+  };
+
   return (
     <View style={styles.container}>
-      {/* <Image source={{ uri: ''} style={styles.logo} /> */}
-      <Text style={styles.title}>welcome</Text>
+      <Image source={require('./../image/logo.png')} style={styles.logo} />
       <View style={styles.inputContainer}>
-        <TextInput style={styles.input} placeholder="Email" />
-        <TextInput style={styles.input} placeholder="Password" secureTextEntry />
+        <TextInput
+          style={styles.input}
+          placeholder="Email"
+          value={email}
+          onChangeText={setEmail}
+        />
+        <TextInput
+          style={styles.input}
+          placeholder="Password"
+          secureTextEntry
+          value={password}
+          onChangeText={setPassword}
+        />
       </View>
-      <Button style={styles.button} mode="contained">
+      <Button style={styles.button} mode="contained" onPress={handleSubmit}>
         Login
       </Button>
-      <TouchableOpacity>
-      </TouchableOpacity>
-
-      <TouchableOpacity>
+      <TouchableOpacity
+       onPress={navigateToUserAccount}
+      >
         <Text style={styles.createAccount}>Don't have an account? Create one</Text>
       </TouchableOpacity>
     </View>
@@ -36,12 +70,6 @@ const styles = StyleSheet.create({
     height: 150,
     marginBottom: 30,
   },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: '#333',
-    marginBottom: 20,
-  },
   inputContainer: {
     marginBottom: 20,
     width: '80%',
@@ -56,56 +84,17 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFF',
   },
   button: {
-    backgroundColor: '#4CAF50',
+    backgroundColor: '#dba617',
     width: '80%',
     height: 50,
     justifyContent: 'center',
     marginBottom: 20,
     borderRadius: 25,
   },
-  buttonText: {
-    color: '#FFF',
-    fontSize: 16,
-    fontWeight: 'bold',
-  },
-  forgotPassword: {
-    color: '#4CAF50',
-    fontWeight: 'bold',
-    marginBottom: 20,
-    fontSize: 14,
-  },
-  or: {
-    color: '#999',
-    fontWeight: 'bold',
-    marginBottom: 20,
-    fontSize: 16,
-  },
-  socialButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    width: '80%',
-    height: 50,
-    marginBottom: 20,
-    borderRadius: 25,
-    paddingHorizontal: 20,
-    elevation: 3, 
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.3,
-    shadowRadius: 2,
-  },
-  socialButtonText: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    marginLeft: 10,
-  },
   createAccount: {
-    color: '#4CAF50',
+    color: '#dba617',
     fontWeight: 'bold',
     fontSize: 16,
-  },
-  icon: {
-    marginRight: 10,
   },
 });
 
