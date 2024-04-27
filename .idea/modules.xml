@@ -7,6 +7,7 @@
       <module fileurl="file://$PROJECT_DIR$/client/android/app/src/app.iml" filepath="$PROJECT_DIR$/client/android/app/src/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/client/android/app/build/generated/source/generated.iml" filepath="$PROJECT_DIR$/client/android/app/build/generated/source/generated.iml" />
       <module fileurl="file://$PROJECT_DIR$/client/android/app/build/generated/rncli/rncli.iml" filepath="$PROJECT_DIR$/client/android/app/build/generated/rncli/rncli.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/9ahwejni.iml" filepath="$PROJECT_DIR$/.idea/9ahwejni.iml" />
     </modules>
   </component>
 </project>
