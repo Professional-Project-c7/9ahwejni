@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput,SafeAreaView, StyleSheet,ScrollView, Image } from 'react-native';
 import { IconButton ,Button} from 'react-native-paper';
 import Profile from './components/start';
+import NAV from './screens/Navigation';
 
 
 function App() {
@@ -10,16 +11,8 @@ function App() {
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
-      {/* <Profile/>  */}
-          
-      <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-        
-   <Button icon="arrow-left"   size={20} textColor='black' onPress={() => navigation.goBack()}>
-</Button>
-  <Button icon="dots-vertical" size={20} textColor='black' onPress={() => navigation.goBack()}>
-  </Button>
-</View>
-      <Profile/>
+    
+      <NAV/>
     </SafeAreaView>
   );
 }
