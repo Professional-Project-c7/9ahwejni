@@ -3,7 +3,7 @@ import { StyleSheet, Text, View, TextInput, TouchableOpacity, Image } from 'reac
 import { Button } from 'react-native-paper';
 import axios from 'axios';
 
-const SignUser = () => {
+const SignCofee = ({ navigation }) => {
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [email, setEmail] = useState('');
@@ -24,20 +24,23 @@ const SignUser = () => {
       
       
       };
-
+    
       const response = await axios.post(
         "http://localhost:3000/api/auth/register",
         body
       );
       
-      console.log(response.data);
      
-    } catch (err) {
-      console.log(err);
+     
+    } catch (error) {
+      console.log(error);
      
     }
   };
 
+  const navigateToUserAccount = () => {
+    navigation.navigate('Login'); 
+  };
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Sign Up</Text>
@@ -97,6 +100,11 @@ const SignUser = () => {
       <Button style={styles.button} mode="contained" onPress={HandleSubmit}>
         Sign Up
       </Button>
+      <TouchableOpacity
+    onPress={navigateToUserAccount}
+   >
+     <Text style={styles.createAccount}>do you  have an account? </Text>
+   </TouchableOpacity>
     </View>
   );
 };
@@ -107,6 +115,11 @@ const styles = StyleSheet.create({
     backgroundColor: '#F5F5F5',
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  createAccount: {
+    color: '#dba617',
+    fontWeight: 'bold',
+    fontSize: 16,
   },
   title: {
     fontSize: 24,
@@ -156,4 +169,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default SignUser;
+export default SignCofee;
