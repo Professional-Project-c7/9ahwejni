@@ -11,6 +11,9 @@ const SignACC = ({ navigation }) => {
     navigation.navigate('CoffeeShopSignUp');
   };
 
+  const navigateToUserAccount = () => {
+    navigation.navigate('Login'); 
+  };
   return (
     <View style={styles.container}>
       <Image source={require('./../image/logo.png')} style={styles.logo} />
@@ -19,9 +22,14 @@ const SignACC = ({ navigation }) => {
           <Text style={styles.buttonText}>for User</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.button} onPress={handleCoffeeShopSignUp}>
-          <Text style={styles.buttonText}>for Coffee Shop</Text>
+          <Text style={styles.buttonText}>for Coffee-Shop</Text>
         </TouchableOpacity>
       </View>
+      <TouchableOpacity
+    onPress={navigateToUserAccount}
+   >
+     <Text style={styles.createAccount}>do you  have an account? </Text>
+   </TouchableOpacity>
     </View>
   );
 };
@@ -37,6 +45,11 @@ const styles = StyleSheet.create({
     width: 200,
     height: 200,
     marginBottom: 50,
+  },
+  createAccount: {
+    color: '#dba617',
+    fontWeight: 'bold',
+    fontSize: 16,
   },
   buttonContainer: {
     flexDirection: 'row', 
