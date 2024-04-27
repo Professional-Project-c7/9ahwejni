@@ -26,7 +26,7 @@ function Section({ title }) {
   );
 }
 
-function App() {
+function Start({navigation}) {
   const isDarkMode = useColorScheme() === 'dark';
   const [isLoading, setIsLoading] = useState(true);
 
@@ -36,7 +36,9 @@ function App() {
       setIsLoading(false);
     }, 3000); // Adjust the timeout as needed
   }, []);
- 
+  const navigateToUserAccount = () => {
+    navigation.navigate('UserAccount'); 
+  };
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
@@ -49,7 +51,7 @@ function App() {
             <ActivityIndicator size="large" color="#c1a01d" />
           </View>
         ) : (
-          <TouchableOpacity style={styles.button}>
+          <TouchableOpacity style={styles.button}   onPress={navigateToUserAccount}>
             <Text style={styles.buttonText}> Get started</Text>
           </TouchableOpacity>
         )}
@@ -101,7 +103,7 @@ const styles = StyleSheet.create({
   },
 });
 
-export default App;
+export default Start;
 
 
 
