@@ -87,15 +87,23 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   shopTitle: {
-    fontSize: 24,
-    fontWeight: 'bold',
+    fontSize: 28,
+    fontWeight: '700', 
     textAlign: 'center',
     marginTop: 16,
+    color: '#3e3e3e', 
+    fontFamily: 'Roboto',
   },
   shopImage: {
     width: '100%',
-    height: 200, // Adjust the height as needed
-    resizeMode: 'cover'
+    height: 200, 
+    resizeMode: 'cover',
+    borderRadius: 8, 
+    borderWidth: 0.5, 
+    borderColor: '#FFFFFF', 
+    marginBottom: 16, 
+    overflow: 'hidden', 
+    elevation: 2, 
   },
   shopSubtitle: {
     textAlign: 'center',
@@ -117,9 +125,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   productImage: {
-    width: 100,
-    height: 100,
-    borderRadius: 50,
+    width: 120,
+    height: 120,
+    borderRadius: 0,
     marginRight: 8,
   },
   productInfo: {
@@ -145,8 +153,8 @@ const styles = StyleSheet.create({
     padding: 8,
     justifyContent: 'center', // Center the "+" vertically
     alignItems: 'center', // Center the "+" horizontally
-    width: 40, // Specify a width for your add button
-    height: 40, // Specify a height for your add button
+    width: 50, // Specify a width for your add button
+    height: 50, // Specify a height for your add button
   },
   addLabel: {
     color: 'white', // Set the label text color
@@ -154,8 +162,8 @@ const styles = StyleSheet.create({
     fontWeight: 'bold', // Optional: if you want the "+" to be bold
   },
   addIcon: {
-    width: 30, // Define a width for the icon
-    height: 30, // Define a height for the icon
+    width: 44, // Define a width for the icon
+    height: 44, // Define a height for the icon
   },
 });
 
