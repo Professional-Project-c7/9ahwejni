@@ -14,6 +14,7 @@ const Cofee = require('./Routers/cofee.routes.js')
 const Authentication = require('./Routers/login.routers.js');
 
 
+app.use(cors())
 
 app.use("/api/auth", Authentication);
 

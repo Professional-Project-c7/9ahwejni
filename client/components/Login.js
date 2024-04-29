@@ -12,15 +12,16 @@ const Login = ({ navigation }) => {
   const handleSubmit = async () => {
     try {
       const response = await axios.post(
-        "http://192.168.11.13:3000/api/auth/login",
+        "http://localhost:3000/api/auth/login",
         { Email: email, Password: password }
       );
       
      
-      navigation.navigate('UserProfile'); 
+      navigation.navigate('Start'); 
 
     } catch (error) {            
-        console.log(error);      
+        console.log(error);  
+        setError(error.message);    
     }
   };
 
@@ -51,6 +52,7 @@ const Login = ({ navigation }) => {
         Login
       </Button>
       <TouchableOpacity onPress={navigateToUserAccount}>
+     
         <Text style={styles.createAccount}>Don't have an account? Create one</Text>
       </TouchableOpacity>
     </View>
@@ -68,6 +70,10 @@ const styles = StyleSheet.create({
     width: 150,
     height: 150,
     marginBottom: 30,
+  },
+  error: {
+    color: 'red',
+    marginBottom: 10,
   },
   inputContainer: {
     marginBottom: 20,

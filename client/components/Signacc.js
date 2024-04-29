@@ -19,15 +19,15 @@ const SignACC = ({ navigation }) => {
       <Image source={require('./../image/logo.png')} style={styles.logo} />
       <View style={styles.buttonContainer}>
         <TouchableOpacity style={styles.button} onPress={handleUserSignUp}>
-          <Text style={styles.buttonText}>for User</Text>
+          <Text style={styles.buttonText}>User</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.button} onPress={handleCoffeeShopSignUp}>
-          <Text style={styles.buttonText}>for Coffee-Shop</Text>
+          <Text style={styles.buttonText}>Coffee-Shop</Text>
         </TouchableOpacity>
       </View>
       <TouchableOpacity
     onPress={navigateToUserAccount}
-   >
+   > 
      <Text style={styles.createAccount}>do you  have an account? </Text>
    </TouchableOpacity>
     </View>
@@ -50,6 +50,7 @@ const styles = StyleSheet.create({
     color: '#dba617',
     fontWeight: 'bold',
     fontSize: 16,
+    marginTop:10,
   },
   buttonContainer: {
     flexDirection: 'row', 
