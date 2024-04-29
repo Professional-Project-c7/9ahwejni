@@ -13,11 +13,11 @@ function NAVSTART() {
 
     <NavigationContainer>
       <Stack.Navigator>
-      <Stack.Screen name="Start" component={Start}  />
-      <Stack.Screen name="Login" component={Login} />
-        <Stack.Screen name="UserSignUp" component={SignUser} />
-        <Stack.Screen name="CoffeeShopSignUp" component={SignCofee} />
-        <Stack.Screen name="UserAccount" component={SignACC} />
+      <Stack.Screen name="Start" component={Start}  options={{ headerShown: false }} />
+      <Stack.Screen name="Login" component={Login} options={{ headerShown: false }} />
+        <Stack.Screen name="UserSignUp" component={SignUser} options={{ headerShown: false }} />
+        <Stack.Screen name="CoffeeShopSignUp" component={SignCofee} options={{ headerShown: false }} />
+        <Stack.Screen name="UserAccount" component={SignACC} options={{ headerShown: false }} />
 
       </Stack.Navigator>
     </NavigationContainer>
