@@ -1,14 +1,13 @@
-import React, { useState } from 'react';
-import { StyleSheet, Text, View, TextInput, TouchableOpacity, Image } from 'react-native';
+import React, { useState,useEffect } from 'react';
+import { StyleSheet, Text, View, TextInput,SafeAreaView, TouchableOpacity, Image ,ScrollView  } from 'react-native';
 import { Button } from 'react-native-paper';
 import axios from 'axios';
-
 const SignUser = ({navigation}) => {
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [Address, setAddress] = useState('');
+  const [PhoneNumber, setPhoneNumber] = useState('');
   const [profilePicture, setProfilePicture] = useState(null);
   const [error, setError] = useState('');
 
@@ -20,47 +19,51 @@ const SignUser = ({navigation}) => {
         Password: password,
         FirstName: firstName,
         LastName: lastName,
-        Address: Address,
+        PhoneNumber: PhoneNumber,
         ImageUrl: profilePicture,
       };
-      console.log(body);
-
+      
+      console.log("Sending sign up request with body:", body);
      
-
       const response = await axios.post(
-        "http://192.168.11.13:3000/api/auth/register",
+        "http://localhost:3000/api/auth/register",
         body
       );
      
-      console.log("Response data:", response);
-
-    }    catch (error) {
-      throw(error);
+      console.log("Response data:", response.data);
+  
      
+      setFirstName('');
+      setLastName('');
+      setEmail('');
+      setPassword('');
+      setPhoneNumber('');
+      setProfilePicture('');
+  
+     
+      navigation.navigate('Login');
+    } catch (error) {
+      console.error("Error signing up:", error);
+      setError(error.message);
     }
   };
+  
 
   const navigateToUserAccount = () => {
     navigation.navigate('Login'); 
   };
+
   return (
+    <SafeAreaView >
+    <ScrollView  >
+    
     <View style={styles.container}>
-     
+       <Image source={require('./../image/logo.png')} style={styles.logo} />
       
-      <TouchableOpacity
-        style={styles.profileImagePlaceholder}
-        onPress={() => {
-         
-        }}
-      >
-        {profilePicture ? (
-          <Image source={{ uri: profilePicture }} style={styles.profileImage} />
-        ) : (
-          <Text style={styles.profileImageText}>Add Profile Picture</Text>
-        )}
-      </TouchableOpacity>
+     
 
       <View style={styles.inputContainer}>
+        
         <TextInput
           style={styles.input}
           placeholder="First Name"
@@ -90,10 +93,10 @@ const SignUser = ({navigation}) => {
         />
         <TextInput
           style={styles.input}
-          placeholder="Adress"
-          value={Address}
-          onChangeText={setAddress}
-          secureTextEntry
+          placeholder="PhoneNumber"
+          value={PhoneNumber}
+          onChangeText={setPhoneNumber}
+          keyboardType="phone-pad"
         />
       </View>
       
@@ -109,6 +112,8 @@ const SignUser = ({navigation}) => {
      <Text style={styles.createAccount}>do you  have an account? </Text>
    </TouchableOpacity>
    </View>
+   </ScrollView>
+    </SafeAreaView>
   );
 };
 
@@ -118,6 +123,11 @@ const styles = StyleSheet.create({
     backgroundColor: '#F5F5F5',
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  logo: {
+    width: 200,
+    height: 200,
+    marginBottom: 50,
   },
   title: {
     fontSize: 24,
@@ -153,6 +163,9 @@ const styles = StyleSheet.create({
     color: '#dba617',
     fontWeight: 'bold',
     fontSize: 16,
+    marginEnd:50,
+
+    marginVertical:20,
   },
   input: {
     height: 50,
