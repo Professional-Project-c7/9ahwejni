@@ -1,7 +1,7 @@
 import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import SignUser from '../components/SignUser'; // Corrected import
+import SignUser from '../components/SignUser'; 
 import SignCofee from '../components/SignCofee';
 import Login from '../components/Login';
 import SignACC from '../components/Signacc';
