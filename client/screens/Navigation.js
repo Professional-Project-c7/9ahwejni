@@ -8,7 +8,6 @@ import SignACC from '../components/Signacc';
 import Start from '../components/start';
 import WLC from '../components/wlc';
 import ProductList from '../components/ProductList';
-import Favorites from '../components/Favorites';
 
 const Stack = createNativeStackNavigator();
 
@@ -24,7 +23,6 @@ function NAVSTART() {
         <Stack.Screen name="UserAccount" component={SignACC} options={{ headerShown: false }} />
         <Stack.Screen name="wlc" component={WLC} options={{ headerShown: false }} />
         <Stack.Screen name="ProductList" component={ProductList} options={{ headerShown: false }} />
-        <Stack.Screen name="Favorites" component={Favorites} options={{ headerShown: false }} />
 
       </Stack.Navigator>
     </NavigationContainer>
