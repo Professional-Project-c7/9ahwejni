@@ -34,7 +34,7 @@ function Start({navigation}) {
   useEffect(() => {
     setTimeout(() => {
       setIsLoading(false);
-    }, 3000); // Adjust the timeout as needed
+    }, 1000); // Adjust the timeout as needed
   }, []);
   const navigateToUserAccount = () => {
     navigation.navigate('UserAccount'); 
