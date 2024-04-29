@@ -34,7 +34,7 @@ function Start({navigation}) {
   useEffect(() => {
     setTimeout(() => {
       setIsLoading(false);
-    }, 5000); 
+    }, 3000); 
   }, []);
   const navigateToUserAccount = () => {
     navigation.navigate('UserAccount'); 
@@ -76,23 +76,27 @@ const styles = StyleSheet.create({
     resizeMode: 'cover',
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor:'black'
+    
   },
   button: {
-    width: 200, // Example width (adjust as needed)
-    height: 50, // Example height (adjust as needed)
-    borderRadius: 30, // Half of the width/height to create a circle
-    // justifyContent: 'center',
+  
     alignItems: 'center',
     marginTop: 520,
-    backgroundColor: '#B08149',
+    width: '50%',
+    height: 60,
+    backgroundColor: '#dba617',
+    paddingVertical: 15,
+    paddingHorizontal: 30,
+    borderRadius: 25,
+    marginVertical: 10,
+    marginHorizontal: 5, 
   },
 
   buttonText: {
-    color: 'black',
-    fontSize: 18,
+    color: 'white',
+    fontSize: 20,
     fontWeight: 'bold',
-    marginTop: 10
+  
   },
   loadingContainer: {
     flex: 1,
