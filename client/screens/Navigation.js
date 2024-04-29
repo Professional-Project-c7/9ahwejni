@@ -8,7 +8,6 @@ import SignACC from '../components/Signacc';
 import Start from '../components/start';
 import AllCoffeShops from '../components/AllCoffeShops';
 import MapCoffe from '../components/MapCoffe';
-// import FlatListPopularShops from '../components/FlatListPopularShops';
 const Stack = createNativeStackNavigator();
 
 function NAV() {
@@ -16,7 +15,7 @@ function NAV() {
 
     <NavigationContainer>
       <Stack.Navigator>
-        {/* <Stack.Screen name="FlatListPopularShops" component={FlatListPopularShops} /> */}
+
         <Stack.Screen name="MapCoffe" component={MapCoffe} />
         <Stack.Screen name="AllCoffeShops" component={AllCoffeShops} />
       <Stack.Screen name="Home" component={Start}  />
