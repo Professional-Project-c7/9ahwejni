@@ -23,7 +23,7 @@ module.exports = {
             res.status(200).send(user)
     
         } catch (error) {
-            throw error
+           console.log(error)
     
         }
      },
@@ -45,7 +45,7 @@ module.exports = {
     
         res.json(product);
         } catch (error) {
-        throw error
+       console.log(error)
         }
         },
 
@@ -70,7 +70,7 @@ module.exports = {
     
             
         } catch (error) {
-            throw error
+           console.log(error)
             
         }
      }
