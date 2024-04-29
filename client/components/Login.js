@@ -7,20 +7,20 @@ import { useNavigation } from '@react-navigation/native';
 const Login = ({ navigation }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  
-  console.log(email,password);
+  const [error, setError] = useState(null);
+
   const handleSubmit = async () => {
     try {
       const response = await axios.post(
         "http://localhost:3000/api/auth/login",
         { Email: email, Password: password }
-        
       );
-       
       
-    } catch (error) {
-      throw error
-      console.log(error);
+     
+      navigation.navigate('Start'); 
+
+    } catch (error) {            
+        console.log(error);      
     }
   };
 
@@ -46,12 +46,11 @@ const Login = ({ navigation }) => {
           onChangeText={setPassword}
         />
       </View>
+      {error && <Text style={styles.errorText}>{error}</Text>}
       <Button style={styles.button} mode="contained" onPress={handleSubmit}>
         Login
       </Button>
-      <TouchableOpacity
-       onPress={navigateToUserAccount}
-      >
+      <TouchableOpacity onPress={navigateToUserAccount}>
         <Text style={styles.createAccount}>Don't have an account? Create one</Text>
       </TouchableOpacity>
     </View>
@@ -95,6 +94,10 @@ const styles = StyleSheet.create({
     color: '#dba617',
     fontWeight: 'bold',
     fontSize: 16,
+  },
+  errorText: {
+    color: 'red',
+    marginBottom: 10,
   },
 });
 
