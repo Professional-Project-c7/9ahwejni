@@ -8,7 +8,7 @@ const {getAll,addOne,updateOne,deleteOne,selectOne}=require('../controller/UserC
 
 
 router.get("/",getAll);
-router.get("/:FirstName",selectOne);
+router.get("/:firstName",selectOne);
 router.post("/",addOne);
 router.patch("/:id",updateOne);
 router.delete("/:id",deleteOne);

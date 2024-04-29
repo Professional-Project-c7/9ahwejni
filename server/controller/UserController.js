@@ -29,7 +29,7 @@ module.exports = {
      },
      selectOne: async function(req, res) {
         try {
-            const user = await db.User.findOne({ where: { FirstName: req.params.FirstName } })
+            const user = await db.User.findOne({ where: { firstName: req.params.firstName } })
                 res.status(200).json(user);
         
         } catch (error) {
