@@ -17,7 +17,7 @@ const Login = ({ navigation }) => {
       );
       
      
-      navigation.navigate('wlc'); 
+      navigation.navigate('st2'); 
 
     } catch (error) {            
         console.log(error);  
@@ -26,7 +26,7 @@ const Login = ({ navigation }) => {
   };
 
   const navigateToUserAccount = () => {
-    navigation.navigate('UserAccount'); 
+    navigation.navigate('UserProfile'); 
   };
 
   return (
