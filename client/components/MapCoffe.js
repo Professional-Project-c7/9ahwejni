@@ -1,11 +1,67 @@
-import React from 'react';
-import MapView from 'react-native-maps';
-import { StyleSheet, View } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import MapView, { Marker } from 'react-native-maps';
+import { StyleSheet, View, TextInput, Button } from 'react-native';
+import Geolocation from '@react-native-community/geolocation';
+import Geocoder from 'react-native-geocoding';
+
+// Initialize Geocoder with your Google Maps API key
+Geocoder.init('AIzaSyDYm4cfAj3Lrk6HqMJZHGeB1JevFbEC55o');
 
 export default function App() {
+  const [region, setRegion] = useState(null);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [searchResults, setSearchResults] = useState([]);
+
+  useEffect(() => {
+    // Fetch user's current location
+    Geolocation.getCurrentPosition(
+      position => {
+        const { latitude, longitude } = position.coords;
+        setRegion({
+          latitude,
+          longitude,
+          latitudeDelta: 0.0922,
+          longitudeDelta: 0.0421,
+        });
+      },
+      error => console.log(error.message),
+      { enableHighAccuracy: true, timeout: 20000, maximumAge: 1000 }
+    );
+  }, []);
+
+  const handleSearch = async () => {
+    try {
+      const response = await Geocoder.from(searchQuery);
+      const { lat, lng } = response.results[0].geometry.location;
+      setRegion({
+        latitude: lat,
+        longitude: lng,
+        latitudeDelta: 0.0922,
+        longitudeDelta: 0.0421,
+      });
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   return (
     <View style={styles.container}>
-      <MapView style={styles.map} />
+      <View style={styles.searchContainer}>
+        <TextInput
+          style={styles.input}
+          value={searchQuery}
+          onChangeText={text => setSearchQuery(text)}
+          placeholder="Search location..."
+        />
+        <Button title="Search" onPress={handleSearch} />
+      </View>
+      {region ? (
+        <MapView style={styles.map} initialRegion={region}>
+          <Marker coordinate={{ latitude: region.latitude, longitude: region.longitude }} />
+        </MapView>
+      ) : (
+        <MapView style={styles.map} />
+      )}
     </View>
   );
 }
@@ -15,41 +71,23 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   map: {
-    width: '100%',
-    height: '100%',
+    flex: 1,
+  },
+  searchContainer: {
+    flexDirection: 'row',
+    padding: 10,
+    backgroundColor: '#fff',
+    borderBottomWidth: 1,
+    borderBottomColor: '#ddd',
+  },
+  input: {
+    flex: 1,
+    marginRight: 10,
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 4,
+    fontSize: 16,
   },
 });
-
-
-// import React from 'react';
-// import { StyleSheet, View } from 'react-native';
-// import Mapbox from '@rnmapbox/maps';
-
-// Mapbox.setAccessToken('pk.eyJ1IjoicmlhZGhsb3VkaGFpZWYiLCJhIjoiY2x2Z2o5bmcwMG84cDJpbzV0MnVsd3UyNSJ9.rxoADhSxn7klh-OQFuafPg');
-
-// const App = () => {
-//   return (
-//     <View style={styles.page}>
-//       <View style={styles.container}>
-//         <Mapbox.MapView style={styles.map} />
-//       </View>
-//     </View>
-//   );
-// }
-
-// export default App;
-
-// const styles = StyleSheet.create({
-//   page: {
-//     flex: 1,
-//     justifyContent: 'center',
-//     alignItems: 'center',
-//   },
-//   container: {
-//     height: 300,
-//     width: 300,
-//   },
-//   map: {
-//     flex: 1
-//   }
-// });

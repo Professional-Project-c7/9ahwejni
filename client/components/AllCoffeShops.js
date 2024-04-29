@@ -1,7 +1,8 @@
 import React from 'react';
-import { View, Text, TextInput, StyleSheet, FlatList, Image, TouchableOpacity,Button } from 'react-native';
-// import { FontAwesome } from 'react-native-vector-icons';
-
+import { View, Text, TextInput, StyleSheet, FlatList, Image, TouchableOpacity , Button } from 'react-native';
+import { FontAwesome } from 'react-native-vector-icons';
+// import { Button } from 'react-native-paper';
+import FlatListPopularShops from './FlatListPopularShops';
 const coffeeShopsData = [
   {
     id: '1',
@@ -17,6 +18,13 @@ const coffeeShopsData = [
     rating: 4.5,
     reviews: 300,
   },
+  {
+    id: '3',
+    name: 'Coffe Shop monta: No coffe no life ',
+    imageUrl: 'https://www.coffeebeancompany.co.uk/app/uploads/2017/04/Coffee-Shop-1024x765.jpg',
+    rating: 4.6,
+    reviews: 390,
+  },
 ];
 
 const CoffeeShopsList = () => {
@@ -25,11 +33,19 @@ const CoffeeShopsList = () => {
       <Text style={styles.title}>Coffee Shop</Text>
       <View style={styles.searchSection}>
         {/* <FontAwesome style={styles.searchIcon} name="search" size={20} color="#000"/> */}
+        
         <TextInput
           style={styles.input}
           placeholder="Search..."
         />
+     
       </View>
+   <View style={styles.flatListPopularShops}>
+
+      <FlatListPopularShops />
+   </View>
+    <FlatList/>
+          <View>
       <FlatList
         data={coffeeShopsData}
         keyExtractor={(item) => item.id}
@@ -53,6 +69,7 @@ const CoffeeShopsList = () => {
           </View>
         )}
       />
+          </View>
     </View>
   );
 };
@@ -85,6 +102,18 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 10,
     color: '#424242',
+  },
+  flatListPopularShops: {
+    // marginTop: 10,
+    marginBottom: 40,
+  },
+  button: {
+    width: 240, 
+    height: 50, 
+    borderRadius: 30, 
+    alignItems: 'center',
+    marginTop: 520,
+    backgroundColor: '#B0814',
   },
   card: {
     flexDirection: 'row',
