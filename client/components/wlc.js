@@ -9,7 +9,7 @@ function WLC() {
   return (
     <SafeAreaView style={{ flex: 1 }}>
   <Button>
-        Login
+      ♥♥♥♥♥♥♥
       </Button>
      
     </SafeAreaView>
