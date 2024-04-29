@@ -25,4 +25,4 @@ function NAVSTART() {
   );
 }
 
-export default NAV;
+export default NAVSTART;
