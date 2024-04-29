@@ -8,7 +8,6 @@ import SignACC from '../components/Signacc';
 import Start from '../components/start';
 import WLC from '../components/wlc';
 import ProductList from '../components/ProductList';
-
 const Stack = createNativeStackNavigator();
 
 function NAVSTART() {
