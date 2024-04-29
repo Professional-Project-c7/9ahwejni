@@ -1,31 +1,55 @@
 import React from 'react';
-import { SafeAreaView, StyleSheet, Text, TouchableOpacity, useColorScheme, View, ImageBackground, ActivityIndicator } from 'react-native';
-import MapView, { PROVIDER_GOOGLE } from 'react-native-maps';
+import MapView from 'react-native-maps';
+import { StyleSheet, View } from 'react-native';
+
+export default function App() {
+  return (
+    <View style={styles.container}>
+      <MapView style={styles.map} />
+    </View>
+  );
+}
 
 const styles = StyleSheet.create({
- container: {
-   ...StyleSheet.absoluteFillObject,
-   flex: 1,
-   justifyContent: 'flex-end',
-   alignItems: 'center',
- },
- map: {
-   ...StyleSheet.absoluteFillObject,
- },
+  container: {
+    flex: 1,
+  },
+  map: {
+    width: '100%',
+    height: '100%',
+  },
 });
 
-export default () => (
-   <View style={styles.container}>
-     <MapView
-       provider={PROVIDER_GOOGLE} 
-       style={styles.map}
-       region={{
-         latitude: 37.78825,
-         longitude: -122.4324,
-         latitudeDelta: 0.015,
-         longitudeDelta: 0.0121,
-       }}
-     >
-     </MapView>
-   </View>
-);
+
+// import React from 'react';
+// import { StyleSheet, View } from 'react-native';
+// import Mapbox from '@rnmapbox/maps';
+
+// Mapbox.setAccessToken('pk.eyJ1IjoicmlhZGhsb3VkaGFpZWYiLCJhIjoiY2x2Z2o5bmcwMG84cDJpbzV0MnVsd3UyNSJ9.rxoADhSxn7klh-OQFuafPg');
+
+// const App = () => {
+//   return (
+//     <View style={styles.page}>
+//       <View style={styles.container}>
+//         <Mapbox.MapView style={styles.map} />
+//       </View>
+//     </View>
+//   );
+// }
+
+// export default App;
+
+// const styles = StyleSheet.create({
+//   page: {
+//     flex: 1,
+//     justifyContent: 'center',
+//     alignItems: 'center',
+//   },
+//   container: {
+//     height: 300,
+//     width: 300,
+//   },
+//   map: {
+//     flex: 1
+//   }
+// });
