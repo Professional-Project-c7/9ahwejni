@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { SafeAreaView } from 'react-native';
-import NAVSTART from './screens/Navigation';
+import NAVSTART from './components/UserProfile';
 
 
 function App() {
    
-
+ 
   return (
     <SafeAreaView style={{ flex: 1 }}>
     

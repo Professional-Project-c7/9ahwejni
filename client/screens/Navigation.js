@@ -8,23 +8,26 @@ import SignACC from '../components/Signacc';
 import Start from '../components/start';
 import UserProfile from '../components/UserProfile'
 
-const Stack = createNativeStackNavigator();
+const Tab = createNativeStackNavigator();
+
 
 function NAVSTART() {
   return (
 
     <NavigationContainer>
-       <Stack.Navigator>
-      <Stack.Screen name="Start" component={Start}   options={{ headerShown: false }} />
-      <Stack.Screen name="Login" component={Login} />
-        <Stack.Screen name="UserSignUp" component={SignUser} />
-        <Stack.Screen name="CoffeeShopSignUp" component={SignCofee} />
-        <Stack.Screen name="UserAccount" component={SignACC} />
-        <Stack.Screen name="UserProfile" component={SignACC} />
+       <Tab.Navigator>
+      <Tab.Screen name="Start" component={Start}   options={{ headerShown: false }} />
+      <Tab.Screen name="Login" component={Login} />
+        <Tab.Screen name="UserSignUp" component={SignUser} />
+        <Tab.Screen name="CoffeeShopSignUp" component={SignCofee} />
+        <Tab.Screen name="UserAccount" component={SignACC} />
+        <Tab.Screen name="UserProfile" component={UserProfile} options={{ headerShown: false }}   />
 
-      </Stack.Navigator>
+      </Tab.Navigator>
     </NavigationContainer>
+
   );
 }
 
 export default NAVSTART;
+

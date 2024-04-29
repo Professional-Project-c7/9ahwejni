@@ -37,8 +37,9 @@ function Start({navigation}) {
     }, 1000); // Adjust the timeout as needed
   }, []);
   const navigateToUserAccount = () => {
-    navigation.navigate('UserAccount'); 
+    navigation.navigate('Login'); 
   };
+  
 
   return (
     <SafeAreaView style={{ flex: 1 }}>

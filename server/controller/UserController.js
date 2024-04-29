@@ -27,6 +27,16 @@ module.exports = {
     
         }
      },
+     selectOne: async function(req, res) {
+        try {
+            const user = await db.User.findOne({ where: { FirstName: req.params.FirstName } })
+                res.status(200).json(user);
+        
+        } catch (error) {
+            throw (error)
+        }
+    
+        },
      deleteOne:async (req, res) => {
         try {
         const product = await db.User.destroy({

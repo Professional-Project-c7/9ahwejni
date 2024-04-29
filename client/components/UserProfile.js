@@ -1,82 +1,88 @@
-import React, { useState } from 'react';
-import { View, Text, TextInput, StyleSheet,ScrollView, Image } from 'react-native';
-//  import MapView, { Marker } from 'react-native-maps';
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons' 
-import { IconButton ,Button} from 'react-native-paper';
+import React, { useState ,useEffect} from 'react';
+import { View, Text, TextInput, StyleSheet,ScrollView, Button,Image } from 'react-native';
+import axios from 'axios';
 
-const UserProfile = () => {
+const UserProfile = ({navigation}) => {
+  const [FirstName, setFirstName] = useState('');
   const [profile, setProfile] = useState({
-    name: '',
-    email: '', 
-    password: '', 
-    birthday: '',
-    Number:'',
+    
     imageUrl2: 'https://w0.peakpx.com/wallpaper/821/616/HD-wallpaper-coffee-beans-brown-cappuccino-cofee-beans-latte.jpg',
    imageUrl: 'https://b.fssta.com/uploads/application/soccer/headshots/713.png', // Provided image URL
-    location: {
-      latitude: 37.78825,
-      longitude: -122.4324,
-    },
+   
   });
 
-  const { name, email, bio, imageUrl, birthday, imageUrl2 } = profile;
+  const {  imageUrl, imageUrl2 } = profile;
 
   const handleSave = () => {
     console.log('Changes saved');
   };
+ 
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get(`http://192.168.11.13:3000/api/user/${FirstName}`);
+        const fetchedName = response.data.FirstName; // Assuming the API returns an object with a 'name' property
+        setFirstName(fetchedName);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
+
+    fetchData();
+  }, []);
 
   return (
    <ScrollView>
     
   
-    <View style={styles.container}>
-   
-      <Text style={styles.heading}>Profile</Text> 
+    <View style={styles.container}> 
+  
+      <Text style={styles.heading}>oo</Text> 
       <View style={styles.profileInfo}>
   <Image source={{ uri: imageUrl }} style={styles.image} />
   <Image source={{ uri: imageUrl2 }} style={styles.image2} />
 </View>
       <View style={styles.profileInfo}>
       
-        <Text style={[styles.label, {marginTop: 100}]}>Name:</Text>
+        <Text style={[styles.label, {marginTop: 100}]}>{FirstName}</Text>
         <TextInput
           style={styles.input}
-          value={name}
-          onChangeText={(value) => setProfile({ ...profile, name: value })}
+          value={FirstName}
+          onChangeText={(value) => setFirstName({ ...profile, name: value })}
           placeholder="Enter your name"
         />
         <Text style={styles.label}>Email:</Text>
-        <TextInput
+        {/* <TextInput
           style={styles.input}
           value={email}
           onChangeText={(value) => setProfile({ ...profile, email: value })}
           placeholder="Enter your email"
-        />
+        /> */}
         <Text style={styles.label}>Password:</Text>
-        <TextInput
+        {/* <TextInput
           style={styles.input}
           value={bio}
           onChangeText={(value) => setProfile({ ...profile, bio: value })}
           placeholder ="Enter your password"
           secureTextEntry={true}
-        />
+        /> */}
         <Text style={styles.label}>Birthday:</Text>
-           <TextInput
+           {/* <TextInput
           style={styles.input}
           value={birthday}
           onChangeText={(value) => setProfile({ ...profile, birthday: value })}
           placeholder="DD/MM/YY"
-        />
+        /> */}
          <Text style={styles.label}>Number:</Text>
-           <TextInput
+           {/* <TextInput
           style={styles.input}
           value={birthday}
           onChangeText={(value) => setProfile({ ...profile, Number: value })}
           placeholder="Number..."
-        />
+        /> */}
           <Text style={styles.label}>Gendre:</Text>
       <View style={{ flexDirection: 'row' }}>
-  <TextInput
+  {/* <TextInput
     style={[styles.input1, {marginRight: 69}]}
     value={birthday}
     onChangeText={(value) => setProfile({...profile, Number: value })}
@@ -87,15 +93,16 @@ const UserProfile = () => {
     value={birthday}
     onChangeText={(value) => setProfile({...profile, Number: value })}
     placeholder="Number..."
-  />
+  /> */}
 </View>
          
       </View>
     
       <Button icon="camera" buttonColor='black' mode="contained" title="Save Changes" onPress={handleSave} />
-     
+   
       </View>
       </ScrollView>
+      
      
   );
 };
