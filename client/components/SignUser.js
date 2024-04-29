@@ -1,8 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState,useEffect } from 'react';
 import { StyleSheet, Text, View, TextInput, TouchableOpacity, Image } from 'react-native';
 import { Button } from 'react-native-paper';
 import axios from 'axios';
-
 const SignUser = ({navigation}) => {
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
@@ -23,26 +22,37 @@ const SignUser = ({navigation}) => {
         Address: Address,
         ImageUrl: profilePicture,
       };
-      console.log(body);
-
+      
+      console.log("Sending sign up request with body:", body);
      
-
       const response = await axios.post(
-        "http://localhost:3000/api/auth/register",
+        "http://192.168.103.25:3000/api/auth/register",
         body
       );
      
-      console.log("Response data:", response);
-
-    }    catch (error) {
-      throw(error);
-     
+      console.log("Response data:", response.data);
+  
+      // Clear form fields after successful sign up
+      setFirstName('');
+      setLastName('');
+      setEmail('');
+      setPassword('');
+      setAddress('');
+      setProfilePicture(null);
+  
+      // Navigate to login screen
+      navigation.navigate('Login');
+    } catch (error) {
+      console.error("Error signing up:", error);
+      setError(error.message);
     }
   };
+  
 
   const navigateToUserAccount = () => {
     navigation.navigate('Login'); 
   };
+
   return (
     <View style={styles.container}>
      
@@ -93,7 +103,7 @@ const SignUser = ({navigation}) => {
           placeholder="Adress"
           value={Address}
           onChangeText={setAddress}
-          secureTextEntry
+          
         />
       </View>
       
