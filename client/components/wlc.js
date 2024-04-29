@@ -1,19 +1,21 @@
 import React, { useState, useEffect } from 'react';
 import { SafeAreaView } from 'react-native';
-import NAVSTART from './screens/Navigation';
-// import ProductList from './components/ProductList'; 
+import { Button } from 'react-native-paper';
 
-function App() {
+
+function WLC() {
    
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
-    <NAVSTART/>
-      {/* <ProductList/> */}
+  <Button>
+      ♥♥♥♥♥♥♥
+      </Button>
+     
     </SafeAreaView>
   );
 }
 
 
 
-export default App;
+export default WLC;

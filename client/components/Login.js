@@ -7,20 +7,21 @@ import { useNavigation } from '@react-navigation/native';
 const Login = ({ navigation }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  
-  console.log(email,password);
+  const [error, setError] = useState(null);
+
   const handleSubmit = async () => {
     try {
       const response = await axios.post(
-        "http://localhost:3000/api/auth/login",
+        "http://192.168.103.25:3000/api/auth/login",
         { Email: email, Password: password }
-        
       );
-       
       
-    } catch (error) {
-      throw error
-      console.log(error);
+     
+      navigation.navigate('wlc'); 
+
+    } catch (error) {            
+        console.log(error);  
+        setError(error.message);    
     }
   };
 
@@ -46,12 +47,12 @@ const Login = ({ navigation }) => {
           onChangeText={setPassword}
         />
       </View>
+      {error && <Text style={styles.errorText}>{error}</Text>}
       <Button style={styles.button} mode="contained" onPress={handleSubmit}>
         Login
       </Button>
-      <TouchableOpacity
-       onPress={navigateToUserAccount}
-      >
+      <TouchableOpacity onPress={navigateToUserAccount}>
+     
         <Text style={styles.createAccount}>Don't have an account? Create one</Text>
       </TouchableOpacity>
     </View>
@@ -69,6 +70,10 @@ const styles = StyleSheet.create({
     width: 150,
     height: 150,
     marginBottom: 30,
+  },
+  error: {
+    color: 'red',
+    marginBottom: 10,
   },
   inputContainer: {
     marginBottom: 20,
@@ -95,6 +100,10 @@ const styles = StyleSheet.create({
     color: '#dba617',
     fontWeight: 'bold',
     fontSize: 16,
+  },
+  errorText: {
+    color: 'red',
+    marginBottom: 10,
   },
 });
 

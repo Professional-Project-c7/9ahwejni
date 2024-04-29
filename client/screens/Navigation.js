@@ -6,27 +6,27 @@ import SignCofee from '../components/SignCofee';
 import Login from '../components/Login';
 import SignACC from '../components/Signacc';
 import Start from '../components/start';
-import AllCoffeShops from '../components/AllCoffeShops';
-import MapCoffe from '../components/MapCoffe';
+import WLC from '../components/wlc';
+import ProductList from '../components/ProductList';
+
 const Stack = createNativeStackNavigator();
 
-function NAV() {
+function NAVSTART() {
   return (
 
     <NavigationContainer>
       <Stack.Navigator>
-
-        <Stack.Screen name="MapCoffe" component={MapCoffe} />
-        <Stack.Screen name="AllCoffeShops" component={AllCoffeShops} />
-      <Stack.Screen name="Home" component={Start}  />
-      <Stack.Screen name="Login" component={Login} />
-        <Stack.Screen name="UserSignUp" component={SignUser} />
-        <Stack.Screen name="CoffeeShopSignUp" component={SignCofee} />
-        <Stack.Screen name="UserAccount" component={SignACC} />
+      <Stack.Screen name="Start" component={Start}  options={{ headerShown: false }} />
+      <Stack.Screen name="Login" component={Login} options={{ headerShown: false }} />
+        <Stack.Screen name="UserSignUp" component={SignUser} options={{ headerShown: false }} />
+        <Stack.Screen name="CoffeeShopSignUp" component={SignCofee} options={{ headerShown: false }} />
+        <Stack.Screen name="UserAccount" component={SignACC} options={{ headerShown: false }} />
+        <Stack.Screen name="wlc" component={WLC} options={{ headerShown: false }} />
+        <Stack.Screen name="ProductList" component={ProductList} options={{ headerShown: false }} />
 
       </Stack.Navigator>
     </NavigationContainer>
   );
 }
 
-export default NAV;
+export default NAVSTART;

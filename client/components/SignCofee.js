@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { StyleSheet, Text, View, TextInput, TouchableOpacity, Image } from 'react-native';
+import { StyleSheet, Text, View, TextInput,SafeAreaView, TouchableOpacity, Image ,ScrollView  } from 'react-native';
 import { Button } from 'react-native-paper';
 import axios from 'axios';
 
@@ -26,12 +26,10 @@ const SignCofee = ({ navigation }) => {
       };
     
       const response = await axios.post(
-        "http://localhost:3000/api/auth/register",
+        "http://192.168.103.25:3000/api/auth/register",
         body
       );
-      
-     
-     
+       
     } catch (error) {
       console.log(error);
      
@@ -42,19 +40,17 @@ const SignCofee = ({ navigation }) => {
     navigation.navigate('Login'); 
   };
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Sign Up</Text>
-      
-      <TouchableOpacity
-        style={styles.profileImagePlaceholder}
-        onPress={() => {
-         
-        }}
-      >
-      
-      </TouchableOpacity>
+    <SafeAreaView >
+    <ScrollView  >
+    
 
+      
+      
+
+      <View style={styles.container}>
+      <Image source={require('./../image/logo.png')} style={styles.logo} />
       <View style={styles.inputContainer}>
+
         <TextInput
           style={styles.input}
           placeholder="First Name"
@@ -74,6 +70,7 @@ const SignCofee = ({ navigation }) => {
           onChangeText={setEmail}
           autoCapitalize="none"
           keyboardType="email-address"
+        
         />
         <TextInput
           style={styles.input}
@@ -105,7 +102,9 @@ const SignCofee = ({ navigation }) => {
    >
      <Text style={styles.createAccount}>do you  have an account? </Text>
    </TouchableOpacity>
-    </View>
+   </View>
+    </ScrollView>
+    </SafeAreaView>
   );
 };
 
@@ -116,10 +115,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  createAccount: {
-    color: '#dba617',
-    fontWeight: 'bold',
-    fontSize: 16,
+  logo: {
+    width: 200,
+    height: 200,
+    marginBottom: 50,
   },
   title: {
     fontSize: 24,
@@ -148,7 +147,15 @@ const styles = StyleSheet.create({
   },
   inputContainer: {
     marginBottom: 20,
-    width: '80%',
+    width: '100%',
+  
+  },
+  
+  createAccount: {
+    color: '#dba617',
+    fontWeight: 'bold',
+    fontSize: 16,
+ 
   },
   input: {
     height: 50,
@@ -166,6 +173,10 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     marginBottom: 20,
     borderRadius: 25,
+  },
+  error: {
+    color: 'red',
+    marginBottom: 10,
   },
 });
 
