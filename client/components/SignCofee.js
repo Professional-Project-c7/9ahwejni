@@ -29,9 +29,7 @@ const SignCofee = ({ navigation }) => {
         "http://localhost:3000/api/auth/register",
         body
       );
-      
-     
-     
+       
     } catch (error) {
       console.log(error);
      

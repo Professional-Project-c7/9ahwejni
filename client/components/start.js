@@ -41,7 +41,7 @@ function Start({navigation}) {
   useEffect(() => {
     setTimeout(() => {
       setIsLoading(false);
-    }, 3000); // Adjust the timeout as needed
+    }, 5000); 
   }, []);
   const useNavigation = () => {
     navigation.navigate('UserProfile'); 
