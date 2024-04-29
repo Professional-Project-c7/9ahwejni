@@ -6,6 +6,7 @@ import SignCofee from '../components/SignCofee';
 import Login from '../components/Login';
 import SignACC from '../components/Signacc';
 import Start from '../components/start';
+import WLC from '../components/wlc';
 const Stack = createNativeStackNavigator();
 
 function NAVSTART() {
@@ -18,6 +19,7 @@ function NAVSTART() {
         <Stack.Screen name="UserSignUp" component={SignUser} options={{ headerShown: false }} />
         <Stack.Screen name="CoffeeShopSignUp" component={SignCofee} options={{ headerShown: false }} />
         <Stack.Screen name="UserAccount" component={SignACC} options={{ headerShown: false }} />
+        <Stack.Screen name="wlc" component={WLC} options={{ headerShown: false }} />
 
       </Stack.Navigator>
     </NavigationContainer>

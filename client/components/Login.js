@@ -17,7 +17,7 @@ const Login = ({ navigation }) => {
       );
       
      
-      navigation.navigate('Start'); 
+      navigation.navigate('wlc'); 
 
     } catch (error) {            
         console.log(error);      
