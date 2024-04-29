@@ -1,13 +1,14 @@
 
 const express = require("express");
 const router = express.Router();
-const {getAll,addOne,updateOne,deleteOne}=require('../controller/UserController')
+const {getAll,addOne,updateOne,deleteOne,selectOne}=require('../controller/UserController')
 
 
 
 
 
 router.get("/",getAll);
+router.get("/:FirstName",selectOne);
 router.post("/",addOne);
 router.patch("/:id",updateOne);
 router.delete("/:id",deleteOne);

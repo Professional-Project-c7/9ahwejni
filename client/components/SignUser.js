@@ -28,7 +28,7 @@ const SignUser = ({navigation}) => {
      
 
       const response = await axios.post(
-        "http://localhost:3000/api/auth/register",
+        "http://192.168.11.13:3000/api/auth/register",
         body
       );
      
