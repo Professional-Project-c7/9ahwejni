@@ -26,7 +26,7 @@ const SignCofee = ({ navigation }) => {
       };
     
       const response = await axios.post(
-        "http://localhost:3000/api/auth/register",
+        "http://192.168.103.25:3000/api/auth/register",
         body
       );
        
