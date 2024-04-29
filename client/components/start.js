@@ -1,19 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { SafeAreaView, StyleSheet,  Text, TouchableOpacity, useColorScheme, View, ImageBackground,Button, ActivityIndicator } from 'react-native';
+import { SafeAreaView, StyleSheet, Text, TouchableOpacity, useColorScheme, View, ImageBackground, ActivityIndicator } from 'react-native';
 import { Colors } from 'react-native/Libraries/NewAppScreen';
 import { useNavigation } from '@react-navigation/native';
 
 import { RefreshControl } from "react-native";
 
-  
 
-const CustomButton = ({ title, onPress }) => {
-  return (
-    <TouchableOpacity style={styles.button} onPress={onPress}>
-      <Text style={styles.buttonText}>{title}</Text>
-    </TouchableOpacity>
-  );
-};
+
 
 function Section({ title }) {
   const isDarkMode = useColorScheme() === 'dark';
@@ -41,10 +34,10 @@ function Start({navigation}) {
   useEffect(() => {
     setTimeout(() => {
       setIsLoading(false);
-    }, 5000); 
+    }, 3000); // Adjust the timeout as needed
   }, []);
-  const useNavigation = () => {
-    navigation.navigate('UserProfile'); 
+  const navigateToUserAccount = () => {
+    navigation.navigate('UserAccount'); 
   };
 
   return (
@@ -58,8 +51,8 @@ function Start({navigation}) {
             <ActivityIndicator size="large" color="#c1a01d" />
           </View>
         ) : (
-          <TouchableOpacity style={styles.button}   onPress={() => navigation.navigate('login')}>
-            <Text style={styles.buttonText}> Get </Text> 
+          <TouchableOpacity style={styles.button}   onPress={navigateToUserAccount}>
+            <Text style={styles.buttonText}> Get started</Text>
           </TouchableOpacity>
         )}
       </ImageBackground>
@@ -96,7 +89,7 @@ const styles = StyleSheet.create({
   },
 
   buttonText: {
-    backgroundColor: '#B08149', 
+    color: 'black',
     fontSize: 18,
     fontWeight: 'bold',
     marginTop: 10
@@ -111,9 +104,3 @@ const styles = StyleSheet.create({
 });
 
 export default Start;
-
-
-
-
-
-
