@@ -12,12 +12,12 @@ const Login = ({ navigation }) => {
   const handleSubmit = async () => {
     try {
       const response = await axios.post(
-        "http://localhost:3000/api/auth/login",
+        "http://192.168.11.13:3000/api/auth/login",
         { Email: email, Password: password }
       );
       
      
-      navigation.navigate('Start'); 
+      navigation.navigate('UserProfile', { firstName: name });
 
     } catch (error) {            
         console.log(error);  
@@ -26,7 +26,7 @@ const Login = ({ navigation }) => {
   };
 
   const navigateToUserAccount = () => {
-    navigation.navigate('UserAccount'); 
+    navigation.navigate('WLC'); 
   };
 
   return (

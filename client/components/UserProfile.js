@@ -2,34 +2,40 @@ import React, { useState ,useEffect} from 'react';
 import { View, Text, TextInput, StyleSheet,ScrollView, Button,Image } from 'react-native';
 import axios from 'axios';
 
-const UserProfile = ({navigation}) => {
-  const [FirstName, setFirstName] = useState('');
+const UserProfile = ({ route }) => {
+  const firstName  =  route?.params;
+  const [FirstName, setFirstName] = useState(firstName || '');
   const [profile, setProfile] = useState({
+
+    Password: 'Password',
+    LastName: 'LastName',
+    Adresse:"Adresse",
     
     imageUrl2: 'https://w0.peakpx.com/wallpaper/821/616/HD-wallpaper-coffee-beans-brown-cappuccino-cofee-beans-latte.jpg',
    imageUrl: 'https://b.fssta.com/uploads/application/soccer/headshots/713.png', // Provided image URL
    
   });
 
-  const {  imageUrl, imageUrl2 } = profile;
+  const {LastName ,Password, imageUrl,Adresse, imageUrl2 } = profile;
 
   const handleSave = () => {
     console.log('Changes saved');
   };
  
+  
+ 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get(`http://192.168.11.13:3000/api/user/${FirstName}`);
-        const fetchedName = response.data.FirstName; // Assuming the API returns an object with a 'name' property
-        setFirstName(fetchedName);
+        const response = await axios.get(`http://192.168.11.13:3000/api/user/${firstName}`);
+        // Process response data
       } catch (error) {
         console.error('Error fetching data:', error);
       }
     };
-
     fetchData();
-  }, []);
+  }, [firstName]); // Include 'id' in the dependency array
+  
 
   return (
    <ScrollView>
@@ -37,67 +43,46 @@ const UserProfile = ({navigation}) => {
   
     <View style={styles.container}> 
   
-      <Text style={styles.heading}>oo</Text> 
-      <View style={styles.profileInfo}>
-  <Image source={{ uri: imageUrl }} style={styles.image} />
-  <Image source={{ uri: imageUrl2 }} style={styles.image2} />
-</View>
-      <View style={styles.profileInfo}>
+ <Text style={styles.heading}>Profile</Text> 
+  <View style={styles.profileInfo}>
+    <Image source={{ uri: imageUrl }} style={styles.image} />
+      <Image source={{ uri: imageUrl2 }} style={styles.image2} />
+        </View>
+          <View style={styles.profileInfo}>
       
         <Text style={[styles.label, {marginTop: 100}]}>{FirstName}</Text>
         <TextInput
           style={styles.input}
           value={FirstName}
-          onChangeText={(value) => setFirstName({ ...profile, name: value })}
+          onChangeText={(value) => setFirstName({ ...profile, FirstName: value })}
           placeholder="Enter your name"
         />
-        <Text style={styles.label}>Email:</Text>
-        {/* <TextInput
+        <Text style={styles.label}>LastName:</Text>
+        <TextInput
           style={styles.input}
-          value={email}
-          onChangeText={(value) => setProfile({ ...profile, email: value })}
-          placeholder="Enter your email"
-        /> */}
+          value={LastName}
+          onChangeText={(value) => setProfile({ ...profile, Email: value })}
+          placeholder="Enter your Email"
+        />
         <Text style={styles.label}>Password:</Text>
-        {/* <TextInput
+        <TextInput
           style={styles.input}
-          value={bio}
+          value={Password}
           onChangeText={(value) => setProfile({ ...profile, bio: value })}
           placeholder ="Enter your password"
           secureTextEntry={true}
-        /> */}
-        <Text style={styles.label}>Birthday:</Text>
-           {/* <TextInput
+        />
+        <Text style={styles.label}>Adresse:</Text>
+           <TextInput
           style={styles.input}
-          value={birthday}
+          value={Adresse}
           onChangeText={(value) => setProfile({ ...profile, birthday: value })}
           placeholder="DD/MM/YY"
-        /> */}
-         <Text style={styles.label}>Number:</Text>
-           {/* <TextInput
-          style={styles.input}
-          value={birthday}
-          onChangeText={(value) => setProfile({ ...profile, Number: value })}
-          placeholder="Number..."
-        /> */}
-          <Text style={styles.label}>Gendre:</Text>
+        />
+           
       <View style={{ flexDirection: 'row' }}>
-  {/* <TextInput
-    style={[styles.input1, {marginRight: 69}]}
-    value={birthday}
-    onChangeText={(value) => setProfile({...profile, Number: value })}
-    placeholder="Number..."
-  />
-  <TextInput
-    style={styles.input1}
-    value={birthday}
-    onChangeText={(value) => setProfile({...profile, Number: value })}
-    placeholder="Number..."
-  /> */}
-</View>
-         
+      </View> 
       </View>
-    
       <Button icon="camera" buttonColor='black' mode="contained" title="Save Changes" onPress={handleSave} />
    
       </View>
