@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 import { SafeAreaView, ScrollView, StyleSheet, View, Image, TouchableOpacity  } from 'react-native';
 import { Card, Title, Text  } from 'react-native-paper';
+import { useSelector, useDispatch } from 'react-redux';
+import { fetchProducts } from '../redux/products/productSlice';
 import img from '../image/circle.png';
-
-
+import heart from '../image/favorite.png'
 const HoverableIconButton = ({ onPress }) => {
   return (
     <TouchableOpacity
@@ -43,7 +44,16 @@ const productsData = [
   }
   // Add more products as needed
 ];
-
+// const ProductList = () => {
+//   const dispatch = useDispatch();
+//   const products = useSelector((state) => state.products.items);
+//   const status = useSelector((state) => state.products.status);
+  
+//   useEffect(() => {
+//     if (status === 'idle') {
+//       dispatch(fetchProducts());
+//     }
+//   }, [dispatch, status]);
 const ProductList = () => {
   return (
     <SafeAreaView style={styles.container}>
@@ -125,8 +135,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   productImage: {
-    width: 120,
-    height: 120,
+    width: 133,
+    height: 133,
     borderRadius: 0,
     marginRight: 8,
   },
@@ -151,10 +161,10 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     // backgroundColor: '#6f7e47',
     padding: 8,
-    justifyContent: 'center', // Center the "+" vertically
-    alignItems: 'center', // Center the "+" horizontally
-    width: 50, // Specify a width for your add button
-    height: 50, // Specify a height for your add button
+    justifyContent: 'center', 
+    alignItems: 'center', 
+    width: 50, 
+    height: 50, 
   },
   addLabel: {
     color: 'white', // Set the label text color
@@ -162,8 +172,8 @@ const styles = StyleSheet.create({
     fontWeight: 'bold', // Optional: if you want the "+" to be bold
   },
   addIcon: {
-    width: 44, // Define a width for the icon
-    height: 44, // Define a height for the icon
+    width: 44, 
+    height: 44, 
   },
 });
 
