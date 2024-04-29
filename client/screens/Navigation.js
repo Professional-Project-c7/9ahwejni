@@ -6,8 +6,11 @@ import SignCofee from '../components/SignCofee';
 import Login from '../components/Login';
 import SignACC from '../components/Signacc';
 import Start from '../components/start';
-import WLC from '../components/wlc';
 import ProductList from '../components/ProductList';
+import Start2 from '../components/Start2';
+import Start3 from '../components/start3';
+import Start4 from '../components/start4';
+import UserProfile from '../components/UserProfile';
 
 const Stack = createNativeStackNavigator();
 
@@ -21,9 +24,13 @@ function NAVSTART() {
         <Stack.Screen name="UserSignUp" component={SignUser} options={{ headerShown: false }} />
         <Stack.Screen name="CoffeeShopSignUp" component={SignCofee} options={{ headerShown: false }} />
         <Stack.Screen name="UserAccount" component={SignACC} options={{ headerShown: false }} />
-        <Stack.Screen name="wlc" component={WLC} options={{ headerShown: false }} />
         <Stack.Screen name="ProductList" component={ProductList} options={{ headerShown: false }} />
+        <Stack.Screen name="UserProfile" component={UserProfile} options={{ headerShown: false }} />
 
+
+        <Stack.Screen name="st2" component={Start2} options={{ headerShown: false }} />
+        <Stack.Screen name="st3" component={Start3} options={{ headerShown: false }} />
+        <Stack.Screen name="st4" component={Start4} options={{ headerShown: false }} />
       </Stack.Navigator>
     </NavigationContainer>
   );
