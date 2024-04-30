@@ -27,10 +27,10 @@ async function connectionTest (){
 
   db.User.hasMany(db.Products);
   db.Products.belongsTo(db.User);
-  db.Coffee.hasMany(db.Products);
-  db.Products.belongsTo(db.Coffee)
-  db.Coffee.hasMany(db.User);
-  db.User.belongsTo(db.Coffee)
+  // db.Coffee.hasMany(db.Products);
+  // db.Products.belongsTo(db.Coffee)
+  // db.Coffee.hasMany(db.User);
+  // db.User.belongsTo(db.Coffee)
 
 
   
