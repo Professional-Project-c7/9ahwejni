@@ -3,7 +3,8 @@ import { View, Text, TextInput, Button, ScrollView } from 'react-native';
 import io from 'socket.io-client';
 import axios from 'axios';
 
-const ENDPOINT = 'http://${process.env.ipAdress}:4000';
+const ENDPOINT = 
+`http://${process.env.ipAdress}:4000`
 
 function Chat() {
   const [messages, setMessages] = useState([]);
@@ -14,7 +15,8 @@ function Chat() {
     const socket = io(ENDPOINT);
     setSocket(socket);
 
-    axios.get('http://${process.env.ipAdress}:3000/api/messages')
+    axios.get(`http://${process.env.ipAdress}:3000/api/messages`
+      )
       .then(response => {
         setMessages(response.data);
       })
