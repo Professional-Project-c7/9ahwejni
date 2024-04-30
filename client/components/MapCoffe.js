@@ -7,7 +7,7 @@ import Geocoder from 'react-native-geocoding';
 const GOOGLE_MAPS_API_KEY = 'AIzaSyDYm4cfAj3Lrk6HqMJZHGeB1JevFbEC55o'; // Replace with your actual API key
 Geocoder.init('AIzaSyDYm4cfAj3Lrk6HqMJZHGeB1JevFbEC55o');
 
-export default function App() {
+export default function MapCoffe() {
   const [region, setRegion] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [coffeeShops, setCoffeeShops] = useState([]);
