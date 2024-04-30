@@ -13,7 +13,7 @@ import Start3 from '../components/start3';
 import Start4 from '../components/start4';
 import UserProfile from '../components/UserProfile';
 import HomePage from '../components/homepage';
-import Map from '../components/MapCoffe'
+import AllCofe from '../components/AllCoffeShops'
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 
@@ -40,7 +40,7 @@ function TabNavigator() {
   return (
     <Tab.Navigator>
       <Tab.Screen name="homePage" component={HomePage} options={{ headerShown: false }} />
-      <Tab.Screen name="Map" component={Map} options={{ headerShown: false }} />
+      <Tab.Screen name="AllCofe" component={AllCofe} options={{ headerShown: false }} />
       <Tab.Screen name="UserProfile" component={UserProfile} options={{ headerShown: false }} />
     </Tab.Navigator>
   );
