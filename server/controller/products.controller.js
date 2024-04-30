@@ -10,7 +10,7 @@ selectAll :async function(req,res){
         res.status(200).send(product)
         
     } catch (error) {
-        throw error
+       console.log(error)
         
     }
 
@@ -31,7 +31,7 @@ addOne:async function(req,res){
     
     res.status(201).send(product)
     } catch (error) {
-        throw error
+       console.log(error)
     }
     },
 deleteOne:async (req, res) => {
@@ -42,7 +42,7 @@ deleteOne:async (req, res) => {
 
     res.json(product);
     } catch (error) {
-    throw error
+   console.log(error)
     }
     },
 UpdateOne :async (req, res) => {
@@ -53,7 +53,7 @@ UpdateOne :async (req, res) => {
 
     res.status(201).send(product)
     } catch (error) {
-    throw error
+   console.log(error)
 } 
 },
 
@@ -63,7 +63,7 @@ UpdateOne :async (req, res) => {
         const project = await db.Products.findAll({ where: { id: findId } })
         res.send(project)
     }
-    catch { (error)=> { throw error} }
+    catch { (error)=> {console.log(error)} }
  },
  SelectByName:async function(req,res){
     try { 
@@ -71,7 +71,7 @@ UpdateOne :async (req, res) => {
         const project = await db.Products.findAll({ where: { name: find } })
         res.send(project)
     }
-    catch { (error)=> { throw error} }
+    catch { (error)=> {console.log(error)} }
  },
  SelectByCategory:async function(req,res){
  try { 
@@ -79,7 +79,7 @@ UpdateOne :async (req, res) => {
         const project = await db.Products.findAll({ where: {  category :findcateg} })
         res.send(project)
     }
-    catch { (error)=> { throw error} }
+    catch { (error)=> {console.log(error)} }
  },
  myProducts:async function(req,res){
     try {
@@ -87,7 +87,7 @@ UpdateOne :async (req, res) => {
         const project = await db.Products.findAll()
         res.send(project)
         } catch (error) {
-        throw error
+       console.log(error)
     } 
 
  }
