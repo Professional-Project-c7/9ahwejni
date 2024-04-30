@@ -5,7 +5,7 @@ import { useNavigation } from '@react-navigation/native';
 function Start4({ navigation }) {
 
   const navigateToUserAccount = () => {
-    navigation.navigate('homePage');
+    navigation.navigate('Tabs');
   };
   
   return (

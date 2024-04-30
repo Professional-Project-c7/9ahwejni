@@ -6,7 +6,7 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 function Start3({ navigation }) {
 
   const navigateToUserAccount = () => {
-    navigation.navigate('homePage');
+    navigation.navigate('Tabs');
   };
   
   const navigateToUserAccount2 = () => {

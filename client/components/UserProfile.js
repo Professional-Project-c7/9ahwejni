@@ -1,101 +1,117 @@
-import React, { useState } from 'react';
-import { View, Text, TextInput, StyleSheet,ScrollView, Image } from 'react-native';
-//  import MapView, { Marker } from 'react-native-maps';
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons' 
-import { IconButton ,Button} from 'react-native-paper';
+import React, { useState ,useEffect} from 'react';
+import { View, Text, TextInput, StyleSheet,ScrollView, Button,Image } from 'react-native';
+import axios from 'axios';
 
 const UserProfile = () => {
+ 
+  const [imageUrl, setImageUrl] = useState('https://b.fssta.com/uploads/application/soccer/headshots/713.png');
+  const [imageUrl2, setImageUrl2] = useState('https://w0.peakpx.com/wallpaper/821/616/HD-wallpaper-coffee-beans-brown-cappuccino-cofee-beans-latte.jpg')
   const [profile, setProfile] = useState({
-    name: '',
-    email: '', 
-    password: '', 
-    birthday: '',
-    Number:'',
-    imageUrl2: 'https://w0.peakpx.com/wallpaper/821/616/HD-wallpaper-coffee-beans-brown-cappuccino-cofee-beans-latte.jpg',
-   imageUrl: 'https://b.fssta.com/uploads/application/soccer/headshots/713.png', // Provided image URL
-    location: {
-      latitude: 37.78825,
-      longitude: -122.4324,
-    },
+    FirstName:'',
+    Password: '',
+    LastName: '',
+    Adresse:"",
+   
   });
 
-  const { name, email, bio, imageUrl, birthday, imageUrl2 } = profile;
+  // const {LastName ,Password, imageUrl,Adresse, imageUrl2 } = profile;
 
-  const handleSave = () => {
-    console.log('Changes saved');
+  
+  useEffect(() => {
+    // Fetch user profile data when the component mounts
+    fetchUserProfile();
+  }, []);
+
+  const fetchUserProfile = async () => {
+    try {
+      const response = await axios.get('http://192.168.11.60:3000/api/user/1'); // Assuming user ID is 1
+      const userData = response.data;
+      console.log(response.data);
+     
+
+      setProfile(userData);
+    } catch (error) {
+      console.error('Error fetching user profile:', error);
+    }
   };
+  const handleSave = async () => {
+    try {
+      await axios.patch('http://192.168.11.60:3000/api/user/1', profile);
+      console.log('Changes saved');
+    } catch (error) {
+      console.error('Error updating user profile:', error);
+    }
+  };
+  const handleImageChange = () => {
+    // Example: change image URLs based on user input or any condition
+    setImageUrl('NEW_IMAGE_URL1');
+    setImageUrl2('NEW_IMAGE_URL2');
+  };
+  
+ 
+ 
+  
 
   return (
    <ScrollView>
-    
-  
-    <View style={styles.container}>
    
-      <Text style={styles.heading}>Profile</Text> 
-      <View style={styles.profileInfo}>
+  
+    <View style={styles.container}> 
+  
+ <Text style={styles.heading}>Profile</Text> 
+  <View style={styles.profileInfo}>
   <Image source={{ uri: imageUrl }} style={styles.image} />
-  <Image source={{ uri: imageUrl2 }} style={styles.image2} />
-</View>
-      <View style={styles.profileInfo}>
+      <Image source={{ uri: imageUrl2 }} style={styles.image2} />
+        </View>
+        <Text style={styles.Name}>{profile.FirstName}</Text>
+          <View style={styles.profileInfo}>
       
-        <Text style={[styles.label, {marginTop: 100}]}>Name:</Text>
+        <Text style={[styles.label, {marginTop: 100}]}>FirstName:</Text>
         <TextInput
           style={styles.input}
-          value={name}
-          onChangeText={(value) => setProfile({ ...profile, name: value })}
+          value={profile.FirstName}
+          onChangeText={(value) => setProfile({ ...profile, FirstName: value })}
           placeholder="Enter your name"
         />
-        <Text style={styles.label}>Email:</Text>
+        <Text style={styles.label}>LastName:</Text>
         <TextInput
           style={styles.input}
-          value={email}
-          onChangeText={(value) => setProfile({ ...profile, email: value })}
-          placeholder="Enter your email"
+          value={profile.LastName}
+          onChangeText={(value) => setProfile({ ...profile, Email: value })}
+          placeholder="Enter your Email"
         />
         <Text style={styles.label}>Password:</Text>
         <TextInput
           style={styles.input}
-          value={bio}
+          value={profile.Password}
           onChangeText={(value) => setProfile({ ...profile, bio: value })}
           placeholder ="Enter your password"
           secureTextEntry={true}
         />
-        <Text style={styles.label}>Birthday:</Text>
+          <Text style={styles.label}>Config Password:</Text>
+        <TextInput
+          style={styles.input}
+          value={profile.Password}
+          onChangeText={(value) => setProfile({ ...profile, bio: value })}
+          placeholder ="Enter your password"
+          secureTextEntry={true}
+        />
+        <Text style={styles.label}>Adresse:</Text>
            <TextInput
           style={styles.input}
-          value={birthday}
+          value={profile.Adresse}
           onChangeText={(value) => setProfile({ ...profile, birthday: value })}
-          placeholder="DD/MM/YY"
+          placeholder="City"
         />
-         <Text style={styles.label}>Number:</Text>
-           <TextInput
-          style={styles.input}
-          value={birthday}
-          onChangeText={(value) => setProfile({ ...profile, Number: value })}
-          placeholder="Number..."
-        />
-          <Text style={styles.label}>Gendre:</Text>
+           
       <View style={{ flexDirection: 'row' }}>
-  <TextInput
-    style={[styles.input1, {marginRight: 69}]}
-    value={birthday}
-    onChangeText={(value) => setProfile({...profile, Number: value })}
-    placeholder="Number..."
-  />
-  <TextInput
-    style={styles.input1}
-    value={birthday}
-    onChangeText={(value) => setProfile({...profile, Number: value })}
-    placeholder="Number..."
-  />
-</View>
-         
+      </View> 
       </View>
-    
       <Button icon="camera" buttonColor='black' mode="contained" title="Save Changes" onPress={handleSave} />
-     
+   
       </View>
       </ScrollView>
+      
      
   );
 };
@@ -147,7 +163,15 @@ const styles = StyleSheet.create({
   label: {
     fontWeight: 'bold',
     marginBottom: 5,
-    color: 'black'
+    color: 'black',
+    marginRight: 290,
+  },
+  Name: {
+    fontWeight: 'bold',
+    marginBottom: 5,
+    color: 'black',
+    fontSize:30,
+   textAlign:"center"
   },
   input: {
     borderWidth: 1,
@@ -157,7 +181,8 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     width: '100%',
     color:'black',
-    placeholder: 'black'
+    placeholder: 'black',
+    marginTop: 10,
   },
   input1: {
     borderWidth: 1,
