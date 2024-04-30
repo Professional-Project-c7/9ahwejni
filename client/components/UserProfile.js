@@ -4,6 +4,14 @@ import axios from 'axios';
 import { launchImageLibrary } from 'react-native-image-picker';
 import { Cloudinary } from 'cloudinary-react-native';
 import Icon from 'react-native-vector-icons/FontAwesome'
+
+
+// import {Cloudinary} from "@cloudinary/url-gen";
+          
+
+  
+
+
 const UserProfile = () => {
   const [imageUrl, setImageUrl] = useState(imageUrl);
   const [profile, setProfile] = useState({
@@ -12,7 +20,8 @@ const UserProfile = () => {
     LastName: '',
     Adresse: '',
   });
-
+ 
+ 
   useEffect(() => {
     fetchUserProfile();
   }, []);
@@ -50,6 +59,7 @@ const UserProfile = () => {
       }
     });
   };
+
   return (
     <ScrollView>
       <View style={styles.container}>
