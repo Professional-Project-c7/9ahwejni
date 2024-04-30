@@ -26,7 +26,9 @@ const productSlice = createSlice({
   initialState: {
     items: [],
     status: 'idle',
-    error: null
+    error: null,
+    favorites: {}
+
   },
   reducers: {},
   extraReducers: (builder) => {
