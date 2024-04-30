@@ -1,16 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import { SafeAreaView } from 'react-native';
-// import NAVSTART from './screens/Navigation';
+import NAVSTART from './screens/Navigation';
 // import MapCoffe from './components/MapCoffe';
 import HomePage from './components/homepage';
 import MenuItems from './components/menuitems';
+import ProductList from './components/ProductList';
 function App() {
    
  
   return (
     <SafeAreaView style={{ flex: 1 }}>
     
-    <HomePage/>
+    <NAVSTART/>
 
     </SafeAreaView>
   );
