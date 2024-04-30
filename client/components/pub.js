@@ -59,7 +59,7 @@ const HomeCarousel = () => {
           <Image
             key={key}
             source={{ uri: `${value.url}` }}
-            style={{ width: dimension?.width, height: 200, resizeMode: 'cover',borderRadius:20 }}
+            style={{ width: dimension?.width, height: 200, resizeMode: 'cover' }}
             PlaceholderContent={<ActivityIndicator />}
           />
         ))}
