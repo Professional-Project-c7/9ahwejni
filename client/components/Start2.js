@@ -1,12 +1,12 @@
-
 import React from 'react';
 import { SafeAreaView, StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+
 function Start2({ navigation }) {
 
   const navigateToUserAccount = () => {
-    navigation.navigate('UserProfile');
+    navigation.navigate('homePage');
   };
   
   const navigateToUserAccount2 = () => {
@@ -17,20 +17,19 @@ function Start2({ navigation }) {
     <SafeAreaView style={styles.container}>
       <View style={styles.imageContainer}>
         <Image
-          source={require('../image/1.png')}
+          source={require('../image/logo.png')}
           style={styles.image}
           resizeMode="contain"
         />
       </View>
       <View style={styles.content}>
         <Text style={styles.title}>Easy access from your smartphone</Text>
-        {/* <Text style={styles.description}>Description</Text> */}
         <View style={styles.buttonContainer}>
-          <TouchableOpacity style={styles.button}>
-            <Text style={styles.buttonText}    onPress={navigateToUserAccount} >   skip</Text>
+          <TouchableOpacity style={styles.button} onPress={navigateToUserAccount}>
+            <Text style={styles.buttonText}>Skip</Text>
           </TouchableOpacity>
           <TouchableOpacity style={styles.button} onPress={navigateToUserAccount2}>
-          <Icon name="arrow-forward" size={24} color="black" />
+            <Icon name="arrow-forward" size={36} color="black" />
           </TouchableOpacity>
         </View>
       </View>
@@ -47,7 +46,6 @@ const styles = StyleSheet.create({
   imageContainer: {
     flex: 1,
     width: '100%',
- 
   },
   content: {
     flex: 1,
@@ -62,28 +60,27 @@ const styles = StyleSheet.create({
     aspectRatio: 1, // Adjust aspect ratio if needed
   },
   title: {
-    fontSize: 24,
+    fontSize: 30, // Increased font size
     fontWeight: 'bold',
     marginBottom: 10,
-  },
-  description: {
-    fontSize: 18,
-    marginBottom: 20,
+    // color: '#dba617',
+
   },
   buttonContainer: {
+    marginTop:30,
     flexDirection: 'row',
     justifyContent: 'space-between',
     width: '100%',
   },
   button: {
-    // backgroundColor: 'blue',
     paddingVertical: 10,
     paddingHorizontal: 20,
     borderRadius: 5,
   },
   buttonText: {
-    color: 'black',
-    fontSize: 16,
+   
+
+    fontSize: 20, // Increased font size
   },
 });
 
