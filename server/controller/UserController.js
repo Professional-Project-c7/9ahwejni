@@ -29,7 +29,7 @@ module.exports = {
      },
      selectOne: async function(req, res) {
         try {
-            const user = await db.User.findOne({ where: { firstName: req.params.firstName } })
+            const user = await db.User.findOne({ where: { id: req.params.id } })
                 res.status(200).json(user);
         
         } catch (error) {
@@ -58,7 +58,7 @@ module.exports = {
                
                 Email:req.body.Email,
                 password:req.body.password,
-                PhoneNumber:req.body.PhoneNumber,
+                Address:req.body.Address,
                 
                 
             },{

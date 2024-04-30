@@ -2,72 +2,96 @@ import React, { useState ,useEffect} from 'react';
 import { View, Text, TextInput, StyleSheet,ScrollView, Button,Image } from 'react-native';
 import axios from 'axios';
 
-const UserProfile = ({ route }) => {
-  const firstName  =  route?.params;
-  const [FirstName, setFirstName] = useState(firstName || '');
+const UserProfile = () => {
+ 
+  const [imageUrl, setImageUrl] = useState('https://b.fssta.com/uploads/application/soccer/headshots/713.png');
+  const [imageUrl2, setImageUrl2] = useState('https://w0.peakpx.com/wallpaper/821/616/HD-wallpaper-coffee-beans-brown-cappuccino-cofee-beans-latte.jpg')
   const [profile, setProfile] = useState({
-
-    Password: 'Password',
-    LastName: 'LastName',
-    Adresse:"Adresse",
-    
-    imageUrl2: 'https://w0.peakpx.com/wallpaper/821/616/HD-wallpaper-coffee-beans-brown-cappuccino-cofee-beans-latte.jpg',
-   imageUrl: 'https://b.fssta.com/uploads/application/soccer/headshots/713.png', // Provided image URL
+    FirstName:'',
+    Password: '',
+    LastName: '',
+    Adresse:"",
    
   });
 
-  const {LastName ,Password, imageUrl,Adresse, imageUrl2 } = profile;
+  // const {LastName ,Password, imageUrl,Adresse, imageUrl2 } = profile;
 
-  const handleSave = () => {
-    console.log('Changes saved');
+  
+  useEffect(() => {
+    // Fetch user profile data when the component mounts
+    fetchUserProfile();
+  }, []);
+
+  const fetchUserProfile = async () => {
+    try {
+      const response = await axios.get('http://192.168.11.60:3000/api/user/1'); // Assuming user ID is 1
+      const userData = response.data;
+      console.log(response.data);
+     
+
+      setProfile(userData);
+    } catch (error) {
+      console.error('Error fetching user profile:', error);
+    }
   };
- 
+  const handleSave = async () => {
+    try {
+      await axios.patch('http://192.168.11.60:3000/api/user/1', profile);
+      console.log('Changes saved');
+    } catch (error) {
+      console.error('Error updating user profile:', error);
+    }
+  };
+  const handleImageChange = () => {
+    // Example: change image URLs based on user input or any condition
+    setImageUrl('NEW_IMAGE_URL1');
+    setImageUrl2('NEW_IMAGE_URL2');
+  };
   
  
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await axios.get(`http://192.168.11.13:3000/api/user/${firstName}`);
-        // Process response data
-      } catch (error) {
-        console.error('Error fetching data:', error);
-      }
-    };
-    fetchData();
-  }, [firstName]); // Include 'id' in the dependency array
+ 
   
 
   return (
    <ScrollView>
-    
+   
   
     <View style={styles.container}> 
   
  <Text style={styles.heading}>Profile</Text> 
   <View style={styles.profileInfo}>
-    <Image source={{ uri: imageUrl }} style={styles.image} />
+  <Image source={{ uri: imageUrl }} style={styles.image} />
       <Image source={{ uri: imageUrl2 }} style={styles.image2} />
         </View>
+        <Text style={styles.Name}>{profile.FirstName}</Text>
           <View style={styles.profileInfo}>
       
-        <Text style={[styles.label, {marginTop: 100}]}>{FirstName}</Text>
+        <Text style={[styles.label, {marginTop: 100}]}>FirstName:</Text>
         <TextInput
           style={styles.input}
-          value={FirstName}
-          onChangeText={(value) => setFirstName({ ...profile, FirstName: value })}
+          value={profile.FirstName}
+          onChangeText={(value) => setProfile({ ...profile, FirstName: value })}
           placeholder="Enter your name"
         />
         <Text style={styles.label}>LastName:</Text>
         <TextInput
           style={styles.input}
-          value={LastName}
+          value={profile.LastName}
           onChangeText={(value) => setProfile({ ...profile, Email: value })}
           placeholder="Enter your Email"
         />
         <Text style={styles.label}>Password:</Text>
         <TextInput
           style={styles.input}
-          value={Password}
+          value={profile.Password}
+          onChangeText={(value) => setProfile({ ...profile, bio: value })}
+          placeholder ="Enter your password"
+          secureTextEntry={true}
+        />
+          <Text style={styles.label}>Config Password:</Text>
+        <TextInput
+          style={styles.input}
+          value={profile.Password}
           onChangeText={(value) => setProfile({ ...profile, bio: value })}
           placeholder ="Enter your password"
           secureTextEntry={true}
@@ -75,9 +99,9 @@ const UserProfile = ({ route }) => {
         <Text style={styles.label}>Adresse:</Text>
            <TextInput
           style={styles.input}
-          value={Adresse}
+          value={profile.Adresse}
           onChangeText={(value) => setProfile({ ...profile, birthday: value })}
-          placeholder="DD/MM/YY"
+          placeholder="City"
         />
            
       <View style={{ flexDirection: 'row' }}>
@@ -139,7 +163,15 @@ const styles = StyleSheet.create({
   label: {
     fontWeight: 'bold',
     marginBottom: 5,
-    color: 'black'
+    color: 'black',
+    marginRight: 290,
+  },
+  Name: {
+    fontWeight: 'bold',
+    marginBottom: 5,
+    color: 'black',
+    fontSize:30,
+   textAlign:"center"
   },
   input: {
     borderWidth: 1,
@@ -149,7 +181,8 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     width: '100%',
     color:'black',
-    placeholder: 'black'
+    placeholder: 'black',
+    marginTop: 10,
   },
   input1: {
     borderWidth: 1,
