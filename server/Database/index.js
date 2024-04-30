@@ -1,7 +1,7 @@
 
 const mysql = require('mysql2')
 const { Sequelize ,DataTypes } = require('sequelize')
-const connection = new Sequelize('9ahwejni', 'root', 'root', {
+const connection = new Sequelize('9ahwejni', 'Amine', 'wess2004wess', {
   host: 'localhost',
   dialect: 'mysql',
   logging:false
@@ -43,7 +43,7 @@ async function connectionTest (){
 
   
 
-// // Sync the models with the database
+// Sync the models with the database
 //  connection.sync()
 //     .then(() => {
 //         console.log('Models synced with the database.')
