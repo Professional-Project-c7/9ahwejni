@@ -10,6 +10,7 @@ import Pub from "../components/pub"
 // import { useNavigation } from '@react-navigation/native';
 
 
+
 const images = [
   { id: 1, image: 'https://esquirescoffee.co.uk/wp-content/uploads/2019/07/Picture-1.pngxx_.png', title: 'coffeeshop name' },
   { id: 2, image: 'https://t4.ftcdn.net/jpg/01/16/61/93/360_F_116619399_YA611bKNOW35ffK0OiyuaOcjAgXgKBui.jpg', title: 'coffeeshop name' },
@@ -108,7 +109,7 @@ function HomePage({ navigation }) {
             </View>
             <View style={styles.titleBox}>
               <Text style={styles.titleCoffee}>{item.title}</Text>
-            
+             
             </View>
           </TouchableOpacity>
         )}
@@ -116,6 +117,7 @@ function HomePage({ navigation }) {
       
       <StatusBar style="auto" />
       <RandomProducts />
+     
     {/* </View> */}
     </ScrollView>
   );

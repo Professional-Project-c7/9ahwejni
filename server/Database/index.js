@@ -23,6 +23,7 @@ async function connectionTest (){
   db.User=require('./UserModel')(connection,DataTypes)
   db.Products=require('./product.Model')(connection,DataTypes)
   db.Coffee=require('./cofee.model')(connection,DataTypes)
+  db.Message=require('./Message.model')(connection,DataTypes)
 
 
   db.User.hasMany(db.Products);
