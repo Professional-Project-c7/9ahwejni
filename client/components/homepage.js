@@ -1,12 +1,14 @@
 import React, { useState, useRef } from 'react'
-import { StyleSheet, Text, View, Image, TouchableOpacity,ScrollView, FlatList, StatusBar } from 'react-native';
+import { StyleSheet, Text, View, Image, TouchableOpacity,ScrollView, FlatList, StatusBar,Button } from 'react-native';
 import SearchBar from '../components/searchbar';
 import hamburgerIcon from '../image/hamburger.png';
 import notifIcon from '../image/notif.png';
-// import { IconButton } from 'react-native-paper';
+import { IconButton } from 'react-native-paper';
 // import Promopage from './promopage';
 import RandomProducts from "../components/randomproducts"
 import Pub from "../components/pub"
+// import { useNavigation } from '@react-navigation/native';
+
 
 
 const images = [
@@ -28,17 +30,19 @@ const bars = [
   { id: 5, bar: 'bar5' },
 ];
 
-function HomePage() {
+function HomePage({ navigation }) {
  
     const [focusedIndex, setFocusedIndex] = useState(0);
     const flatListRef = useRef(null);
-  
+    
     const handleScroll = (event) => {
       const { contentOffset } = event.nativeEvent;
       const index = Math.floor(contentOffset.x / IMAGE_WIDTH);
       setFocusedIndex(index);
     };
-  
+    const navigateTomenu = () => {
+      navigation.navigate('menu'); 
+    };
     const renderItem = ({ item, index }) => {
       const imageWidth = index === focusedIndex ? FOCUSED_IMAGE_WIDTH : IMAGE_WIDTH;
   
@@ -62,9 +66,10 @@ function HomePage() {
     
     <ScrollView style={styles.container}>
        <View style={styles.top}>
-        <Image source={hamburgerIcon} style={{ width: 30, height: 30 }} />
-        <Text style={styles.title}>hello User</Text>
-        <Image source={notifIcon} style={{ width: 30, height: 30 }} />
+        {/* <Image source={hamburgerIcon} style={{ width: 30, height: 30 }} /> */}
+        {/* onPress={()=>navigateTomenu()}  */}
+        <IconButton icon="menu" iconColor='#dba617'  />
+        <IconButton icon="bell-outline" iconColor='#dba617'  />
       </View>
       <SearchBar />
       <Pub/>
@@ -160,7 +165,7 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: 'bold',
     fontFamily: 'Montserrat',
-    color: "black",
+    color: '#dba617',
     textAlign: 'center', // Center the text horizontally
     marginTop: 40, // Add some margin at the top
     flexDirection: 'row',
@@ -171,7 +176,7 @@ const styles = StyleSheet.create({
   seeAllText: {
     fontSize: 16,
     fontWeight: 'bold',
-    color: 'black', // Black text color
+    color: '#dba617', // Black text color
     marginTop: 40,
     marginRight:20
   },

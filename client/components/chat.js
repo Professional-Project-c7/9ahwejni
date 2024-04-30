@@ -55,7 +55,7 @@ function Chat() {
         console.log('Message saved successfully:', response.data);
       })
       .catch(error => {
-        console.error('Error saving message:', error);
+        console.error('Error saving message:', error);hee
       });
 
     if (socket) {
