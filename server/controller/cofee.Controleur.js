@@ -4,11 +4,12 @@ module.exports = {
 
     addOne:async function(req,res){
         try {
+            console.log(req.body, 'xx')
             const user= await db.Coffee.create(req.body)
-            res.status(200).send(user)
-            
+            res.status(200).json(user)
+        
         } catch (error) {
-            res.status(500).json(error)
+            res.status(500).send(error)
             
         }
     

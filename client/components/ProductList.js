@@ -1,51 +1,33 @@
-import React, { useState } from 'react';
+import React, { useEffect } from 'react';
 import { SafeAreaView, ScrollView, StyleSheet, View, Image, TouchableOpacity } from 'react-native';
 import { Card, Title, Text } from 'react-native-paper';
 import img from '../image/circle.png';
 import heart from '../image/favorite.png';
+import { useProducts } from '../redux/products/productHooks'; 
 
 const HoverableIconButton = ({ onAddPress }) => (
   <TouchableOpacity
     onPress={onAddPress}
-    style={[styles.iconButton, { width: 60, height: 60 }]}  // Making the Add icon larger
+    style={[styles.iconButton, { width: 60, height: 60 }]}
   >
     <Image
       source={img}
-      style={[styles.icon, { width: 40, height: 40 }]}  // Increase the size of the Add icon
+      style={[styles.icon, { width: 40, height: 40 }]}
     />
   </TouchableOpacity>
 );
 
 const ProductList = () => {
-  const [favorites, setFavorites] = useState({});
+  const { products, getProducts, status } = useProducts();
+  const [favorites, setFavorites] = React.useState({});
+
+  useEffect(() => {
+    getProducts(); 
+  }, []);
 
   const toggleFavorite = (id) => {
     setFavorites(prev => ({ ...prev, [id]: !prev[id] }));
   };
-
-  const productsData = [
-    {
-      id: 1,
-      title: 'Chilled Hazelnut Cold Brew',
-      price: '16.43',
-      description: 'Sunflower Lane • 15 Minutes',
-      imgUrl: 'https://via.placeholder.com/150'
-    },
-    {
-      id: 2,
-      title: 'Sweet Chocolate Mocha Coffee',
-      price: '16.43',
-      description: 'Sunflower Lane • 15 Minutes',
-      imgUrl: 'https://via.placeholder.com/150'
-    },
-    {
-      id: 3,
-      title: 'Vanilla Bean Latte',
-      price: '14.99',
-      description: 'Sunflower Lane • 10 Minutes',
-      imgUrl: 'https://via.placeholder.com/150'
-    }
-  ];
 
   return (
     <SafeAreaView style={styles.container}>
@@ -53,18 +35,20 @@ const ProductList = () => {
         <Title style={styles.shopTitle}>The Beanery: A Coffee Lover's Paradise</Title>
         <Image 
           style={styles.shopImage}
-          source={{ uri: 'https://img.craiyon.com/2024-04-29/ZrJgfOkDQdOBqIlpVtSsRw.webp' }} // Replace with your image URL
+          source={{ uri: 'https://via.placeholder.com/150' }}
         />
-        <Text style={styles.shopSubtitle}>Sunflower Lane • 15 Minutes</Text>
+        <Text style={styles.shopSubtitle}>Explore Our Exclusive Coffee Collection</Text>
         
         <Title style={styles.productListTitle}>My Products</Title>
-        {productsData.map((product) => (
+        {status === 'loading' ? (
+          <Text>Loading...</Text>
+        ) : products.map((product) => (
           <Card key={product.id} style={styles.productCard}>
             <Card.Content style={styles.productCardContent}>
               <View style={styles.imageContainer}>
                 <Image 
                   style={styles.productImage}
-                  source={{ uri: product.imgUrl }} // Replace with your image URL
+                  source={{ uri: product.imgUrl }}
                 />
                 <TouchableOpacity
                   onPress={() => toggleFavorite(product.id)}
@@ -110,7 +94,7 @@ const styles = StyleSheet.create({
     resizeMode: 'cover',
     borderRadius: 8, 
     borderWidth: 0.5, 
-    borderColor: '#FFFFFF', 
+    borderColor: '#3e3e3e', 
     marginBottom: 16, 
     overflow: 'hidden', 
     elevation: 2, 
@@ -128,7 +112,7 @@ const styles = StyleSheet.create({
   productCard: {
     marginHorizontal: 16,
     marginBottom: 16,
-    elevation: 1, // Adjust shadow to match your design
+    elevation: 1,
   },
   productCardContent: {
     flexDirection: 'row',
