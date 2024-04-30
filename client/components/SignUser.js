@@ -26,7 +26,8 @@ const SignUser = ({navigation}) => {
       console.log("Sending sign up request with body:", body);
      
       const response = await axios.post(
-        "http://${process.env.ipAdress}:3000/api/auth/register",
+        `http://${process.env.ipAdress}:3000/api/auth/register`,
+      
         body
       );
      
