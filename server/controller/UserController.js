@@ -27,6 +27,16 @@ module.exports = {
     
         }
      },
+     selectOne: async function(req, res) {
+        try {
+            const user = await db.User.findOne({ where: { id: req.params.id } })
+                res.status(200).json(user);
+        
+        } catch (error) {
+            throw (error)
+        }
+    
+        },
      deleteOne:async (req, res) => {
         try {
         const product = await db.User.destroy({
@@ -48,7 +58,7 @@ module.exports = {
                
                 Email:req.body.Email,
                 password:req.body.password,
-                PhoneNumber:req.body.PhoneNumber,
+                Address:req.body.Address,
                 
                 
             },{

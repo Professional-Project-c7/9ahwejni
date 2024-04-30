@@ -81,7 +81,7 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: 'bold',
     fontFamily: 'Montserrat',
-    color: "black",
+    color: '#dba617',
     textAlign: 'center', // Center the text horizontally
     marginTop: 40, // Add some margin at the top
     flexDirection: 'row',
@@ -92,7 +92,7 @@ const styles = StyleSheet.create({
   seeAllText: {
     fontSize: 16,
     fontWeight: 'bold',
-    color: 'black', // Black text color
+    color: '#dba617', // Black text color
     marginTop: 40,
     marginRight: 20
   },

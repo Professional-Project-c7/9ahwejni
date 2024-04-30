@@ -12,11 +12,15 @@ const User = require('./Routers/user.routes.js')
 const ProductRoutes=require("./Routers/products.routes.js")
 const Cofee = require('./Routers/cofee.routes.js')
 const Authentication = require('./Routers/login.routers.js');
+const messagesRouter = require('./Routers/messages.routers')
+
 
 
 app.use(cors())
 
 app.use("/api/auth", Authentication);
+app.use('/api/messages', messagesRouter);
+
 
 app.use('/api/user', User);
 app.use("/api/product", ProductRoutes);
