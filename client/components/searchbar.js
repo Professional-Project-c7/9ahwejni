@@ -1,7 +1,7 @@
 import react from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, TextInput,Image} from 'react-native';
 import searchlogo from '../image/searchlogo.png'
-
+import { IconButton } from 'react-native-paper';
 
 export default function SearchBar() {
 
@@ -12,7 +12,7 @@ return(
 <TextInput placeholder='Search ...' style={styles. Input}></TextInput>
 </View>
 <View style={styles.buttonP}>
-<Image source={require('../image/searchlogo.png')} style={{width: 30, height: 30}}/>
+<IconButton icon="account-search-outline" iconColor='#dba617' size={30}  />
 </View>
 </View>
 )}
@@ -31,7 +31,7 @@ Main: {
     width: 250,
     height:50,
     borderWidth:1,
-    borderColor: 'black',
+    borderColor: '#dba617',
     borderTopLeftRadius:40,
     borderBottomLeftRadius:40,
     },
@@ -47,7 +47,7 @@ Main: {
     borderWidth:1,
     borderBottomRightRadius:30,
     borderTopRightRadius: 30,
-    borderColor: 'blac',
+    borderColor: '#dba617',
     alignItems: 'center',
     justifyContent: 'center'
     }

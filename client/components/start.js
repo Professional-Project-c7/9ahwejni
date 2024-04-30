@@ -34,11 +34,12 @@ function Start({navigation}) {
   useEffect(() => {
     setTimeout(() => {
       setIsLoading(false);
-    }, 3000); 
+    }, 5000); 
   }, []);
   const navigateToUserAccount = () => {
-    navigation.navigate('UserAccount'); 
+    navigation.navigate('Login'); 
   };
+  
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
@@ -108,9 +109,3 @@ const styles = StyleSheet.create({
 });
 
 export default Start;
-
-
-
-
-
-
