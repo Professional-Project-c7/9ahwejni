@@ -3,7 +3,7 @@ import { SafeAreaView } from 'react-native';
 import NAVSTART from './screens/Navigation';
 import Start2 from './components/Start2';
 
-import NAVSTART from './components/UserProfile';
+
 // import ProductList from './components/ProductList'; 
 
 function App() {
