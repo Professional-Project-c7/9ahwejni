@@ -12,7 +12,7 @@ const Login = ({ navigation }) => {
   const handleSubmit = async () => {
     try {
       const response = await axios.post(
-        "http://192.168.11.60:3000/api/auth/login",
+        "http://192.168.11.70:3000/api/auth/login",
         { Email: email, Password: password }
       );
       
@@ -26,7 +26,7 @@ const Login = ({ navigation }) => {
   };
 
   const navigateToUserAccount = () => {
-    navigation.navigate('UserProfile'); 
+    navigation.navigate('UserAccount'); 
   };
 
   return (
