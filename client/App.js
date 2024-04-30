@@ -1,17 +1,17 @@
 import React, { useState, useEffect } from 'react';
-import { SafeAreaView } from 'react-native';
+import { LogBox, SafeAreaView } from 'react-native';
 import NAVSTART from './screens/Navigation';
-// import MapCoffe from './components/MapCoffe';
-// import HomePage from './screens/Navigation';
-// import MenuItems from './components/menuitems';
+import MapCoffe from './components/MapCoffe';
+import Chat from './components/chat';
+
 function App() {
-   
- 
+   console.log(process.env.ipAdress);
+//  
   return (
     <SafeAreaView style={{ flex: 1 }}>
-    
+      {/* <Chat/> */}
     <NAVSTART/>
-
+   
     </SafeAreaView>
   ); 
 }
@@ -19,8 +19,3 @@ function App() {
 
 
 export default App;
-
-
-
-
-
