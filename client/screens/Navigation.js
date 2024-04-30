@@ -11,6 +11,7 @@ import Start2 from '../components/Start2';
 import Start3 from '../components/start3';
 import Start4 from '../components/start4';
 import UserProfile from '../components/UserProfile';
+import MenuItems from '../components/menuitems';
 
 const Stack = createNativeStackNavigator();
 
@@ -26,7 +27,7 @@ function NAVSTART() {
         <Stack.Screen name="UserAccount" component={SignACC} options={{ headerShown: false }} />
         <Stack.Screen name="ProductList" component={ProductList} options={{ headerShown: false }} />
         <Stack.Screen name="UserProfile" component={UserProfile} options={{ headerShown: false }} />
-
+        <Stack.Screen name="menu" component={MenuItems} options={{ headerShown: false }} />
 
         <Stack.Screen name="st2" component={Start2} options={{ headerShown: false }} />
         <Stack.Screen name="st3" component={Start3} options={{ headerShown: false }} />
