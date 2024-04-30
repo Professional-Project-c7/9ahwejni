@@ -9,7 +9,7 @@ const CoffeeShopsList = () => {
     // Function to fetch data from API
     const fetchData = async () => {
       try {
-        const response = await axios.get('http://192.168.103.18:3000/api/cofee');
+        const response = await axios.get(`http://${process.env.ipAdress}:3000/api/cofee`);
         setCoffeeShopsData(response.data);
       } catch (error) {
         console.error('Error fetching data: ', error);

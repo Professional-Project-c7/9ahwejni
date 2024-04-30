@@ -5,8 +5,8 @@ import MapCoffe from './components/MapCoffe';
 import Chat from './components/chat';
 
 function App() {
-   console.log(process.env.ipAdress);
-//  
+  //  
+  console.log(process.env.ipAdress);
   return (
     <SafeAreaView style={{ flex: 1 }}>
       {/* <Chat/> */}
