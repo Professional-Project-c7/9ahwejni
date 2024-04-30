@@ -43,7 +43,7 @@ async function connectionTest (){
 
   
 
-// // Sync the models with the database
+// Sync the models with the database
 //  connection.sync()
 //     .then(() => {
 //         console.log('Models synced with the database.')
