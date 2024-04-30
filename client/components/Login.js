@@ -3,7 +3,7 @@ import { StyleSheet, Text, View, TextInput, TouchableOpacity, Image } from 'reac
 import { Button } from 'react-native-paper';
 import axios from 'axios';
 import { useNavigation } from '@react-navigation/native';
-import {AsyncStorage} from 'react-native';
+// import {AsyncStorage} from 'react-native';
 
 const Login = ({ navigation }) => {
   const [email, setEmail] = useState('');
@@ -16,7 +16,7 @@ const Login = ({ navigation }) => {
         `http://${process.env.ipAdress}:3000/api/auth/login`,
         { Email: email, Password: password }
       );
-      await AsyncStorage.setItem('userToken', response.data.token);
+      // await AsyncStorage.setItem('userToken', response.data.token);
      
       navigation.navigate('st2'); 
 
