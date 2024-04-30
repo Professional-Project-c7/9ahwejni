@@ -1,6 +1,6 @@
 import React from 'react'
 import { View, Text, TextInput, StyleSheet, FlatList, TouchableOpacity , Button } from 'react-native';
-
+import MapCoffe from './MapCoffe';
 const FlatListPopularShops = () => {
     const names =[
         {
