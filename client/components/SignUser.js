@@ -1,5 +1,5 @@
 import React, { useState,useEffect } from 'react';
-import { StyleSheet, Text, View, TextInput, TouchableOpacity, Image } from 'react-native';
+import { StyleSheet, Text, View, TextInput,SafeAreaView, TouchableOpacity, Image ,ScrollView  } from 'react-native';
 import { Button } from 'react-native-paper';
 import axios from 'axios';
 const SignUser = ({navigation}) => {
@@ -7,7 +7,7 @@ const SignUser = ({navigation}) => {
   const [lastName, setLastName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [Address, setAddress] = useState('');
+  const [PhoneNumber, setPhoneNumber] = useState('');
   const [profilePicture, setProfilePicture] = useState(null);
   const [error, setError] = useState('');
 
@@ -19,7 +19,7 @@ const SignUser = ({navigation}) => {
         Password: password,
         FirstName: firstName,
         LastName: lastName,
-        Address: Address,
+        PhoneNumber: PhoneNumber,
         ImageUrl: profilePicture,
       };
       
@@ -32,15 +32,15 @@ const SignUser = ({navigation}) => {
      
       console.log("Response data:", response.data);
   
-      // Clear form fields after successful sign up
+     
       setFirstName('');
       setLastName('');
       setEmail('');
       setPassword('');
-      setAddress('');
-      setProfilePicture(null);
+      setPhoneNumber('');
+      setProfilePicture('');
   
-      // Navigate to login screen
+     
       navigation.navigate('Login');
     } catch (error) {
       console.error("Error signing up:", error);
@@ -54,23 +54,16 @@ const SignUser = ({navigation}) => {
   };
 
   return (
+    <SafeAreaView >
+    <ScrollView  >
+    
     <View style={styles.container}>
-     
+       <Image source={require('./../image/logo.png')} style={styles.logo} />
       
-      <TouchableOpacity
-        style={styles.profileImagePlaceholder}
-        onPress={() => {
-         
-        }}
-      >
-        {profilePicture ? (
-          <Image source={{ uri: profilePicture }} style={styles.profileImage} />
-        ) : (
-          <Text style={styles.profileImageText}>Add Profile Picture</Text>
-        )}
-      </TouchableOpacity>
+     
 
       <View style={styles.inputContainer}>
+        
         <TextInput
           style={styles.input}
           placeholder="First Name"
@@ -100,10 +93,10 @@ const SignUser = ({navigation}) => {
         />
         <TextInput
           style={styles.input}
-          placeholder="Adress"
-          value={Address}
-          onChangeText={setAddress}
-          
+          placeholder="PhoneNumber"
+          value={PhoneNumber}
+          onChangeText={setPhoneNumber}
+          keyboardType="phone-pad"
         />
       </View>
       
@@ -119,6 +112,8 @@ const SignUser = ({navigation}) => {
      <Text style={styles.createAccount}>do you  have an account? </Text>
    </TouchableOpacity>
    </View>
+   </ScrollView>
+    </SafeAreaView>
   );
 };
 
@@ -128,6 +123,11 @@ const styles = StyleSheet.create({
     backgroundColor: '#F5F5F5',
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  logo: {
+    width: 200,
+    height: 200,
+    marginBottom: 50,
   },
   title: {
     fontSize: 24,
@@ -163,6 +163,9 @@ const styles = StyleSheet.create({
     color: '#dba617',
     fontWeight: 'bold',
     fontSize: 16,
+    marginEnd:50,
+
+    marginVertical:20,
   },
   input: {
     height: 50,

@@ -17,15 +17,16 @@ const Login = ({ navigation }) => {
       );
       
      
-      navigation.navigate('wlc'); 
+      navigation.navigate('st2'); 
 
     } catch (error) {            
-        console.log(error);      
+        console.log(error);  
+        setError(error.message);    
     }
   };
 
   const navigateToUserAccount = () => {
-    navigation.navigate('UserAccount'); 
+    navigation.navigate('UserProfile'); 
   };
 
   return (
@@ -51,6 +52,7 @@ const Login = ({ navigation }) => {
         Login
       </Button>
       <TouchableOpacity onPress={navigateToUserAccount}>
+     
         <Text style={styles.createAccount}>Don't have an account? Create one</Text>
       </TouchableOpacity>
     </View>
@@ -68,6 +70,10 @@ const styles = StyleSheet.create({
     width: 150,
     height: 150,
     marginBottom: 30,
+  },
+  error: {
+    color: 'red',
+    marginBottom: 10,
   },
   inputContainer: {
     marginBottom: 20,
