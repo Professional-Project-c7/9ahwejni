@@ -20,6 +20,7 @@ const HoverableIconButton = ({ onAddPress }) => (
 const ProductList = () => {
   const { products, getProducts, status } = useProducts();
   const [favorites, setFavorites] = React.useState({});
+  const userId = 1; // User ID to filter products
 
   useEffect(() => {
     getProducts(); 
@@ -29,20 +30,27 @@ const ProductList = () => {
     setFavorites(prev => ({ ...prev, [id]: !prev[id] }));
   };
 
+  // Filter products to only show those posted by userId: 1
+  const filteredProducts = products.filter(product => product.UserId === userId);
+
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView>
-        <Title style={styles.shopTitle}>The Beanery: A Coffee Lover's Paradise</Title>
-        <Image 
-          style={styles.shopImage}
-          source={{ uri: 'https://via.placeholder.com/150' }}
-        />
-        <Text style={styles.shopSubtitle}>Explore Our Exclusive Coffee Collection</Text>
+        {filteredProducts.length > 0 && (
+          <>
+            <Title style={styles.shopTitle}>{filteredProducts[0].shopTitle}: {filteredProducts[0].shopName}</Title>
+            <Image 
+              style={styles.shopImage}
+              source={{ uri: 'https://via.placeholder.com/150' }}
+            />
+            <Text style={styles.shopSubtitle}>Explore Our Exclusive Coffee Collection</Text>
+          </>
+        )}
         
         <Title style={styles.productListTitle}>My Products</Title>
         {status === 'loading' ? (
           <Text>Loading...</Text>
-        ) : products.map((product) => (
+        ) : filteredProducts.map((product) => (
           <Card key={product.id} style={styles.productCard}>
             <Card.Content style={styles.productCardContent}>
               <View style={styles.imageContainer}>
@@ -61,7 +69,7 @@ const ProductList = () => {
                 </TouchableOpacity>
               </View>
               <View style={styles.productInfo}>
-                <Title style={styles.productTitle}>{product.title}</Title>
+                <Title style={styles.productTitle}>{product.name}</Title>
                 <Text style={styles.productDescription}>{product.description}</Text>
                 <Text style={styles.productPrice}>${product.price}</Text>
               </View>
