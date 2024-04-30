@@ -3,6 +3,7 @@ import { StyleSheet, Text, View, TextInput, TouchableOpacity, Image } from 'reac
 import { Button } from 'react-native-paper';
 import axios from 'axios';
 import { useNavigation } from '@react-navigation/native';
+// import {AsyncStorage} from 'react-native';
 
 const Login = ({ navigation }) => {
   const [email, setEmail] = useState('');
@@ -12,10 +13,10 @@ const Login = ({ navigation }) => {
   const handleSubmit = async () => {
     try {
       const response = await axios.post(
-        "http://192.168.11.60:3000/api/auth/login",
+        `http://${process.env.ipAdress}:3000/api/auth/login`,
         { Email: email, Password: password }
       );
-      
+      // await AsyncStorage.setItem('userToken', response.data.token);
      
       navigation.navigate('st2'); 
 
@@ -26,7 +27,7 @@ const Login = ({ navigation }) => {
   };
 
   const navigateToUserAccount = () => {
-    navigation.navigate('UserProfile'); 
+    navigation.navigate('UserAccount'); 
   };
 
   return (
@@ -107,4 +108,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Login;
+export default Login
