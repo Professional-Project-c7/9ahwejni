@@ -26,10 +26,11 @@ const SignCofee = ({ navigation }) => {
       };
     
       const response = await axios.post(
-        "http://192.168.11.60:3000/api/auth/register",
+        
+        `http://${process.env.ipAdress}:3000/api/auth/register`,
         body
       );
-       
+      navigation.navigate('Login');
     } catch (error) {
       console.log(error);
      

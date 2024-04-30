@@ -1,7 +1,7 @@
 
 const mysql = require('mysql2')
 const { Sequelize ,DataTypes } = require('sequelize')
-const connection = new Sequelize('9ahwejni', 'root', 'root', {
+const connection = new Sequelize('9ahwejni', 'Amine', 'wess2004wess', {
   host: 'localhost',
   dialect: 'mysql',
   logging:false
@@ -23,6 +23,7 @@ async function connectionTest (){
   db.User=require('./UserModel')(connection,DataTypes)
   db.Products=require('./product.Model')(connection,DataTypes)
   db.Coffee=require('./cofee.model')(connection,DataTypes)
+  db.Message=require('./Message.model')(connection,DataTypes)
 
 
   db.User.hasMany(db.Products);
@@ -42,7 +43,7 @@ async function connectionTest (){
 
   
 
-// // Sync the models with the database
+// Sync the models with the database
 //  connection.sync()
 //     .then(() => {
 //         console.log('Models synced with the database.')
