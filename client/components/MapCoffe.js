@@ -173,7 +173,9 @@ const styles = StyleSheet.create({
   coffeeShopName: {
     fontSize: 18,
     fontWeight: 'bold',
-  
+//  marginLeft :  170 ,
+textAlign: 'center',
+ 
   },
   coffeeShopImage: {
     width: 85,
