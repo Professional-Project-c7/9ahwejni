@@ -26,9 +26,9 @@ const UserProfile = () => {
     fetchUserProfile();
   }, []);
 
-  const fetchUserProfile = async () => {
+  const fetchUserProfile = async () => {  
     try {
-      const response = await axios.get(`http://${process.env.ipAdress}:3000/api/user/1`); // Assuming user ID is 1
+      const response = await axios.get(`http://192.168.103.10:3000/api/user/1`); // Assuming user ID is 1
       const userData = response.data;
       setProfile(userData);
     } catch (error) {
@@ -38,7 +38,7 @@ const UserProfile = () => {
 
   const handleSave = async () => {
     try {
-      await axios.patch(`http://${process.env.ipAdress}:3000/api/user/1`, profile);
+      await axios.patch(`http://192.168.103.10:3000/api/user/1`, profile);
       console.log('Changes saved');
     } catch (error) {
       console.error('Error updating user profile:', error);
