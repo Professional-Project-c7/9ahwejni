@@ -1,20 +1,17 @@
 import React, { useEffect } from 'react';
 import { SafeAreaView, ScrollView, StyleSheet, View, Image, TouchableOpacity } from 'react-native';
-import { Card, Title, Text } from 'react-native-paper';
-import img from '../image/circle.png';
+import { Card, Title, Text, IconButton } from 'react-native-paper';
 import heart from '../image/favorite.png';
-import { useProducts } from '../redux/products/productHooks'; 
+import { useProducts } from '../redux/products/productHooks';
 
 const HoverableIconButton = ({ onAddPress }) => (
-  <TouchableOpacity
+  <IconButton
+    icon="plus-circle"
+    iconColor="#dba617"  
+    size={40}
     onPress={onAddPress}
-    style={[styles.iconButton, { width: 60, height: 60 }]}
-  >
-    <Image
-      source={img}
-      style={[styles.icon, { width: 40, height: 40 }]}
-    />
-  </TouchableOpacity>
+    style={{ margin: 10 }}
+  />
 );
 
 const ProductList = () => {
@@ -23,14 +20,13 @@ const ProductList = () => {
   const userId = 1; // User ID to filter products
 
   useEffect(() => {
-    getProducts(); 
+    getProducts();
   }, []);
 
   const toggleFavorite = (id) => {
     setFavorites(prev => ({ ...prev, [id]: !prev[id] }));
   };
 
-  // Filter products to only show those posted by userId: 1
   const filteredProducts = products.filter(product => product.UserId === userId);
 
   return (
@@ -38,10 +34,12 @@ const ProductList = () => {
       <ScrollView>
         {filteredProducts.length > 0 && (
           <>
-            <Title style={styles.shopTitle}>{filteredProducts[0].shopTitle}: {filteredProducts[0].shopName}</Title>
+            <Title style={styles.shopTitle}>
+              {filteredProducts[0].shopTitle}: {filteredProducts[0].shopName || 'Default Shop Name'}
+            </Title>
             <Image 
               style={styles.shopImage}
-              source={{ uri: 'https://via.placeholder.com/150' }}
+              source={{ uri: 'https://images.pexels.com/photos/321552/pexels-photo-321552.jpeg?auto=compress&cs=tinysrgb&w=600' }}
             />
             <Text style={styles.shopSubtitle}>Explore Our Exclusive Coffee Collection</Text>
           </>
@@ -64,7 +62,7 @@ const ProductList = () => {
                 >
                   <Image
                     source={heart}
-                    style={[styles.icon, { tintColor: favorites[product.id] ? 'red' : '#000' }]}
+                    style={[styles.icon, { tintColor: favorites[product.id] ? 'red' : '#FFF' }]}
                   />
                 </TouchableOpacity>
               </View>
@@ -101,7 +99,7 @@ const styles = StyleSheet.create({
     height: 200, 
     resizeMode: 'cover',
     borderRadius: 8, 
-    borderWidth: 0.5, 
+    borderWidth: 0.7, 
     borderColor: '#3e3e3e', 
     marginBottom: 16, 
     overflow: 'hidden', 
