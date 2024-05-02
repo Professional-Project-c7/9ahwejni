@@ -7,7 +7,7 @@ node_modules/
 .expo/
 dist/
 web-build/
-
+config.js
 # Native
 *.orig.*
 *.jks
@@ -35,3 +35,4 @@ yarn-error.*
 *.tsbuildinfo
 .env
 package-lock.json
+config.js
