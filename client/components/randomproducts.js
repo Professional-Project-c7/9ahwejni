@@ -1,8 +1,9 @@
 import React from 'react';
 import { View, Image, Text, FlatList, TouchableOpacity, StyleSheet } from 'react-native';
+import { IconButton } from 'react-native-paper';
 
 const RandomProducts = () => {
-  // Dummy data for coffees
+
   const coffees = [
     { id: 1, name: 'Coffee A', products: [
       { id: 1, name: 'Product A1', price: '$5', image: 'https://esquirescoffee.co.uk/wp-content/uploads/2019/07/Picture-1.pngxx_.png' },
@@ -16,15 +17,15 @@ const RandomProducts = () => {
       { id: 7, name: 'Product B3', price: '$7', image: 'https://esquirescoffee.co.uk/wp-content/uploads/2019/07/Picture-1.pngxx_.png' },
       { id: 8, name: 'Product B4', price: '$8', image: 'https://esquirescoffee.co.uk/wp-content/uploads/2019/07/Picture-1.pngxx_.png' },
     ] },
-    // Add more coffees with their products as needed
+   
   ];
 
-  // Function to generate a random number between min and max (inclusive)
+  
   const getRandomNumber = (min, max) => {
     return Math.floor(Math.random() * (max - min + 1)) + min;
   };
 
-  // Function to get 4 random products from the array of all products
+  
   const getRandomProducts = () => {
     const randomProducts = [];
     const numProducts = coffees.length;
@@ -42,7 +43,7 @@ const RandomProducts = () => {
     return randomProducts;
   };
 
-  // Get 4 random products
+  
   const randomProducts = getRandomProducts();
 
   return (
@@ -54,16 +55,22 @@ const RandomProducts = () => {
       <View style={styles.container}>
         <FlatList
           data={randomProducts}
-          numColumns={2} // Set the number of columns to 2
+          numColumns={2} 
           keyExtractor={item => item.id.toString()}
           renderItem={({ item }) => (
             <TouchableOpacity style={styles.card}>
-              <View style={styles.imageBox}>
+              <View style={styles.imageContainer}>
                 <Image source={{ uri: item.image }} style={styles.imageCoffee} />
-              </View>
-              <View style={styles.titleBox}>
-                <Text style={styles.titleCoffee}>{item.name}</Text>
-                <Text style={styles.titleCoffee}>Price: {item.price}</Text>
+                <View style={styles.overlay}>
+                  <Text style={styles.titleCoffee}>{item.name}</Text>
+                  <Text style={styles.titleCoffee}>Price: {item.price}</Text>
+                </View>
+                <IconButton
+                  icon="plus-circle"
+                  iconColor="rgba(219, 166, 23, 0.7)"
+                  size={28}
+                  style={styles.iconButton}
+                />
               </View>
             </TouchableOpacity>
           )}
@@ -82,8 +89,8 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     fontFamily: 'Montserrat',
     color: '#dba617',
-    textAlign: 'center', // Center the text horizontally
-    marginTop: 40, // Add some margin at the top
+    textAlign: 'center',
+    marginTop: 40,
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
@@ -92,7 +99,7 @@ const styles = StyleSheet.create({
   seeAllText: {
     fontSize: 16,
     fontWeight: 'bold',
-    color: '#dba617', // Black text color
+    color: '#dba617',
     marginTop: 40,
     marginRight: 20
   },
@@ -103,16 +110,17 @@ const styles = StyleSheet.create({
     marginHorizontal: 12,
   },
   card: {
-    flex: 1, // Set flex to 1 to evenly distribute items
-    width: '45%', // Set width to 45% to fit two items in a row
-    aspectRatio: 1, // Maintain aspect ratio for the item
-    margin: '2.5%', // Set margin to evenly space items
+    flex: 1,
+    width: '45%',
+    aspectRatio: 1,
+    margin: '2.5%',
     borderWidth: 1,
     borderColor: '#ccc',
     borderRadius: 10,
     overflow: 'hidden',
   },
-  imageBox: {
+  imageContainer: {
+    position: 'relative',
     flex: 1,
     overflow: 'hidden',
   },
@@ -121,11 +129,19 @@ const styles = StyleSheet.create({
     height: '100%',
     resizeMode: 'cover',
   },
-  titleBox: {
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  overlay: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    backgroundColor: 'rgba(219, 166, 23, 0.4)',
     padding: 10,
-    borderBottomLeftRadius: 10,
-    borderBottomRightRadius: 10,
+  },
+  iconButton: {
+    position: 'absolute',
+    zIndex: 1,
+    top: 5,
+    left: 5,
   },
   titleCoffee: {
     fontSize: 14,
