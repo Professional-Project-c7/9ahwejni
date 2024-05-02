@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { StyleSheet, Text, View, TextInput,SafeAreaView, TouchableOpacity, Image ,ScrollView  } from 'react-native';
 import { Button } from 'react-native-paper';
 import axios from 'axios';
-
+import { ipAdress } from '../config';
 const SignCofee = ({ navigation }) => {
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
@@ -27,7 +27,7 @@ const SignCofee = ({ navigation }) => {
     
       const response = await axios.post(
         
-        `http://${process.env.ipAdress}:3000/api/auth/register`,
+        `http://${ipAdress}:3000/api/auth/register`,
         body
       );
       navigation.navigate('Login');
