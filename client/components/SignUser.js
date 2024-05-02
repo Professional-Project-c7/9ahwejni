@@ -2,6 +2,7 @@ import React, { useState,useEffect } from 'react';
 import { StyleSheet, Text, View, TextInput,SafeAreaView, TouchableOpacity, Image ,ScrollView  } from 'react-native';
 import { Button } from 'react-native-paper';
 import axios from 'axios';
+import { ipAdress } from '../config';
 const SignUser = ({navigation}) => {
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
@@ -26,7 +27,7 @@ const SignUser = ({navigation}) => {
       console.log("Sending sign up request with body:", body);
      
       const response = await axios.post(
-        `http://${process.env.ipAdress}:3000/api/auth/register`,
+        `http://${ipAdress}:3000/api/auth/register`,
       
         body
       );
