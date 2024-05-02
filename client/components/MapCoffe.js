@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react';
+import { StyleSheet, View, TextInput, Text, Image, ScrollView, TouchableOpacity, Alert } from 'react-native';
 import MapView, { Marker } from 'react-native-maps';
-import { StyleSheet, View, TextInput, Button, Text, Image, ScrollView, TouchableOpacity } from 'react-native';
 import Geolocation from '@react-native-community/geolocation';
 import Geocoder from 'react-native-geocoding';
+import { Button } from 'react-native-paper';
 
-const GOOGLE_MAPS_API_KEY = 'AIzaSyDYm4cfAj3Lrk6HqMJZHGeB1JevFbEC55o'; // Replace with your actual API key
+const GOOGLE_MAPS_API_KEY = 'AIzaSyDYm4cfAj3Lrk6HqMJZHGeB1JevFbEC55o';
 Geocoder.init('AIzaSyDYm4cfAj3Lrk6HqMJZHGeB1JevFbEC55o');
 
 export default function MapCoffe() {
@@ -12,8 +13,11 @@ export default function MapCoffe() {
   const [searchQuery, setSearchQuery] = useState('');
   const [coffeeShops, setCoffeeShops] = useState([]);
   const [renderAll, setRenderAll] = useState(false);
+  const [selectedCoffeeShop, setSelectedCoffeeShop] = useState(null); // New state to store the selected coffee shop
 
   useEffect(() => {
+    // Check for location permission
+    Geolocation.requestAuthorization();
     Geolocation.getCurrentPosition(
       position => {
         const { latitude, longitude } = position.coords;
@@ -23,27 +27,19 @@ export default function MapCoffe() {
           latitudeDelta: 0.0922,
           longitudeDelta: 0.0421,
         });
+        searchCoffeeShops(latitude, longitude);
       },
-      error => console.log(error.message),
+      error => {
+        console.log(error.message);
+        Alert.alert(
+          'Location Permission Required',
+          'Please enable location services to use this feature.',
+          [{ text: 'OK', onPress: () => console.log('OK Pressed') }]
+        );
+      },
       { enableHighAccuracy: true, timeout: 20000, maximumAge: 1000 }
     );
   }, []);
-
-  const handleSearch = async () => {
-    try {
-      const response = await Geocoder.from(searchQuery);
-      const { lat, lng } = response.results[0].geometry.location;
-      setRegion({
-        latitude: lat,
-        longitude: lng,
-        latitudeDelta: 0.0922,
-        longitudeDelta: 0.0421,
-      });
-      searchCoffeeShops(lat, lng);
-    } catch (error) {
-      console.error(error);
-    }
-  };
 
   const searchCoffeeShops = async (latitude, longitude) => {
     try {
@@ -52,31 +48,99 @@ export default function MapCoffe() {
       );
       const data = await response.json();
 
-      // Extract coffee shop locations, names, and photos from response
       const coffeeShopsData = data.results.map(result => ({
         name: result.name,
         latitude: result.geometry.location.lat,
         longitude: result.geometry.location.lng,
-        photoReference: result.photos ? result.photos[0].photo_reference : null // Get the photo reference if available
+        photoReference: result.photos ? result.photos[0].photo_reference : null,
+        distance: calculateDistance(latitude, longitude, result.geometry.location.lat, result.geometry.location.lng)
       }));
 
-      // Set coffee shop markers and details
       setCoffeeShops(coffeeShopsData);
     } catch (error) {
       console.error(error);
     }
   };
 
-  const renderCoffeeShops = () => {
-    if (renderAll) {
-      return coffeeShops;
-    } else {
-      // Render only a limited number of coffee shops
-      const limitedCoffeeShops = coffeeShops.slice(0, 5); // Change the number as needed
-      return limitedCoffeeShops;
-    }
+  // Function to calculate distance using Haversine formula
+  const calculateDistance = (lat1, lon1, lat2, lon2) => {
+    const R = 6371; // Radius of the earth in km
+    const dLat = deg2rad(lat2 - lat1); // deg2rad below
+    const dLon = deg2rad(lon2 - lon1);
+    const a =
+      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+      Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) *
+      Math.sin(dLon / 2) * Math.sin(dLon / 2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    const d = R * c; // Distance in km
+    return d.toFixed(2); // Round to 2 decimal places
   };
   
+  const deg2rad = (deg) => {
+    return deg * (Math.PI / 180);
+  };
+  
+
+
+
+  const handleSearch = async () => {
+    try {
+      const response = await Geocoder.from(searchQuery);
+      if (response.results.length === 0) {
+        Alert.alert(
+          'Location Not Found',
+          'No results found for the provided search query.',
+          [{ text: 'OK', onPress: () => console.log('OK Pressed') }]
+        );
+        return;
+      }
+      
+      const { lat, lng } = response.results[0].geometry.location;
+      setRegion({
+        latitude: lat,
+        longitude: lng,
+        latitudeDelta: 0.0922,
+        longitudeDelta: 0.0421,
+      });
+      searchCoffeeShops(lat, lng);
+      
+      const searchedLocation = {
+        latitude: lat,
+        longitude: lng,
+      };
+      setCoffeeShops([searchedLocation, ...coffeeShops]);
+    } catch (error) {
+      console.error(error);
+      Alert.alert(
+        'Error',
+        'An error occurred while searching for the location. Please try again later.',
+        [{ text: 'OK', onPress: () => console.log('OK Pressed') }]
+      );
+    }
+  };
+
+  const handleGetDirections = async (coffeeShop) => {
+    try {
+      const userLocation = `${region.latitude},${region.longitude}`;
+      const destination = `${coffeeShop.latitude},${coffeeShop.longitude}`;
+      const response = await fetch(
+        `https://maps.googleapis.com/maps/api/directions/json?origin=${userLocation}&destination=${destination}&key=${'AIzaSyDYm4cfAj3Lrk6HqMJZHGeB1JevFbEC55o'}`
+      );
+      const data = await response.json();
+      // Use the direction data to display the route on the map or do other actions as needed
+      // You can extract information like distance, duration, and step-by-step instructions from the data
+      // For simplicity, let's just log the direction data for now
+      console.log('Directions:', data);
+    } catch (error) {
+      console.error('Error fetching directions:', error);
+      Alert.alert(
+        'Error',
+        'An error occurred while fetching directions. Please try again later.',
+        [{ text: 'OK', onPress: () => console.log('OK Pressed') }]
+      );
+    }
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.searchContainer}>
@@ -86,44 +150,50 @@ export default function MapCoffe() {
           onChangeText={text => setSearchQuery(text)}
           placeholder="Search location..."
         />
-        <Button title="Search" onPress={handleSearch} />
+        <Button style={styles.button} textColor='white' onPress={handleSearch}>
+          Search
+        </Button>
       </View>
       {region ? (
         <MapView style={styles.map} initialRegion={region}>
           <Marker coordinate={{ latitude: region.latitude, longitude: region.longitude }} />
-          {renderCoffeeShops().map((marker, index) => (
-            <Marker key={index} coordinate={marker} pinColor="blue" />
+          {coffeeShops.map((marker, index) => (
+            <Marker key={index} coordinate={{ latitude: marker.latitude, longitude: marker.longitude }} pinColor="blue" />
           ))}
         </MapView>
       ) : (
         <MapView style={styles.map} />
       )}
-      {coffeeShops.length > 0 && ( // Render the button only if coffee shops are available
+      {coffeeShops.length > 0 && (
         <ScrollView style={styles.coffeeShopsContainer}>
           <TouchableOpacity onPress={() => setRenderAll(!renderAll)} style={styles.showAllButton}>
             <Text style={styles.showAllButtonText}>{renderAll ? 'Show Less' : 'Show All'}</Text>
           </TouchableOpacity>
-          {renderCoffeeShops().map((coffeeShop, index) => (
+          {coffeeShops.map((coffeeShop, index) => (
             <View key={index} style={styles.coffeeShopItem}>
               <View style={styles.coffeeShopInfo}>
                 {coffeeShop.photoReference && (
                   <Image
                     source={{
-                      uri: `https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=${coffeeShop.photoReference}&key=${'AIzaSyDYm4cfAj3Lrk6HqMJZHGeB1JevFbEC55o'}`,
+                      uri: `https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=${coffeeShop.photoReference}&key=${GOOGLE_MAPS_API_KEY}`,
                     }}
                     style={renderAll ? styles.enlargedCoffeeShopImage : styles.coffeeShopImage}
                   />
                 )}
+                <Text style={[styles.coffeeShopName, renderAll && styles.enlargedCoffeeShopName]}>{coffeeShop.name}</Text>
+                <TouchableOpacity onPress={() => handleGetDirections(coffeeShop)}>
+                  <Text style={styles.directionsButton}>Get Directions</Text>
+                </TouchableOpacity>
+                <Text>
+                  Distance: <Text style={styles.distanceText}>{coffeeShop.distance} km</Text>
+                </Text>
               </View>
-              <Text style={[styles.coffeeShopName, renderAll && styles.enlargedCoffeeShopName]}>{coffeeShop.name}</Text>
             </View>
           ))}
         </ScrollView>
       )}
     </View>
   );
-  
-  
 }
 
 const styles = StyleSheet.create({
@@ -140,6 +210,17 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: '#ddd',
   },
+  button: {
+    backgroundColor: '#dba617',
+  },
+  showAllButtonText : { 
+    marginLeft : 300 ,
+    fontWeight: 'bold', 
+    fontSize : 20, 
+   
+
+
+  }, 
   input: {
     flex: 1,
     marginRight: 10,
@@ -156,24 +237,28 @@ const styles = StyleSheet.create({
   },
   coffeeShopItem: {
     marginBottom: 10,
+    backgroundColor: '#fff',
+    borderRadius: 10,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
   },
-  showAllButtonText: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    marginBottom: 5,
-    color: '#B5C18E',
-
-    marginLeft: 310
-  },
-
   coffeeShopInfo: {
     flexDirection: 'row',
     alignItems: 'center',
+    padding: 10,
   },
   coffeeShopName: {
+    flex: 1,
     fontSize: 18,
     fontWeight: 'bold',
-  
+    textAlign: 'center',
+    marginLeft: 20,
   },
   coffeeShopImage: {
     width: 85,
@@ -181,13 +266,9 @@ const styles = StyleSheet.create({
     borderRadius: 5,
   },
   enlargedCoffeeShopImage: {
-    width: 400,
-    height: 200,
+    width: 90,
+    height: 90,
     borderRadius: 5,
   },
-  enlargedCoffeeShopName: {
-  textAlign: 'center',
-  },
-  
-  
+ 
 });

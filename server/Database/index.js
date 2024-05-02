@@ -1,4 +1,3 @@
-
 const mysql = require('mysql2')
 const { name, password } = require('../config');
 
@@ -53,14 +52,14 @@ async function connectionTest (){
   db.User.belongsTo(db.Coffee)
 
 
-  
 
 
 
 
 
 
-  
+
+
 
 // Sync the models with the database
 //  connection.sync()
@@ -71,4 +70,4 @@ async function connectionTest (){
 //         console.error('Unable to sync models with the database: ', error)
 //     })
 
-module.exports = db
+module.exports =db
