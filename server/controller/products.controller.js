@@ -98,7 +98,12 @@ UpdateOne :async (req, res) => {
  },
  myProducts: async function(req, res) {
     try {
-        const products = await db.Products.findAll(); // Needs to include coffee details
+        const products = await db.Products.findAll({
+            include: [{
+                model: db.User,
+                attributes: ['FirstName', 'LastName', 'UserType']  // Ensure you only fetch necessary fields
+            }]
+        });
         res.send(products);
     } catch (error) {
         console.log(error);

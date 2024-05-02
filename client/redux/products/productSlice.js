@@ -2,22 +2,26 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 
 export const fetchProducts = createAsyncThunk('products/fetchProducts', async () => {
-  const response = await axios.get('http://192.168.103.21:3000/api/product/myProducts');
-  return response.data;
+  const response = await axios.get(`http://${process.env.ipAdress}:3000/api/product/myProducts`);
+  return response.data.map(product => ({
+    ...product,
+    shopName: product.user?.FirstName + ' ' + product.user?.LastName,  // Ensure user data exists
+    shopTitle: product.user?.UserType === 'coffee' ? 'Coffee Shop' : 'Client' // Safeguard with optional chaining
+  }));
 });
 
 export const addProduct = createAsyncThunk('products/addProduct', async (productData) => {
-  const response = await axios.post('http://192.168.103.21:3000/api/product', productData);
+  const response = await axios.post(`http://${process.env.ipAdress}:3000/api/product`, productData);
   return response.data;
 });
 
 export const updateProduct = createAsyncThunk('products/updateProduct', async ({ id, productData }) => {
-  const response = await axios.patch(`http://192.168.103.21:3000/api/product/${id}`, productData);
+  const response = await axios.patch(`http://${process.env.ipAdress}:3000/api/product/${id}`, productData);
   return response.data;
 });
-
+ 
 export const deleteProduct = createAsyncThunk('products/deleteProduct', async (id) => {
-  await axios.delete(`http://192.168.103.21:3000/api/product/${id}`);
+  await axios.delete(`http://${process.env.ipAdress}:3000/api/product/${id}`);
   return id;
 });
 

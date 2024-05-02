@@ -15,7 +15,7 @@ import UserProfile from '../components/UserProfile';
 import MenuItems from '../components/menuitems';
 import HomePage from '../components/homepage';
 import Map from '../components/MapCoffe'
-
+import  ProductDetails from '../components/ProductDetails.js';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -30,6 +30,8 @@ function NAVSTART() {
         <Stack.Screen name="CoffeeShopSignUp" component={SignCofee} options={{ headerShown: false }} />
         <Stack.Screen name="UserAccount" component={SignACC} options={{ headerShown: false }} />
         <Stack.Screen name="ProductList" component={ProductList} options={{ headerShown: false }} />
+        <Stack.Screen name="ProductDetails" component={ProductDetails} options={{ headerShown: false }} />
+
 
         <Stack.Screen name="UserProfile" component={UserProfile} options={{ headerShown: false }} />
         <Stack.Screen name="menu" component={MenuItems} options={{ headerShown: false }} />
