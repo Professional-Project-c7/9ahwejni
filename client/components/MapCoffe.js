@@ -13,6 +13,7 @@ export default function MapCoffe() {
   const [searchQuery, setSearchQuery] = useState('');
   const [coffeeShops, setCoffeeShops] = useState([]);
   const [renderAll, setRenderAll] = useState(false);
+  const [selectedCoffeeShop, setSelectedCoffeeShop] = useState(null); // New state to store the selected coffee shop
 
   useEffect(() => {
     // Check for location permission
@@ -52,6 +53,7 @@ export default function MapCoffe() {
         latitude: result.geometry.location.lat,
         longitude: result.geometry.location.lng,
         photoReference: result.photos ? result.photos[0].photo_reference : null,
+        distance: calculateDistance(latitude, longitude, result.geometry.location.lat, result.geometry.location.lng)
       }));
 
       setCoffeeShops(coffeeShopsData);
@@ -60,19 +62,26 @@ export default function MapCoffe() {
     }
   };
 
-  const renderCoffeeShops = () => {
-    if (searchQuery === '') {
-      return coffeeShops; // Render all coffee shops if no search query
-    } else {
-      if (renderAll) {
-        return coffeeShops;
-      } else {
-        // Render only a limited number of coffee shops
-        const limitedCoffeeShops = coffeeShops.slice(0, 5); // Change the number as needed
-        return limitedCoffeeShops;
-      }
-    }
+  // Function to calculate distance using Haversine formula
+  const calculateDistance = (lat1, lon1, lat2, lon2) => {
+    const R = 6371; // Radius of the earth in km
+    const dLat = deg2rad(lat2 - lat1); // deg2rad below
+    const dLon = deg2rad(lon2 - lon1);
+    const a =
+      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+      Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) *
+      Math.sin(dLon / 2) * Math.sin(dLon / 2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    const d = R * c; // Distance in km
+    return d.toFixed(2); // Round to 2 decimal places
   };
+  
+  const deg2rad = (deg) => {
+    return deg * (Math.PI / 180);
+  };
+  
+
+
 
   const handleSearch = async () => {
     try {
@@ -95,7 +104,6 @@ export default function MapCoffe() {
       });
       searchCoffeeShops(lat, lng);
       
-      // Add marker for searched location
       const searchedLocation = {
         latitude: lat,
         longitude: lng,
@@ -110,6 +118,29 @@ export default function MapCoffe() {
       );
     }
   };
+
+  const handleGetDirections = async (coffeeShop) => {
+    try {
+      const userLocation = `${region.latitude},${region.longitude}`;
+      const destination = `${coffeeShop.latitude},${coffeeShop.longitude}`;
+      const response = await fetch(
+        `https://maps.googleapis.com/maps/api/directions/json?origin=${userLocation}&destination=${destination}&key=${'AIzaSyDYm4cfAj3Lrk6HqMJZHGeB1JevFbEC55o'}`
+      );
+      const data = await response.json();
+      // Use the direction data to display the route on the map or do other actions as needed
+      // You can extract information like distance, duration, and step-by-step instructions from the data
+      // For simplicity, let's just log the direction data for now
+      console.log('Directions:', data);
+    } catch (error) {
+      console.error('Error fetching directions:', error);
+      Alert.alert(
+        'Error',
+        'An error occurred while fetching directions. Please try again later.',
+        [{ text: 'OK', onPress: () => console.log('OK Pressed') }]
+      );
+    }
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.searchContainer}>
@@ -119,14 +150,14 @@ export default function MapCoffe() {
           onChangeText={text => setSearchQuery(text)}
           placeholder="Search location..."
         />
-          <Button  style={styles.button} onPress={handleSearch}>
-   Search
-  </Button>
+        <Button style={styles.button} textColor='white' onPress={handleSearch}>
+          Search
+        </Button>
       </View>
       {region ? (
         <MapView style={styles.map} initialRegion={region}>
           <Marker coordinate={{ latitude: region.latitude, longitude: region.longitude }} />
-          {renderCoffeeShops().map((marker, index) => (
+          {coffeeShops.map((marker, index) => (
             <Marker key={index} coordinate={{ latitude: marker.latitude, longitude: marker.longitude }} pinColor="blue" />
           ))}
         </MapView>
@@ -138,18 +169,24 @@ export default function MapCoffe() {
           <TouchableOpacity onPress={() => setRenderAll(!renderAll)} style={styles.showAllButton}>
             <Text style={styles.showAllButtonText}>{renderAll ? 'Show Less' : 'Show All'}</Text>
           </TouchableOpacity>
-          {renderCoffeeShops().map((coffeeShop, index) => (
+          {coffeeShops.map((coffeeShop, index) => (
             <View key={index} style={styles.coffeeShopItem}>
               <View style={styles.coffeeShopInfo}>
                 {coffeeShop.photoReference && (
                   <Image
                     source={{
-                      uri: `https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=${coffeeShop.photoReference}&key=${'AIzaSyDYm4cfAj3Lrk6HqMJZHGeB1JevFbEC55o'}`,
+                      uri: `https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=${coffeeShop.photoReference}&key=${GOOGLE_MAPS_API_KEY}`,
                     }}
                     style={renderAll ? styles.enlargedCoffeeShopImage : styles.coffeeShopImage}
                   />
                 )}
                 <Text style={[styles.coffeeShopName, renderAll && styles.enlargedCoffeeShopName]}>{coffeeShop.name}</Text>
+                <TouchableOpacity onPress={() => handleGetDirections(coffeeShop)}>
+                  <Text style={styles.directionsButton}>Get Directions</Text>
+                </TouchableOpacity>
+                <Text>
+                  Distance: <Text style={styles.distanceText}>{coffeeShop.distance} km</Text>
+                </Text>
               </View>
             </View>
           ))}
@@ -173,10 +210,17 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: '#ddd',
   },
-  button:{
+  button: {
     backgroundColor: '#dba617',
-  
   },
+  showAllButtonText : { 
+    marginLeft : 300 ,
+    fontWeight: 'bold', 
+    fontSize : 20, 
+   
+
+
+  }, 
   input: {
     flex: 1,
     marginRight: 10,
@@ -193,24 +237,24 @@ const styles = StyleSheet.create({
   },
   coffeeShopItem: {
     marginBottom: 10,
-    backgroundColor: '#fff', /* Background color similar to paper */
-    borderRadius: 10, /* Rounded corners */
-    shadowColor: '#000', /* Shadow color */
+    backgroundColor: '#fff',
+    borderRadius: 10,
+    shadowColor: '#000',
     shadowOffset: {
       width: 0,
       height: 2,
     },
-    shadowOpacity: 0.25, /* Opacity of the shadow */
+    shadowOpacity: 0.25,
     shadowRadius: 3.84,
-    elevation: 5, /* Elevation for Android */
+    elevation: 5,
   },
   coffeeShopInfo: {
     flexDirection: 'row',
     alignItems: 'center',
-    padding: 10, /* Add padding for spacing */
+    padding: 10,
   },
   coffeeShopName: {
-    flex: 1, /* Ensure the name takes remaining space */
+    flex: 1,
     fontSize: 18,
     fontWeight: 'bold',
     textAlign: 'center',
@@ -222,12 +266,12 @@ const styles = StyleSheet.create({
     borderRadius: 5,
   },
   enlargedCoffeeShopImage: {
-    width: 110,
-    height: 110,
+    width: 90,
+    height: 90,
     borderRadius: 5,
   },
   enlargedCoffeeShopName: {
-    flex: 1, /* Ensure the name takes remaining space */
+    flex: 1,
     textAlign: 'center',
     marginLeft: 40
   },
