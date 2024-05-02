@@ -8,13 +8,14 @@ import RandomProducts from "../components/randomproducts";
 import Pub from "../components/pub";
 import axios from 'axios';
 import logoImage from "../image/logo.png"
+import { ipAdress } from '../config';
 const HomePage = ({ navigation }) => {
   const [userData, setUserData] = useState([]);
 
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        const response = await axios.get(`http://${process.env.ipAddress}:3000/api/user/`);
+        const response = await axios.get(`http://${ipAdress}:3000/api/user/`);
         
         const coffeeUsers = response.data.filter(user => user.UserType === "coffee");
         setUserData(coffeeUsers);
