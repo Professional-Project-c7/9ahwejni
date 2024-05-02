@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, StyleSheet, FlatList, Image, TouchableOpacity } from 'react-native';
 import axios from 'axios';
 import FlatListPopularShops from './FlatListPopularShops';
+import { ipAdress } from '../config';
 const CoffeeShopsList = () => {
   const [coffeeShopsData, setCoffeeShopsData] = useState([]);
 
@@ -9,14 +10,13 @@ const CoffeeShopsList = () => {
     // Function to fetch data from API
     const fetchData = async () => {
       try {
-        const response = await axios.get(`http://192.168.103.18:3000/api/cofee`);
+        const response = await axios.get(`http://${ipAdress}:3000/api/cofee`);
         setCoffeeShopsData(response.data);
       } catch (error) {
         console.error('Error fetching data: ', error);
       }
     };
 
-    // Call the fetchData function
     fetchData();
   }, []);
 
@@ -96,10 +96,9 @@ paddingBottom: -90,
     paddingLeft: 10,
   
   },
-  input: {
+  input: { 
     flex: 1,
     padding: 10,
-  
     color: '#424242',
   },
   card: {
