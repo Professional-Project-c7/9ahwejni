@@ -143,17 +143,22 @@ export default function MapCoffe() {
 
   return (
     <View style={styles.container}>
+      {/* Search bar */}
       <View style={styles.searchContainer}>
+        {/* Search input */}
         <TextInput
           style={styles.input}
           value={searchQuery}
           onChangeText={text => setSearchQuery(text)}
           placeholder="Search location..."
         />
+        {/* Search button */}
         <Button style={styles.button} textColor='white' onPress={handleSearch}>
           Search
         </Button>
       </View>
+      
+      {/* Map */}
       {region ? (
         <MapView style={styles.map} initialRegion={region}>
           <Marker coordinate={{ latitude: region.latitude, longitude: region.longitude }} />
@@ -164,14 +169,20 @@ export default function MapCoffe() {
       ) : (
         <MapView style={styles.map} />
       )}
+
+      {/* Coffee shops list */}
       {coffeeShops.length > 0 && (
         <ScrollView style={styles.coffeeShopsContainer}>
+          {/* Show all button */}
           <TouchableOpacity onPress={() => setRenderAll(!renderAll)} style={styles.showAllButton}>
             <Text style={styles.showAllButtonText}>{renderAll ? 'Show Less' : 'Show All'}</Text>
           </TouchableOpacity>
+
+          {/* Coffee shops cards */}
           {coffeeShops.map((coffeeShop, index) => (
             <View key={index} style={styles.coffeeShopItem}>
               <View style={styles.coffeeShopInfo}>
+                {/* Coffee shop image */}
                 {coffeeShop.photoReference && (
                   <Image
                     source={{
@@ -180,12 +191,20 @@ export default function MapCoffe() {
                     style={renderAll ? styles.enlargedCoffeeShopImage : styles.coffeeShopImage}
                   />
                 )}
+
+                {/* Coffee shop name */}
                 <Text style={[styles.coffeeShopName, renderAll && styles.enlargedCoffeeShopName]}>{coffeeShop.name}</Text>
+                
+                {/* Directions button */}
                 <TouchableOpacity onPress={() => handleGetDirections(coffeeShop)}>
-                  <Text style={styles.directionsButton}>Get Directions</Text>
+                  <Text style={styles.directionsButton}></Text>
                 </TouchableOpacity>
-                <Text>
-                  Distance: <Text style={styles.distanceText}>{coffeeShop.distance} km</Text>
+              </View>
+
+              {/* Distance */}
+              <View style={styles.distanceContainer}>
+                <Text style={styles.distanceText}>
+                  Distance: <Text style={styles.distanceValue}>{coffeeShop.distance} km</Text>
                 </Text>
               </View>
             </View>
@@ -266,9 +285,22 @@ const styles = StyleSheet.create({
     borderRadius: 5,
   },
   enlargedCoffeeShopImage: {
-    width: 90,
-    height: 90,
+    width: 110,
+    height: 110,
     borderRadius: 5,
   },
- 
+  enlargedCoffeeShopName: {
+    flex: 1,
+    textAlign: 'center',
+    marginLeft: 40
+  },
+  distanceContainer: {
+    marginLeft: 20, // Adjust this value to your preference
+  },
+  distanceText: {
+    fontSize: 16,
+  },
+  distanceValue: {
+    fontWeight: 'bold',
+  },
 });
