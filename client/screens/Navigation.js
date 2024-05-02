@@ -1,5 +1,6 @@
 import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
+import { StyleSheet, Text, View, Image, TouchableOpacity,ScrollView, FlatList, StatusBar,Button } from 'react-native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import SignUser from '../components/SignUser'; 
@@ -19,6 +20,7 @@ import Map from '../components/MapCoffe'
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
+import { IconButton } from 'react-native-paper';
 
 function NAVSTART() {
   return (
@@ -45,10 +47,48 @@ function NAVSTART() {
 
 function TabNavigator() {
   return (
-    <Tab.Navigator>
-      <Tab.Screen name="homePage" component={HomePage} options={{ headerShown: false }} />
-      <Tab.Screen name="Map" component={Map} options={{ headerShown: false }} />
-      <Tab.Screen name="UserProfile" component={UserProfile} options={{ headerShown: false }} />
+    <Tab.Navigator
+      tabBarOptions={{
+        activeTintColor: '#dba617',
+        inactiveTintColor: 'gray',
+      }}
+    >
+      <Tab.Screen
+        name="homePage"
+        component={HomePage}
+        options={{
+          tabBarIcon: ({ color, size }) => (
+            <IconButton icon="home" size={size} iconColor={color} />
+          ),
+          tabBarLabel: ({ focused, color }) => (
+            <Text style={{ color: focused ? '#dba617' : 'gray' }}>Home</Text>
+          ),
+        }}
+      />
+      <Tab.Screen
+        name="Map"
+        component={Map}
+        options={{
+          tabBarIcon: ({ color, size }) => (
+            <IconButton icon="google-maps" size={size} iconColor={color} />
+          ),
+          tabBarLabel: ({ focused, color }) => (
+            <Text style={{ color: focused ? '#dba617' : 'gray' }}>Map</Text>
+          ),
+        }}
+      />
+      <Tab.Screen
+        name="UserProfile"
+        component={UserProfile}
+        options={{
+          tabBarIcon: ({ color, size }) => (
+            <IconButton icon="account" size={size} iconColor={color} />
+          ),
+          tabBarLabel: ({ focused, color }) => (
+            <Text style={{ color: focused ? '#dba617' : 'gray' }}>Profile</Text>
+          ),
+        }}
+      />
     </Tab.Navigator>
   );
 }
