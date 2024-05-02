@@ -1,10 +1,14 @@
 const express = require("express");
 const router = require('express').Router();
 
+// const verifyToken = require ('../middelware/index.js');
 
 
 const {selectAll,selectOne,addOne,deleteOne,UpdateOne,SelectByName,SelectByCategory,myProducts}=require('../controller/products.controller')
 
+// router.post("/verify", verifyToken, addOne);
+// router.patch("/:id", verifyToken, UpdateOne);
+// router.delete("/:id", verifyToken, deleteOne);
 
 router.get("/myProducts",myProducts);
 router.get("/SearchById/:id",selectOne)
