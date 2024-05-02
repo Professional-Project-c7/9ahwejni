@@ -2,9 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, Button, ScrollView } from 'react-native';
 import io from 'socket.io-client';
 import axios from 'axios';
-
+import { ipAdress } from '../config';
 const ENDPOINT = 
-`http://${process.env.ipAdress}:4000`
+`http://${ipAdress}:4000`
 
 function Chat() {
   const [messages, setMessages] = useState([]);
@@ -15,7 +15,7 @@ function Chat() {
     const socket = io(ENDPOINT);
     setSocket(socket);
 
-    axios.get(`http://${process.env.ipAdress}:3000/api/messages`
+    axios.get(`http://${ipAdress}:3000/api/messages`
       )
       .then(response => {
         setMessages(response.data);
@@ -52,7 +52,7 @@ function Chat() {
     setMessages(prevMessages => [...prevMessages, newMessage]);
     setMessageInput('');
     
-    axios.post('http://${process.env.ipAdress}:3000/api/messages', newMessage)
+    axios.post('http://${ipAdress}:3000/api/messages', newMessage)
       .then(response => {
         console.log('Message saved successfully:', response.data);
       })
