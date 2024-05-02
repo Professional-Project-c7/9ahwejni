@@ -34,6 +34,21 @@ addOne:async function(req,res){
        console.log(error)
     }
     },
+    // addOne: async function(req, res) {
+    //     if (req.user.UserType !== 'coffee') {
+    //         return res.status(403).send({ message: "Only coffee users can post products." });
+    //     }
+    //     try {
+    //         const product = await db.Products.create({
+    //             ...req.body,
+    //             UserId: req.user.id  // Ensure the product is linked to the authenticated user
+    //         });
+    //         res.status(201).send(product);
+    //     } catch (error) {
+    //         console.error(error);
+    //         res.status(500).send(error);
+    //     }
+    // },
 deleteOne:async (req, res) => {
     try {
     const product = await db.Products.destroy({
@@ -81,14 +96,17 @@ UpdateOne :async (req, res) => {
     }
     catch { (error)=> {console.log(error)} }
  },
- myProducts:async function(req,res){
+ myProducts: async function(req, res) {
     try {
-        const findId=req.params.userid
-        const project = await db.Products.findAll()
-        res.send(project)
-        } catch (error) {
-       console.log(error)
-    } 
-
- }
+        const products = await db.Products.findAll({
+            include: [{
+                model: db.User,
+                attributes: ['FirstName', 'LastName', 'UserType']  // Ensure you only fetch necessary fields
+            }]
+        });
+        res.send(products);
+    } catch (error) {
+        console.log(error);
+    }
+}
 }
