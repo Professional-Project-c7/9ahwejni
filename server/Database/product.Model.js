@@ -30,6 +30,14 @@ module.exports=(sequelize,DataTypes)=>{
          allowNull: false,
          defaultValue: "product",
       },
+      UserId: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        references: {
+          model: 'users', 
+          key: 'id'
+        }
+      }
   });
   return Products
 }
