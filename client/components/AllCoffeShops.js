@@ -11,7 +11,7 @@ const CoffeeShopsList = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get(`http://${ipAdress}:3000/api/cofee`);
+        const response = await axios.get(`http://${ipAdress}:3000/api/user`);
         setCoffeeShopsData(response.data);
       } catch (error) {
         console.error('Error fetching data: ', error);
