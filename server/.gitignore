@@ -15,7 +15,7 @@ config.js
 *.p12
 *.key
 *.mobileprovision
-
+config.js
 # Metro
 .metro-health-check*
 
