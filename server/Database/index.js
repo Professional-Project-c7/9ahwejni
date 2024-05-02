@@ -54,4 +54,4 @@ async function connectionTest (){
 //         console.error('Unable to sync models with the database: ', error)
 //     })
 
-module.exports = db
+module.exports =db

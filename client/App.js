@@ -3,18 +3,15 @@ import { SafeAreaView } from 'react-native';
 import NAVSTART from './components/UserProfile';
 import HomePage from './components/homepage';
 import Chat from './components/chat';
-import ProductDetailsPage from './components/ProdDetails';
-import SellerPage from './components/SellerPage';
-
-
+import MapCoffe from './components/MapCoffe';
 function App() {
-   
   console.log(process.env.ipAdress);
+
   return (
     <SafeAreaView style={{ flex: 1 }}>
-    
-    <NAVSTART/>
-{/* <SellerPage/> */}
+      {/* <Chat/> */}
+    <MapCoffe/>
+  
     </SafeAreaView>
   );
 }
