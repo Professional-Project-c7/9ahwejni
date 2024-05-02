@@ -1,31 +1,23 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, StyleSheet, ScrollView, Button, Image } from 'react-native';
-import axios from 'axios';
-import { launchImageLibrary } from 'react-native-image-picker';
-import { Cloudinary } from 'cloudinary-react-native';
-import Icon from 'react-native-vector-icons/FontAwesome';
+import { View, Text, Image, ScrollView, TouchableOpacity } from 'react-native';
+import SettingComponent from './Setting';
+import axios from 'axios'
 import { ipAdress } from '../config';
+import { Button } from 'react-native-paper';
+import { IconButton } from 'react-native-paper';
+import Aother from './Another'
+
 
 const UserProfile = () => {
-  const [imageUrl, setImageUrl] = useState(imageUrl);
   const [profile, setProfile] = useState({
     FirstName: '',
     Password: '',
     LastName: '',
     Adresse: '',
   });
-  const [showSetting, setShowSetting] = useState(false); 
-  const [settingText, setSettingText] = useState(''); 
-
-  const user = {
-    avatar: "https://www.bootdey.com/img/Content/avatar/avatar1.png",
-    coverPhoto: "https://www.bootdey.com/image/280x280/FF00FF/000000",
-    name: "John Smith"
-  };
- 
-  useEffect(() => {
-    fetchUserProfile();
-  }, []);
+  const [showSetting, setShowSetting] = useState(false);
+  const [showOtherComponent, setShowOtherComponent] = useState(false);
+  const [ShowMainView, setShowMainView] = useState(false);
 
   const fetchUserProfile = async () => {  
     try {
@@ -37,121 +29,100 @@ const UserProfile = () => {
     }
   };
 
-  const handleSave = async () => {
-    try {
-      await axios.patch(`http://${ipAdress}:3000/api/user/1`, profile);
-      console.log('Changes saved');
-    } catch (error) {
-      console.error('Error updating user profile:', error);
-    }
-  };
+  useEffect(() => {
+    fetchUserProfile();
+  }, []);
 
-  const handleImageUpload = () => {
-    launchImageLibrary({ mediaType: 'photo' }, async response => {
-      if (!response.didCancel) {
-        const { uri } = response.assets[0];
-        try {
-          const result = await Cloudinary.upload(uri);
-          const imageUrl = result.secure_url;
-          setImageUrl(imageUrl);
-        } catch (error) {
-          console.error('Error uploading image to Cloudinary:', error);
-        }
-      }
-    });
-  };
   const handleSettingClick = () => {
-    setShowSetting(true); // Show the setting view
-    setSettingText('Setting'); // Set the setting text
+    setShowSetting(true); // Show the setting component
   };
 
+  const handleCloseSetting = () => {
+    setShowSetting(false);
+    setShowMainView(true); 
+    setShowOtherComponent(false)// Hide the setting component
+  };
+
+  const handleIconPress = () => {
+    setShowOtherComponent(true)
+  };
   return (
-    <ScrollView>
-      <View style={styles.container}>
-        <View style={styles.container}>
-          <Image source={{ uri: user.coverPhoto }} style={styles.coverPhoto} />
-          <View style={styles.avatarContainer}>
-            <Image source={{ uri: user.avatar }} style={styles.avatar} />
+    <ScrollView style={styles.container}>
+      {/* Profile Header */}
+      <View style={styles.headerContainer}    >
+        <IconButton icon="dots-vertical" style={styles.icon} onPress={handleIconPress}   />
+        <Image
+          style={styles.coverPhoto}
+          source={{uri: 'https://w0.peakpx.com/wallpaper/821/616/HD-wallpaper-coffee-beans-brown-cappuccino-cofee-beans-latte.jpg'}}
+        />
+        <View style={styles.profileContainer1}>
+          <Image
+            style={styles.profilePhoto}
+            source={{uri: 'https://www.bootdey.com/img/Content/avatar/avatar1.png'}}
+          />
+          <View style={styles.profileContainer}>
             <Text style={styles.Name}>{profile.FirstName}</Text>
           </View>
-          <View style={styles.buttonContainer}>
-          <Button title="setting" onPress={handleSettingClick} />
-            <Button title="camande" onPress={() => {}} />
-          </View>
         </View>
-
-        {showSetting ? ( 
-          <View style={styles.settingContainer}>
-            <Text style={styles.settingText}>{settingText}</Text> {/* Display the setting text */}
-            <Button title="Close" onPress={() => setShowSetting(false)} /> {/* Close button to hide the setting view */}
-          </View>
-        ) : (
-          <View style={styles.profileInfo}>
-            <Text style={[styles.label, { marginTop: 100 }]}>FirstName:</Text>
-            <TextInput
-              style={styles.input}
-              value={profile.FirstName}
-              onChangeText={value => setProfile({ ...profile, FirstName: value })}
-              placeholder="Enter your name"
-            />
-            <Text style={styles.label}>LastName:</Text>
-            <TextInput
-              style={styles.input}
-              value={profile.LastName}
-              onChangeText={value => setProfile({ ...profile, LastName: value })}
-              placeholder="Enter your last name"
-            />
-            <Text style={styles.label}>Password:</Text>
-            <TextInput
-              style={styles.input}
-              value={profile.Password}
-              onChangeText={value => setProfile({ ...profile, Password: value })}
-              placeholder="Enter your password"
-              secureTextEntry={true}
-            />
-            <Text style={styles.label}>Adresse:</Text>
-            <TextInput
-              style={styles.input}
-              value={profile.Adresse}
-              onChangeText={value => setProfile({ ...profile, Adresse: value })}
-              placeholder="Enter your address"
-            />
-            <Button title="Save Changes" onPress={handleSave} />
-          </View>
-        )}
+      </View>
+      <View style={styles.bioContainer}>  
+        <Text style={styles.bioText}>
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed et
+          ullamcorper nisi.
+        </Text>
+      </View>
+      
+      
+      <View style={styles.statsContainer}>
+        <View style={styles.statContainer}>
+        </View>
+      </View>
+      <View style={styles.statContainer1}> 
+      <IconButton icon="post"  mode="contained" style={styles.button} onPress={handleSettingClick}>
+        <Text style={styles.buttonText}>Edit Profile</Text>
+      </IconButton>
+      {showSetting && <SettingComponent onClose={handleCloseSetting} />}
+      <IconButton icon="post"  mode="contained" style={styles.button} onPress={handleIconPress}>
+        <Text style={styles.buttonText}>Edit Profile</Text>
+      </IconButton>
+      {showOtherComponent && <Aother onClose={handleCloseSetting} />}
       </View>
     </ScrollView>
   );
 };
 
-const styles = StyleSheet.create({
+const styles = {
   container: {
     flex: 1,
-    padding: 20,
-    backgroundColor: '#ffffff',
+    backgroundColor: '#fff',
   },
-  heading: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    textAlign: 'center',
-    marginBottom: 20,
-    marginTop: 20,
-    color: 'black',
-  },
-  profileInfo: {
+  headerContainer: {
     alignItems: 'center',
-    marginBottom: 20,
-    position: 'relative',
   },
-  settingContainer: {
+  coverPhoto: {
+    width: '100%',
+    height: 200,
+  },
+  profileContainer: {
+    flexDirection: 'row', // Display items in the same row
+    alignItems: 'center', // Align items vertically
+  },
+  profilePhoto: {
+    width: 100,
+    height: 100,
+    borderRadius: 50,
+  },
+  profileContainer1: {
     alignItems: 'center',
-    marginTop: 20,
+    marginTop: -50,
   },
-  label: {
+  nameText: {
+    fontSize: 20,
     fontWeight: 'bold',
-    marginBottom: 5,
-    color: 'black',
-    marginRight: 290,
+    marginTop: 10,
+  },
+  bioContainer: {
+    padding: 15,
   },
   Name: {
     fontWeight: 'bold',
@@ -159,54 +130,52 @@ const styles = StyleSheet.create({
     color: 'black',
     fontSize: 30,
     textAlign: 'center',
+    marginRight: 10, 
   },
-  input: {
-    borderWidth: 1,
-    borderColor: '#cccccc',
-    borderRadius: 5,
-    padding: 10,
-    marginBottom: 10,
-    width: '100%',
+  icon: {
+    fontSize: 30,
     color: 'black',
-    marginTop: 10,
+    marginLeft: 350,
   },
-  button: {
-   backgroundColor:'black',
-   color: 'black',
-   marginLeft:900
+  bioText: {
+    fontSize: 16,
   },
-  coverPhoto: {
-    width: '100%',
-    height: 200,
-    resizeMode: 'cover',
-  },
-  avatarContainer: {
-    alignItems: 'center',
-    marginTop: -75,
-  },
-  avatar: {
-    width: 150,
-    height: 150,
-    borderRadius: 75,
-    borderWidth: 5,
-    borderColor: 'white',
-  },
-  name: {
-    marginTop: 15,
-    fontSize: 20,
-    fontWeight: 'bold',
-  },
-  buttonContainer: {
+  statsContainer: {
     flexDirection: 'row',
     marginTop: 20,
-    width: '60%',
-    justifyContent: 'space-between',
+    marginBottom: 20,
   },
-  settingText: {
+  statContainer: {
+    alignItems: 'center',
+    flex: 1,
+  },
+  statContainer: {
+    alignItems: 'center',
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center', 
+  },
+  statCount: {
     fontSize: 20,
     fontWeight: 'bold',
-    marginBottom: 10,
   },
-});
+  statLabel: {
+    fontSize: 16,
+    color: '#999',
+  },
+  button: {
+   
+    borderRadius: 5,
+    padding: 10,
+    marginHorizontal: 20,
+    width:200,
+    marginLeft:100
+  },
+  buttonText: {
+    fontSize: 16,
+    color: '#fff',
+    textAlign: 'center',
+  },
+};
 
 export default UserProfile;
