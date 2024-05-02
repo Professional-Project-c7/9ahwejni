@@ -1,7 +1,7 @@
 
 const mysql = require('mysql2')
 const { Sequelize ,DataTypes } = require('sequelize')
-const connection = new Sequelize('9ahwejni', 'root', 'root', {
+const connection = new Sequelize('9ahwejni', 'root', 'dhia2002', {
   host: 'localhost',
   dialect: 'mysql',
   logging:false
@@ -44,12 +44,12 @@ async function connectionTest (){
   
 
 // Sync the models with the database
-//  connection.sync()
-//     .then(() => {
-//         console.log('Models synced with the database.')
-//     })
-//     .catch((error) => {
-//         console.error('Unable to sync models with the database: ', error)
-//     })
+ connection.sync()
+    .then(() => {
+        console.log('Models synced with the database.')
+    })
+    .catch((error) => {
+        console.error('Unable to sync models with the database: ', error)
+    })
 
 module.exports = db

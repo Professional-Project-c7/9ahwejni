@@ -1,5 +1,6 @@
 import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
+import { StyleSheet, Text, View, Image, TouchableOpacity,ScrollView, FlatList, StatusBar,Button } from 'react-native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import SignUser from '../components/SignUser'; 
@@ -17,6 +18,7 @@ import HomePage from '../components/homepage';
 import AllCofe from '../components/AllCoffeShops'
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
+import { IconButton } from 'react-native-paper';
 
 function NAVSTART() {
   return (
