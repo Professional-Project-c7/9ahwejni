@@ -52,7 +52,7 @@ function Chat() {
     setMessages(prevMessages => [...prevMessages, newMessage]);
     setMessageInput('');
     
-    axios.post('http://${ipAdress}:3000/api/messages', newMessage)
+    axios.post(`http://${ipAdress}:3000/api/messages`, newMessage)
       .then(response => {
         console.log('Message saved successfully:', response.data);
       })
