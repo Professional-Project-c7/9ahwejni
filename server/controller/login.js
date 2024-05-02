@@ -7,7 +7,7 @@ const jwt = require('jsonwebtoken');
 
 exports.register = async (req, res) => {
     try {
-        const { UserType, Email, Password, FirstName, LastName, ImageUrl ,Address} = req.body;
+        const { UserType, Email, Password, FirstName, LastName,Address} = req.body;
         if (!Password) {
             return res.status(400).json({ error: 'Password is required' });
         }
@@ -22,7 +22,7 @@ exports.register = async (req, res) => {
                 Address,
                 FirstName,
                 LastName,
-                ImageUrl
+               
             
         });
         res.status(201).json({ user });
