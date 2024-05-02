@@ -5,13 +5,13 @@ import MapCoffe from './components/MapCoffe';
 import Chat from './components/chat';
 import CoffeeShopsList from './components/AllCoffeShops';
 function App() {
-  //  
   console.log(process.env.ipAdress);
+
   return (
     <SafeAreaView style={{ flex: 1 }}>
       {/* <Chat/> */}
     <CoffeeShopsList/>
-   
+  
     </SafeAreaView>
   ); 
 }
