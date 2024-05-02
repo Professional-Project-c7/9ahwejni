@@ -44,11 +44,11 @@ const FlatListPopularShops = () => {
 const styles = StyleSheet.create({
     textStyle: {
         fontSize: 14,
-        
-        padding: 30,
+      
+        padding: 20,
         backgroundColor:'#00512C',
    
-        margin:20,
+        margin:5,
         color : "white",
         borderRadius: 20,
 
@@ -57,8 +57,8 @@ const styles = StyleSheet.create({
 
         textAlign: "center",
         marginRight: 10,
-        marginTop: 110,
-        padding: 10,
+  
+        padding: 5,
     }
 })
 
