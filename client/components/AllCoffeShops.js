@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, StyleSheet, FlatList, Image, TouchableOpacity } from 'react-native';
 import axios from 'axios';
-
+import FlatListPopularShops from './FlatListPopularShops';
 const CoffeeShopsList = () => {
   const [coffeeShopsData, setCoffeeShopsData] = useState([]);
 
@@ -9,7 +9,7 @@ const CoffeeShopsList = () => {
     // Function to fetch data from API
     const fetchData = async () => {
       try {
-        const response = await axios.get(`http://${process.env.ipAdress}:3000/api/cofee`);
+        const response = await axios.get(`http://192.168.103.18:3000/api/cofee`);
         setCoffeeShopsData(response.data);
       } catch (error) {
         console.error('Error fetching data: ', error);
@@ -28,7 +28,12 @@ const CoffeeShopsList = () => {
           style={styles.input}
           placeholder="Search..."
         />
+
       </View>
+      <View style={styles.buttonList}>
+        <FlatListPopularShops  />
+      </View>
+      <Text style= {styles.TxtList}>List Coffe Shops </Text>
       <FlatList
   data={coffeeShopsData}
   keyExtractor={(item) => item.id}
@@ -72,6 +77,16 @@ const styles = StyleSheet.create({
     marginLeft: 20,
     marginBottom: 10,
   },
+  TxtList: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: '#333',
+    marginLeft: 20,
+    marginBottom: 10,
+  },
+  buttonList : {
+paddingBottom: -90,
+  },
   searchSection: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -79,10 +94,12 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     margin: 20,
     paddingLeft: 10,
+  
   },
   input: {
     flex: 1,
     padding: 10,
+  
     color: '#424242',
   },
   card: {
