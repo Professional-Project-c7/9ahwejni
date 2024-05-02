@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, StyleSheet, FlatList, Image, TouchableOpacity } from 'react-native';
 import axios from 'axios';
-
+import { ipAdress } from '../config';
 const CoffeeShopsList = () => {
   const [coffeeShopsData, setCoffeeShopsData] = useState([]);
 
@@ -9,7 +9,7 @@ const CoffeeShopsList = () => {
     // Function to fetch data from API
     const fetchData = async () => {
       try {
-        const response = await axios.get(`http://${process.env.ipAdress}:3000/api/user`);
+        const response = await axios.get(`http://${ipAdress}:3000/api/user`);
         setCoffeeShopsData(response.data);
       } catch (error) {
         console.error('Error fetching data: ', error);

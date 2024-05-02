@@ -17,7 +17,10 @@ module.exports = {
      },
      getAll :async function(req,res){
         try {
-            const user= await db.Coffee.findAll({})
+            
+            const user= await db.Coffee.findAll({
+                include:db.User
+            })
             res.status(200).send(user)
     
         } catch (error) {

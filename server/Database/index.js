@@ -30,10 +30,14 @@ async function connectionTest (){
 
   db.User.hasMany(db.Products);
   db.Products.belongsTo(db.User);
-  db.Coffee.hasMany(db.Products);
-  db.Products.belongsTo(db.Coffee)
-  db.Coffee.hasMany(db.User);
-  db.User.belongsTo(db.Coffee)
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+
 
 
 
@@ -46,12 +50,12 @@ async function connectionTest (){
 
 
 // Sync the models with the database
- connection.sync()
-    .then(() => {
-        console.log('Models synced with the database.')
-    })
-    .catch((error) => {
-        console.error('Unable to sync models with the database: ', error)
-    })
+//  connection.sync()
+//     .then(() => {
+//         console.log('Models synced with the database.')
+//     })
+//     .catch((error) => {
+//         console.error('Unable to sync models with the database: ', error)
+//     })
 
 module.exports = db
