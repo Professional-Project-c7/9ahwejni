@@ -28,6 +28,7 @@ const ProductList = () => {
   };
 
   const filteredProducts = products.filter(product => product.UserId === userId);
+//    <SafeAreaView style={[styles.container, { backgroundColor: '#dba617' }]}> 
 
   return (
     <SafeAreaView style={styles.container}>
@@ -85,6 +86,7 @@ const ProductList = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: '#dba617'
   },
   shopTitle: {
     fontSize: 28,
@@ -137,12 +139,12 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   productTitle: {
-    fontSize: 18,
+    fontSize: 22,
     fontWeight: 'bold',
   },
   productDescription: {
-    fontSize: 14,
-    color: 'gray',
+    fontSize: 20,
+    color: '#503C3C',
   },
   productPrice: {
     fontSize: 22,

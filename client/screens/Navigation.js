@@ -1,5 +1,6 @@
 import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
+import { StyleSheet, Text, View, Image, TouchableOpacity,ScrollView, FlatList, StatusBar,Button } from 'react-native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import SignUser from '../components/SignUser'; 
@@ -14,11 +15,10 @@ import Start4 from '../components/start4';
 import UserProfile from '../components/UserProfile';
 import MenuItems from '../components/menuitems';
 import HomePage from '../components/homepage';
-import Map from '../components/MapCoffe'
-import  ProductDetails from '../components/ProductDetails.js';
-
+import AllCofe from '../components/AllCoffeShops'
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
+import { IconButton } from 'react-native-paper';
 
 function NAVSTART() {
   return (
@@ -49,7 +49,7 @@ function TabNavigator() {
   return (
     <Tab.Navigator>
       <Tab.Screen name="homePage" component={HomePage} options={{ headerShown: false }} />
-      <Tab.Screen name="Map" component={Map} options={{ headerShown: false }} />
+      <Tab.Screen name="AllCofe" component={AllCofe} options={{ headerShown: false }} />
       <Tab.Screen name="UserProfile" component={UserProfile} options={{ headerShown: false }} />
     </Tab.Navigator>
   );

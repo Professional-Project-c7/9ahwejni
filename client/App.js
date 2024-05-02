@@ -6,13 +6,14 @@ import ProductList from './components/ProductList';
 import { Provider } from 'react-redux';
 import { store } from './redux/store';
 import AllCoffeShops from './components/AllCoffeShops';
+import HomePage from './components/homepage';
 function App() {
   console.log(process.env.ipAdress);
   
  return (
   <Provider store={store}>
     <SafeAreaView style={{ flex: 1 }}>
-    <ProductList/>
+    <ProductList />
  </SafeAreaView>
  </Provider>
   );

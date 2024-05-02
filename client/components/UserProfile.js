@@ -1,118 +1,126 @@
-import React, { useState ,useEffect} from 'react';
-import { View, Text, TextInput, StyleSheet,ScrollView, Button,Image } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Text, TextInput, StyleSheet, ScrollView, Button, Image } from 'react-native';
 import axios from 'axios';
+import { launchImageLibrary } from 'react-native-image-picker';
+import { Cloudinary } from 'cloudinary-react-native';
+import Icon from 'react-native-vector-icons/FontAwesome';
+import { ipAdress } from '../config';
 
 const UserProfile = () => {
- 
-  const [imageUrl, setImageUrl] = useState('https://b.fssta.com/uploads/application/soccer/headshots/713.png');
-  const [imageUrl2, setImageUrl2] = useState('https://w0.peakpx.com/wallpaper/821/616/HD-wallpaper-coffee-beans-brown-cappuccino-cofee-beans-latte.jpg')
+  const [imageUrl, setImageUrl] = useState(imageUrl);
   const [profile, setProfile] = useState({
-    FirstName:'',
+    FirstName: '',
     Password: '',
     LastName: '',
-    Adresse:"",
-   
+    Adresse: '',
   });
+  const [showSetting, setShowSetting] = useState(false); 
+  const [settingText, setSettingText] = useState(''); 
 
-  // const {LastName ,Password, imageUrl,Adresse, imageUrl2 } = profile;
-
-  
+  const user = {
+    avatar: "https://www.bootdey.com/img/Content/avatar/avatar1.png",
+    coverPhoto: "https://www.bootdey.com/image/280x280/FF00FF/000000",
+    name: "John Smith"
+  };
+ 
   useEffect(() => {
-    // Fetch user profile data when the component mounts
     fetchUserProfile();
   }, []);
 
-  const fetchUserProfile = async () => {
+  const fetchUserProfile = async () => {  
     try {
-      const response = await axios.get('http://${process.env.ipAdress}:3000/api/user/1'); // Assuming user ID is 1
+      const response = await axios.get(`http://${ipAdress}:3000/api/user/1`); // Assuming user ID is 1
       const userData = response.data;
-      console.log(response.data);
-     
-
       setProfile(userData);
     } catch (error) {
       console.error('Error fetching user profile:', error);
     }
   };
+
   const handleSave = async () => {
     try {
-      await axios.patch('http://${process.env.ipAdress}:3000/api/user/1', profile);
+      await axios.patch(`http://${ipAdress}:3000/api/user/1`, profile);
       console.log('Changes saved');
     } catch (error) {
       console.error('Error updating user profile:', error);
     }
   };
-  const handleImageChange = () => {
-    // Example: change image URLs based on user input or any condition
-    setImageUrl('NEW_IMAGE_URL1');
-    setImageUrl2('NEW_IMAGE_URL2');
+
+  const handleImageUpload = () => {
+    launchImageLibrary({ mediaType: 'photo' }, async response => {
+      if (!response.didCancel) {
+        const { uri } = response.assets[0];
+        try {
+          const result = await Cloudinary.upload(uri);
+          const imageUrl = result.secure_url;
+          setImageUrl(imageUrl);
+        } catch (error) {
+          console.error('Error uploading image to Cloudinary:', error);
+        }
+      }
+    });
   };
-  
- 
- 
-  
+  const handleSettingClick = () => {
+    setShowSetting(true); // Show the setting view
+    setSettingText('Setting'); // Set the setting text
+  };
 
   return (
-   <ScrollView>
-   
-  
-    <View style={styles.container}> 
-  
- <Text style={styles.heading}>Profile</Text> 
-  <View style={styles.profileInfo}>
-  <Image source={{ uri: imageUrl }} style={styles.image} />
-      <Image source={{ uri: imageUrl2 }} style={styles.image2} />
+    <ScrollView>
+      <View style={styles.container}>
+        <View style={styles.container}>
+          <Image source={{ uri: user.coverPhoto }} style={styles.coverPhoto} />
+          <View style={styles.avatarContainer}>
+            <Image source={{ uri: user.avatar }} style={styles.avatar} />
+            <Text style={styles.Name}>{profile.FirstName}</Text>
+          </View>
+          <View style={styles.buttonContainer}>
+          <Button title="setting" onPress={handleSettingClick} />
+            <Button title="camande" onPress={() => {}} />
+          </View>
         </View>
-        <Text style={styles.Name}>{profile.FirstName}</Text>
+
+        {showSetting ? ( 
+          <View style={styles.settingContainer}>
+            <Text style={styles.settingText}>{settingText}</Text> {/* Display the setting text */}
+            <Button title="Close" onPress={() => setShowSetting(false)} /> {/* Close button to hide the setting view */}
+          </View>
+        ) : (
           <View style={styles.profileInfo}>
-      
-        <Text style={[styles.label, {marginTop: 100}]}>FirstName:</Text>
-        <TextInput
-          style={styles.input}
-          value={profile.FirstName}
-          onChangeText={(value) => setProfile({ ...profile, FirstName: value })}
-          placeholder="Enter your name"
-        />
-        <Text style={styles.label}>LastName:</Text>
-        <TextInput
-          style={styles.input}
-          value={profile.LastName}
-          onChangeText={(value) => setProfile({ ...profile, Email: value })}
-          placeholder="Enter your Email"
-        />
-        <Text style={styles.label}>Password:</Text>
-        <TextInput
-          style={styles.input}
-          value={profile.Password}
-          onChangeText={(value) => setProfile({ ...profile, bio: value })}
-          placeholder ="Enter your password"
-          secureTextEntry={true}
-        />
-          <Text style={styles.label}>Config Password:</Text>
-        <TextInput
-          style={styles.input}
-          value={profile.Password}
-          onChangeText={(value) => setProfile({ ...profile, bio: value })}
-          placeholder ="Enter your password"
-          secureTextEntry={true}
-        />
-        <Text style={styles.label}>Adresse:</Text>
-           <TextInput
-          style={styles.input}
-          value={profile.Adresse}
-          onChangeText={(value) => setProfile({ ...profile, birthday: value })}
-          placeholder="City"
-        />
-           
-      <View style={{ flexDirection: 'row' }}>
-      </View> 
+            <Text style={[styles.label, { marginTop: 100 }]}>FirstName:</Text>
+            <TextInput
+              style={styles.input}
+              value={profile.FirstName}
+              onChangeText={value => setProfile({ ...profile, FirstName: value })}
+              placeholder="Enter your name"
+            />
+            <Text style={styles.label}>LastName:</Text>
+            <TextInput
+              style={styles.input}
+              value={profile.LastName}
+              onChangeText={value => setProfile({ ...profile, LastName: value })}
+              placeholder="Enter your last name"
+            />
+            <Text style={styles.label}>Password:</Text>
+            <TextInput
+              style={styles.input}
+              value={profile.Password}
+              onChangeText={value => setProfile({ ...profile, Password: value })}
+              placeholder="Enter your password"
+              secureTextEntry={true}
+            />
+            <Text style={styles.label}>Adresse:</Text>
+            <TextInput
+              style={styles.input}
+              value={profile.Adresse}
+              onChangeText={value => setProfile({ ...profile, Adresse: value })}
+              placeholder="Enter your address"
+            />
+            <Button title="Save Changes" onPress={handleSave} />
+          </View>
+        )}
       </View>
-      <Button icon="camera" buttonColor='black' mode="contained" title="Save Changes" onPress={handleSave} />
-   
-      </View>
-      </ScrollView>
-      
-     
+    </ScrollView>
   );
 };
 
@@ -128,37 +136,16 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginBottom: 20,
     marginTop: 20,
-    color:'black'
-    
+    color: 'black',
   },
-
   profileInfo: {
     alignItems: 'center',
     marginBottom: 20,
-    position: 'relative'
-  },
-  image: {
-    width: 150,
-    height: 150,
-    borderRadius: 75,
-    marginTop: 30,
     position: 'relative',
-    zIndex: 1,
-    border: '5px solid #121212',
-    backgroundColor:'white'
-    
   },
-  image2: {
-    width: 380,
-    height: 110,
-    borderRadius: 10,
-    position:'absolute',
-    marginRight:100,
-    top: 0,
-    left: 0,
-    right: 40,
-    bottom: 0,
-    zIndex: 0
+  settingContainer: {
+    alignItems: 'center',
+    marginTop: 20,
   },
   label: {
     fontWeight: 'bold',
@@ -170,8 +157,8 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginBottom: 5,
     color: 'black',
-    fontSize:30,
-   textAlign:"center"
+    fontSize: 30,
+    textAlign: 'center',
   },
   input: {
     borderWidth: 1,
@@ -180,48 +167,46 @@ const styles = StyleSheet.create({
     padding: 10,
     marginBottom: 10,
     width: '100%',
-    color:'black',
-    placeholder: 'black',
+    color: 'black',
     marginTop: 10,
   },
-  input1: {
-    borderWidth: 1,
-    borderColor: '#cccccc',
-    borderRadius: 5,
-    padding: 10,
-    marginBottom: 10,
-    width: '40%',
-    
+  button: {
+   backgroundColor:'black',
+   color: 'black',
+   marginLeft:900
   },
-
-  mapContainer: {
+  coverPhoto: {
     width: '100%',
     height: 200,
-    borderWidth: 1,
-    borderColor: '#cccccc',
-    borderRadius: 5,
+    resizeMode: 'cover',
+  },
+  avatarContainer: {
+    alignItems: 'center',
+    marginTop: -75,
+  },
+  avatar: {
+    width: 150,
+    height: 150,
+    borderRadius: 75,
+    borderWidth: 5,
+    borderColor: 'white',
+  },
+  name: {
+    marginTop: 15,
+    fontSize: 20,
+    fontWeight: 'bold',
+  },
+  buttonContainer: {
+    flexDirection: 'row',
+    marginTop: 20,
+    width: '60%',
+    justifyContent: 'space-between',
+  },
+  settingText: {
+    fontSize: 20,
+    fontWeight: 'bold',
     marginBottom: 10,
-    overflow: 'hidden',
   },
-  map: {
-    width: '100%',
-    height: '100%',
-  },
-
 });
 
 export default UserProfile;
-
-
-
-// import React from 'react'
-
-// export default function tes({navigation}) {
-//   return (
-//     <View>
-//       <Text onPress={()=>{
-//         navigation.navigate('test')
-//       }}>go back to page 1</Text>
-//     </View>
-//   )
-// }
