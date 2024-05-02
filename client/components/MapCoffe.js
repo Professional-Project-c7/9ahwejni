@@ -270,9 +270,5 @@ const styles = StyleSheet.create({
     height: 90,
     borderRadius: 5,
   },
-  enlargedCoffeeShopName: {
-    flex: 1,
-    textAlign: 'center',
-    marginLeft: 40
-  },
+ 
 });
