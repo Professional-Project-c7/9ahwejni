@@ -3,8 +3,8 @@ import { StyleSheet, Text, View, TextInput, TouchableOpacity, Image } from 'reac
 import { Button } from 'react-native-paper';
 import axios from 'axios';
 import { useNavigation } from '@react-navigation/native';
-// import {AsyncStorage} from 'react-native';
-
+import AsyncStorage from '@react-native-async-storage/async-storage'; 
+import { ipAdress } from '../config';
 const Login = ({ navigation }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -13,11 +13,11 @@ const Login = ({ navigation }) => {
   const handleSubmit = async () => {
     try {
       const response = await axios.post(
-        `http://192.168.103.10:3000/api/auth/login`,
+        `http://${ipAdress}:3000/api/auth/login`,
         { Email: email, Password: password }
       );
-      // await AsyncStorage.setItem('userToken', response.data.token);
-     
+      AsyncStorage.setItem('userToken', response.data.userId); 
+     console.log(response.data.userId);
       navigation.navigate('st2'); 
 
     } catch (error) {            
@@ -53,7 +53,6 @@ const Login = ({ navigation }) => {
         Login
       </Button>
       <TouchableOpacity onPress={navigateToUserAccount}>
-     
         <Text style={styles.createAccount}>Don't have an account? Create one</Text>
       </TouchableOpacity>
     </View>
@@ -71,10 +70,6 @@ const styles = StyleSheet.create({
     width: 150,
     height: 150,
     marginBottom: 30,
-  },
-  error: {
-    color: 'red',
-    marginBottom: 10,
   },
   inputContainer: {
     marginBottom: 20,
@@ -108,4 +103,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Login
+export default Login;
