@@ -1,65 +1,60 @@
-import React from 'react'
-import { View, Text, TextInput, StyleSheet, FlatList, TouchableOpacity , Button } from 'react-native';
+import React, { useState } from 'react';
+import { View, Text, TextInput, StyleSheet, FlatList, TouchableOpacity } from 'react-native';
 import MapCoffe from './MapCoffe';
-const FlatListPopularShops = () => {
-    const names =[
-        {
-            index: "1",
-            name: 'popular',
-        },
-        {
-            index:"2",
-            name: 'New Release',
-        },
-        {
-            index:"3",
-            name: 'Warm Coffe',
-        },
-        {
-            index:"4",
-            name: 'Best',
-        },
-    ]
-  return (
-    <View>
 
-   
-      <FlatList 
-      style={styles.lisStyle}
-      keyExtractor={(key)=>{
-          return key.index
-        }
-      }
-      horizontal={true}
-      data={names}
-      renderItem={({ item }) => (
-        <View style={styles.card}>
-          <Text style={styles.textStyle}>{item.name}</Text>
+const FlatListPopularShops = () => {
+    const [selectedIndex, setSelectedIndex] = useState(null);
+
+    const FlattButtons = [
+        { index: "1", name: 'Popular' },
+        { index: "2", name: 'New Release' },
+        { index: "3", name: 'Warm Coffe' },
+        { index: "4", name: 'Best' },
+    ];
+
+    const handleNamePress = (index) => {
+        setSelectedIndex(index);
+    };
+
+    return (
+        <View>
+            <FlatList
+                style={styles.lisStyle}
+                keyExtractor={(item) => item.index}
+                horizontal={true}
+                data={FlattButtons}
+                renderItem={({ item }) => (
+                    <TouchableOpacity onPress={() => handleNamePress(item.index)}>
+                        <View style={[styles.card]}>
+                            <Text style={[styles.textStyle, selectedIndex === item.index && styles.selected]}>{item.name}</Text>
+                        </View>
+                    </TouchableOpacity>
+                )}
+            />
         </View>
-      )}
-      />
-    </View>
-  )
-}
+    );
+};
+
 const styles = StyleSheet.create({
     textStyle: {
         fontSize: 14,
-      
         padding: 20,
-        backgroundColor:'#00512C',
-   
-        margin:5,
-        color : "white",
+        backgroundColor: '#DDDDDD',
+        margin: 5,
+        color: "black",
+        fontWeight: 'bold',
         borderRadius: 20,
-
     },
     lisStyle: {
-
         textAlign: "center",
         marginRight: 10,
-  
         padding: 5,
-    }
-})
+    },
+    selected: {
+      color: "white",
 
-export default FlatListPopularShops
+        backgroundColor: '#dba617', 
+    },
+});
+
+export default FlatListPopularShops;

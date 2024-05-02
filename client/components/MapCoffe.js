@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react';
+import { StyleSheet, View, TextInput, Text, Image, ScrollView, TouchableOpacity, Alert } from 'react-native';
 import MapView, { Marker } from 'react-native-maps';
-import { StyleSheet, View, TextInput, Button, Text, Image, ScrollView, TouchableOpacity } from 'react-native';
 import Geolocation from '@react-native-community/geolocation';
 import Geocoder from 'react-native-geocoding';
+import { Button } from 'react-native-paper';
 
-const GOOGLE_MAPS_API_KEY = 'AIzaSyDYm4cfAj3Lrk6HqMJZHGeB1JevFbEC55o'; // Replace with your actual API key
+const GOOGLE_MAPS_API_KEY = 'AIzaSyDYm4cfAj3Lrk6HqMJZHGeB1JevFbEC55o';
 Geocoder.init('AIzaSyDYm4cfAj3Lrk6HqMJZHGeB1JevFbEC55o');
 
 export default function MapCoffe() {
@@ -14,6 +15,8 @@ export default function MapCoffe() {
   const [renderAll, setRenderAll] = useState(false);
 
   useEffect(() => {
+    // Check for location permission
+    Geolocation.requestAuthorization();
     Geolocation.getCurrentPosition(
       position => {
         const { latitude, longitude } = position.coords;
@@ -23,27 +26,19 @@ export default function MapCoffe() {
           latitudeDelta: 0.0922,
           longitudeDelta: 0.0421,
         });
+        searchCoffeeShops(latitude, longitude);
       },
-      error => console.log(error.message),
+      error => {
+        console.log(error.message);
+        Alert.alert(
+          'Location Permission Required',
+          'Please enable location services to use this feature.',
+          [{ text: 'OK', onPress: () => console.log('OK Pressed') }]
+        );
+      },
       { enableHighAccuracy: true, timeout: 20000, maximumAge: 1000 }
     );
   }, []);
-
-  const handleSearch = async () => {
-    try {
-      const response = await Geocoder.from(searchQuery);
-      const { lat, lng } = response.results[0].geometry.location;
-      setRegion({
-        latitude: lat,
-        longitude: lng,
-        latitudeDelta: 0.0922,
-        longitudeDelta: 0.0421,
-      });
-      searchCoffeeShops(lat, lng);
-    } catch (error) {
-      console.error(error);
-    }
-  };
 
   const searchCoffeeShops = async (latitude, longitude) => {
     try {
@@ -52,15 +47,13 @@ export default function MapCoffe() {
       );
       const data = await response.json();
 
-      // Extract coffee shop locations, names, and photos from response
       const coffeeShopsData = data.results.map(result => ({
         name: result.name,
         latitude: result.geometry.location.lat,
         longitude: result.geometry.location.lng,
-        photoReference: result.photos ? result.photos[0].photo_reference : null // Get the photo reference if available
+        photoReference: result.photos ? result.photos[0].photo_reference : null,
       }));
 
-      // Set coffee shop markers and details
       setCoffeeShops(coffeeShopsData);
     } catch (error) {
       console.error(error);
@@ -68,15 +61,55 @@ export default function MapCoffe() {
   };
 
   const renderCoffeeShops = () => {
-    if (renderAll) {
-      return coffeeShops;
+    if (searchQuery === '') {
+      return coffeeShops; // Render all coffee shops if no search query
     } else {
-      // Render only a limited number of coffee shops
-      const limitedCoffeeShops = coffeeShops.slice(0, 5); // Change the number as needed
-      return limitedCoffeeShops;
+      if (renderAll) {
+        return coffeeShops;
+      } else {
+        // Render only a limited number of coffee shops
+        const limitedCoffeeShops = coffeeShops.slice(0, 5); // Change the number as needed
+        return limitedCoffeeShops;
+      }
     }
   };
-  
+
+  const handleSearch = async () => {
+    try {
+      const response = await Geocoder.from(searchQuery);
+      if (response.results.length === 0) {
+        Alert.alert(
+          'Location Not Found',
+          'No results found for the provided search query.',
+          [{ text: 'OK', onPress: () => console.log('OK Pressed') }]
+        );
+        return;
+      }
+      
+      const { lat, lng } = response.results[0].geometry.location;
+      setRegion({
+        latitude: lat,
+        longitude: lng,
+        latitudeDelta: 0.0922,
+        longitudeDelta: 0.0421,
+      });
+      searchCoffeeShops(lat, lng);
+      
+      // Add marker for searched location
+      const searchedLocation = {
+        latitude: lat,
+        longitude: lng,
+      };
+      setCoffeeShops([searchedLocation, ...coffeeShops]);
+    } catch (error) {
+      console.error(error);
+      Alert.alert(
+        'Error',
+        'An error occurred while searching for the location. Please try again later.',
+        [{ text: 'OK', onPress: () => console.log('OK Pressed') }]
+      );
+    }
+  };
   return (
     <View style={styles.container}>
       <View style={styles.searchContainer}>
@@ -86,19 +119,21 @@ export default function MapCoffe() {
           onChangeText={text => setSearchQuery(text)}
           placeholder="Search location..."
         />
-        <Button title="Search" onPress={handleSearch} />
+          <Button  style={styles.button} onPress={handleSearch}>
+   Search
+  </Button>
       </View>
       {region ? (
         <MapView style={styles.map} initialRegion={region}>
           <Marker coordinate={{ latitude: region.latitude, longitude: region.longitude }} />
           {renderCoffeeShops().map((marker, index) => (
-            <Marker key={index} coordinate={marker} pinColor="blue" />
+            <Marker key={index} coordinate={{ latitude: marker.latitude, longitude: marker.longitude }} pinColor="blue" />
           ))}
         </MapView>
       ) : (
         <MapView style={styles.map} />
       )}
-      {coffeeShops.length > 0 && ( // Render the button only if coffee shops are available
+      {coffeeShops.length > 0 && (
         <ScrollView style={styles.coffeeShopsContainer}>
           <TouchableOpacity onPress={() => setRenderAll(!renderAll)} style={styles.showAllButton}>
             <Text style={styles.showAllButtonText}>{renderAll ? 'Show Less' : 'Show All'}</Text>
@@ -114,16 +149,14 @@ export default function MapCoffe() {
                     style={renderAll ? styles.enlargedCoffeeShopImage : styles.coffeeShopImage}
                   />
                 )}
+                <Text style={[styles.coffeeShopName, renderAll && styles.enlargedCoffeeShopName]}>{coffeeShop.name}</Text>
               </View>
-              <Text style={[styles.coffeeShopName, renderAll && styles.enlargedCoffeeShopName]}>{coffeeShop.name}</Text>
             </View>
           ))}
         </ScrollView>
       )}
     </View>
   );
-  
-  
 }
 
 const styles = StyleSheet.create({
@@ -139,6 +172,10 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     borderBottomWidth: 1,
     borderBottomColor: '#ddd',
+  },
+  button:{
+    backgroundColor: '#dba617',
+  
   },
   input: {
     flex: 1,
@@ -156,26 +193,28 @@ const styles = StyleSheet.create({
   },
   coffeeShopItem: {
     marginBottom: 10,
+    backgroundColor: '#fff', /* Background color similar to paper */
+    borderRadius: 10, /* Rounded corners */
+    shadowColor: '#000', /* Shadow color */
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25, /* Opacity of the shadow */
+    shadowRadius: 3.84,
+    elevation: 5, /* Elevation for Android */
   },
-  showAllButtonText: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    marginBottom: 5,
-    color: '#B5C18E',
-
-    marginLeft: 310
-  },
-
   coffeeShopInfo: {
     flexDirection: 'row',
     alignItems: 'center',
+    padding: 10, /* Add padding for spacing */
   },
   coffeeShopName: {
+    flex: 1, /* Ensure the name takes remaining space */
     fontSize: 18,
     fontWeight: 'bold',
-//  marginLeft :  170 ,
-textAlign: 'center',
- 
+    textAlign: 'center',
+    marginLeft: 20,
   },
   coffeeShopImage: {
     width: 85,
@@ -183,13 +222,13 @@ textAlign: 'center',
     borderRadius: 5,
   },
   enlargedCoffeeShopImage: {
-    width: 400,
-    height: 200,
+    width: 110,
+    height: 110,
     borderRadius: 5,
   },
   enlargedCoffeeShopName: {
-  textAlign: 'center',
+    flex: 1, /* Ensure the name takes remaining space */
+    textAlign: 'center',
+    marginLeft: 40
   },
-  
-  
 });
