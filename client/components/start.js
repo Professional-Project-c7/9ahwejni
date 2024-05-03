@@ -34,7 +34,7 @@ function Start({navigation}) {
   useEffect(() => {
     setTimeout(() => {
       setIsLoading(false);
-    }, 5000); 
+    }, 1000); 
   }, []);
   const navigateToUserAccount = () => {
     navigation.navigate('Login'); 

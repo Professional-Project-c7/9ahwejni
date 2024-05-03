@@ -32,6 +32,7 @@ function NAVSTART() {
         <Stack.Screen name="ProductList" component={ProductList} options={{ headerShown: false }} />
 
         <Stack.Screen name="User" component={UserProfile} options={{ headerShown: false }} />
+        
         <Stack.Screen name="menu" component={MenuItems} options={{ headerShown: false }} />
 
         <Stack.Screen name="st2" component={Start2} options={{ headerShown: false }} />

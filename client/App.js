@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { SafeAreaView } from 'react-native';
-import NAVSTART from './components/UserProfile';
+import NAVSTART from './screens/Navigation';
+import Nav from './components/Wlc'
 import HomePage from './components/homepage';
 import Chat from './components/chat';
 import ProductDetailsPage from './components/ProdDetails';
