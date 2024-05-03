@@ -3,9 +3,9 @@ import { StyleSheet, View, TextInput, Text, Image, ScrollView, TouchableOpacity,
 import MapView, { Marker, Polyline } from 'react-native-maps';
 import Geolocation from '@react-native-community/geolocation';
 import Geocoder from 'react-native-geocoding';
-import { Button } from 'react-native-paper';
+import { Button, List, IconButton } from 'react-native-paper';
 
-const GOOGLE_MAPS_API_KEY = 'AIzaSyDYm4cfAj3Lrk6HqMJZHGeB1JevFbEC55o'; // Replace with your Google Maps API Key
+const GOOGLE_MAPS_API_KEY = 'AIzaSyDYm4cfAj3Lrk6HqMJZHGeB1JevFbEC55o';
 Geocoder.init('AIzaSyDYm4cfAj3Lrk6HqMJZHGeB1JevFbEC55o');
 
 export default function MapCoffe() {
@@ -14,6 +14,7 @@ export default function MapCoffe() {
   const [coffeeShops, setCoffeeShops] = useState([]);
   const [selectedCoffeeShop, setSelectedCoffeeShop] = useState(null);
   const [directions, setDirections] = useState(null); // State to store direction data
+  const [showList, setShowList] = useState(true); // State to toggle the visibility of the coffee shop list
 
   useEffect(() => {
     Geolocation.requestAuthorization();
@@ -84,7 +85,7 @@ export default function MapCoffe() {
       if (response.results.length === 0) {
         Alert.alert(
           'Location Not Found',
-          'No results found for the provided search query.',
+          'No results found for the provided search query. Please try entering a different location name or address.',
           [{ text: 'OK', onPress: () => console.log('OK Pressed') }]
         );
         return;
@@ -97,13 +98,14 @@ export default function MapCoffe() {
         latitudeDelta: 0.0922,
         longitudeDelta: 0.0421,
       });
-      searchCoffeeShops(lat, lng);
       
-      const searchedLocation = {
+      const searchedCoffeeShop = {
+        name: searchQuery, // Assuming the search query is the name of the coffee shop
         latitude: lat,
         longitude: lng,
+        distance: 0, 
       };
-      setCoffeeShops([searchedLocation, ...coffeeShops]);
+      setCoffeeShops([searchedCoffeeShop, ...coffeeShops]); // Add searched coffee shop to the array
     } catch (error) {
       console.error(error);
       Alert.alert(
@@ -198,33 +200,43 @@ export default function MapCoffe() {
         <MapView style={styles.map} />
       )}
 
-      {coffeeShops.length > 0 && (
-        <ScrollView style={styles.coffeeShopsContainer}>
-          {coffeeShops.map((coffeeShop, index) => (
-            <View key={index} style={styles.coffeeShopItem}>
-              <View style={styles.coffeeShopInfo}>
-                {coffeeShop.photoReference && (
-                  <Image
-                    source={{
-                      uri: `https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=${coffeeShop.photoReference}&key=${'AIzaSyDYm4cfAj3Lrk6HqMJZHGeB1JevFbEC55o'}`,
-                    }}
-                    style={styles.coffeeShopImage}
-                  />
-                )}
-                <Text style={styles.coffeeShopName}>{coffeeShop.name}</Text>
-                <TouchableOpacity onPress={() => handleGetDirections(coffeeShop)}>
-                  <Text style={styles.directionsButton}>Directions</Text>
-                </TouchableOpacity>
+   
+     
+      
+
+      <List.Accordion
+        title="Coffee Shops"
+        style={styles.coffeeShopsList}
+        left={props => <List.Icon {...props} icon="coffee" />}
+      >
+      {showList && (
+          <ScrollView style={styles.coffeeShopsContainer}>
+            {coffeeShops.map((coffeeShop, index) => (
+              <View key={index} style={styles.coffeeShopItem}>
+                <View style={styles.coffeeShopInfo}>
+                  {coffeeShop.photoReference && (
+                    <Image
+                      source={{
+                        uri: `https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=${coffeeShop.photoReference}&key=${'AIzaSyDYm4cfAj3Lrk6HqMJZHGeB1JevFbEC55o'}`,
+                      }}
+                      style={styles.coffeeShopImage}
+                    />
+                  )}
+                  <Text style={styles.coffeeShopName}>{coffeeShop.name}</Text>
+                  <TouchableOpacity onPress={() => handleGetDirections(coffeeShop)}>
+                    <Text style={styles.directionsButton}>Directions</Text>
+                  </TouchableOpacity>
+                </View>
+                <View style={styles.distanceContainer}>
+                  <Text style={styles.distanceText}>
+                    Distance: <Text style={styles.distanceValue}>{coffeeShop.distance} km</Text>
+                  </Text>
+                </View>
               </View>
-              <View style={styles.distanceContainer}>
-                <Text style={styles.distanceText}>
-                  Distance: <Text style={styles.distanceValue}>{coffeeShop.distance} km</Text>
-                </Text>
-              </View>
-            </View>
-          ))}
-        </ScrollView>
+            ))}
+          </ScrollView>
       )}
+      </List.Accordion>
     </View>
   );
 }
@@ -256,9 +268,22 @@ const styles = StyleSheet.create({
     borderRadius: 4,
     fontSize: 16,
   },
+  coffeeShopsList: {
+    marginBottom: 10,
+    backgroundColor: '#fff',
+    borderRadius: 10,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+  },
   coffeeShopsContainer: {
-    flex: 1,
     padding: 10,
+    paddingLeft : 10
   },
   coffeeShopItem: {
     marginBottom: 10,
@@ -293,6 +318,8 @@ const styles = StyleSheet.create({
   directionsButton: {
     color: 'blue',
     textDecorationLine: 'underline',
+    fontWeight: 'bold',
+    fontSize : 15, 
     marginLeft: 20,
   },
   distanceContainer: {
@@ -303,5 +330,11 @@ const styles = StyleSheet.create({
   },
   distanceValue: {
     fontWeight: 'bold',
+  },
+  toggleButton: {
+    position: 'absolute',
+    top: 10,
+    right: 10,
+    backgroundColor: 'transparent',
   },
 });
