@@ -15,7 +15,7 @@ import Start4 from '../components/start4';
 import UserProfile from '../components/UserProfile';
 import MenuItems from '../components/menuitems';
 import HomePage from '../components/homepage';
-import AllCofe from '../components/AllCoffeShops'
+import Map from '../components/MapCoffe'
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 import { IconButton } from 'react-native-paper';
