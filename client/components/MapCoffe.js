@@ -1,22 +1,21 @@
 import React, { useEffect, useState } from 'react';
 import { StyleSheet, View, TextInput, Text, Image, ScrollView, TouchableOpacity, Alert } from 'react-native';
-import MapView, { Marker } from 'react-native-maps';
+import MapView, { Marker, Polyline } from 'react-native-maps';
 import Geolocation from '@react-native-community/geolocation';
 import Geocoder from 'react-native-geocoding';
 import { Button } from 'react-native-paper';
 
-const GOOGLE_MAPS_API_KEY = 'AIzaSyDYm4cfAj3Lrk6HqMJZHGeB1JevFbEC55o';
+const GOOGLE_MAPS_API_KEY = 'AIzaSyDYm4cfAj3Lrk6HqMJZHGeB1JevFbEC55o'; // Replace with your Google Maps API Key
 Geocoder.init('AIzaSyDYm4cfAj3Lrk6HqMJZHGeB1JevFbEC55o');
 
 export default function MapCoffe() {
   const [region, setRegion] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [coffeeShops, setCoffeeShops] = useState([]);
-  const [renderAll, setRenderAll] = useState(false);
-  const [selectedCoffeeShop, setSelectedCoffeeShop] = useState(null); // New state to store the selected coffee shop
+  const [selectedCoffeeShop, setSelectedCoffeeShop] = useState(null);
+  const [directions, setDirections] = useState(null); // State to store direction data
 
   useEffect(() => {
-    // Check for location permission
     Geolocation.requestAuthorization();
     Geolocation.getCurrentPosition(
       position => {
@@ -62,26 +61,22 @@ export default function MapCoffe() {
     }
   };
 
-  // Function to calculate distance using Haversine formula
   const calculateDistance = (lat1, lon1, lat2, lon2) => {
-    const R = 6371; // Radius of the earth in km
-    const dLat = deg2rad(lat2 - lat1); // deg2rad below
+    const R = 6371;
+    const dLat = deg2rad(lat2 - lat1);
     const dLon = deg2rad(lon2 - lon1);
     const a =
       Math.sin(dLat / 2) * Math.sin(dLat / 2) +
       Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) *
       Math.sin(dLon / 2) * Math.sin(dLon / 2);
     const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-    const d = R * c; // Distance in km
-    return d.toFixed(2); // Round to 2 decimal places
+    const d = R * c;
+    return d.toFixed(2);
   };
   
   const deg2rad = (deg) => {
     return deg * (Math.PI / 180);
   };
-  
-
-
 
   const handleSearch = async () => {
     try {
@@ -127,10 +122,7 @@ export default function MapCoffe() {
         `https://maps.googleapis.com/maps/api/directions/json?origin=${userLocation}&destination=${destination}&key=${'AIzaSyDYm4cfAj3Lrk6HqMJZHGeB1JevFbEC55o'}`
       );
       const data = await response.json();
-      // Use the direction data to display the route on the map or do other actions as needed
-      // You can extract information like distance, duration, and step-by-step instructions from the data
-      // For simplicity, let's just log the direction data for now
-      console.log('Directions:', data);
+      setDirections(data);
     } catch (error) {
       console.error('Error fetching directions:', error);
       Alert.alert(
@@ -141,67 +133,89 @@ export default function MapCoffe() {
     }
   };
 
+  const decodePolyline = (encoded) => {
+    let index = 0;
+    const len = encoded.length;
+    let lat = 0;
+    let lng = 0;
+    const coordinates = [];
+
+    while (index < len) {
+      let b;
+      let shift = 0;
+      let result = 0;
+      do {
+        b = encoded.charCodeAt(index++) - 63;
+        result |= (b & 0x1f) << shift;
+        shift += 5;
+      } while (b >= 0x20);
+      const dlat = (result & 1) !== 0 ? ~(result >> 1) : result >> 1;
+      lat += dlat;
+      shift = 0;
+      result = 0;
+      do {
+        b = encoded.charCodeAt(index++) - 63;
+        result |= (b & 0x1f) << shift;
+        shift += 5;
+      } while (b >= 0x20);
+      const dlng = (result & 1) !== 0 ? ~(result >> 1) : result >> 1;
+      lng += dlng;
+
+      coordinates.push({ latitude: lat / 1e5, longitude: lng / 1e5 });
+    }
+    return coordinates;
+  };
+
   return (
     <View style={styles.container}>
-      {/* Search bar */}
       <View style={styles.searchContainer}>
-        {/* Search input */}
         <TextInput
           style={styles.input}
           value={searchQuery}
           onChangeText={text => setSearchQuery(text)}
           placeholder="Search location..."
         />
-        {/* Search button */}
         <Button style={styles.button} textColor='white' onPress={handleSearch}>
           Search
         </Button>
       </View>
       
-      {/* Map */}
       {region ? (
         <MapView style={styles.map} initialRegion={region}>
           <Marker coordinate={{ latitude: region.latitude, longitude: region.longitude }} />
           {coffeeShops.map((marker, index) => (
             <Marker key={index} coordinate={{ latitude: marker.latitude, longitude: marker.longitude }} pinColor="blue" />
           ))}
+          {directions && directions.routes && directions.routes.length > 0 && directions.routes[0].overview_polyline && (
+            <Polyline
+              coordinates={decodePolyline(directions.routes[0].overview_polyline.points)}
+              strokeWidth={5}
+              strokeColor="red"
+            />
+          )}
         </MapView>
       ) : (
         <MapView style={styles.map} />
       )}
 
-      {/* Coffee shops list */}
       {coffeeShops.length > 0 && (
         <ScrollView style={styles.coffeeShopsContainer}>
-          {/* Show all button */}
-          <TouchableOpacity onPress={() => setRenderAll(!renderAll)} style={styles.showAllButton}>
-            <Text style={styles.showAllButtonText}>{renderAll ? 'Show Less' : 'Show All'}</Text>
-          </TouchableOpacity>
-
-          {/* Coffee shops cards */}
           {coffeeShops.map((coffeeShop, index) => (
             <View key={index} style={styles.coffeeShopItem}>
               <View style={styles.coffeeShopInfo}>
-                {/* Coffee shop image */}
                 {coffeeShop.photoReference && (
                   <Image
                     source={{
-                      uri: `https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=${coffeeShop.photoReference}&key=${GOOGLE_MAPS_API_KEY}`,
+                      uri: `https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=${coffeeShop.photoReference}&key=${'AIzaSyDYm4cfAj3Lrk6HqMJZHGeB1JevFbEC55o'}`,
                     }}
-                    style={renderAll ? styles.enlargedCoffeeShopImage : styles.coffeeShopImage}
+                    style={styles.coffeeShopImage}
                   />
                 )}
-
-                {/* Coffee shop name */}
-                <Text style={[styles.coffeeShopName, renderAll && styles.enlargedCoffeeShopName]}>{coffeeShop.name}</Text>
-                
-                {/* Directions button */}
+                <Text style={styles.coffeeShopName}>{coffeeShop.name}</Text>
                 <TouchableOpacity onPress={() => handleGetDirections(coffeeShop)}>
-                  <Text style={styles.directionsButton}></Text>
+                  <Text style={styles.directionsButton}>Directions</Text>
                 </TouchableOpacity>
               </View>
-
-              {/* Distance */}
               <View style={styles.distanceContainer}>
                 <Text style={styles.distanceText}>
                   Distance: <Text style={styles.distanceValue}>{coffeeShop.distance} km</Text>
@@ -232,14 +246,6 @@ const styles = StyleSheet.create({
   button: {
     backgroundColor: '#dba617',
   },
-  showAllButtonText : { 
-    marginLeft : 300 ,
-    fontWeight: 'bold', 
-    fontSize : 20, 
-   
-
-
-  }, 
   input: {
     flex: 1,
     marginRight: 10,
@@ -284,18 +290,13 @@ const styles = StyleSheet.create({
     height: 85,
     borderRadius: 5,
   },
-  enlargedCoffeeShopImage: {
-    width: 110,
-    height: 110,
-    borderRadius: 5,
-  },
-  enlargedCoffeeShopName: {
-    flex: 1,
-    textAlign: 'center',
-    marginLeft: 40
+  directionsButton: {
+    color: 'blue',
+    textDecorationLine: 'underline',
+    marginLeft: 20,
   },
   distanceContainer: {
-    marginLeft: 20, // Adjust this value to your preference
+    marginLeft: 20,
   },
   distanceText: {
     fontSize: 16,
