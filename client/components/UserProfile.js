@@ -1,227 +1,181 @@
-import React, { useState ,useEffect} from 'react';
-import { View, Text, TextInput, StyleSheet,ScrollView, Button,Image } from 'react-native';
-import axios from 'axios';
+import React, { useState, useEffect } from 'react';
+import { View, Text, Image, ScrollView, TouchableOpacity } from 'react-native';
+import SettingComponent from './Setting';
+import axios from 'axios'
 import { ipAdress } from '../config';
+import { Button } from 'react-native-paper';
+import { IconButton } from 'react-native-paper';
+import Aother from './Another'
+
+
 const UserProfile = () => {
- 
-  const [imageUrl, setImageUrl] = useState('https://b.fssta.com/uploads/application/soccer/headshots/713.png');
-  const [imageUrl2, setImageUrl2] = useState('https://w0.peakpx.com/wallpaper/821/616/HD-wallpaper-coffee-beans-brown-cappuccino-cofee-beans-latte.jpg')
   const [profile, setProfile] = useState({
-    FirstName:'',
+    FirstName: '',
     Password: '',
     LastName: '',
-    Adresse:"",
-   
+    Adresse: '',
   });
+  const [showSetting, setShowSetting] = useState(false);
+  const [showOtherComponent, setShowOtherComponent] = useState(false);
+  const [ShowMainView, setShowMainView] = useState(false);
 
-  // const {LastName ,Password, imageUrl,Adresse, imageUrl2 } = profile;
-
-  
-  useEffect(() => {
-    // Fetch user profile data when the component mounts
-    fetchUserProfile();
-  }, []);
-
-  const fetchUserProfile = async () => {
+  const fetchUserProfile = async () => {  
     try {
       const response = await axios.get(`http://${ipAdress}:3000/api/user/1`); // Assuming user ID is 1
       const userData = response.data;
-      console.log(response.data);
-     
-
       setProfile(userData);
     } catch (error) {
       console.error('Error fetching user profile:', error);
     }
   };
-  const handleSave = async () => {
-    try {
-      await axios.patch(`http://${ipAdress}:3000/api/user/1`, profile);
-      console.log('Changes saved');
-    } catch (error) {
-      console.error('Error updating user profile:', error);
-    }
-  };
-  const handleImageChange = () => {
-    // Example: change image URLs based on user input or any condition
-    setImageUrl('NEW_IMAGE_URL1');
-    setImageUrl2('NEW_IMAGE_URL2');
-  };
-  
- 
- 
-  
 
+  useEffect(() => {
+    fetchUserProfile();
+  }, []);
+
+  const handleSettingClick = () => {
+    setShowSetting(true); // Show the setting component
+  };
+
+  const handleCloseSetting = () => {
+    setShowSetting(false);
+    setShowMainView(true); 
+    setShowOtherComponent(false)// Hide the setting component
+  };
+
+  const handleIconPress = () => {
+    setShowOtherComponent(true)
+  };
   return (
-   <ScrollView>
-   
-  
-    <View style={styles.container}> 
-  
- <Text style={styles.heading}>Profile</Text> 
-  <View style={styles.profileInfo}>
-  <Image source={{ uri: imageUrl }} style={styles.image} />
-      <Image source={{ uri: imageUrl2 }} style={styles.image2} />
+    <ScrollView style={styles.container}>
+      {/* Profile Header */}
+      <View style={styles.headerContainer}    >
+        <IconButton icon="dots-vertical" style={styles.icon} onPress={handleIconPress}   />
+        <Image
+          style={styles.coverPhoto}
+          source={{uri: 'https://w0.peakpx.com/wallpaper/821/616/HD-wallpaper-coffee-beans-brown-cappuccino-cofee-beans-latte.jpg'}}
+        />
+        <View style={styles.profileContainer1}>
+          <Image
+            style={styles.profilePhoto}
+            source={{uri: 'https://www.bootdey.com/img/Content/avatar/avatar1.png'}}
+          />
+          <View style={styles.profileContainer}>
+            <Text style={styles.Name}>{profile.FirstName}</Text>
+          </View>
         </View>
-        <Text style={styles.Name}>{profile.FirstName}</Text>
-          <View style={styles.profileInfo}>
-      
-        <Text style={[styles.label, {marginTop: 100}]}>FirstName:</Text>
-        <TextInput
-          style={styles.input}
-          value={profile.FirstName}
-          onChangeText={(value) => setProfile({ ...profile, FirstName: value })}
-          placeholder="Enter your name"
-        />
-        <Text style={styles.label}>LastName:</Text>
-        <TextInput
-          style={styles.input}
-          value={profile.LastName}
-          onChangeText={(value) => setProfile({ ...profile, Email: value })}
-          placeholder="Enter your Email"
-        />
-        <Text style={styles.label}>Password:</Text>
-        <TextInput
-          style={styles.input}
-          value={profile.Password}
-          onChangeText={(value) => setProfile({ ...profile, bio: value })}
-          placeholder ="Enter your password"
-          secureTextEntry={true}
-        />
-          <Text style={styles.label}>Config Password:</Text>
-        <TextInput
-          style={styles.input}
-          value={profile.Password}
-          onChangeText={(value) => setProfile({ ...profile, bio: value })}
-          placeholder ="Enter your password"
-          secureTextEntry={true}
-        />
-        <Text style={styles.label}>Adresse:</Text>
-           <TextInput
-          style={styles.input}
-          value={profile.Adresse}
-          onChangeText={(value) => setProfile({ ...profile, birthday: value })}
-          placeholder="City"
-        />
-           
-      <View style={{ flexDirection: 'row' }}>
-      </View> 
       </View>
-      <Button icon="camera" buttonColor='black' mode="contained" title="Save Changes" onPress={handleSave} />
-   
+      <View style={styles.bioContainer}>  
+        <Text style={styles.bioText}>
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed et
+          ullamcorper nisi.
+        </Text>
       </View>
-      </ScrollView>
       
-     
+      
+      <View style={styles.statsContainer}>
+        <View style={styles.statContainer}>
+        </View>
+      </View>
+      <View style={styles.statContainer1}> 
+      <IconButton icon="post"  mode="contained" style={styles.button} onPress={handleSettingClick}>
+        <Text style={styles.buttonText}>Edit Profile</Text>
+      </IconButton>
+      {showSetting && <SettingComponent onClose={handleCloseSetting} />}
+      <IconButton icon="post"  mode="contained" style={styles.button} onPress={handleIconPress}>
+        <Text style={styles.buttonText}>Edit Profile</Text>
+      </IconButton>
+      {showOtherComponent && <Aother onClose={handleCloseSetting} />}
+      </View>
+    </ScrollView>
   );
 };
 
-const styles = StyleSheet.create({
+const styles = {
   container: {
     flex: 1,
-    padding: 20,
-    backgroundColor: '#ffffff',
+    backgroundColor: '#fff',
   },
-  heading: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    textAlign: 'center',
-    marginBottom: 20,
-    marginTop: 20,
-    color:'black'
-    
-  },
-
-  profileInfo: {
+  headerContainer: {
     alignItems: 'center',
-    marginBottom: 20,
-    position: 'relative'
   },
-  image: {
-    width: 150,
-    height: 150,
-    borderRadius: 75,
-    marginTop: 30,
-    position: 'relative',
-    zIndex: 1,
-    border: '5px solid #121212',
-    backgroundColor:'white'
-    
+  coverPhoto: {
+    width: '100%',
+    height: 200,
   },
-  image2: {
-    width: 380,
-    height: 110,
-    borderRadius: 10,
-    position:'absolute',
-    marginRight:100,
-    top: 0,
-    left: 0,
-    right: 40,
-    bottom: 0,
-    zIndex: 0
+  profileContainer: {
+    flexDirection: 'row', // Display items in the same row
+    alignItems: 'center', // Align items vertically
   },
-  label: {
+  profilePhoto: {
+    width: 100,
+    height: 100,
+    borderRadius: 50,
+  },
+  profileContainer1: {
+    alignItems: 'center',
+    marginTop: -50,
+  },
+  nameText: {
+    fontSize: 20,
     fontWeight: 'bold',
-    marginBottom: 5,
-    color: 'black',
-    marginRight: 290,
+    marginTop: 10,
+  },
+  bioContainer: {
+    padding: 15,
   },
   Name: {
     fontWeight: 'bold',
     marginBottom: 5,
     color: 'black',
-    fontSize:30,
-   textAlign:"center"
+    fontSize: 30,
+    textAlign: 'center',
+    marginRight: 10, 
   },
-  input: {
-    borderWidth: 1,
-    borderColor: '#cccccc',
+  icon: {
+    fontSize: 30,
+    color: 'black',
+    marginLeft: 350,
+  },
+  bioText: {
+    fontSize: 16,
+  },
+  statsContainer: {
+    flexDirection: 'row',
+    marginTop: 20,
+    marginBottom: 20,
+  },
+  statContainer: {
+    alignItems: 'center',
+    flex: 1,
+  },
+  statContainer: {
+    alignItems: 'center',
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center', 
+  },
+  statCount: {
+    fontSize: 20,
+    fontWeight: 'bold',
+  },
+  statLabel: {
+    fontSize: 16,
+    color: '#999',
+  },
+  button: {
+   
     borderRadius: 5,
     padding: 10,
-    marginBottom: 10,
-    width: '100%',
-    color:'black',
-    placeholder: 'black',
-    marginTop: 10,
+    marginHorizontal: 20,
+    width:200,
+    marginLeft:100
   },
-  input1: {
-    borderWidth: 1,
-    borderColor: '#cccccc',
-    borderRadius: 5,
-    padding: 10,
-    marginBottom: 10,
-    width: '40%',
-    
+  buttonText: {
+    fontSize: 16,
+    color: '#fff',
+    textAlign: 'center',
   },
-
-  mapContainer: {
-    width: '100%',
-    height: 200,
-    borderWidth: 1,
-    borderColor: '#cccccc',
-    borderRadius: 5,
-    marginBottom: 10,
-    overflow: 'hidden',
-  },
-  map: {
-    width: '100%',
-    height: '100%',
-  },
-
-});
+};
 
 export default UserProfile;
-
-
-
-// import React from 'react'
-
-// export default function tes({navigation}) {
-//   return (
-//     <View>
-//       <Text onPress={()=>{
-//         navigation.navigate('test')
-//       }}>go back to page 1</Text>
-//     </View>
-//   )
-// }
