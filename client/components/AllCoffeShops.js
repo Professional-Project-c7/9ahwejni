@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, StyleSheet, FlatList, Image, TouchableOpacity } from 'react-native';
 import axios from 'axios';
+import FlatListPopularShops from './FlatListPopularShops';
 import { ipAdress } from '../config';
+
 const CoffeeShopsList = () => {
   const [coffeeShopsData, setCoffeeShopsData] = useState([]);
+  const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(() => {
-    // Function to fetch data from API
     const fetchData = async () => {
       try {
         const response = await axios.get(`http://${ipAdress}:3000/api/cofee`);
@@ -16,9 +18,13 @@ const CoffeeShopsList = () => {
       }
     };
 
-    // Call the fetchData function
     fetchData();
   }, []);
+
+  const filteredCoffeeShops = coffeeShopsData.filter(coffeeShop =>
+    coffeeShop.FirstName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    coffeeShop.LastName.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
   return (
     <View style={styles.container}>
@@ -27,34 +33,34 @@ const CoffeeShopsList = () => {
         <TextInput
           style={styles.input}
           placeholder="Search..."
+          onChangeText={text => setSearchQuery(text)}
+          value={searchQuery}
         />
       </View>
+      <FlatListPopularShops />
+      <Text style={styles.TxtList}>List Coffee Shops ({coffeeShopsData.length})</Text>
       <FlatList
-  data={coffeeShopsData}
-  keyExtractor={(item) => item.id}
-  renderItem={({ item }) => (
-    <View style={styles.card}>
-    <Image
-      style={styles.image}
-      source={{ uri: item.imgUrl }} 
-    />
-    <View style={styles.info}>
-      <Text style={styles.name}>{item.FirstName} {item.LastName}</Text> 
-      <Text style={styles.address}>{item.Adress}</Text> 
-      <View style={styles.ratingSection}>
-        <Text style={styles.ratingText}>{` ${item.rating} (${item.reviews} reviews)`}</Text>
-      </View>
-    </View>
-    <TouchableOpacity style={styles.favoriteButton}>
-      {/* You can add favorite functionality here */}
-    </TouchableOpacity>
-  </View>
-  
-
-  )}
-/>
-
-
+        data={filteredCoffeeShops}
+        keyExtractor={item => item.id}
+        renderItem={({ item }) => (
+          <View style={styles.card}>
+            <Image
+              style={styles.image}
+              source={{ uri: item.imgUrl }}
+            />
+            <View style={styles.info}>
+              <Text style={styles.name}>{item.FirstName} {item.LastName}</Text>
+              <Text style={styles.address}>{item.Adress}</Text>
+              <View style={styles.ratingSection}>
+                <Text style={styles.ratingText}>{`${item.rating} (${item.reviews} reviews)`}</Text>
+              </View>
+            </View>
+            <TouchableOpacity style={styles.favoriteButton}>
+              {/* You can add favorite functionality here */}
+            </TouchableOpacity>
+          </View>
+        )}
+      />
     </View>
   );
 };
@@ -66,6 +72,13 @@ const styles = StyleSheet.create({
     paddingTop: 50,
   },
   title: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: '#333',
+    marginLeft: 20,
+    marginBottom: 10,
+  },
+  TxtList: {
     fontSize: 24,
     fontWeight: 'bold',
     color: '#333',
@@ -128,7 +141,6 @@ const styles = StyleSheet.create({
   favoriteButton: {
     padding: 10,
   },
-  
 });
 
 export default CoffeeShopsList;

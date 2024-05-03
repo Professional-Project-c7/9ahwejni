@@ -15,9 +15,7 @@ import Start4 from '../components/start4';
 import UserProfile from '../components/UserProfile';
 import MenuItems from '../components/menuitems';
 import HomePage from '../components/homepage';
-import Map from '../components/MapCoffe'
-
-
+import AllCofe from '../components/AllCoffeShops'
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 import { IconButton } from 'react-native-paper';
@@ -33,7 +31,7 @@ function NAVSTART() {
         <Stack.Screen name="UserAccount" component={SignACC} options={{ headerShown: false }} />
         <Stack.Screen name="ProductList" component={ProductList} options={{ headerShown: false }} />
 
-        <Stack.Screen name="UserProfile" component={UserProfile} options={{ headerShown: false }} />
+        <Stack.Screen name="User" component={UserProfile} options={{ headerShown: false }} />
         <Stack.Screen name="menu" component={MenuItems} options={{ headerShown: false }} />
 
         <Stack.Screen name="st2" component={Start2} options={{ headerShown: false }} />
@@ -48,48 +46,52 @@ function NAVSTART() {
 function TabNavigator() {
   return (
     <Tab.Navigator
-      tabBarOptions={{
-        activeTintColor: '#dba617',
-        inactiveTintColor: 'gray',
+    tabBarOptions={{
+      activeTintColor: '#dba617',
+      inactiveTintColor: 'gray',
+    }}
+  >
+    <Tab.Screen
+      name="homePage"
+      component={HomePage}
+      options={{
+        tabBarIcon: ({ color, size }) => (
+          <IconButton icon="home" size={size} iconColor={color} />
+        ),
+        tabBarLabel: ({ focused, color }) => (
+          <Text style={{ color: focused ? '#dba617' : 'gray' }}>Home</Text>
+        ),
+        headerShown: false 
       }}
-    >
-      <Tab.Screen
-        name="homePage"
-        component={HomePage}
-        options={{
-          tabBarIcon: ({ color, size }) => (
-            <IconButton icon="home" size={size} iconColor={color} />
-          ),
-          tabBarLabel: ({ focused, color }) => (
-            <Text style={{ color: focused ? '#dba617' : 'gray' }}>Home</Text>
-          ),
-        }}
-      />
-      <Tab.Screen
-        name="Map"
-        component={Map}
-        options={{
-          tabBarIcon: ({ color, size }) => (
-            <IconButton icon="google-maps" size={size} iconColor={color} />
-          ),
-          tabBarLabel: ({ focused, color }) => (
-            <Text style={{ color: focused ? '#dba617' : 'gray' }}>Map</Text>
-          ),
-        }}
-      />
-      <Tab.Screen
-        name="UserProfile"
-        component={UserProfile}
-        options={{
-          tabBarIcon: ({ color, size }) => (
-            <IconButton icon="account" size={size} iconColor={color} />
-          ),
-          tabBarLabel: ({ focused, color }) => (
-            <Text style={{ color: focused ? '#dba617' : 'gray' }}>Profile</Text>
-          ),
-        }}
-      />
-    </Tab.Navigator>
+    />
+    <Tab.Screen
+      name="Map"
+      component={Map}
+      options={{
+        tabBarIcon: ({ color, size }) => (
+          <IconButton icon="google-maps" size={size} iconColor={color} />
+        ),
+        tabBarLabel: ({ focused, color }) => (
+          <Text style={{ color: focused ? '#dba617' : 'gray' }}>Map</Text>
+        ),
+        headerShown: false 
+      }}
+    />
+    <Tab.Screen
+      name="UserProfile"
+      component={UserProfile}
+      options={{
+        tabBarIcon: ({ color, size }) => (
+          <IconButton icon="account" size={size} iconColor={color} />
+        ),
+        tabBarLabel: ({ focused, color }) => (
+          <Text style={{ color: focused ? '#dba617' : 'gray' }}>Profile</Text>
+        ),
+        headerShown: false 
+      }}
+      
+    />
+  </Tab.Navigator>
   );
 }
 

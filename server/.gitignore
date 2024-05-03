@@ -15,7 +15,7 @@ config.js
 *.p12
 *.key
 *.mobileprovision
-
+config.js
 # Metro
 .metro-health-check*
 
@@ -35,3 +35,4 @@ yarn-error.*
 *.tsbuildinfo
 .env
 package-lock.json
+config.js
