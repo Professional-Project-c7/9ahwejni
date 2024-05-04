@@ -26,6 +26,22 @@ async function connectionTest (){
   db.Products=require('./product.Model')(connection,DataTypes)
   db.Coffee=require('./cofee.model')(connection,DataTypes)
   db.Message=require('./Message.model')(connection,DataTypes)
+  db.Packproduct=require('./packproduct')(connection,DataTypes)
+
+
+
+
+  db.Pack=require('./pack.model')(connection,DataTypes)
+  db.Size=require('./size.model')(connection,DataTypes)
+
+  db.Pack.belongsToMany(db.Products,{ through: db.Packproduct });
+  db.Products.belongsToMany(db.Pack,{ through: db.Packproduct });
+
+
+  db.Products.hasMany(db.Size);
+  db.Size.belongsTo(db.Products);
+
+
 
 
   db.User.hasMany(db.Products);
@@ -54,4 +70,4 @@ async function connectionTest (){
 //         console.error('Unable to sync models with the database: ', error)
 //     })
 
-module.exports = db
+module.exports =db
