@@ -14,6 +14,7 @@ const Cofee = require('./Routers/cofee.routes.js')
 const Authentication = require('./Routers/login.routers.js');
 const messagesRouter = require('./Routers/messages.routers')
 const Payment=require('./Routers/Payment.routers')
+const reviewRouter = require('./Routers/review.router.js');
 
 
 
@@ -25,6 +26,7 @@ app.use('/api/user', User);
 app.use("/api/product", ProductRoutes);
 app.use("/api/cofee", Cofee);
 app.use('/api/payment', Payment);
+app.use('/api/review', reviewRouter);
 
 
 let port = 3000;
