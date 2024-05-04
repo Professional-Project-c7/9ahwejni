@@ -9,7 +9,7 @@ import SellerPage from './components/SellerPage';
 import Paye from './components/Payment';
 
 function App() {
-  
+
   console.log(process.env.ipAdress);
  return (
   <Provider store={store}>

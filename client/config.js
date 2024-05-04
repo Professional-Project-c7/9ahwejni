@@ -1,5 +1,5 @@
 
-const ipAdress = "192.168.11.221";
+const ipAdress = "192.168.1.8";
 
 
 module.exports = {
