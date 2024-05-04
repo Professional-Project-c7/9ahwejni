@@ -36,6 +36,10 @@ const HomePage = ({ navigation }) => {
     
     <ScrollView style={styles.container}>
       <View style={styles.top}>
+        <Text style={styles.Texttitlecoffee} >Coffee's List</Text>
+        <Text style={styles.seeAllText} >See All</Text>
+      </View>
+      <View style={styles.top}>
   <IconButton icon="menu" iconColor='#dba617' />
   <Image source={logoImage} style={styles.logo} /> 
   <IconButton icon="bell-outline" iconColor='#dba617' />

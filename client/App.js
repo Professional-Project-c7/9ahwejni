@@ -9,8 +9,8 @@ function App() {
   return (
     <SafeAreaView style={{ flex: 1 }}>
     
-    <CoffeeShopProfile/>
-
+    
+    <NAVSTART/>
     </SafeAreaView>
   );
 }

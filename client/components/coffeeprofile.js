@@ -1,8 +1,18 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, Image, StyleSheet, ScrollView,ImageBackground } from 'react-native';
 import { IconButton } from 'react-native-paper';
+import AddPacks from './addpacks';
+import addProducts from './addproducts';
+import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { useNavigation } from '@react-navigation/native';
 
-const MyComponent = () => {
+
+const Stack = createNativeStackNavigator();
+const Tab = createBottomTabNavigator();
+const MyComponent = ({navigation}) => {
+    
   return (
     <ScrollView>
       <View style={styles.container}>
@@ -27,50 +37,89 @@ const MyComponent = () => {
 </ImageBackground>
 
         </View>
+       
+
         <View style={styles.profileInfo}>
-            
           <Text style={styles.name}>COFFEESHOP</Text>
         </View>
+        <View style={styles.optionsContainerOne}>
+        <TouchableOpacity style={styles.optionOne} onPress={() => navigation.navigate('InfoCoffee')}>
+  <View style={styles.optionContent}>
+    <Image source={require("../image/profile.png")} style={styles.optionImageE} />
+    <Text style={styles.optionText}>INFORMATIONS</Text>
+  </View>
+</TouchableOpacity>
+          
+<TouchableOpacity style={styles.optionOne} onPress={() => navigation.navigate('InfoCoffee')}>
+  <View style={styles.optionContent}>
+    <Image source={require("../image/availability.png")} style={styles.optionImageE} />
+    <Text style={styles.optionText}>AVAILABILITY</Text>
+  </View>
+</TouchableOpacity>
+<TouchableOpacity style={styles.optionOne} onPress={() => navigation.navigate('InfoCoffee')}>
+  <View style={styles.optionContent}>
+    <Image source={require("../image/settings.png")} style={styles.optionImageE} />
+    <Text style={styles.optionText}>SETTINGS</Text>
+  </View>
+</TouchableOpacity>
+        </View>
         <View style={styles.optionsContainer}>
-          <TouchableOpacity style={styles.option}>
-            <Image source={{ uri: 'https://images.ladepeche.fr/api/v1/images/view/5c37a43e8fe56f6aee207597/large/image.jpg' }} style={styles.optionImage} />
-            <Text style={styles.optionText}>ADD PACKS</Text>
+          <TouchableOpacity style={styles.option} onPress={() => navigation.navigate('AddPacks')}>
+            <View style={styles.test} >
+            <Image source={require("../image/packs.png")} style={styles.optionImage} /></View>
+            <Text style={styles.optionText} >ADD PACKS</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.option}>
-            <Image source={{ uri: "https://www.amorecoffee.co.uk/wp-content/uploads/2019/01/Enjoy.jpg" }} style={styles.optionImage} />
+          <TouchableOpacity style={styles.option} onPress={() => navigation.navigate('AddProducts')}>
+          <View style={styles.test} >
+            <Image source={require("../image/coffee-cup.png")} style={styles.optionImage} /></View>
             <Text style={styles.optionText}>ADD PRODUCTS</Text>
           </TouchableOpacity>
         </View>
         <View style={styles.optionsContainer}>
-          <TouchableOpacity style={styles.option}>
-            <Image source={{ uri: 'https://www.thetimes.co.uk/imageserver/image/%2Fmethode%2Fsundaytimes%2Fprod%2Fweb%2Fbin%2Fc215d336-ef13-11ec-a7ea-792e433452b2.jpg?crop=5760%2C3240%2C0%2C300&resize=392' }} style={styles.optionImage} />
+          <TouchableOpacity style={styles.option} onPress={() => navigation.navigate('Orders')}>
+          <View style={styles.test} >
+            <Image source={require("../image/online-order.png")} style={styles.optionImage} /></View>
             <Text style={styles.optionText}>ORDERS</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.option}>
-            <Image source={{ uri: 'https://esquirescoffee.co.uk/wp-content/uploads/2019/07/Picture-1.pngxx_.png' }} style={styles.optionImage} />
-            <Text style={styles.optionText}>ORDERS</Text>
+          <TouchableOpacity style={styles.option} onPress={() => navigation.navigate('ReviewsCoffee')}>
+          <View style={styles.test} >
+            <Image source={require("../image/reviews.png")} style={styles.optionImage} /></View>
+            <Text style={styles.optionText}>REVIEWS</Text>
           </TouchableOpacity>
         </View>
         <View style={styles.optionsContainer}>
-          <TouchableOpacity style={styles.option}>
-            <Image source={{ uri: 'https://esquirescoffee.co.uk/wp-content/uploads/2019/07/Picture-1.pngxx_.png' }} style={styles.optionImage} />
-            <Text style={styles.optionText}>Goal Settings</Text>
+          <TouchableOpacity style={styles.option } onPress={() => navigation.navigate('PaymentCardsDetails')}>
+          <View style={styles.test} >
+            <Image source={require("../image/credit-card.png")} style={styles.optionImage} /></View>
+            <Text style={styles.optionText}>PAYMENT DETAILS</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.option}>
-            <Image source={{ uri: 'https://esquirescoffee.co.uk/wp-content/uploads/2019/07/Picture-1.pngxx_.png' }} style={styles.optionImage} />
-            <Text style={styles.optionText}>Goal Settings</Text>
+          <TouchableOpacity style={styles.option} onPress={() => navigation.navigate('TransactionScreenCoffee')}>
+          <View style={styles.test} >
+            <Image source={require("../image/transaction.png")} style={styles.optionImage} /></View>
+            <Text style={styles.optionText}>TRANSACTIONS</Text>
           </TouchableOpacity>
         </View>
+        
         {/* Add more options here */}
-        <TouchableOpacity style={[styles.logoutButton, { backgroundColor: '#ff0000' }]}>
-          <Text style={[styles.logoutText, { color: '#ffffff' }]}>LOG OUT</Text>
-        </TouchableOpacity>
+        <View style={styles.logout}>
+        <TouchableOpacity style={styles.optionOne} onPress={() => navigation.navigate('InfoCoffee')}>
+  <View style={styles.optionContent}>
+    <Image source={require("../image/logout.png")} style={styles.optionImageE} />
+    <Text style={styles.optionText}>LOG OUT  </Text>
+  </View>
+</TouchableOpacity>
       </View>
+      </View>
+      
     </ScrollView>
+    
   );
 };
 
 const styles = StyleSheet.create({
+  test :{
+    backgroundColor: 'white',
+  },
     textWithIcon: {
         flexDirection: 'row',
         alignItems: 'center',
@@ -97,20 +146,54 @@ const styles = StyleSheet.create({
   profileInfo: {
     alignItems: 'center',
     // padding: 16,
-  },
+//     backgroundImage: 'url("https://as1.ftcdn.net/v2/jpg/01/64/55/04/1000_F_164550456_vWCyP4t3VtCUeYIb09IxYB1WAwj3cEvO.jpg")',
+//     backgroundSize: 'cover', 
+//     backgroundPosition: 'center', 
+},
   name: {
     fontSize: 24,
     fontWeight: 'bold',
     marginTop: 16,
+    color:"black"
   },
   expense: {
     fontSize: 18,
     marginTop: 8,
   },
+  optionContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
   optionsContainer: {
     flexDirection: 'row',
     justifyContent: 'space-around',
+    backgroundColor: "rgba(219, 219, 219, 0.8)",
     padding: 16,
+    margin:20,
+    borderRadius: 10,
+  },
+  optionsContainerOne: {
+    // flexDirection: 'row',
+    // justifyContent: 'space-around',
+    marginLeft:40,
+    marginRight:40,
+    marginTop:30,
+    marginBottom:30,
+    padding: 16,
+    // backgroundColor: "rgba(219, 219, 219, 0.8)",
+    borderRadius: 10,
+  },
+  logout: {
+   
+    marginLeft:40,
+    marginRight:40,
+    marginTop:30,
+    marginBottom:30,
+    padding: 16,
+    // backgroundColor: "rgba(219, 219, 219, 0.8)",
+    borderRadius: 10,
+    width:250
   },
   option: {
     flex: 1,
@@ -126,18 +209,45 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
   },
+  optionOne: {
+    
+    flex: 1,
+    margin: 8,
+    backgroundColor: '#dba617',
+    borderRadius: 50,
+    elevation: 5,
+    shadowColor: 'black',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+  },
   optionImage: {
-    width: '100%',
-    height: 100,
-    borderTopLeftRadius: 50,
-    borderTopRightRadius: 50,
-    resizeMode: 'cover',
+    width: 80, // Adjust the width of the image
+    height: 60, // Adjust the height of the image
+    alignSelf: 'center', // Center the image horizontally
+    marginBottom: 10, // Add margin to separate image from text
+    resizeMode: 'contain', // Ensure the image fits within its container
+    marginTop:20,
+    
+  },
+  optionImageE: {
+    width: 80, // Adjust the width of the image
+    height: 30, // Adjust the height of the image
+    alignSelf: 'center', // Center the image horizontally
+    marginBottom: 10, // Add margin to separate image from text
+    resizeMode: 'contain', // Ensure the image fits within its container
+    marginTop:10,
+    
   },
   optionText: {
     fontSize: 16,
     textAlign: 'center',
     padding: 10,
     color: '#ffffff',
+    marginRight:20
   },
   logoutButton: {
     backgroundColor: 'black',
@@ -147,11 +257,13 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     marginTop: 16,
     marginBottom: 40,
+    marginLeft: 36,
   },
   logoutText: {
-    fontSize: 16,
-    color: 'black',
+    fontSize: 22,
+    color: 'white',
     textAlign: 'center',
+    marginLeft: 16,
   },
   leftTextContainer: {
     position: 'absolute',
