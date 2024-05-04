@@ -27,6 +27,7 @@ async function connectionTest (){
   db.Coffee=require('./cofee.model')(connection,DataTypes)
   db.Message=require('./Message.model')(connection,DataTypes)
   db.Packproduct=require('./packproduct')(connection,DataTypes)
+  db.Payments=require('./Payment.model')(connection,DataTypes)
 
 
 
@@ -62,12 +63,12 @@ async function connectionTest (){
 
 
 // Sync the models with the database
-//  connection.sync()
-//     .then(() => {
-//         console.log('Models synced with the database.')
-//     })
-//     .catch((error) => {
-//         console.error('Unable to sync models with the database: ', error)
-//     })
+ connection.sync()
+    .then(() => {
+        console.log('Models synced with the database.')
+    })
+    .catch((error) => {
+        console.error('Unable to sync models with the database: ', error)
+    })
 
 module.exports =db
