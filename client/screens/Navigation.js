@@ -16,24 +16,41 @@ import UserProfile from '../components/UserProfile';
 import MenuItems from '../components/menuitems';
 import HomePage from '../components/homepage';
 import AllCofe from '../components/AllCoffeShops'
+import AddPacks from '../components/addpacks';
+import AddProducts from '../components/addproducts';
+import coffeeprofile from "../components/coffeeprofile"
+import Orders from '../components/orders';
+import TransactionScreenCoffee from '../components/transactionScreenCoffe';
+import ReviewsCoffee from '../components/ReviewsCoffee';
+import PaymentCardsDetails from '../components/paymentcardsdetailsCoffee';
+import EditCoffee from '../components/editCoffee';
+import InfoCoffee from '../components/informationsCoffee';
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 import { IconButton } from 'react-native-paper';
 
+
 function NAVSTART() {
   return (
     <NavigationContainer>
-      <Stack.Navigator>
+      <Stack.Navigator initialRouteName='coffeeProfile'>
         <Stack.Screen name="Start" component={Start} options={{ headerShown: false }} />
         <Stack.Screen name="Login" component={Login} options={{ headerShown: false }} />
         <Stack.Screen name="UserSignUp" component={SignUser} options={{ headerShown: false }} />
         <Stack.Screen name="CoffeeShopSignUp" component={SignCofee} options={{ headerShown: false }} />
         <Stack.Screen name="UserAccount" component={SignACC} options={{ headerShown: false }} />
         <Stack.Screen name="ProductList" component={ProductList} options={{ headerShown: false }} />
-
+        <Stack.Screen name="AddPacks" component={AddPacks} ptions={{ headerShown: false }} />
+        <Stack.Screen name="AddProducts" component={AddProducts} options={{ headerShown: false }} />
+        <Stack.Screen name="Orders" component={Orders} ptions={{ headerShown: false }} />
+        <Stack.Screen name="EditCoffee" component={EditCoffee} ptions={{ headerShown: false }} />
+        <Stack.Screen name="InfoCoffee" component={InfoCoffee} ptions={{ headerShown: false }} />
+        <Stack.Screen name="TransactionScreenCoffee" component={TransactionScreenCoffee} ptions={{ headerShown: false }} />
+        <Stack.Screen name="ReviewsCoffee" component={ReviewsCoffee} ptions={{ headerShown: false }} />
+        <Stack.Screen name="PaymentCardsDetails" component={PaymentCardsDetails} ptions={{ headerShown: false }} />
         <Stack.Screen name="User" component={UserProfile} options={{ headerShown: false }} />
         <Stack.Screen name="menu" component={MenuItems} options={{ headerShown: false }} />
-
+        <Stack.Screen name="coffeeProfile" component={coffeeprofile} options={{ headerShown: false }} />
         <Stack.Screen name="st2" component={Start2} options={{ headerShown: false }} />
         <Stack.Screen name="st3" component={Start3} options={{ headerShown: false }} />
         <Stack.Screen name="st4" component={Start4} options={{ headerShown: false }} />
