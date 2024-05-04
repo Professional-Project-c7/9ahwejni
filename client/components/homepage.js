@@ -8,10 +8,12 @@ import axios from 'axios';
 import logoImage from "../image/logo.png";
 import { ipAdress } from '../config';
 import CategoryBar from '../components/categorybar'; 
-import Toast from 'react-native-toast-message';
+// import Toast from 'react-native-toast-message';
 
 const HomePage = ({ navigation }) => {
   const [userData, setUserData] = useState([]);
+  const coffeeUsers = userData.filter(user => user.UserType === "coffee");
+  const clientUsers = userData.filter(user => user.UserType === "client");
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -29,6 +31,7 @@ const HomePage = ({ navigation }) => {
 
   const firstTwoImages = userData.slice(0, 3);
   return (
+    
     <ScrollView style={styles.container}>
       <View style={styles.top}>
         <IconButton icon="menu" iconColor='#dba617' />
