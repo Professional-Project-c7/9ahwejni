@@ -7,11 +7,11 @@ import { IconButton } from 'react-native-paper';
 import Aother from './Another';
 import Favoritelist from './Favoritelist';
 import logoImage from "../image/logo.png";
-// import { useNavigation } from '@react-navigation/native';
+ import { useNavigation } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage'; 
 
-const UserProfile = ({navigation}) => {
-  // const navigation = useNavigation(); 
+const UserProfile = () => {
+  const navigation = useNavigation(); 
    
 
   const [profile, setProfile] = useState({
@@ -42,7 +42,7 @@ const UserProfile = ({navigation}) => {
     fetchUserProfile();
   }, []);
 
-  const handleSettingClick = () => {
+  const handleSettingClick = () => { 
     setShowSetting(true);
     setShowMainView(false);
     setShowOtherComponent(false);
@@ -67,13 +67,14 @@ const UserProfile = ({navigation}) => {
     setFavoritelist(false);
   };
 
-  const handleLogout = async() => {
-    console.log(AsyncStorage.userToken);
-   await AsyncStorage.clear(); 
-
-     navigation.navigate('Login'); 
-  
-   
+  const handleLogout = async () => {
+    try {
+      await AsyncStorage.clear(); // Clear AsyncStorage
+      navigation.navigate('Login'); // Navigate to Login screen after successful logout
+    } catch (error) {
+      console.error('Error logging out:', error);
+      // Handle any errors that occur during logout
+    }
   };
 
   return (
@@ -114,7 +115,7 @@ const UserProfile = ({navigation}) => {
       <View style={styles.statContainer2}>
         <IconButton icon="account-plus-outline"  style={styles.button} onPress={handleFavList}>
         </IconButton> 
-          <Text style={styles.buttonText}>Order List</Text>
+          <Text style={styles.buttonText1}>Order List</Text>
       </View>
       <TouchableOpacity style={styles.button}   onPress={handleLogout}>
             <Text > Log out</Text>
