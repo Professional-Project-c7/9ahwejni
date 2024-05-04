@@ -33,7 +33,7 @@ import { IconButton } from 'react-native-paper';
 function NAVSTART() {
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName='coffeeProfile'>
+      <Stack.Navigator initialRouteName='Start'>
         <Stack.Screen name="Start" component={Start} options={{ headerShown: false }} />
         <Stack.Screen name="Login" component={Login} options={{ headerShown: false }} />
         <Stack.Screen name="UserSignUp" component={SignUser} options={{ headerShown: false }} />
