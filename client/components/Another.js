@@ -8,6 +8,7 @@ const AnotherComponent = ({ onClose }) => {
     const handleSave = () => {
         // Handle saving profile details to database or API
         console.log('AnotherComponent!');
+        
       };
   return (
     
@@ -43,3 +44,5 @@ const styles = {
 };
 
 export default AnotherComponent;
+
+
