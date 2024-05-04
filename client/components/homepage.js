@@ -1,14 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { StyleSheet, Text, View, Image, TouchableOpacity, ScrollView, FlatList, StatusBar } from 'react-native';
 import SearchBar from '../components/searchbar';
-import hamburgerIcon from '../image/hamburger.png';
-import notifIcon from '../image/notif.png';
 import { IconButton } from 'react-native-paper';
 import RandomProducts from "../components/randomproducts";
 import Pub from "../components/pub";
 import axios from 'axios';
-import logoImage from "../image/logo.png"
+import logoImage from "../image/logo.png";
 import { ipAdress } from '../config';
+import CategoryBar from '../components/categorybar'; 
+import Toast from 'react-native-toast-message';
+
 const HomePage = ({ navigation }) => {
   const [userData, setUserData] = useState([]);
 
@@ -16,7 +17,6 @@ const HomePage = ({ navigation }) => {
     const fetchUserData = async () => {
       try {
         const response = await axios.get(`http://${ipAdress}:3000/api/user/`);
-        
         const coffeeUsers = response.data.filter(user => user.UserType === "coffee");
         setUserData(coffeeUsers);
       } catch (error) {
@@ -31,15 +31,19 @@ const HomePage = ({ navigation }) => {
   return (
     <ScrollView style={styles.container}>
       <View style={styles.top}>
-  <IconButton icon="menu" iconColor='#dba617' />
-  <Image source={logoImage} style={styles.logo} /> 
-  <IconButton icon="bell-outline" iconColor='#dba617' />
-</View>
+        <IconButton icon="menu" iconColor='#dba617' />
+        <Image source={logoImage} style={styles.logo}  />
+        <IconButton icon="bell-outline" iconColor='#dba617' />
+      </View>
       <SearchBar />
+      <View style={styles.categoryBarContainer}>
+        <Text style={styles.categoryTitle}>Category</Text>
+        <CategoryBar />
+      </View>
       <Pub />
       <View style={styles.top}>
-        <Text style={styles.Texttitlecoffee} >Coffee's List</Text>
-        <Text style={styles.seeAllText} >See All</Text>
+        <Text style={styles.Texttitlecoffee}>Top rated coffees of the day!</Text>
+        {/* <Text style={styles.seeAllText}>See All</Text>  */}
       </View>
       <FlatList
         data={firstTwoImages}
@@ -59,8 +63,8 @@ const HomePage = ({ navigation }) => {
           </TouchableOpacity>
         )}
       />
-      <StatusBar style="auto" />
       <RandomProducts />
+      <StatusBar style="auto" />
     </ScrollView>
   );
 }
@@ -77,6 +81,20 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginHorizontal: 12,
   },
+  categoryBarContainer: {
+    flexDirection: 'column',
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: '100%',
+    marginTop: 20,
+    marginRight: 30, // Adjusted the left margin to ensure visibility
+  },
+  categoryTitle: {
+    fontSize: 22,
+    fontWeight: 'bold',
+    color: '#000',
+    marginBottom: 10,
+  },
   Texttitlecoffee: {
     fontSize: 20,
     fontWeight: 'bold',
@@ -84,9 +102,6 @@ const styles = StyleSheet.create({
     color: '#dba617',
     textAlign: 'center',
     marginTop: 40,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
     marginLeft: 20
   },
   seeAllText: {
@@ -131,9 +146,11 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   logo: {
-    width: 60, 
+    width: 60,
     height: 60,
-  }
+   
+  },
+  
 });
 
 export default HomePage;
