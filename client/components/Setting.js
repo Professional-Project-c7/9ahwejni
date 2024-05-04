@@ -44,6 +44,9 @@ const SettingComponent = ({ onClose }) => {
   
     
       <View style={styles.profileInfo}>
+        <View style={styles.icon} >
+                <IconButton icon="close" onPress={onClose}   />
+</View>
               <Text style={[styles.label, { marginTop: 100 }]}>FirstName:</Text>
               <TextInput
                 style={styles.input}
@@ -83,7 +86,6 @@ const SettingComponent = ({ onClose }) => {
               />
                 <Button title="Save Changes" onPress={handleSave} />
              
-                <IconButton icon="close" style={styles.icon} onPress={onClose}   />
              </View>
   );
 };
@@ -102,11 +104,16 @@ const styles = StyleSheet.create({
       width: '100%',
       zIndex: 1,
     },
+  
     buttonWrapper: {
       width: 150,
       height: 50,
       
       
+    },
+    icon:{
+      marginTop:60,
+    
     },
     heading: {
       fontSize: 24,
@@ -125,7 +132,7 @@ const styles = StyleSheet.create({
       fontWeight: 'bold',
       marginBottom: 5,
       color: 'black',
-      marginRight: 290,
+      marginRight: 220,
     },
     
     Name: {
@@ -141,7 +148,7 @@ const styles = StyleSheet.create({
       borderRadius: 5,
       padding: 10,
       marginBottom: 10,
-      width: '90%',
+      width: 300,
       color: 'black',
       marginTop: 10,
     },
