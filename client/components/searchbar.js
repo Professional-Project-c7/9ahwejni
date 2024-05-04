@@ -1,54 +1,87 @@
-import react from 'react';
-import {View, Text, TouchableOpacity, StyleSheet, TextInput,Image} from 'react-native';
-import searchlogo from '../image/searchlogo.png'
-import { IconButton } from 'react-native-paper';
+import React, { useState } from 'react';
+import { View, TextInput, StyleSheet } from 'react-native';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons'; 
 
 export default function SearchBar() {
+  const [searchActive, setSearchActive] = useState(false);
+  const [filterActive, setFilterActive] = useState(false);
 
+  const toggleSearch = () => {
+    setSearchActive(true); // Set active to show the color change
+    setTimeout(() => {
+      setSearchActive(false); // Revert back after half a second
+    }, 500); // 500 milliseconds
+  };
 
-return(
-<View style={styles.asembler}>
-<View style={styles. Main}>
-<TextInput placeholder='Search ...' style={styles. Input}></TextInput>
-</View>
-<View style={styles.buttonP}>
-<IconButton icon="account-search-outline" iconColor='#dba617' size={30}  />
-</View>
-</View>
-)}
+  const toggleFilter = () => {
+    setFilterActive(!filterActive);
+  };
 
-
+  return (
+    <View style={styles.asembler}>
+      <View style={styles.Main}>
+        <TextInput placeholder='Search ...' style={styles.Input}></TextInput>
+      </View>
+      <Icon
+        name="magnify"
+        color={searchActive ? '#dba617' : '#FFF'}
+        size={33}
+        style={[styles.searchIcon, searchActive ? styles.active : styles.inactive]}
+        onPress={toggleSearch}
+      />
+      <Icon
+        name="filter-variant"
+        color={filterActive ? '#dba617' : '#FFF'}
+        size={33}
+        style={[styles.filterIcon, filterActive ? styles.active : styles.inactive]}
+        onPress={toggleFilter}
+      />
+    </View>
+  );
+}
 
 const styles = StyleSheet.create({
-asembler: {
-flexDirection: 'row',
-marginTop: 30,
-marginBottom: 30,
-justifyContent: 'center'
-},
-Main: {
-    backgroundColor: '#FFF',
-    width: 250,
-    height:50,
-    borderWidth:1,
-    borderColor: '#dba617',
-    borderTopLeftRadius:40,
-    borderBottomLeftRadius:40,
-    },
-    Input: {
-        marginLeft: 10,
-    marginTop: 3
-    },
-    
-    buttonP:{
-    height:50,
-    width:70,
-    backgroundColor: '#FFF',
-    borderWidth:1,
-    borderBottomRightRadius:30,
-    borderTopRightRadius: 30,
-    borderColor: '#dba617',
+  asembler: {
+    flexDirection: 'row',
+    marginTop: 30,
+    marginBottom: 30,
+    justifyContent: 'center',
     alignItems: 'center',
-    justifyContent: 'center'
-    }
-})
+  },
+  Main: {
+    backgroundColor: '#FFF',
+    width: 270,
+    height: 50,
+    borderWidth: 2,
+    borderColor: '#dba617',
+    borderTopLeftRadius: 40,
+    borderBottomLeftRadius: 40,
+  },
+  Input: {
+    marginLeft: 10,
+    marginTop: 3,
+    flex: 1,
+  },
+  searchIcon: {
+    backgroundColor: '#dba617',
+    borderWidth: 1,
+    borderTopRightRadius: 30,
+    borderBottomRightRadius: 30,
+    borderColor: '#dba617',
+    padding: 8,
+  },
+  filterIcon: {
+    borderWidth: 1,
+    borderRadius: 30,
+    borderColor: '#dba617',
+    padding: 8,
+    marginLeft: 5,
+    backgroundColor: '#dba617',
+  },
+  active: {
+    backgroundColor: '#FFF',
+  },
+  inactive: {
+    backgroundColor: '#dba617',
+  }
+});
