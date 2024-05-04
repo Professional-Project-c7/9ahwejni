@@ -6,7 +6,9 @@ module.exports = {
 
 selectAll :async function(req,res){
     try {
-        const product= await db.Products.findAll({})
+        const product= await db.Products.findAll({
+            include: [{ model: db.User}]
+        })
         res.status(200).send(product)
         
     } catch (error) {
@@ -92,3 +94,4 @@ UpdateOne :async (req, res) => {
 
  }
 }
+

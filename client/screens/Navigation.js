@@ -49,6 +49,7 @@ function NAVSTART() {
         <Stack.Screen name="ReviewsCoffee" component={ReviewsCoffee} ptions={{ headerShown: false }} />
         <Stack.Screen name="PaymentCardsDetails" component={PaymentCardsDetails} ptions={{ headerShown: false }} />
         <Stack.Screen name="User" component={UserProfile} options={{ headerShown: false }} />
+        
         <Stack.Screen name="menu" component={MenuItems} options={{ headerShown: false }} />
         <Stack.Screen name="coffeeProfile" component={coffeeprofile} options={{ headerShown: false }} />
         <Stack.Screen name="st2" component={Start2} options={{ headerShown: false }} />
