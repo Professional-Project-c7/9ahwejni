@@ -16,6 +16,7 @@ import UserProfile from '../components/UserProfile';
 import MenuItems from '../components/menuitems';
 import HomePage from '../components/homepage';
 import AllCofe from '../components/AllCoffeShops'
+import Map from '../components/MapCoffe'
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 import { IconButton } from 'react-native-paper';
@@ -34,6 +35,7 @@ function NAVSTART() {
 
 
         <Stack.Screen name="User" component={UserProfile} options={{ headerShown: false }} />
+        
         <Stack.Screen name="menu" component={MenuItems} options={{ headerShown: false }} />
 
         <Stack.Screen name="st2" component={Start2} options={{ headerShown: false }} />

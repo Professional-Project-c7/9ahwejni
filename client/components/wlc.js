@@ -1,35 +1,29 @@
-// import * as React from 'react';
-// import { Text, View } from 'react-native';
-// import { NavigationContainer } from '@react-navigation/native';
-// import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-// import Home from '../components/homepage'
-// import Profile from '../components/UserProfile'
-// import Map from '../components/MapCoffe'
-// import { Ionicons } from '@expo/vector-icons';
-// import { black } from 'react-native-paper/lib/typescript/styles/themes/v2/colors';
+import React from 'react';
+import { NavigationContainer } from '@react-navigation/native';
+import { StyleSheet, Text, View, Image, TouchableOpacity,ScrollView, FlatList, StatusBar,Button } from 'react-native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
-// const Tab = createBottomTabNavigator();
-// function HomeScreen() {
-//     return (
-//       <View  style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-//         <Text>Notf!</Text>
-//       </View>
-//     );
-//   }
 
-// export default function User() {
-//   return (
-//     <NavigationContainer>
-//       <Tab.Navigator>
+import Login from '../components/Login';
+
+import UserProfile from '../components/UserProfile';
+
+const Stack = createNativeStackNavigator();
+
+import { IconButton } from 'react-native-paper';
+
+export default function NAV() {
+  return (
+    <NavigationContainer>
+      <Stack.Navigator>
+        <Stack.Screen name="User" component={UserProfile} options={{ headerShown: false }} />
+        <Stack.Screen name="Login" component={Login} options={{ headerShown: false }} />
+      </Stack.Navigator>
+    </NavigationContainer>
+    );
+}
+     
+
+        
+     
     
-//         <Tab.Screen name="Home" component={Home} />
-//         <Tab.Screen name="Map" component={Map} />
-//         <Tab.Screen name="Notfication" component={HomeScreen} />
-//         <Tab.Screen name="Profile" component={Profile} />
-//       </Tab.Navigator>
-//     </NavigationContainer>
-//   );
-// }
-
-
-
