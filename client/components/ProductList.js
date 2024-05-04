@@ -1,70 +1,61 @@
-import React, { useState } from 'react';
+import React, { useEffect } from 'react';
 import { SafeAreaView, ScrollView, StyleSheet, View, Image, TouchableOpacity } from 'react-native';
-import { Card, Title, Text } from 'react-native-paper';
-import img from '../image/circle.png';
+import { Card, Title, Text, IconButton } from 'react-native-paper';
 import heart from '../image/favorite.png';
+import { useProducts } from '../redux/products/productHooks';
 
 const HoverableIconButton = ({ onAddPress }) => (
-  <TouchableOpacity
+  <IconButton
+    icon="plus-circle"
+    iconColor="#dba617"  
+    size={40}
     onPress={onAddPress}
-    style={[styles.iconButton, { width: 60, height: 60 }]}  // Making the Add icon larger
-  >
-    <Image
-      source={img}
-      style={[styles.icon, { width: 40, height: 40 }]}  // Increase the size of the Add icon
-    />
-  </TouchableOpacity>
+    style={{ margin: 10 }}
+  />
 );
 
 const ProductList = () => {
-  const [favorites, setFavorites] = useState({});
+  const { products, getProducts, status } = useProducts();
+  const [favorites, setFavorites] = React.useState({});
+  const userId = 1; // User ID to filter products
+
+  useEffect(() => {
+    getProducts();
+  }, []);
 
   const toggleFavorite = (id) => {
     setFavorites(prev => ({ ...prev, [id]: !prev[id] }));
   };
 
-  const productsData = [
-    {
-      id: 1,
-      title: 'Chilled Hazelnut Cold Brew',
-      price: '16.43',
-      description: 'Sunflower Lane • 15 Minutes',
-      imgUrl: 'https://via.placeholder.com/150'
-    },
-    {
-      id: 2,
-      title: 'Sweet Chocolate Mocha Coffee',
-      price: '16.43',
-      description: 'Sunflower Lane • 15 Minutes',
-      imgUrl: 'https://via.placeholder.com/150'
-    },
-    {
-      id: 3,
-      title: 'Vanilla Bean Latte',
-      price: '14.99',
-      description: 'Sunflower Lane • 10 Minutes',
-      imgUrl: 'https://via.placeholder.com/150'
-    }
-  ];
+  const filteredProducts = products.filter(product => product.UserId === userId);
+//    <SafeAreaView style={[styles.container, { backgroundColor: '#dba617' }]}> 
 
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView>
-        <Title style={styles.shopTitle}>The Beanery: A Coffee Lover's Paradise</Title>
-        <Image 
-          style={styles.shopImage}
-          source={{ uri: 'https://img.craiyon.com/2024-04-29/ZrJgfOkDQdOBqIlpVtSsRw.webp' }} // Replace with your image URL
-        />
-        <Text style={styles.shopSubtitle}>Sunflower Lane • 15 Minutes</Text>
+        {filteredProducts.length > 0 && (
+          <>
+            <Title style={styles.shopTitle}>
+              {filteredProducts[0].shopTitle}: {filteredProducts[0].shopName || 'Default Shop Name'}
+            </Title>
+            <Image 
+              style={styles.shopImage}
+              source={{ uri: 'https://images.pexels.com/photos/321552/pexels-photo-321552.jpeg?auto=compress&cs=tinysrgb&w=600' }}
+            />
+            <Text style={styles.shopSubtitle}>Explore Our Exclusive Coffee Collection</Text>
+          </>
+        )}
         
         <Title style={styles.productListTitle}>My Products</Title>
-        {productsData.map((product) => (
+        {status === 'loading' ? (
+          <Text>Loading...</Text>
+        ) : filteredProducts.map((product) => (
           <Card key={product.id} style={styles.productCard}>
             <Card.Content style={styles.productCardContent}>
               <View style={styles.imageContainer}>
                 <Image 
                   style={styles.productImage}
-                  source={{ uri: product.imgUrl }} // Replace with your image URL
+                  source={{ uri: product.imgUrl }}
                 />
                 <TouchableOpacity
                   onPress={() => toggleFavorite(product.id)}
@@ -72,12 +63,12 @@ const ProductList = () => {
                 >
                   <Image
                     source={heart}
-                    style={[styles.icon, { tintColor: favorites[product.id] ? 'red' : '#000' }]}
+                    style={[styles.icon, { tintColor: favorites[product.id] ? 'red' : '#FFF' }]}
                   />
                 </TouchableOpacity>
               </View>
               <View style={styles.productInfo}>
-                <Title style={styles.productTitle}>{product.title}</Title>
+                <Title style={styles.productTitle}>{product.name}</Title>
                 <Text style={styles.productDescription}>{product.description}</Text>
                 <Text style={styles.productPrice}>${product.price}</Text>
               </View>
@@ -95,6 +86,7 @@ const ProductList = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: '#dba617'
   },
   shopTitle: {
     fontSize: 28,
@@ -109,8 +101,8 @@ const styles = StyleSheet.create({
     height: 200, 
     resizeMode: 'cover',
     borderRadius: 8, 
-    borderWidth: 0.5, 
-    borderColor: '#FFFFFF', 
+    borderWidth: 0.7, 
+    borderColor: '#3e3e3e', 
     marginBottom: 16, 
     overflow: 'hidden', 
     elevation: 2, 
@@ -128,7 +120,7 @@ const styles = StyleSheet.create({
   productCard: {
     marginHorizontal: 16,
     marginBottom: 16,
-    elevation: 1, // Adjust shadow to match your design
+    elevation: 1,
   },
   productCardContent: {
     flexDirection: 'row',
@@ -147,12 +139,12 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   productTitle: {
-    fontSize: 18,
+    fontSize: 22,
     fontWeight: 'bold',
   },
   productDescription: {
-    fontSize: 14,
-    color: 'gray',
+    fontSize: 20,
+    color: '#503C3C',
   },
   productPrice: {
     fontSize: 22,

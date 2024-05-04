@@ -1,23 +1,30 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
+import { ipAddress } from '../../config';
 
 export const fetchProducts = createAsyncThunk('products/fetchProducts', async () => {
-  const response = await axios.get('http://localhost:3000/api/product/myProducts');
-  return response.data;
+  const response = await axios.get(`http://${ipAddress}:3000/api/product/`);
+  return response.data.map(product => ({
+    ...product,
+    shopName: product.User?.FirstName + ' ' + product.User?.LastName, // Using User object directly if aligned with your backend model
+    shopTitle: product.User?.UserType === 'coffee' ? 'Coffee Shop' : 'Client'
+  }));
 });
 
 export const addProduct = createAsyncThunk('products/addProduct', async (productData) => {
-  const response = await axios.post('http://localhost:3000/api/product', productData);
+  const response = await axios.post(`http://${ipAddress}:3000/api/product`, productData);
+  // const response = await axios.post(`http://${ipAddress}:3000/api/product`, productData,{headers: {Authorization: 'Bearer ' +token}});
+
   return response.data;
 });
 
 export const updateProduct = createAsyncThunk('products/updateProduct', async ({ id, productData }) => {
-  const response = await axios.patch(`http://localhost:3000/api/product/${id}`, productData);
+  const response = await axios.patch(`http://${ipAddress}:3000/api/product/${id}`, productData);
   return response.data;
 });
-
+ 
 export const deleteProduct = createAsyncThunk('products/deleteProduct', async (id) => {
-  await axios.delete(`http://localhost:3000/api/product/${id}`);
+  await axios.delete(`http://${ipAddress}:3000/api/product/${id}`);
   return id;
 });
 
@@ -26,7 +33,9 @@ const productSlice = createSlice({
   initialState: {
     items: [],
     status: 'idle',
-    error: null
+    error: null,
+    favorites: {}
+
   },
   reducers: {},
   extraReducers: (builder) => {
