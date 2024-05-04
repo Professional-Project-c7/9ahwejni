@@ -17,7 +17,7 @@ const HoverableIconButton = ({ onAddPress }) => (
 const ProductList = () => {
   const { products, getProducts, status } = useProducts();
   const [favorites, setFavorites] = React.useState({});
-  const userId = 1; // User ID to filter products
+  const userId = 2; // User ID to filter products
 
   useEffect(() => {
     getProducts();
