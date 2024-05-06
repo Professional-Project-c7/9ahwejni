@@ -96,6 +96,15 @@ const styles = StyleSheet.create({
         marginHorizontal:20,
         paddingTop:10,
         color:'#FFBB70',
+        
+        borderWidth: 1, // Add border
+        borderColor: '#FFBB70',
+     
+        borderRadius: 25,
+        color: '#FFBB70',
+        alignContent:'center',
+        textAlign:'center',
+marginLeft:30    
     },
     description: {
         marginBottom: 20,
@@ -106,13 +115,17 @@ const styles = StyleSheet.create({
         padding:10
     },
     add:{
-
+        borderWidth: 1, // Add border
+        borderColor: '#FFBB70',
+       width:250,
+        color: '#FFBB70',
         fontSize: 26,
         borderRadius: 25,
-       
+        color: '#FFBB70',
         alignContent:'center',
         textAlign:'center',
-marginLeft:90     
+        marginLeft:30    
+       
     },
     sectionTitle: {
         fontSize: 20,
@@ -136,11 +149,13 @@ alignItems:'center'
     },
     optionButton: {
         paddingHorizontal: 10,
-        paddingVertical: 5,
+        paddingVertical: 3,
         marginHorizontal: 5,
         borderRadius: 25,
-      alignItems:'center' ,
-       
+        alignItems: 'center',
+        backgroundColor: 'transparent', // Set background color to transparent
+        borderWidth: 1, // Add border
+        borderColor: '#FFBB70', // Match border color with text color
     },
     optionButtonText: {
         fontSize: 19,
