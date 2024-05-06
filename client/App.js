@@ -5,7 +5,7 @@ import NAVSTART from './screens/Navigation';
 import ProductList from './components/ProductList';
 import { Provider } from 'react-redux';
 import { store } from './redux/store';
-import AllCoffeShops from './components/AllCoffeShops';
+import AllCoffeShops from './components/UserProfile';
 import HomePage from './components/homepage';
 function App() {
   
@@ -13,7 +13,7 @@ function App() {
  return (
   <Provider store={store}>
     <SafeAreaView style={{ flex: 1 }}>
-    <NAVSTART />
+    <AllCoffeShops />
  </SafeAreaView>
  </Provider>
   );
