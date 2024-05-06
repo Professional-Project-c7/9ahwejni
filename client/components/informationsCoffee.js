@@ -1,124 +1,93 @@
-import React from 'react';
-import {View, SafeAreaView, StyleSheet,TouchableOpacity,ImageBackground} from 'react-native';
-import {
-  Avatar,
-  Title,
-  Caption,
-  Text,
-  TouchableRipple,
-  
-} from 'react-native-paper';
-
+import React, { useState, useEffect } from 'react';
+import { View, SafeAreaView, StyleSheet, TouchableOpacity, ImageBackground } from 'react-native';
+import { ipAdress } from '../config';
+import { Avatar, Title, Caption, Text, TouchableRipple } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import axios from 'axios';
 
-// import Share from 'react-native-share';
+const ProfileScreen = ({ navigation }) => {
+  const [userData, setUserData] = useState(null);
+const [userIdd, setuserIdd] = useState(null);
 
-// import files from '../assets/filesBase64';
+const getTokenAndFetchUserData = async () => {
+  try {
+    const tokenString = await AsyncStorage.getItem('userToken');
+    if (tokenString) {
+      const tokenObject = JSON.parse(tokenString);
+      const userId = tokenObject.userId;
+      setuserIdd(userId);
+      await getUserData(userId);
+    }
+  } catch (error) {
+    console.error('Error fetching user token:', error);
+  }
+};
 
-const ProfileScreen = ({navigation}) => {
+const getUserData = async (userId) => {
+  try {
+    const response = await axios.get(`http://${ipAdress}:3000/api/user/${userId}`);
+    if (response.status === 200) {
+      setUserData(response.data);
+      console.log(response.data);
+    } else {
+      console.error('Failed to fetch user data');
+    }
+  } catch (error) {
+    console.error('Error fetching user data:', error);
+  }
+};
 
-//   const myCustomShare = async() => {
-//     const shareOptions = {
-//       message: 'Order your next meal from FoodFinder App. I\'ve already ordered more than 10 meals on it.',
-//       url: files.appLogo,
-//       // urls: [files.image1, files.image2]
-//     }
+useEffect(() => {
+  getTokenAndFetchUserData();
+}, []);
 
-//     try {
-//       const ShareResponse = await Share.open(shareOptions);
-//       console.log(JSON.stringify(ShareResponse));
-//     } catch(error) {
-//       console.log('Error => ', error);
-//     }
-//   };
+    
 
   return (
     <SafeAreaView style={styles.container}>
-
-<View style={{alignItems: 'center',marginTop:40}}>
-          <TouchableOpacity >
-            <View
-              style={{
-                height: 100,
-                width: 100,
-                borderRadius: 15,
-                justifyContent: 'center',
-                alignItems: 'center',
-              }}>
-              <ImageBackground
-                source={require("../image/image.png")} 
-                style={{height: 100, width: 100}}
-                imageStyle={{borderRadius: 15}}>
-                <View
-                  style={{
-                    flex: 1,
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                  }}>
-                  <Icon
-                    name="camera"
-                    size={35}
-                    color='#dba617'
-                    style={{
-                      opacity: 0.7,
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                    //   borderWidth: 1,
-                    //   borderColor: '#dba617',
-                    //   borderRadius: 10,
-                    }}
-                  />
-                </View>
-              </ImageBackground>
-            </View>
-          </TouchableOpacity>
-          <Text style={{marginTop: 10, fontSize: 18, fontWeight: 'bold'}}>
-            John Doe
-          </Text>
-        </View>
-
-      <View style={styles.userInfoSection}>
-        <View style={styles.row}>
-          <Icon name="map-marker-radius" color='#dba617' size={20}/>
-          <Text style={{color:"#777777", marginLeft: 20,fontSize:18}}>Gabes, Tunisia</Text>
-        </View>
-        <View style={styles.row}>
-          <Icon name="phone" color='#dba617' size={20}/>
-          <Text style={{color:"#777777", marginLeft: 20,fontSize:18}}>+91-900000009</Text>
-        </View>
-        <View style={styles.row}>
-          <Icon name="email" color='#dba617' size={20}/>
-          <Text style={{color:"#777777", marginLeft: 20,fontSize:18}}>john_doe@email.com</Text>
-        </View>
-      </View>
-
-      <View style={styles.infoBoxWrapper}>
-          {/* <View style={[styles.infoBox, {
-            borderRightColor: '#dddddd',
-            borderRightWidth: 1
-          }]}>
-            <Title>₹140.50</Title>
-            <Caption>Wallet</Caption>
+      {userData && (
+        <>
+          <View style={{ alignItems: 'center', marginTop: 40 }}>
+            <TouchableOpacity>
+              <View style={{ height: 100, width: 100, borderRadius: 15, justifyContent: 'center', alignItems: 'center' }}>
+                <ImageBackground
+                  source={{ uri: userData.avatar }} // Assuming the API response has an 'avatar' field
+                  style={{ height: 100, width: 100 }}
+                  imageStyle={{ borderRadius: 15 }}>
+                  <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+                    <Icon name="camera" size={35} color='#dba617' style={{ opacity: 0.7 }} />
+                  </View>
+                </ImageBackground>
+              </View>
+            </TouchableOpacity>
+            <Text style={{ marginTop: 10, fontSize: 18, fontWeight: 'bold' }}>{userData.FirstName + userData.LastName}</Text>
           </View>
-          <View style={styles.infoBox}>
-            <Title>12</Title>
-            <Caption>Orders</Caption>
-          </View> */}
-      </View>
+
+          <View style={styles.userInfoSection}>
+            <View style={styles.row}>
+              <Icon name="map-marker-radius" color='#dba617' size={20} />
+              <Text style={{ color: "#777777", marginLeft: 20, fontSize: 18 }}>{userData.Address}</Text>
+            </View>
+            {/* <View style={styles.row}>
+              <Icon name="phone" color='#dba617' size={20} />
+              <Text style={{ color: "#777777", marginLeft: 20, fontSize: 18 }}>{userData.phone}</Text>
+            </View> */}
+            <View style={styles.row}>
+              <Icon name="email" color='#dba617' size={20} />
+              <Text style={{ color: "#777777", marginLeft: 20, fontSize: 18 }}>{userData.Email}</Text>
+            </View>
+          </View>
+        </>
+      )}
 
       <View style={styles.menuWrapper}>
         <TouchableRipple onPress={() => navigation.navigate('EditCoffee')}>
           <View style={styles.menuItem}>
-            <Icon name="account-edit" color='#dba617' size={25}/>
+            <Icon name="account-edit" color='#dba617' size={25} />
             <Text style={styles.menuItemText}>Edit Informations</Text>
           </View>
         </TouchableRipple>
-        {/* <TouchableRipple onPress={() => {}}>
-          <View style={styles.menuItem}>
-            <Icon name="credit-card" color='#dba617' size={25}/>
-            <Text style={styles.menuItemText}>Payment</Text>
-          </View>
-        </TouchableRipple> */}
         <TouchableRipple >
           <View style={styles.menuItem}>
             <Icon name="share-outline" color='#dba617' size={25}/>
@@ -151,33 +120,12 @@ const styles = StyleSheet.create({
   userInfoSection: {
     paddingHorizontal: 30,
     marginBottom: 65,
-    marginTop:50
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-  },
-  caption: {
-    fontSize: 14,
-    lineHeight: 14,
-    fontWeight: '500',
+    marginTop: 50
   },
   row: {
     flexDirection: 'row',
     marginBottom: 10,
-    marginTop:10
-  },
-  infoBoxWrapper: {
-    borderBottomColor: '#dddddd',
-    borderBottomWidth: 1,
-    marginTop:-130,
-    flexDirection: 'row',
-    height: 100,
-  },
-  infoBox: {
-    width: '50%',
-    alignItems: 'center',
-    justifyContent: 'center',
+    marginTop: 10
   },
   menuWrapper: {
     marginTop: 25,
