@@ -7,13 +7,13 @@ const HomeCarousel = () => {
   const [selectedIndex, setSelectedIndex] = useState(0);
   const scrollRef = useRef();
 
+  const onChange = ({ window }) => {
+    setDimension(window);
+  };
   useEffect(() => {
-    const onChange = ({ window }) => {
-      setDimension(window);
-    };
-    Dimensions.addEventListener('change', onChange);
+    const subscription= Dimensions.addEventListener('change', onChange);
     return () => {
-      Dimensions.removeEventListener('change', onChange);
+      subscription.remove()
     };
   }, []);
 
@@ -34,9 +34,9 @@ const HomeCarousel = () => {
   const carouselImages = [
     { url: 'https://esquirescoffee.co.uk/wp-content/uploads/2019/07/Picture-1.pngxx_.png' },
     { url: 'https://t4.ftcdn.net/jpg/01/16/61/93/360_F_116619399_YA611bKNOW35ffK0OiyuaOcjAgXgKBui.jpg' },
-    { url: 'https://esquirescoffee.co.uk/wp-content/uploads/2019/07/Picture-1.pngxx_.png'},
-    { url: 'https://t4.ftcdn.net/jpg/01/16/61/93/360_F_116619399_YA611bKNOW35ffK0OiyuaOcjAgXgKBui.jpg' },
-    { url: 'https://esquirescoffee.co.uk/wp-content/uploads/2019/07/Picture-1.pngxx_.png' },
+    { url: 'https://esquirescoffee.co.uk/wp-content/uploads/2021/07/pexels-elle-hughes-4424674.jpg'},
+    { url: 'https://esquirescoffee.co.uk/wp-content/uploads/2021/02/A-selection-of-different-coffee-drinks.png' },
+    { url: 'https://esquirescoffee.co.uk/wp-content/uploads/2021/02/A-latte-and-a-sweet-snack.jpg' },
   ];
 
   const setIndex = event => {
