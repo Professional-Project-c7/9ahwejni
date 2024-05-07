@@ -4,13 +4,25 @@ import { useNavigation } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
 function Start3({ navigation }) {
+ 
+ 
+    const removeTokenFromStorage = async () => {
+      try {
+        await AsyncStorage.removeItem('userToken');
+        console.log('Token removed successfully');
+      } catch (error) {
+        console.error('Error removing token:', error);
+      }
+    };
+   
 
   const navigateToUserAccount = () => {
     navigation.navigate('Tabs');
   };
   
   const navigateToUserAccount2 = () => {
-    navigation.navigate('st4');
+     removeTokenFromStorage();
+    navigation.navigate('Login');
   };
 
   return (
