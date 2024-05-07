@@ -6,7 +6,7 @@ export default Posts = ({ onClose }) => {
     {
       id: 1,
       title: 'Lorem ipsum dolor',
-      time: '1 days a go',
+      time: '',
       image: 'https://images.pexels.com/photos/312418/pexels-photo-312418.jpeg',
     },
     {
@@ -61,51 +61,48 @@ export default Posts = ({ onClose }) => {
   
   const [posts, setPosts] = useState(data)
  
+  const deletePost = (id) => {
+    setPosts(prevPosts => prevPosts.filter(post => post.id !== id));
+  };
+
+  const renderPostItem = ({ item }) => (
+    <View style={styles.card}>
+      <View style={styles.cardHeader}>
+        <Image style={styles.cardImage} source={{ uri: item.image }} />
+        <View style={{ marginLeft: 10 }}>
+          <Text style={styles.time}>{item.time}</Text>
+          <Text style={styles.title}>{item.title}</Text>
+        </View>
+      </View>
+      <IconButton
+ icon="heart"
+ color="red"
+          size={20}
+          onPress={() => deletePost(item.id)}
+        />
+    </View>
+  );
 
   return (
     <View style={{ flex: 1 }}>
-        <View style={styles.icon} >
-                <IconButton  icon="close" onPress={onClose}   />
-</View>
-  <ScrollView style={{ flex: 1 }}>
-    <View style={styles.container}>
-      <FlatList
-        style={styles.list}
-        data={posts}
-        keyExtractor={item => item.id}
-        ItemSeparatorComponent={() => <View style={styles.separator} />}
-        renderItem={post => {
-          const item = post.item;
-          return (
-            <View style={styles.card}>
-              <View style={styles.cardHeader}>
-                <Image style={styles.cardImage} source={{ uri: item.image }} />
-                <View style={{ marginLeft: 10 }}>
-                  <Text style={styles.time}>{item.time}</Text>
-                  <Text style={styles.title}>{item.title}</Text>
-                </View>
-              </View>
-            </View>
-          );
-        }}
-      />
+      <View style={styles.icon}>
+        <IconButton icon="close" onPress={onClose} />
+      </View>
+      <ScrollView style={{ flex: 1 }}>
+        <FlatList
+          style={styles.container}
+          data={posts}
+          keyExtractor={item => item.id.toString()}
+          ItemSeparatorComponent={() => <View style={styles.separator} />}
+          renderItem={renderPostItem}
+        />
+      </ScrollView>
+      <View style={{ flex: 1, paddingHorizontal: 20, paddingTop: 20 }}>
+        <Text style={{ marginBottom: 10 }}>Discount coupon</Text>
+      </View>
     </View>
-  </ScrollView>
-  <View style={{ flex: 1, paddingHorizontal: 20, paddingTop: 20 }}>
-    <Text style={{ marginBottom: 10 }}>Discount coupon</Text>
-    
-  
- 
-  
- 
-  
-  
-  </View>
-</View>
-
-  )
-}
-
+  );
+};
 const styles = StyleSheet.create({
   container: {
     flex: 1,

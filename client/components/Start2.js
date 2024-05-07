@@ -4,6 +4,7 @@ import { useNavigation } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
 function Start2({ navigation }) {
+  
 
   const navigateToUserAccount = () => {
     navigation.navigate('Tabs');
