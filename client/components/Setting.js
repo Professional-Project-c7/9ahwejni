@@ -3,7 +3,7 @@ import { View, Text, TextInput, StyleSheet, ScrollView, Button, Image } from 're
 import axios from 'axios';
 import { launchImageLibrary } from 'react-native-image-picker';
 import { ipAdress } from '../config';
-import { IconButton } from 'react-native-paper';
+import Icon from 'react-native-vector-icons/FontAwesome'
 import {Cloudinary} from "@cloudinary/url-gen";
           
 
@@ -45,7 +45,7 @@ const SettingComponent = ({ onClose }) => {
     
       <View style={styles.profileInfo}>
         <View style={styles.icon} >
-                <IconButton icon="close" onPress={onClose}   />
+        <Icon name="close" size={30} onPress={onClose}   />
 </View>
               <Text style={[styles.label, { marginTop: 100 }]}>FirstName:</Text>
               <TextInput
@@ -84,7 +84,7 @@ const SettingComponent = ({ onClose }) => {
                 onChangeText={value => setProfile({ ...profile, Adresse: value })}
                 placeholder="Enter your address"
               />
-                <Button title="Save Changes" onPress={handleSave} />
+                  <Icon name="save" style={{color:'black'}}  size={30} onPress={handleSave} />
              
              </View>
   );
