@@ -28,10 +28,25 @@ const UserProfile = () => {
   const [favoritelist, setFavoritelist] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(true);
   const [imageUri, setImageUri] = useState(null);
+  const [userToken, setUserToken] = useState(null);
 
+  useEffect(() => {
+    // Function to retrieve user token from AsyncStorage
+    const getUserToken = async () => {
+      try {
+        const token = await AsyncStorage.getItem('userToken');
+        setUserToken(token ? JSON.parse(token) : null);
+      } catch (error) {
+        console.log('Error retrieving user token:', error);
+      }
+    };
+
+    // Call the function to retrieve user token
+    getUserToken();
+  }, []);
   const fetchUserProfile = async () => {  
     try {
-      const response = await axios.get(`http://${ipAdress}:3000/api/user/1`); // Assuming user ID is 1
+      const response = await axios.get(`http://${ipAdress}:3000/api/user/${userToken}`); // Assuming user ID is 1
       const userData = response.data;
       setProfile(userData);
     } catch (error) {
@@ -101,10 +116,10 @@ const UserProfile = () => {
                <Image source={logoImage} style={styles.logo} /> 
              </View>
              <TouchableOpacity style={styles.profileContainer1} onPress={handleChooseImage}>
-               <Image
+               {/* <Image
                  style={styles.profilePhoto}
                  source={{ uri: profile.ProfileImage }}
-               />
+               /> */}
              </TouchableOpacity>
              <View style={styles.profileContainer}>
                <Text style={styles.Name}>{profile.FirstName}</Text>
