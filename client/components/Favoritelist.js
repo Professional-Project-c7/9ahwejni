@@ -1,7 +1,10 @@
 import React, { useState } from 'react'
 import { StyleSheet, Text,TouchableOpacity, View,TextInput, ScrollView, Image, FlatList } from 'react-native'
 import { IconButton } from 'react-native-paper';
+import { useNavigation } from '@react-navigation/native';
+import Icon from 'react-native-vector-icons/FontAwesome'
 export default Posts = ({ onClose }) => {
+  // const navigation = useNavigation();
   const data = [
     {
       id: 1,
@@ -61,11 +64,13 @@ export default Posts = ({ onClose }) => {
   
   const [posts, setPosts] = useState(data)
   const data2 = posts.slice(0 , 2)
+ 
 
   return (
     <View style={{ flex: 1 }}>
         <View style={styles.icon} >
-                <IconButton  icon="close" onPress={onClose}   />
+        <Icon name="close"  size={30}  onPress={onClose}   />
+              
 </View>
   <ScrollView style={{ flex: 1 }}>
     <View style={styles.container}>
@@ -124,6 +129,7 @@ export default Posts = ({ onClose }) => {
     </Text>
   </View>
   </View>
+   
 </View>
 
   )
