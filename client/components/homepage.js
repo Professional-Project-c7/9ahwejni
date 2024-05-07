@@ -4,11 +4,11 @@ import SearchBar from '../components/searchbar';
 import { IconButton } from 'react-native-paper';
 import RandomProducts from "../components/randomproducts";
 import Pub from "../components/pub";
+import TopShops from "../components/TopShops";
 import axios from 'axios';
 import logoImage from "../image/logo.png";
 import { ipAdress } from '../config';
-import CategoryBar from '../components/categorybar'; 
-// import Toast from 'react-native-toast-message';
+import CategoryBar from '../components/categorybar';
 
 const HomePage = ({ navigation }) => {
   const [userData, setUserData] = useState([]);
@@ -30,23 +30,31 @@ const HomePage = ({ navigation }) => {
   }, []);
 
   const firstTwoImages = userData.slice(0, 3);
+
   return (
-    
     <ScrollView style={styles.container}>
-      <View style={styles.top}>
-        <IconButton icon="menu" iconColor='#dba617' />
-        <Image source={logoImage} style={styles.logo}  />
-        <IconButton icon="bell-outline" iconColor='#dba617' />
+      <View style={styles.topBackground}>
+        <View style={styles.top}>
+          <IconButton icon="menu" iconColor='#FFF' />
+          <View style={styles.logoContainer}>
+            <Image source={logoImage} style={styles.logo} />
+          </View>
+          <IconButton icon="bell-outline" iconColor='#FFF' />
+        </View>
       </View>
-      <SearchBar />
+      <View style={styles.searchContainer}>
+        <SearchBar />
+      </View>
       <View style={styles.categoryBarContainer}>
         <Text style={styles.categoryTitle}>Category</Text>
         <CategoryBar />
       </View>
       <Pub />
       <View style={styles.top}>
-        <Text style={styles.Texttitlecoffee}>Top rated coffees of the day!</Text>
-        {/* <Text style={styles.seeAllText}>See All</Text>  */}
+        <Text style={[styles.Texttitlecoffee, { marginLeft: 0 }]}>Products of the Day!</Text>
+        <TouchableOpacity onPress={() => navigation.navigate("AllCoffees")}>
+          <Text style={styles.seeAllText}>See All</Text>
+        </TouchableOpacity>
       </View>
       <FlatList
         data={firstTwoImages}
@@ -67,6 +75,10 @@ const HomePage = ({ navigation }) => {
         )}
       />
       <RandomProducts />
+      <View style={styles.top}>
+        <Text style={[styles.Texttitlecoffee, { marginLeft: 0 }]}>Top Rated Coffee Shops of the Day!</Text>
+      </View>
+      <TopShops />
       <StatusBar style="auto" />
     </ScrollView>
   );
@@ -76,13 +88,34 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: 'white',
-    paddingTop: 10,
+  },
+  topBackground: {
+    backgroundColor: '#dba617',
   },
   top: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
     marginHorizontal: 12,
+    paddingVertical: 10,
+  },
+  searchContainer: {
+    backgroundColor: 'white',
+    paddingHorizontal: 12,
+    paddingVertical: 5,
+  },
+  logoContainer: {
+    width: 80,
+    height: 77,
+    borderRadius: 28,
+    backgroundColor: 'white',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  logo: {
+    width: 62,
+    height: 62,
+    
   },
   categoryBarContainer: {
     flexDirection: 'column',
@@ -90,70 +123,67 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     width: '100%',
     marginTop: 20,
-    marginRight: 30, // Adjusted the left margin to ensure visibility
+    marginRight: 30,
+    left: 14
   },
   categoryTitle: {
-    fontSize: 22,
+    fontSize: 23,
     fontWeight: 'bold',
     color: '#000',
     marginBottom: 10,
-  },
-  Texttitlecoffee: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    fontFamily: 'Montserrat',
-    color: '#dba617',
-    textAlign: 'center',
-    marginTop: 40,
-    marginLeft: 20
-  },
-  seeAllText: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: '#dba617',
-    marginTop: 40,
-    marginRight: 20
-  },
-  card: {
-    width: 180,
-    height: 140,
-    marginLeft: 9,
-    marginRight: 5,
-    marginTop: 15
-  },
-  imageBox: {
-    width: '100%',
-    height: '100%',
-    borderRadius: 20,
-    overflow: 'hidden',
-  },
-  imageCoffee: {
-    width: '100%',
-    height: '100%',
-    resizeMode: 'cover',
-  },
-  titleBox: {
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    right: 0,
-    backgroundColor: "rgba(219, 166, 23, 0.4)",
-    padding: 10,
-    borderBottomLeftRadius: 20,
-    borderBottomRightRadius: 20,
-  },
-  titleCoffee: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: 'white',
-    textAlign: 'center',
-  },
-  logo: {
-    width: 60,
-    height: 60,
-   
-  },
+    justifyContent: 'center',
+    right : 15},
+    Texttitlecoffee: {
+      fontSize: 20,
+      fontWeight: 'bold',
+      fontFamily: 'Montserrat',
+      color: '#dba617',
+      textAlign: 'center',
+      marginTop: 40,
+      marginLeft: 20,
+      flex: 1,
+    },
+    seeAllText: {
+      fontSize: 16,
+      fontWeight: 'bold',
+      color: '#dba617',
+      marginTop: 40,
+      marginRight: 20,
+    },
+    card: {
+      width: 180,
+      height: 140,
+      marginLeft: 9,
+      marginRight: 5,
+      marginTop: 15,
+    },
+    imageBox: {
+      width: '100%',
+      height: '100%',
+      borderRadius: 20,
+      overflow: 'hidden',
+    },
+    imageCoffee: {
+      width: '100%',
+      height: '100%',
+      resizeMode: 'cover',
+    },
+    titleBox: {
+      position: 'absolute',
+      bottom: 0,
+      left: 0,
+      right: 0,
+      backgroundColor: "rgba(219, 166, 23, 0.4)",
+      padding: 10,
+      borderBottomLeftRadius: 20,
+      borderBottomRightRadius: 20,
+    },
+    titleCoffee: {
+      fontSize: 18,
+      fontWeight: 'bold',
+      color: 'white',
+      textAlign: 'center',
+    },
+  });
   
-});
-
-export default HomePage;
+  export default HomePage;

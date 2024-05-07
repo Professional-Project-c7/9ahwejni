@@ -79,7 +79,11 @@ module.exports = async (sequelize) => {
 
 
       const Review =await Promise.all(
+<<<<<<< HEAD
         Array.from({ length: 100 }).map(async () => {
+=======
+        Array.from({ length: indoo }).map(async () => {
+>>>>>>> 6655980b0dd7fbf797b99c8626a5223df4a99220
             const user = users[Math.floor(Math.random() * userCount)];
             const oneproduct = Products[Math.floor(Math.random() * packCount)];
 

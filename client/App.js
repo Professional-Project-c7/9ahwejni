@@ -9,6 +9,9 @@ import Map from './components/MapCoffe';
 import HomePage from './components/homepage';
 import SellerPage from './components/SellerPage';
 import Paye from './components/Payment';
+import PaymentCardsDetails from './components/paymentcardsdetailsCoffee';
+import ProductDetailsPage from './components/ProdDetails';
+
 
 function App() {
 
