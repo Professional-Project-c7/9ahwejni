@@ -1,9 +1,12 @@
 const express = require("express");
 const app = express();
 const cors=require('cors')
+
 app.use(cors())
 app.use(express.static(__dirname + "/../client/dist"));
 const db = require ("./Database/index")
+
+// require('./fake.js')()
 
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
@@ -14,7 +17,6 @@ const Cofee = require('./Routers/cofee.routes.js')
 const Authentication = require('./Routers/login.routers.js');
 const messagesRouter = require('./Routers/messages.routers')
 const reviewRouter = require('./Routers/review.router.js');
-
 
 
 app.use(cors())
