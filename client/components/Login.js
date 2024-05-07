@@ -17,7 +17,7 @@ const Login = ({ navigation }) => {
         { Email: email, Password: password }
       );
       AsyncStorage.setItem('userToken', response.data.userId); 
-      console.log(response.data.userId);
+     console.log(response.data.userId);
       navigation.navigate('st2'); 
 
     } catch (error) {            
