@@ -221,8 +221,8 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
   },
   cardImg: {
-    height: '40%',
-    width: '40%',
+    height: '100%',
+    width: '100%',
     alignSelf: 'center',
   },
   cardInfo: {
