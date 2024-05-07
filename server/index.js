@@ -7,7 +7,7 @@ const db = require ("./Database/index")
 
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
-
+// require('./fake.js')()
 const User = require('./Routers/user.routes.js')
 const ProductRoutes=require("./Routers/products.routes.js")
 const Cofee = require('./Routers/cofee.routes.js')

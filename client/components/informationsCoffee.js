@@ -8,41 +8,49 @@ import axios from 'axios';
 
 const ProfileScreen = ({ navigation }) => {
   const [userData, setUserData] = useState(null);
-const [userIdd, setuserIdd] = useState(null);
+const [userID,setuserID] = useState(null)
 
-const getTokenAndFetchUserData = async () => {
+
+const retrieveData = async () => {
   try {
-    const tokenString = await AsyncStorage.getItem('userToken');
-    if (tokenString) {
-      const tokenObject = JSON.parse(tokenString);
-      const userId = tokenObject.userId;
-      setuserIdd(userId);
-      await getUserData(userId);
+    const value = await AsyncStorage.getItem('userToken');
+    if (value !== null) {
+      const tokenObject = JSON.parse(value);
+      const userId = tokenObject.userId; 
+      console.log(userId);
+      setuserID(userId);
     }
   } catch (error) {
-    console.error('Error fetching user token:', error);
+    console.error('Error retrieving data:', error);
   }
 };
+
+  
 
 const getUserData = async (userId) => {
   try {
     const response = await axios.get(`http://${ipAdress}:3000/api/user/${userId}`);
+    console.log(response.data); // Check response data
     if (response.status === 200) {
       setUserData(response.data);
-      console.log(response.data);
     } else {
       console.error('Failed to fetch user data');
     }
   } catch (error) {
-    console.error('Error fetching user data:', error);
+    console.error('Error fetching user data:', error.message);
   }
 };
 
 useEffect(() => {
-  getTokenAndFetchUserData();
+  retrieveData();
 }, []);
 
-    
+useEffect(() => {
+  if (userID) {
+    getUserData(userID);
+  }
+}, [userID]);
+
 
   return (
     <SafeAreaView style={styles.container}>
@@ -69,10 +77,6 @@ useEffect(() => {
               <Icon name="map-marker-radius" color='#dba617' size={20} />
               <Text style={{ color: "#777777", marginLeft: 20, fontSize: 18 }}>{userData.Address}</Text>
             </View>
-            {/* <View style={styles.row}>
-              <Icon name="phone" color='#dba617' size={20} />
-              <Text style={{ color: "#777777", marginLeft: 20, fontSize: 18 }}>{userData.phone}</Text>
-            </View> */}
             <View style={styles.row}>
               <Icon name="email" color='#dba617' size={20} />
               <Text style={{ color: "#777777", marginLeft: 20, fontSize: 18 }}>{userData.Email}</Text>
@@ -102,7 +106,7 @@ useEffect(() => {
         </TouchableRipple>
         <TouchableRipple onPress={() => {}}>
           <View style={styles.menuItem}>
-            <Icon name="settings-outline" color='#dba617' size={25}/>
+            <Icon name="account-check-outline" color='#dba617' size={25}/>
             <Text style={styles.menuItemText}>Settings</Text>
           </View>
         </TouchableRipple>

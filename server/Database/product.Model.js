@@ -21,23 +21,9 @@ module.exports=(sequelize,DataTypes)=>{
         allowNull :false
       },
       
-    size: {
-        type: DataTypes.STRING,
-        allowNull :false
-      },
-      category: {
-        type: DataTypes.ENUM("pack","product"),
-         allowNull: false,
-         defaultValue: "product",
-      },
-      UserId: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
-        references: {
-          model: 'users', 
-          key: 'id'
-        }
-      }
+
+      
+  
   });
   return Products
 }
