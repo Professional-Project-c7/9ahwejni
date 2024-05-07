@@ -9,14 +9,16 @@ import AllCoffeShops from './components/UserProfile';
 import HomePage from './components/homepage';
 import SellerPage from './components/SellerPage';
 import Paye from './components/Payment';
+import PaymentCardsDetails from './components/paymentcardsdetailsCoffee';
+import ProductDetailsPage from './components/ProdDetails';
+
 
 function App() {
   
-  console.log(process.env.ipAdress);
  return (
   <Provider store={store}>
     <SafeAreaView style={{ flex: 1 }}>
-    <AllCoffeShops />
+    <NAVSTART />
  </SafeAreaView>
  </Provider>
   );
