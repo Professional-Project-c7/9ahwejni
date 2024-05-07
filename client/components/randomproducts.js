@@ -2,13 +2,68 @@ import React, { useState } from 'react';
 import { View, Image, Text, FlatList, StyleSheet } from 'react-native';
 import { Rating } from 'react-native-ratings';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import { ipAdress } from '../config';
+import axios from 'axios';
+// import { useProducts } from '../redux/products/productHooks';
 
 const RandomProducts = () => {
   const [products, setProducts] = useState([
-    { id: 1, name: 'Espresso', price: '$5.0', image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTb85z7x-CAJH444E2lGKpe9VvY3xBohCuIXw&s', rating: 4.8, withMilk: 'With Milk', favored: false, inCart: false },
-    { id: 2, name: 'Cappuccino', price: '$9.50', image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTb85z7x-CAJH444E2lGKpe9VvY3xBohCuIXw&s', rating: 4.8 , withMilk: 'With Milk', favored: false, inCart: false },
-    { id: 3, name: 'Latte', price: '$10.0', image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTb85z7x-CAJH444E2lGKpe9VvY3xBohCuIXw&s', rating: 4.8, withMilk: 'With Milk', favored: false, inCart: false },
+    {
+      id: 1,
+      name: 'Espresso',
+      price: '$5.0',
+      image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTb85z7x-CAJH444E2lGKpe9VvY3xBohCuIXw&s',
+      rating: 0,
+      reviews: 12,
+      favored: false,
+      inCart: false,
+    },
+    {
+      id: 2,
+      name: 'Cappuccino',
+      price: '$9.50',
+      image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTb85z7x-CAJH444E2lGKpe9VvY3xBohCuIXw&s',
+      rating: 0,
+      reviews: 18,
+      favored: false,
+      inCart: false,
+    },
+    {
+      id: 3,
+      name: 'Latte',
+      price: '$10.0',
+      image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTb85z7x-CAJH444E2lGKpe9VvY3xBohCuIXw&s',
+      rating: 0,
+      reviews: 25,
+      favored: false,
+      inCart: false,
+    },
+    {
+      id: 4,
+      name: 'Latte',
+      price: '$10.0',
+      image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTb85z7x-CAJH444E2lGKpe9VvY3xBohCuIXw&s',
+      rating: 0,
+      reviews: 25,
+      favored: false,
+      inCart: false,
+    }
   ]);
+
+  // const RandomProducts = () => {
+    //   const [products, setProducts] = useState([]);
+    //   const [error, setError] = useState(null);
+    
+    //   useEffect(() => {
+    //     const fetchProducts = async () => {
+    //       try {
+    //         const response = await axios.get(`http://${ipAdress}:3000/api/product/`);
+    //         const shuffledProducts = response.data.sort(() => 0.5 - Math.random());
+    //         setProducts(shuffledProducts.slice(0, 4));
+    //       } catch (err) {
+    //         setError(err.message);
+    //       }
+    //     };
 
   const toggleFeature = (id, feature) => {
     setProducts(products.map(product => {
@@ -38,6 +93,9 @@ const RandomProducts = () => {
             <View style={styles.infoContainer}>
               <Text style={styles.name}>{item.name}</Text>
               <Text style={styles.price}>{item.price}</Text>
+              <View style={styles.ratingSection}>
+                <Text style={styles.ratingText}>{`${item.rating} (${item.reviews} reviews)`}</Text>
+              </View>
               <Rating
                 type="star"
                 ratingCount={5}
@@ -76,8 +134,8 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.3,
     shadowRadius: 6,
-    borderColor: '#ccc',  
-    borderWidth: 0.8, 
+    borderColor: '#ccc',
+    borderWidth: 0.8,
   },
   image: {
     height: 200,
@@ -115,12 +173,15 @@ const styles = StyleSheet.create({
     left: 5,
     bottom: 10,
   },
-  ratingText: {
-    fontSize: 17,
+  ratingSection: {
+    flexDirection: 'row',
+    alignItems: 'center',
     position: 'absolute',
     left: 5,
     bottom: 35,
-    color: '#000',
+  },
+  ratingText: {
+    fontSize: 16,
   },
   cartIcon: {
     position: 'absolute',
