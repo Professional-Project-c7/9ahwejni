@@ -18,7 +18,7 @@ const reviewRouter = require('./Routers/review.router.js');
 
 
 
-app.use(cors())
+app.use(cors()) 
 
 app.use("/api/auth", Authentication);
 app.use('/api/messages', messagesRouter);
