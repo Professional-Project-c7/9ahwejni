@@ -66,4 +66,4 @@ db.Review.belongsTo(db.Products);
 //         console.error('Unable to sync models with the database: ', error)
 //     })
 
-module.exports =db
+module.exports =db 
