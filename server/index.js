@@ -1,9 +1,12 @@
 const express = require("express");
 const app = express();
 const cors=require('cors')
+
 app.use(cors())
 app.use(express.static(__dirname + "/../client/dist"));
 const db = require ("./Database/index")
+
+// require('./fake.js')()
 
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
@@ -18,7 +21,8 @@ const reviewRouter = require('./Routers/review.router.js');
 
 
 
-app.use(cors())
+app.use(cors()) 
+
 
 app.use("/api/auth", Authentication);
 app.use('/api/messages', messagesRouter);

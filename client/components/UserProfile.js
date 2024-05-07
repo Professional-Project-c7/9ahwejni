@@ -30,10 +30,25 @@ const UserProfile = ({navigation}) => {
   const [ShowMainView, setShowMainView] = useState(true);
   const [favoritelist, setFavoritelist] = useState(false);
   const [imageUri, setImageUri] = useState(null);
+  const [userToken, setUserToken] = useState(null);
 
+  useEffect(() => {
+    // Function to retrieve user token from AsyncStorage
+    const getUserToken = async () => {
+      try {
+        const token = await AsyncStorage.getItem('userToken');
+        setUserToken(token ? JSON.parse(token) : null);
+      } catch (error) {
+        console.log('Error retrieving user token:', error);
+      }
+    };
+
+    // Call the function to retrieve user token
+    getUserToken();
+  }, []);
   const fetchUserProfile = async () => {  
     try {
-      const response = await axios.get(`http://${ipAdress}:3000/api/user/1`);
+      const response = await axios.get(`http://${ipAdress}:3000/api/user/${userToken}`); // Assuming user ID is 1
       const userData = response.data;
       setProfile(userData);
     } catch (error) {
@@ -116,18 +131,18 @@ const UserProfile = ({navigation}) => {
       <View style={styles.headerContainer}>
         {ShowMainView && (
           <>
-            <View style={styles.top}>
-              <Image source={logoImage} style={styles.logo} /> 
-            </View>
-            <TouchableOpacity style={styles.profileContainer1} onPress={handleChooseImage}>
-              <Image
-                style={styles.profilePhoto}
-                source={{ uri: profile.ProfileImage || 'https://c0.lestechnophiles.com/www.numerama.com/wp-content/uploads/2018/01/facebook-profil-680x383.jpg?resize=500,281&key=57ef287a' }}
-              />
-            </TouchableOpacity>
-            <View style={styles.profileContainer}>
-              <Text style={styles.Name}>{profile.FirstName} </Text>
-            </View>
+             <View style={styles.top}>
+               <Image source={logoImage} style={styles.logo} /> 
+             </View>
+             <TouchableOpacity style={styles.profileContainer1} onPress={handleChooseImage}>
+               {/* <Image
+                 style={styles.profilePhoto}
+                 source={{ uri: profile.ProfileImage }}
+               /> */}
+             </TouchableOpacity>
+             <View style={styles.profileContainer}>
+               <Text style={styles.Name}>{profile.FirstName}</Text>
+             </View>
           </>
         )}
         {showSetting && <SettingComponent onClose={handleClose} />}
