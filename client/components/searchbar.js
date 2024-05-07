@@ -1,26 +1,49 @@
 import React, { useState } from 'react';
 import { View, TextInput, StyleSheet } from 'react-native';
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons'; 
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import { Button, Dialog, Portal, Text } from 'react-native-paper';
 
 export default function SearchBar() {
+  const [searchQuery, setSearchQuery] = useState("");
+  const [filterOptions, setFilterOptions] = useState({ minPrice: '', maxPrice: '', rating: '' });
   const [searchActive, setSearchActive] = useState(false);
   const [filterActive, setFilterActive] = useState(false);
+  const [dialogVisible, setDialogVisible] = useState(false);
 
   const toggleSearch = () => {
-    setSearchActive(true); // Set active to show the color change
+    setSearchActive(true);
     setTimeout(() => {
-      setSearchActive(false); // Revert back after half a second
-    }, 500); // 500 milliseconds
+      setSearchActive(false);
+    }, 500);
   };
 
   const toggleFilter = () => {
-    setFilterActive(!filterActive);
+    setFilterActive(true);
+    setDialogVisible(!dialogVisible);
+    setTimeout(() => {
+      setFilterActive(false);
+    }, 500);
+  };
+
+  const handleFilterChange = (key, value) => {
+    setFilterOptions({ ...filterOptions, [key]: value });
+  };
+
+  const applyFilters = () => {
+    // Implement your advanced search logic here
+    console.log('Applying filters:', filterOptions);
+    setDialogVisible(false);
   };
 
   return (
     <View style={styles.asembler}>
       <View style={styles.Main}>
-        <TextInput placeholder='Search ...' style={styles.Input}></TextInput>
+        <TextInput 
+          placeholder='Search ...' 
+          style={styles.Input}
+          value={searchQuery}
+          onChangeText={setSearchQuery}
+        />
       </View>
       <Icon
         name="magnify"
@@ -36,6 +59,39 @@ export default function SearchBar() {
         style={[styles.filterIcon, filterActive ? styles.active : styles.inactive]}
         onPress={toggleFilter}
       />
+
+      <Portal>
+        <Dialog visible={dialogVisible} onDismiss={() => setDialogVisible(false)}>
+          <Dialog.Title>Advanced Filter</Dialog.Title>
+          <Dialog.Content>
+            <Text>Min Price:</Text>
+            <TextInput 
+              style={styles.filterInput} 
+              keyboardType="numeric" 
+              value={filterOptions.minPrice}
+              onChangeText={(value) => handleFilterChange('minPrice', value)}
+            />
+            <Text>Max Price:</Text>
+            <TextInput 
+              style={styles.filterInput} 
+              keyboardType="numeric" 
+              value={filterOptions.maxPrice}
+              onChangeText={(value) => handleFilterChange('maxPrice', value)}
+            />
+            <Text>Rating:</Text>
+            <TextInput 
+              style={styles.filterInput} 
+              keyboardType="numeric" 
+              value={filterOptions.rating}
+              onChangeText={(value) => handleFilterChange('rating', value)}
+            />
+          </Dialog.Content>
+          <Dialog.Actions>
+            <Button onPress={() => setDialogVisible(false)}>Cancel</Button>
+            <Button onPress={applyFilters}>Apply</Button>
+          </Dialog.Actions>
+        </Dialog>
+      </Portal>
     </View>
   );
 }
@@ -83,5 +139,13 @@ const styles = StyleSheet.create({
   },
   inactive: {
     backgroundColor: '#dba617',
-  }
+  },
+  filterInput: {
+    borderWidth: 1,
+    borderColor: '#dba617',
+    borderRadius: 8,
+    padding: 5,
+    width: '100%',
+    marginBottom: 10,
+  },
 });

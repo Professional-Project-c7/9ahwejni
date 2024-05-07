@@ -15,7 +15,7 @@ import Start4 from '../components/start4';
 import UserProfile from '../components/UserProfile';
 import MenuItems from '../components/menuitems';
 import HomePage from '../components/homepage';
-import AllCofe from '../components/AllCoffeShops'
+import Map from '../components/MapCoffe'
 import AddPacks from '../components/addpacks';
 import AddProducts from '../components/addproducts';
 import coffeeprofile from "../components/coffeeprofile" 
