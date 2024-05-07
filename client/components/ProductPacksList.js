@@ -1,18 +1,16 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, FlatList, Image, ScrollView } from 'react-native';
 
-// Import images for each pack (Replace '../path/to/' with actual paths to your images)
-import soloPackImage from '../image/4.png';
-import duoPackImage from '../image/4.png';
-import familyPackImage from '../image/4.png';
+import soloPackImage from '../image/soloPack.png';
+import duoPackImage from '../image/duoPack.png';
+import familyPackImage from '../image/groupPack.png';
 
-// Sample data for coffee, juice, and cake - Add more items as needed
 const coffeeData = [
   {
     id: '1',
     title: 'Premium Coffee',
     description: `Premium quality coffee blend for a perfect start to your day.`,
-    image: require("../image/4.png"),
+    image: { uri: 'https://neurosciencenews.com/files/2023/06/coffee-brain-caffeine-neuroscincces.jpg' }, 
     rating: 4,
     reviews: 99,
     price: 4.99,
@@ -23,7 +21,7 @@ const coffeeData = [
     id: '2',
     title: 'Premium Coffee',
     description: `Premium quality coffee blend for a perfect start to your day.`,
-    image: require("../image/4.png"),
+    image: { uri: 'https://www.tamingtwins.com/wp-content/uploads/2018/07/iced-coffee-recipe-11.jpg' }, 
     rating: 4,
     reviews: 99,
     price: 4.99,
@@ -31,26 +29,41 @@ const coffeeData = [
     sizes: ['Small', 'Medium', 'Large'],
   },
 ];
+
 const juiceData = [
   {
     id: '1',
     title: 'Fresh Juice',
     description: `Freshly squeezed juice made from organic fruits.`,
-    image: require("../image/4.png"),
+    image: { uri: 'https://cdn.chefclub.tools/uploads/recipes/cover-thumbnail/c5467a25-be83-4fc7-a193-173f78e6dd89_5Sg4yJD.jpg' }, 
+    rating: 4.5,
+    
+    reviews: 120,
+    price: 3.99,
+    available: false,
+    sizes: ['Regular', 'Large'],
+  },
+  {
+    id: '2',
+    title: 'Fresh Juice',
+    description: 'Freshly squeezed juice made from organic fruits.',
+    image: { uri: 'https://upload.wikimedia.org/wikipedia/commons/thumb/f/fd/Orange_juice_1.jpg/800px-Orange_juice_1.jpg' }, 
     rating: 4.5,
     reviews: 120,
     price: 3.99,
-    available: true,
+    available: false,
     sizes: ['Regular', 'Large'],
-  },
+  }
+  
+  
 ];
+
 const cakeData = [
   {
     id: '1',
     title: 'Delicious Cake',
     description: `Delicious cake baked with love, perfect for any occasion.`,
-    image: require("../image/4.png"),
-    rating: 5,
+    image: { uri: 'https://joyfoodsunshine.com/wp-content/uploads/2020/08/best-chocolate-cake-recipe-from-scratch-8.jpg' },     rating: 5,
     reviews: 150,
     price: 19.99,
     available: false,
@@ -60,7 +73,7 @@ const cakeData = [
     id: '2',
     title: 'Delicious Cake',
     description: `Delicious cake baked with love, perfect for any occasion.`,
-    image: require("../image/4.png"),
+    image: { uri: 'https://production-assets-cakerhq.s3.ap-southeast-2.amazonaws.com/29mn2l9mnxdjjabb68cp9992d392' }, 
     rating: 5,
     reviews: 150,
     price: 19.99,
@@ -74,6 +87,10 @@ const ProductPacksList = () => {
   const [selectedCoffeeQuantity, setSelectedCoffeeQuantity] = useState(1);
   const [selectedJuiceQuantity, setSelectedJuiceQuantity] = useState(1);
   const [selectedCakeQuantity, setSelectedCakeQuantity] = useState(1);
+
+  const togglePack = (packName) => {
+    setSelectedPack(selectedPack === packName ? null : packName);
+  };
 
   const renderSizeOptions = (sizes) => sizes.map((size, index) => (
     <TouchableOpacity key={index} style={styles.sizeButton}>
@@ -102,10 +119,10 @@ const ProductPacksList = () => {
   const renderProducts = (products, selectedQuantity, setSelectedQuantity) => (
     <FlatList
       data={products}
-      horizontal={true}
+      horizontal
       keyExtractor={(item) => item.id.toString()}
       renderItem={({ item }) => (
-        <TouchableOpacity style={styles.card}>
+        <View style={styles.card}>
           <View style={styles.cardImgWrapper}>
             <Image source={item.image} style={styles.cardImg} />
           </View>
@@ -117,17 +134,16 @@ const ProductPacksList = () => {
             <Text style={styles.cardDetails}>Price: ${item.price.toFixed(2)}</Text>
             {renderQuantitySelector(selectedQuantity, setSelectedQuantity)}
           </View>
-        </TouchableOpacity>
+        </View>
       )}
-      contentContainerStyle={styles.contentContainer}
     />
   );
 
   return (
-    <ScrollView>
-     
+    <ScrollView style={styles.scrollContainer}>
       <View style={styles.container}>
-        <TouchableOpacity onPress={() => setSelectedPack('Solo Pack')} style={styles.pack}>
+        {/* Solo Pack */}
+        <TouchableOpacity onPress={() => togglePack('Solo Pack')} style={styles.pack}>
           <Image source={soloPackImage} style={styles.packImage} />
           <Text style={styles.packTitle}>Solo Pack</Text>
         </TouchableOpacity>
@@ -142,7 +158,8 @@ const ProductPacksList = () => {
           </View>
         )}
 
-        <TouchableOpacity onPress={() => setSelectedPack('Duo Pack')} style={styles.pack}>
+        {/* Duo Pack */}
+        <TouchableOpacity onPress={() => togglePack('Duo Pack')} style={styles.pack}>
           <Image source={duoPackImage} style={styles.packImage} />
           <Text style={styles.packTitle}>Duo Pack</Text>
         </TouchableOpacity>
@@ -157,7 +174,8 @@ const ProductPacksList = () => {
           </View>
         )}
 
-        <TouchableOpacity onPress={() => setSelectedPack('Family Pack')} style={styles.pack}>
+        {/* Family Pack */}
+        <TouchableOpacity onPress={() => togglePack('Family Pack')} style={styles.pack}>
           <Image source={familyPackImage} style={styles.packImage} />
           <Text style={styles.packTitle}>Family Pack</Text>
         </TouchableOpacity>
@@ -175,29 +193,40 @@ const ProductPacksList = () => {
     </ScrollView>
   );
 };
+
 const styles = StyleSheet.create({
+  scrollContainer: {
+    flex: 1,
+  },
   container: {
     flex: 1,
     padding: 10,
   },
   pack: {
     marginBottom: 20,
+    flexDirection: 'row',
+    alignItems: 'center',
   },
   packTitle: {
     fontSize: 20,
     fontWeight: 'bold',
-    marginBottom: 10,
+    marginLeft: 10,
   },
   packSubtitle: {
     fontSize: 18,
     fontWeight: 'bold',
     marginBottom: 10,
   },
+  packImage: {
+    width: 90,
+    height: 90,
+  },
   card: {
     marginBottom: 10,
     marginHorizontal: 5,
     borderRadius: 8,
     backgroundColor: '#fff',
+    width: 250,
   },
   cardImgWrapper: {
     height: 120,
@@ -259,4 +288,5 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
 });
+
 export default ProductPacksList;
