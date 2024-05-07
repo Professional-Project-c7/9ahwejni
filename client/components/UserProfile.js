@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, Image, ScrollView, TouchableOpacity, Alert } from 'react-native';
+import { View, Text, Image, ScrollView,Modal, TouchableOpacity, Alert } from 'react-native';
 import SettingComponent from './Setting';
 import axios from 'axios';
 import { ipAdress } from '../config';
@@ -9,16 +9,37 @@ import Favoritelist from './Favoritelist';
 import logoImage from "../image/logo.png";
 import { useNavigation } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage'; 
-import Login  from './Login';
 import { launchImageLibrary } from 'react-native-image-picker';
-import { Cloudinary } from 'cloudinary-react-native';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import {v2 as cloudinary } from 'cloudinary-react-native'; // Import Cloudinary
+import Icon from 'react-native-vector-icons/MaterialIcons';
+import { white } from 'react-native-paper/lib/typescript/styles/themes/v2/colors';
+import { CommonActions } from '@react-navigation/native';
+// Configure Cloudinary
 
-const Stack = createNativeStackNavigator();
-const Tab = createBottomTabNavigator();
+const UserProfile = ({ navigation }) => {
 
-const UserProfile = ({navigation}) => {
+  const removeTokenFromStorage = async () => {
+    try {
+      await AsyncStorage.removeItem('userToken');
+      console.log('Token removed successfully');
+    } catch (error) {
+      console.error('Error removing token:', error);
+    }
+  };
+
+  const navigateToUserAccount2 = () => {
+     
+
+    removeTokenFromStorage();
+    navigation.dispatch(
+      CommonActions.reset({
+        index: 0,
+        routes: [{ name: 'Login' }],
+      })
+    );
+  };
+ 
+
   const [profile, setProfile] = useState({
     FirstName: '',
     LastName: '',
@@ -30,48 +51,24 @@ const UserProfile = ({navigation}) => {
   const [ShowMainView, setShowMainView] = useState(true);
   const [favoritelist, setFavoritelist] = useState(false);
   const [imageUri, setImageUri] = useState(null);
-  const [userToken, setUserToken] = useState(null);
+  const [isFormVisible, setFormVisible] = useState(false);
+  const [userToken, setUserToken] = useState("");
+  
 
   useEffect(() => {
-    // Function to retrieve user token from AsyncStorage
-    const getUserToken = async () => {
-      try {
-        const token = await AsyncStorage.getItem('userToken');
-        setUserToken(token ? JSON.parse(token) : null);
-      } catch (error) {
-        console.log('Error retrieving user token:', error);
-      }
-    };
-
-    // Call the function to retrieve user token
-    getUserToken();
+    fetchUserProfile()
   }, []);
+
   const fetchUserProfile = async () => {  
     try {
-      const response = await axios.get(`http://${ipAdress}:3000/api/user/${userToken}`); // Assuming user ID is 1
+      const response = await axios.get(`http://${ipAdress}:3000/api/user/1}`);
       const userData = response.data;
       setProfile(userData);
     } catch (error) {
       console.error('Error fetching user profile:', error);
     }
   };
-  const removeTokenFromStorage = async () => {
-    try {
-      await AsyncStorage.removeItem('userToken');
-      console.log('Token removed successfully');
-    } catch (error) {
-      console.error('Error removing token:', error);
-    }
-  };
-
-  const handleLogout = () => {
-    removeTokenFromStorage();
-    navigation.navigate('Login');
-  };
-
-  useEffect(() => {
-    fetchUserProfile();
-  }, []);
+ 
 
   const handleSettingClick = () => { 
     setShowSetting(true);
@@ -97,18 +94,11 @@ const UserProfile = ({navigation}) => {
     setShowOtherComponent(false); 
     setFavoritelist(false);
   };
-
-
-
-
+ 
   const handleChooseImage = () => {
-    launchImageLibrary({}, response => {
-      if (response.didCancel) {
-        Alert.alert('Error', 'User cancelled image picker');
-      } else if (response.error) {
-        Alert.alert('Error', 'ImagePicker Error: ' + response.error);
-      } else {
-        const uri = response.uri;
+    launchImageLibrary({ mediaType: 'photo' }, response => {
+      if (!response.didCancel) {
+        const uri = response.assets[0].uri;
         setImageUri(uri);
         uploadImage(uri);
       }
@@ -117,32 +107,37 @@ const UserProfile = ({navigation}) => {
 
   const uploadImage = async (uri) => {
     try {
-      const cloudinaryResponse = await Cloudinary.upload(uri, "your_cloud_name", "react_native_upload_preset");
-      console.log('Uploaded image URL:', cloudinaryResponse.secure_url);
-      // You may want to update the user profile with the new image URL here
+      const response = await cloudinary.uploader.upload(uri);
+      console.log('Upload successful:', response);
     } catch (error) {
       console.error('Error uploading image:', error);
     }
   };
 
+  const toggleFormVisibility = () => {
+    setFormVisible(!isFormVisible);
+  }
+
   return (
     <ScrollView style={styles.container}>
       {/* Profile Header */}
       <View style={styles.headerContainer}>
+     
         {ShowMainView && (
           <>
-             <View style={styles.top}>
-               <Image source={logoImage} style={styles.logo} /> 
-             </View>
-             <TouchableOpacity style={styles.profileContainer1} onPress={handleChooseImage}>
-               {/* <Image
-                 style={styles.profilePhoto}
-                 source={{ uri: profile.ProfileImage }}
-               /> */}
-             </TouchableOpacity>
-             <View style={styles.profileContainer}>
-               <Text style={styles.Name}>{profile.FirstName}</Text>
-             </View>
+            
+            <View style={styles.top}>
+              <Image source={logoImage} style={styles.logo} /> 
+            </View>
+            <TouchableOpacity style={styles.profileContainer1} onPress={handleChooseImage}>
+              <Image
+                style={styles.profilePhoto}
+                source={{ uri: profile.ProfileImage || 'https://c0.lestechnophiles.com/www.numerama.com/wp-content/uploads/2018/01/facebook-profil-680x383.jpg?resize=500,281&key=57ef287a' }}
+              />
+            </TouchableOpacity>
+            <View style={styles.profileContainer}>
+              <Text style={styles.Name}>{profile.FirstName} </Text>
+            </View>
           </>
         )}
         {showSetting && <SettingComponent onClose={handleClose} />}
@@ -166,9 +161,46 @@ const UserProfile = ({navigation}) => {
         </IconButton> 
           <Text style={styles.buttonText1}>Order List</Text>
       </View>
-     
-      <TouchableOpacity style={styles.optionOne} onPress={handleLogout}/>
+      {/* <TouchableOpacity onPress={navigateToUserAccount2}>
+            <Icon name="logout" size={20} color="black" />
+          </TouchableOpacity> */}
+           <View style={styles.statContainer2}>
+        <IconButton icon="logout" style={styles.button} onPress={toggleFormVisibility}>
+        </IconButton> 
+          <Text style={styles.buttonText1}>logout</Text>
+      </View>
+           {/* <Icon name= 'login'  size={30} onPress={toggleFormVisibility}  style={styles.log} >
+            </Icon>
+           <Text style={styles.textStyle1}>Logout</Text> */}
        
+      
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={isFormVisible}
+        onRequestClose={() => {
+          setFormVisible(!isFormVisible);
+        }}
+      >
+         <View style={styles.centeredView}>
+          <View style={styles.modalView}>
+            {/* <Text style={styles.textStyle2}> | </Text> */}
+            {/* Your form components here */}
+            <TouchableOpacity
+              style={{ ...styles.closeButton, backgroundColor: '#2196F3' }}
+              onPress={toggleFormVisibility}
+            >
+              <Text style={styles.textStyle}> close </Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={{ ...styles.closeButton, backgroundColor: '#2196F3' }}
+              onPress={navigateToUserAccount2}
+            >
+              <Text style={styles.textStyle}>Logout</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
     </ScrollView>
   );
 };
@@ -178,6 +210,73 @@ const styles = {
     flex: 1,
     backgroundColor: '#fff',
   },
+  socialBarlabel: {
+    marginLeft: 8,
+    alignSelf: 'flex-end',
+    justifyContent: 'center',
+  },
+  textStyle: {
+    color: 'black',
+    fontWeight: 'bold',
+    textAlign: 'center',
+    backgroundColor:'white',
+    fontSize:18,
+    // marginBottom:10
+
+   
+  },
+  textStyle2: {
+    color: 'black',
+    fontWeight: 'bold',
+    textAlign: 'center',
+    backgroundColor:'white',
+    fontSize:18
+
+   
+  },
+  socialBarButton: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  addButton: {
+    // backgroundColor: '#f4511e',
+    fontSize:50,
+    padding: 10,
+    margin: 20,
+    borderRadius: 5,
+    alignItems: 'center',
+  },
+  centeredView: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 22,
+    // backgroundColor:'black'
+  },
+  modalView: {
+    margin: 20,
+    width:300,
+    height:100,
+    backgroundColor: 'white',
+    justifyContent: 'space-between',
+    flexDirection: 'row',
+
+    borderRadius: 20,
+    borderWidth: 1,
+    borderColor: 'black', // Set the border color to black
+    padding: 35,
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  
   optionOne:{
     backgroundColor: 'black',
     width: '50%',
@@ -299,10 +398,28 @@ const styles = {
     textAlign: 'center',
     marginRight: 70
   },
+  // textStyle1: {
+  //   color: 'black',
+  //   marginLeft: 200,
+  //   fontSize: 19,
+  //   marginBottom:80
+  // },
   buttonText1: {
     color: 'black',
     marginLeft: 30,
     fontSize: 19
+  },
+  log: {
+    color: 'black',
+    marginLeft: 57,
+    fontSize: 19,
+    marginTop:15,
+    borderRadius: 100,
+    padding: 10,
+    marginHorizontal: 20,
+    width: 50,
+    // marginLeft: 100,
+    backgroundColor: '#E4C59E'
   },
 };
 
