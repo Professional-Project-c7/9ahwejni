@@ -25,7 +25,7 @@ import ReviewsCoffee from '../components/ReviewsCoffee';
 import PaymentCardsDetails from '../components/paymentcardsdetailsCoffee';
 import EditCoffee from '../components/editCoffee';
 import InfoCoffee from '../components/informationsCoffee';
-import Map from '../components/MapCoffe'
+// import Map from '../components/MapCoffe'
 // import logout from '../components/logout';
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -86,7 +86,7 @@ function TabNavigator() {
         headerShown: false 
       }}
     />
-    <Tab.Screen
+    {/* <Tab.Screen
       name="Map"
       component={Map}
       options={{
@@ -98,7 +98,7 @@ function TabNavigator() {
         ),
         headerShown: false 
       }}
-    />
+    /> */}
     <Tab.Screen
       name="UserProfile"
       component={UserProfile}
