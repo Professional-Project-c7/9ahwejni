@@ -6,7 +6,7 @@ module.exports=(sequelize,DataTypes)=>{
    
     name: {
       type: DataTypes.STRING,
-      allowNull: false
+      // allowNull: false
     },
     price: {
       type: DataTypes.INTEGER
@@ -15,7 +15,7 @@ module.exports=(sequelize,DataTypes)=>{
     
     description: {
         type: DataTypes.STRING,
-        allowNull :false
+        // allowNull :false
       },
       
     
