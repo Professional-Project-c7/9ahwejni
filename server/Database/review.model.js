@@ -5,11 +5,12 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.INTEGER,
         allowNull: false,
         validate: { min: 1, max: 5 }
-      },
-      comment: {
-        type: DataTypes.TEXT,
-        allowNull: true
       }
+     ,
+     comment :{
+      type : DataTypes.TEXT,
+      allowNull: true,
+     }
     });
     
     return Review;
