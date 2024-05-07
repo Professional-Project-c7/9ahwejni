@@ -7,7 +7,7 @@ import Pub from "../components/pub";
 import axios from 'axios';
 import logoImage from "../image/logo.png";
 import { ipAdress } from '../config';
-import CategoryBar from '../components/categorybar'; 
+import CategoryBar from '../../categorybar'; 
 // import Toast from 'react-native-toast-message';
 
 const HomePage = ({ navigation }) => {

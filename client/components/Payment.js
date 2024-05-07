@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, Image, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, TextInput, Image, TouchableOpacity, StyleSheet , Linking  } from 'react-native';
 import axios from 'axios';
 import { Button } from 'react-native-paper';
 
 import creditCardLogo from '../image/master.jpg';
 import paypalLogo from '../image/paypal.png';
 import visaCardLogo from '../image/visa.png';
+import { ipAdress } from '../config';
 
 function Paye() {
   const [formData, setFormData] = useState({
@@ -16,17 +17,29 @@ function Paye() {
     expiry_year: '',
     cvv: ''
   });
-
+ console.log(ipAdress);
   const handleChange = (name, value) => {
     setFormData({
       ...formData,
       [name]: value
     });
   };
-
-  const handlePayment = () => {
-    // Handle payment logic here
+  const handlePayment = async () => {
+    // try {
+    //   const amount = 500; 
+    //   const response = await axios.post(
+    //     `http://${ipAdress}/api/payment/pay/`,
+    //     { amount: amount } 
+    //   );
+    //   console.log(response);
+    //   const paymentLink = response.data.result.link;
+    //   Linking.openURL(paymentLink);
+    // } catch (error) {
+    //   console.log(error);
+    // }
+    Linking.openURL("https://flouci.com/pay/L-z8kC4VR8y8Hyn8z7nu0A");
   };
+  
 
   return (
     <View style={styles.container}>
@@ -164,9 +177,10 @@ function Paye() {
         </View>
       )}
    
-         <Button style={styles.button} mode="contained" >
-         Pay Now
-      </Button>
+         <TouchableOpacity style={styles.button} mode="contained"   onPress={handlePayment} >
+        
+         <Text> Pay Now</Text>
+      </TouchableOpacity>
       {/* <Button title="Pay Now" style={styles.pay}  onPress={handlePayment}  /> */}
     </View>
   );
