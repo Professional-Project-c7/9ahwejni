@@ -5,7 +5,7 @@ import Geolocation from '@react-native-community/geolocation';
 import Geocoder from 'react-native-geocoding';
 import { Button, List, IconButton } from 'react-native-paper';
 
-const GOOGLE_MAPS_API_KEY = 'AIzaSyDYm4cfAj3Lrk6HqMJZHGeB1JevFbEC55o';
+const GOOGLE_MAPS_API_KEY = 'AIzaSyDYm4cfAj3Lrk6HqMJZHGeB1JevFbEC55o'; // Replace with your Google Maps API Key
 Geocoder.init('AIzaSyDYm4cfAj3Lrk6HqMJZHGeB1JevFbEC55o');
 
 export default function MapCoffe() {
@@ -13,8 +13,7 @@ export default function MapCoffe() {
   const [searchQuery, setSearchQuery] = useState('');
   const [coffeeShops, setCoffeeShops] = useState([]);
   const [selectedCoffeeShop, setSelectedCoffeeShop] = useState(null);
-  const [directions, setDirections] = useState(null); // State to store direction data
-  const [showList, setShowList] = useState(true); // State to toggle the visibility of the coffee shop list
+  const [directions, setDirections] = useState(null);
 
   useEffect(() => {
     Geolocation.requestAuthorization();
@@ -125,6 +124,7 @@ export default function MapCoffe() {
       );
       const data = await response.json();
       setDirections(data);
+      setSelectedCoffeeShop(coffeeShop);
     } catch (error) {
       console.error('Error fetching directions:', error);
       Alert.alert(
@@ -186,7 +186,7 @@ export default function MapCoffe() {
         <MapView style={styles.map} initialRegion={region}>
           <Marker coordinate={{ latitude: region.latitude, longitude: region.longitude }} />
           {coffeeShops.map((marker, index) => (
-            <Marker key={index} coordinate={{ latitude: marker.latitude, longitude: marker.longitude }} pinColor="blue" />
+            <Marker key={index} coordinate={{ latitude: marker.latitude, longitude: marker.longitude }} pinColor="blue" onPress={() => handleGetDirections(marker)} />
           ))}
           {directions && directions.routes && directions.routes.length > 0 && directions.routes[0].overview_polyline && (
             <Polyline
@@ -200,19 +200,15 @@ export default function MapCoffe() {
         <MapView style={styles.map} />
       )}
 
-   
-     
-      
-
       <List.Accordion
         title="Coffee Shops"
         style={styles.coffeeShopsList}
         left={props => <List.Icon {...props} icon="coffee" />}
       >
-      {showList && (
-          <ScrollView style={styles.coffeeShopsContainer}>
-            {coffeeShops.map((coffeeShop, index) => (
-              <View key={index} style={styles.coffeeShopItem}>
+        <ScrollView style={styles.coffeeShopsContainer}>
+          {coffeeShops.map((coffeeShop, index) => (
+            <TouchableOpacity key={index} onPress={() => handleGetDirections(coffeeShop)}>
+              <View style={styles.coffeeShopItem}>
                 <View style={styles.coffeeShopInfo}>
                   {coffeeShop.photoReference && (
                     <Image
@@ -223,9 +219,6 @@ export default function MapCoffe() {
                     />
                   )}
                   <Text style={styles.coffeeShopName}>{coffeeShop.name}</Text>
-                  <TouchableOpacity onPress={() => handleGetDirections(coffeeShop)}>
-                    <Text style={styles.directionsButton}>Directions</Text>
-                  </TouchableOpacity>
                 </View>
                 <View style={styles.distanceContainer}>
                   <Text style={styles.distanceText}>
@@ -233,9 +226,9 @@ export default function MapCoffe() {
                   </Text>
                 </View>
               </View>
-            ))}
-          </ScrollView>
-      )}
+            </TouchableOpacity>
+          ))}
+        </ScrollView>
       </List.Accordion>
     </View>
   );
@@ -283,7 +276,6 @@ const styles = StyleSheet.create({
   },
   coffeeShopsContainer: {
     padding: 10,
-    paddingLeft : 10
   },
   coffeeShopItem: {
     marginBottom: 10,
@@ -315,13 +307,6 @@ const styles = StyleSheet.create({
     height: 85,
     borderRadius: 5,
   },
-  directionsButton: {
-    color: 'blue',
-    textDecorationLine: 'underline',
-    fontWeight: 'bold',
-    fontSize : 15, 
-    marginLeft: 20,
-  },
   distanceContainer: {
     marginLeft: 20,
   },
@@ -330,11 +315,5 @@ const styles = StyleSheet.create({
   },
   distanceValue: {
     fontWeight: 'bold',
-  },
-  toggleButton: {
-    position: 'absolute',
-    top: 10,
-    right: 10,
-    backgroundColor: 'transparent',
   },
 });

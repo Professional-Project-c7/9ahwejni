@@ -1,6 +1,6 @@
 
+const ipAdress = "192.168.103.24";
 
-const ipAdress = "192.168.11.59";
 
 
 module.exports = {
