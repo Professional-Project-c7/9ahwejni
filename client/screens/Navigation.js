@@ -50,7 +50,7 @@ function NAVSTART() {
         <Stack.Screen name="TransactionScreenCoffee" component={TransactionScreenCoffee} ptions={{ headerShown: false }} />
         <Stack.Screen name="ReviewsCoffee" component={ReviewsCoffee} ptions={{ headerShown: false }} />
         <Stack.Screen name="PaymentCardsDetails" component={PaymentCardsDetails} ptions={{ headerShown: false }} />
-        <Stack.Screen name="User" component={UserProfile} options={{ headerShown: false }} />
+        <Stack.Screen name="User" component={UserProfile} />
         
         <Stack.Screen name="menu" component={MenuItems} options={{ headerShown: false }} />
         <Stack.Screen name="coffeeProfile" component={coffeeprofile} options={{ headerShown: false }} />
@@ -58,6 +58,7 @@ function NAVSTART() {
         <Stack.Screen name="st3" component={Start3} options={{ headerShown: false }} />
         <Stack.Screen name="st4" component={Start4} options={{ headerShown: false }} />
         <Stack.Screen name="Tabs" component={TabNavigator} options={{ headerShown: false }} />
+        
         {/* <Stack.Screen name="logout" component={logout} options={{ headerShown: false }} /> */}
       </Stack.Navigator>
     </NavigationContainer>
