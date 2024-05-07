@@ -5,7 +5,7 @@ import ProductPacksList from './components//ProductPacksList';
 import ProductList from './components/ProductList';
 import { Provider } from 'react-redux';
 import { store } from './redux/store';
-import AllCoffeShops from './components/UserProfile';
+import Map from './components/MapCoffe';
 import HomePage from './components/homepage';
 import SellerPage from './components/SellerPage';
 import Paye from './components/Payment';
