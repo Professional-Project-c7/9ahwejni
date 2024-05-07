@@ -52,20 +52,35 @@ const UserProfile = ({ navigation }) => {
   const [favoritelist, setFavoritelist] = useState(false);
   const [imageUri, setImageUri] = useState(null);
   const [isFormVisible, setFormVisible] = useState(false);
+  const [userToken, setUserToken] = useState("");
   
+
   useEffect(() => {
-    fetchUserProfile();
+    // Function to retrieve user token from AsyncStorage
+    const getUserToken = async () => {
+      try {
+        const token = await AsyncStorage.getItem('userToken');
+        console.log("thats my token",token);
+        setUserToken(token ? JSON.parse(token) : null);
+      } catch (error) {
+        console.log('Error retrieving user token:', error);
+      }
+    };
+
+    // Call the function to retrieve user token
+    getUserToken();
   }, []);
 
   const fetchUserProfile = async () => {  
     try {
-      const response = await axios.get(`http://${ipAdress}:3000/api/user/1`);
+      const response = await axios.get(`http://${ipAdress}:3000/api/user/${userId}`);
       const userData = response.data;
       setProfile(userData);
     } catch (error) {
       console.error('Error fetching user profile:', error);
     }
   };
+ 
 
   const handleSettingClick = () => { 
     setShowSetting(true);
