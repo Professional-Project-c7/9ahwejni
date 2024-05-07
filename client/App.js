@@ -7,13 +7,14 @@ import { Provider } from 'react-redux';
 import { store } from './redux/store';
 import AllCoffeShops from './components/AllCoffeShops';
 import HomePage from './components/homepage';
+import AdvancedFilter from './components/AdvancedFilter';
 function App() {
   console.log(process.env.ipAdress);
   
  return (
   <Provider store={store}>
     <SafeAreaView style={{ flex: 1 }}>
-    <ProductList />
+    <HomePage />
  </SafeAreaView>
  </Provider>
   );
