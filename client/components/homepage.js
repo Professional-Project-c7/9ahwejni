@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { StyleSheet, Text, View, Image, TouchableOpacity, ScrollView, FlatList, StatusBar } from 'react-native';
+import LinearGradient from 'react-native-linear-gradient';
 import SearchBar from '../components/searchbar';
 import { IconButton } from 'react-native-paper';
 import RandomProducts from "../components/randomproducts";
@@ -15,25 +16,30 @@ const HomePage = ({ navigation }) => {
   const coffeeUsers = userData.filter(user => user.UserType === "coffee");
   const clientUsers = userData.filter(user => user.UserType === "client");
 
-  useEffect(() => {
-    const fetchUserData = async () => {
-      try {
-        const response = await axios.get(`http://${ipAdress}:3000/api/user/`);
-        const coffeeUsers = response.data.filter(user => user.UserType === "coffee");
-        setUserData(coffeeUsers);
-      } catch (error) {
-        console.error('Error fetching user data:', error);
-      }
-    };
+  // useEffect(() => {
+  //   const fetchUserData = async () => {
+  //     try {
+  //       const response = await axios.get(`http://${ipAdress}:3000/api/user/`);
+  //       const coffeeUsers = response.data.filter(user => user.UserType === "coffee");
+  //       setUserData(coffeeUsers);
+  //     } catch (error) {
+  //       console.error('Error fetching user data:', error);
+  //     }
+  //   };
 
-    fetchUserData();
-  }, []);
+  //   fetchUserData();
+  // }, []);
 
   const firstTwoImages = userData.slice(0, 3);
 
   return (
     <ScrollView style={styles.container}>
-      <View style={styles.topBackground}>
+      <LinearGradient 
+        colors={['rgba(253,190,29,1)', 'rgba(252,145,69,1)']} 
+        start={{x: 0, y: 0}} 
+        end={{x: 1, y: 0}} 
+        style={styles.topBackground}
+      >
         <View style={styles.top}>
           <IconButton icon="menu" iconColor='#FFF' />
           <View style={styles.logoContainer}>
@@ -41,7 +47,7 @@ const HomePage = ({ navigation }) => {
           </View>
           <IconButton icon="bell-outline" iconColor='#FFF' />
         </View>
-      </View>
+      </LinearGradient>
       <View style={styles.searchContainer}>
         <SearchBar />
       </View>
@@ -90,7 +96,8 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
   },
   topBackground: {
-    backgroundColor: '#dba617',
+    borderBottomRightRadius: 5,
+    borderBottomLeftRadius: 5,
   },
   top: {
     flexDirection: 'row',
@@ -115,7 +122,6 @@ const styles = StyleSheet.create({
   logo: {
     width: 62,
     height: 62,
-    
   },
   categoryBarContainer: {
     flexDirection: 'column',

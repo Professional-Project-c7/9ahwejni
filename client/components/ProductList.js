@@ -1,83 +1,82 @@
-import React, { useEffect } from 'react';
-import { SafeAreaView, ScrollView, StyleSheet, View, Image, TouchableOpacity } from 'react-native';
-import { Card, Title, Text, IconButton } from 'react-native-paper';
-import heart from '../image/favorite.png';
+import React, { useEffect, useState } from 'react';
+import { SafeAreaView, ScrollView, StyleSheet, View, Image, Text } from 'react-native';
+import { Title } from 'react-native-paper';
+import { Rating } from 'react-native-ratings';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { useProducts } from '../redux/products/productHooks';
 
-const HoverableIconButton = ({ onAddPress }) => (
-  <IconButton
-    icon="plus-circle"
-    iconColor="#dba617"  
-    size={40}
-    onPress={onAddPress}
-    style={{ margin: 10 }}
-  />
-);
-
 const ProductList = () => {
-  const { products, getProducts, status } = useProducts();
-  const [favorites, setFavorites] = React.useState({});
-  const userId = 2; // User ID to filter products
+  const { products, getProducts, status, error } = useProducts();
+  const [favorites, setFavorites] = useState({});
 
   useEffect(() => {
-    getProducts();
-  }, []);
+    if (status === 'idle') {
+      getProducts();
+    }
+  }, [status, getProducts]);
 
-  const toggleFavorite = (id) => {
-    setFavorites(prev => ({ ...prev, [id]: !prev[id] }));
+  const toggleFeature = (id, feature) => {
+    setFavorites((prev) => ({
+      ...prev,
+      [id]: {
+        ...prev[id],
+        [feature]: !prev[id]?.[feature],
+      },
+    }));
   };
 
-  const filteredProducts = products.filter(product => product.UserId === userId);
-//    <SafeAreaView style={[styles.container, { backgroundColor: '#dba617' }]}> 
+  const userId =10;
+  const filteredProducts = products.filter(product => product.userId === userId);
 
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView>
         {filteredProducts.length > 0 && (
           <>
-            <Title style={styles.shopTitle}>
-              {filteredProducts[0].shopTitle}: {filteredProducts[0].shopName || 'Default Shop Name'}
-            </Title>
-            <Image 
+            <Title style={styles.shopTitle}>{filteredProducts[0].shopName}</Title>
+            <Image
               style={styles.shopImage}
-              source={{ uri: 'https://images.pexels.com/photos/321552/pexels-photo-321552.jpeg?auto=compress&cs=tinysrgb&w=600' }}
+              source={{ uri: filteredProducts[0].imgUrl }}
             />
             <Text style={styles.shopSubtitle}>Explore Our Exclusive Coffee Collection</Text>
           </>
         )}
-        
+
         <Title style={styles.productListTitle}>My Products</Title>
-        {status === 'loading' ? (
-          <Text>Loading...</Text>
-        ) : filteredProducts.map((product) => (
-          <Card key={product.id} style={styles.productCard}>
-            <Card.Content style={styles.productCardContent}>
-              <View style={styles.imageContainer}>
-                <Image 
-                  style={styles.productImage}
-                  source={{ uri: product.imgUrl }}
-                />
-                <TouchableOpacity
-                  onPress={() => toggleFavorite(product.id)}
-                  style={styles.heartButton}
-                >
-                  <Image
-                    source={heart}
-                    style={[styles.icon, { tintColor: favorites[product.id] ? 'red' : '#FFF' }]}
-                  />
-                </TouchableOpacity>
-              </View>
-              <View style={styles.productInfo}>
-                <Title style={styles.productTitle}>{product.name}</Title>
-                <Text style={styles.productDescription}>{product.description}</Text>
-                <Text style={styles.productPrice}>${product.price}</Text>
-              </View>
-              <HoverableIconButton 
-                onAddPress={() => console.log('Add Pressed', product.id)}
+        <View style={styles.productsContainer}>
+          {filteredProducts.map((product) => (
+            <View style={styles.card} key={product.id}>
+              <Image source={{ uri: product.imgUrl }} style={styles.image} />
+              <Icon
+                name={favorites[product.id]?.favored ? 'heart' : 'heart-outline'}
+                color={favorites[product.id]?.favored ? 'red' : '#dba617'}
+                size={27}
+                onPress={() => toggleFeature(product.id, 'favored')}
+                style={styles.favIcon}
               />
-            </Card.Content>
-          </Card>
-        ))}
+              <View style={styles.infoContainer}>
+                <Text style={styles.name}>{product.name}</Text>
+                <Text style={styles.price}>${product.price}</Text>
+                <Text style={styles.productDescription}>{product.description}</Text>
+                <Rating
+                  type="star"
+                  ratingCount={5}
+                  imageSize={20}
+                  startingValue={product.rating}
+                  onFinishRating={(rating) => console.log('New rating is: ', rating)}
+                  style={styles.starRating}
+                />
+                <Icon
+                  name={favorites[product.id]?.inCart ? 'cart' : 'cart-outline'}
+                  color={favorites[product.id]?.inCart ? 'red' : 'white'}
+                  size={24}
+                  onPress={() => toggleFeature(product.id, 'inCart')}
+                  style={styles.cartIcon}
+                />
+              </View>
+            </View>
+          ))}
+        </View>
       </ScrollView>
     </SafeAreaView>
   );
@@ -85,27 +84,28 @@ const ProductList = () => {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    backgroundColor: '#dba617'
+    flex: 5,
+    backgroundColor: '#fff',
+    justifyContent: 'space-between',
   },
   shopTitle: {
     fontSize: 28,
-    fontWeight: '700', 
+    fontWeight: '700',
     textAlign: 'center',
     marginTop: 16,
-    color: '#3e3e3e', 
+    color: '#3e3e3e',
     fontFamily: 'Roboto',
   },
   shopImage: {
     width: '100%',
-    height: 200, 
+    height: 200,
     resizeMode: 'cover',
-    borderRadius: 8, 
-    borderWidth: 0.7, 
-    borderColor: '#3e3e3e', 
-    marginBottom: 16, 
-    overflow: 'hidden', 
-    elevation: 2, 
+    borderRadius: 8,
+    borderWidth: 0.7,
+    borderColor: '#3e3e3e',
+    marginBottom: 16,
+    overflow: 'hidden',
+    elevation: 2,
   },
   shopSubtitle: {
     textAlign: 'center',
@@ -117,55 +117,68 @@ const styles = StyleSheet.create({
     marginLeft: 16,
     marginBottom: 8,
   },
-  productCard: {
-    marginHorizontal: 16,
-    marginBottom: 16,
-    elevation: 1,
-  },
-  productCardContent: {
+  productsContainer: {
     flexDirection: 'row',
-    alignItems: 'center',
+    flexWrap: 'wrap',
+    justifyContent: 'space-evenly',
   },
-  imageContainer: {
-    position: 'relative',
-    marginRight: 8,
+  card: {
+    width: 189,
+    margin: 1,
+    borderRadius: 10,
+    backgroundColor: '#fff',
+    overflow: 'hidden',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 6,
+    borderColor: '#ccc',
+    borderWidth: 1.5,
+    marginTop : 12,
   },
-  productImage: {
-    width: 133,
-    height: 133,
-    borderRadius: 0,
+  image: {
+    height: 210,
+    width: '100%',
+    alignSelf: 'center',
   },
-  productInfo: {
-    flex: 1,
+  favIcon: {
+    position: 'absolute',
+    right: 10,
+    top: 10,
   },
-  productTitle: {
-    fontSize: 22,
+  infoContainer: {
+    padding: 10,
+    alignItems: 'flex-start',
+    justifyContent: 'flex-start',
+    width: '100%',
+  },
+  name: {
+    fontSize: 25,
     fontWeight: 'bold',
+    color: '#000',
+    flexWrap: 'wrap',
+  },
+  price: {
+    fontSize: 20,
+    color: '#000',
+    marginTop: 5,
   },
   productDescription: {
-    fontSize: 20,
-    color: '#503C3C',
+    fontSize: 15,
+    marginTop: 5,
+    color: '#000',
   },
-  productPrice: {
-    fontSize: 22,
-    fontWeight: 'bold',
-    color: '#6f7e47',
+  starRating: {
+    marginTop: 5,
   },
-  iconButton: {
-    padding: 10,
-    margin: 5,
-  },
-  heartButton: {
+  cartIcon: {
     position: 'absolute',
-    top: 10,
-    left: 10,
-    padding: 10,
-    margin: 0,
+    right: 5,
+    bottom: 1,
+    backgroundColor: '#dba617',
+    padding: 8,
+    borderRadius: 15,
   },
-  icon: {
-    width: 24,
-    height: 24,
-  }
 });
 
 export default ProductList;
