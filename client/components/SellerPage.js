@@ -1,21 +1,29 @@
 import React from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity ,Image} from 'react-native';
 
 const SellerPage = () => {
     return (
         <ScrollView contentContainerStyle={styles.container}>
-            <View style={styles.section}>
-                <Text style={styles.sectionTitle}>Product Cards</Text>
-                {/* Product Cards Section */}
-                <View style={styles.cardContainer}>
-                    {/* Sample Product Card */}
-                    <TouchableOpacity style={styles.productCard}>
-                        <Text style={styles.productName}>Product 1</Text>
-                        <Text style={styles.productPrice}>$10</Text>
-                    </TouchableOpacity>
-                    {/* Add more product cards as needed */}
-                </View>
-            </View>
+
+
+
+
+<ImagedCardView
+  stars={5}
+  reviews={456}
+  ratings={4.5}
+  title="Yosemite"
+  rightSideValue="$990"
+  subtitle="California"
+  leftSideValue="3 Days"
+  backgroundColor="#ff6460"
+  source={{
+    uri: yosemite
+  }}
+/>
+
+
+
 
             <View style={styles.section}>
                 <Text style={styles.sectionTitle}>Invoice Details</Text>
@@ -33,52 +41,43 @@ const SellerPage = () => {
         </ScrollView>
     );
 };
-
 const styles = StyleSheet.create({
-    container: {
-        flexGrow: 1,
-        padding: 20,
-    },
-    section: {
-        marginBottom: 30,
-    },
-    sectionTitle: {
-        fontSize: 20,
-        fontWeight: 'bold',
-        marginBottom: 10,
-    },
     cardContainer: {
         flexDirection: 'row',
-        flexWrap: 'wrap',
+        justifyContent: 'space-between',
+        paddingHorizontal: 20,
+        marginTop: 20,
     },
     productCard: {
         width: '45%',
-        backgroundColor: '#fff',
-        padding: 15,
-        borderRadius: 10,
-        marginBottom: 10,
-        marginRight: '5%',
         borderWidth: 1,
         borderColor: '#ccc',
+        borderRadius: 8,
+        overflow: 'hidden',
+    },
+    imageContainer: {
+        position: 'relative',
+        height: 200,
+    },
+    productImage: {
+        flex: 1,
+        width: null,
+        height: null,
+        resizeMode: 'cover',
+    },
+    productDetails: {
+        padding: 10,
     },
     productName: {
-        fontSize: 18,
+        fontSize: 16,
         fontWeight: 'bold',
         marginBottom: 5,
     },
     productPrice: {
-        fontSize: 16,
+        fontSize: 14,
         color: 'green',
     },
-    invoiceContainer: {
-        borderWidth: 1,
-        borderColor: '#ccc',
-        padding: 10,
-        borderRadius: 10,
-    },
-    invoiceItem: {
-        marginBottom: 10,
-    },
 });
+
 
 export default SellerPage;

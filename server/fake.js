@@ -69,7 +69,7 @@ module.exports = async (sequelize) => {
 
           const oneproduct = Products[Math.floor(Math.random() * packCount)];
 
-          return await db.Pack.create({
+          return await db.Packproduct.create({
             packId:onepack.id,
             prodId:oneproduct.id
           });

@@ -27,33 +27,23 @@ async function connectionTest (){
   db.Coffee=require('./cofee.model')(connection,DataTypes)
   db.Message=require('./Message.model')(connection,DataTypes)
   db.Packproduct=require('./packproduct')(connection,DataTypes)
+  db.Payments=require('./Payment.model')(connection,DataTypes)
   db.Review = require('./review.model')(connection, DataTypes);
-
-
-
-
   db.Pack=require('./pack.model')(connection,DataTypes)
   db.Size=require('./size.model')(connection,DataTypes)
 
+
+
   db.Pack.belongsToMany(db.Products,{ through: db.Packproduct });
   db.Products.belongsToMany(db.Pack,{ through: db.Packproduct });
-
 
   db.Products.hasMany(db.Size);
   db.Size.belongsTo(db.Products);
 
 
-
-
   db.User.hasMany(db.Products);
   db.Products.belongsTo(db.User);
   
-
-  
-  
- 
-
-
 
 db.User.hasMany(db.Review);
 db.Review.belongsTo(db.User);
@@ -68,7 +58,7 @@ db.Review.belongsTo(db.Products);
 
 // Sync the models with the database
 
-//  connection.sync()
+//  connection.sync({force:true})
 //     .then(() => {
 //         console.log('Models synced with the database.')
 //     })
