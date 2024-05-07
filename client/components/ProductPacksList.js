@@ -15,7 +15,6 @@ const coffeeData = [
     reviews: 99,
     price: 4.99,
     available: true,
-    sizes: ['Small', 'Medium', 'Large'],
   },
   {
     id: '2',
@@ -26,7 +25,6 @@ const coffeeData = [
     reviews: 99,
     price: 4.99,
     available: true,
-    sizes: ['Small', 'Medium', 'Large'],
   },
 ];
 
@@ -41,7 +39,6 @@ const juiceData = [
     reviews: 120,
     price: 3.99,
     available: false,
-    sizes: ['Regular', 'Large'],
   },
   {
     id: '2',
@@ -52,7 +49,6 @@ const juiceData = [
     reviews: 120,
     price: 3.99,
     available: false,
-    sizes: ['Regular', 'Large'],
   }
   
   
@@ -63,11 +59,11 @@ const cakeData = [
     id: '1',
     title: 'Delicious Cake',
     description: `Delicious cake baked with love, perfect for any occasion.`,
-    image: { uri: 'https://joyfoodsunshine.com/wp-content/uploads/2020/08/best-chocolate-cake-recipe-from-scratch-8.jpg' },     rating: 5,
+    image: { uri: 'https://joyfoodsunshine.com/wp-content/uploads/2020/08/best-chocolate-cake-recipe-from-scratch-8.jpg' },     
+    rating: 5,
     reviews: 150,
     price: 19.99,
     available: false,
-    sizes: ['Small', 'Medium', 'Large'],
   },
   {
     id: '2',
@@ -78,25 +74,18 @@ const cakeData = [
     reviews: 150,
     price: 19.99,
     available: false,
-    sizes: ['Small', 'Medium', 'Large'],
   },
 ];
 
 const ProductPacksList = () => {
   const [selectedPack, setSelectedPack] = useState(null);
-  const [selectedCoffeeQuantity, setSelectedCoffeeQuantity] = useState(1);
-  const [selectedJuiceQuantity, setSelectedJuiceQuantity] = useState(1);
-  const [selectedCakeQuantity, setSelectedCakeQuantity] = useState(1);
+
 
   const togglePack = (packName) => {
     setSelectedPack(selectedPack === packName ? null : packName);
   };
 
-  const renderSizeOptions = (sizes) => sizes.map((size, index) => (
-    <TouchableOpacity key={index} style={styles.sizeButton}>
-      <Text style={styles.sizeButtonText}>{size}</Text>
-    </TouchableOpacity>
-  ));
+
 
   const renderAvailabilityIndicator = (available) => available ? (
     <Text style={styles.availableText}>Available</Text>
@@ -104,19 +93,9 @@ const ProductPacksList = () => {
     <Text style={styles.unavailableText}>Out of Stock</Text>
   );
 
-  const renderQuantitySelector = (quantity, setQuantity) => (
-    <View style={styles.quantitySelector}>
-      <TouchableOpacity onPress={() => setQuantity(Math.max(1, quantity - 1))} style={styles.quantityButton}>
-        <Text style={styles.quantityButtonText}>-</Text>
-      </TouchableOpacity>
-      <Text style={styles.quantityText}>{quantity}</Text>
-      <TouchableOpacity onPress={() => setQuantity(quantity + 1)} style={styles.quantityButton}>
-        <Text style={styles.quantityButtonText}>+</Text>
-      </TouchableOpacity>
-    </View>
-  );
+ 
 
-  const renderProducts = (products, selectedQuantity, setSelectedQuantity) => (
+  const renderProducts = (products ) => (
     <FlatList
       data={products}
       horizontal
@@ -129,10 +108,10 @@ const ProductPacksList = () => {
           <View style={styles.cardInfo}>
             <Text style={styles.cardTitle}>{item.title}</Text>
             <Text style={styles.cardDetails}>{item.description}</Text>
-            {renderSizeOptions(item.sizes)}
+         
             {renderAvailabilityIndicator(item.available)}
             <Text style={styles.cardDetails}>Price: ${item.price.toFixed(2)}</Text>
-            {renderQuantitySelector(selectedQuantity, setSelectedQuantity)}
+        
           </View>
         </View>
       )}
@@ -140,7 +119,7 @@ const ProductPacksList = () => {
   );
 
   return (
-    <ScrollView style={styles.scrollContainer}>
+    <ScrollView style={styles.scrollContainer} >
       <View style={styles.container}>
         {/* Solo Pack */}
         <TouchableOpacity onPress={() => togglePack('Solo Pack')} style={styles.pack}>
@@ -148,13 +127,13 @@ const ProductPacksList = () => {
           <Text style={styles.packTitle}>Solo Pack</Text>
         </TouchableOpacity>
         {selectedPack === 'Solo Pack' && (
-          <View>
-            <Text style={styles.packSubtitle}>Coffee Pack</Text>
-            {renderProducts(coffeeData, selectedCoffeeQuantity, setSelectedCoffeeQuantity)}
-            <Text style={styles.packSubtitle}>Juice Pack</Text>
-            {renderProducts(juiceData, selectedJuiceQuantity, setSelectedJuiceQuantity)}
-            <Text style={styles.packSubtitle}>Cake Pack</Text>
-            {renderProducts(cakeData, selectedCakeQuantity, setSelectedCakeQuantity)}
+          <View style={styles.soloPack}>
+            <Text style={styles.packSubtitle}>Coffee </Text>
+            {renderProducts(coffeeData)}
+            <Text style={styles.packSubtitle}>Juice </Text>
+            {renderProducts(juiceData)}
+            <Text style={styles.packSubtitle}>Cake </Text>
+            {renderProducts(cakeData)}
           </View>
         )}
 
@@ -165,12 +144,12 @@ const ProductPacksList = () => {
         </TouchableOpacity>
         {selectedPack === 'Duo Pack' && (
           <View>
-            <Text style={styles.packSubtitle}>Coffee Pack</Text>
-            {renderProducts(coffeeData, selectedCoffeeQuantity, setSelectedCoffeeQuantity)}
-            <Text style={styles.packSubtitle}>Juice Pack</Text>
-            {renderProducts(juiceData, selectedJuiceQuantity, setSelectedJuiceQuantity)}
-            <Text style={styles.packSubtitle}>Cake Pack</Text>
-            {renderProducts(cakeData, selectedCakeQuantity, setSelectedCakeQuantity)}
+            <Text style={styles.packSubtitle}>Coffee </Text>
+            {renderProducts(coffeeData)}
+            <Text style={styles.packSubtitle}>Juice </Text>
+            {renderProducts(juiceData)}
+            <Text style={styles.packSubtitle}>Cake </Text>
+            {renderProducts(cakeData)}
           </View>
         )}
 
@@ -181,12 +160,12 @@ const ProductPacksList = () => {
         </TouchableOpacity>
         {selectedPack === 'Family Pack' && (
           <View>
-            <Text style={styles.packSubtitle}>Coffee Pack</Text>
-            {renderProducts(coffeeData, selectedCoffeeQuantity, setSelectedCoffeeQuantity)}
-            <Text style={styles.packSubtitle}>Juice Pack</Text>
-            {renderProducts(juiceData, selectedJuiceQuantity, setSelectedJuiceQuantity)}
-            <Text style={styles.packSubtitle}>Cake Pack</Text>
-            {renderProducts(cakeData, selectedCakeQuantity, setSelectedCakeQuantity)}
+            <Text style={styles.packSubtitle}>Coffee </Text>
+            {renderProducts(coffeeData )}
+            <Text style={styles.packSubtitle}>Juice </Text>
+            {renderProducts(juiceData )}
+            <Text style={styles.packSubtitle}>Cake </Text>
+            {renderProducts(cakeData)}
           </View>
         )}
       </View>
@@ -197,6 +176,7 @@ const ProductPacksList = () => {
 const styles = StyleSheet.create({
   scrollContainer: {
     flex: 1,
+  
   },
   container: {
     flex: 1,
@@ -206,20 +186,26 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     flexDirection: 'row',
     alignItems: 'center',
+    backgroundColor: '#F0EBE3',
+     height : 120 ,
+      borderRadius: 10,
   },
   packTitle: {
     fontSize: 20,
     fontWeight: 'bold',
-    marginLeft: 10,
+    marginLeft: 30,
   },
   packSubtitle: {
     fontSize: 18,
     fontWeight: 'bold',
     marginBottom: 10,
+  
   },
   packImage: {
     width: 90,
     height: 90,
+    marginLeft: 10,
+    borderRadius : 10,
   },
   card: {
     marginBottom: 10,
@@ -252,15 +238,7 @@ const styles = StyleSheet.create({
     color: '#444',
     marginBottom: 5,
   },
-  sizeButton: {
-    backgroundColor: '#eee',
-    padding: 8,
-    borderRadius: 5,
-    marginRight: 5,
-  },
-  sizeButtonText: {
-    fontSize: 14,
-  },
+ 
   availableText: {
     color: 'green',
     fontWeight: 'bold',
@@ -269,24 +247,9 @@ const styles = StyleSheet.create({
     color: 'red',
     fontWeight: 'bold',
   },
-  quantitySelector: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  quantityButton: {
-    backgroundColor: '#eee',
-    padding: 8,
-    borderRadius: 5,
-    marginHorizontal: 5,
-  },
-  quantityButtonText: {
-    fontSize: 16,
-    fontWeight: 'bold',
-  },
-  quantityText: {
-    fontSize: 16,
-    fontWeight: 'bold',
-  },
+  
+  
+
 });
 
 export default ProductPacksList;
