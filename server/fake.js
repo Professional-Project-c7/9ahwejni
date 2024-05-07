@@ -52,7 +52,7 @@ module.exports = async (sequelize) => {
       
 
       const pack =await Promise.all(
-        Array.from({ length: packCount }).map(async () => {
+        Array.from({ length: packCount}).map(async () => {
          
           return await db.Pack.create({
             name: faker.person.firstName(),
