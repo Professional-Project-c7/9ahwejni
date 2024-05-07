@@ -42,7 +42,7 @@ module.exports = async (sequelize) => {
             price: faker.commerce.price(),
             imgUrl:faker.image.url(),
             description:faker.commerce.productDescription(),
-            UserId: user.id, 
+            userId: user.id, 
             size: getRandomElementFromArray(["S","M","L"]),
 
            
@@ -69,7 +69,7 @@ module.exports = async (sequelize) => {
 
           const oneproduct = Products[Math.floor(Math.random() * packCount)];
 
-          return await db.Pack.create({
+          return await db.Packproduct.create({
             packId:onepack.id,
             prodId:oneproduct.id
           });
@@ -79,7 +79,7 @@ module.exports = async (sequelize) => {
 
 
       const Review =await Promise.all(
-        Array.from({ length: 100 }).map(async () => {
+        Array.from({ length: indoo }).map(async () => {
             const user = users[Math.floor(Math.random() * userCount)];
             const oneproduct = Products[Math.floor(Math.random() * packCount)];
 

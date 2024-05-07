@@ -18,13 +18,15 @@ import HomePage from '../components/homepage';
 import Map from '../components/MapCoffe'
 import AddPacks from '../components/addpacks';
 import AddProducts from '../components/addproducts';
-import coffeeprofile from "../components/coffeeprofile"
+import coffeeprofile from "../components/coffeeprofile" 
 import Orders from '../components/orders';
 import TransactionScreenCoffee from '../components/transactionScreenCoffe';
 import ReviewsCoffee from '../components/ReviewsCoffee';
 import PaymentCardsDetails from '../components/paymentcardsdetailsCoffee';
 import EditCoffee from '../components/editCoffee';
 import InfoCoffee from '../components/informationsCoffee';
+// import Map from '../components/MapCoffe'
+// import logout from '../components/logout';
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 import { IconButton } from 'react-native-paper';
@@ -48,7 +50,7 @@ function NAVSTART() {
         <Stack.Screen name="TransactionScreenCoffee" component={TransactionScreenCoffee} ptions={{ headerShown: false }} />
         <Stack.Screen name="ReviewsCoffee" component={ReviewsCoffee} ptions={{ headerShown: false }} />
         <Stack.Screen name="PaymentCardsDetails" component={PaymentCardsDetails} ptions={{ headerShown: false }} />
-        <Stack.Screen name="User" component={UserProfile} options={{ headerShown: false }} />
+        <Stack.Screen name="User" component={UserProfile} />
         
         <Stack.Screen name="menu" component={MenuItems} options={{ headerShown: false }} />
         <Stack.Screen name="coffeeProfile" component={coffeeprofile} options={{ headerShown: false }} />
@@ -56,6 +58,8 @@ function NAVSTART() {
         <Stack.Screen name="st3" component={Start3} options={{ headerShown: false }} />
         <Stack.Screen name="st4" component={Start4} options={{ headerShown: false }} />
         <Stack.Screen name="Tabs" component={TabNavigator} options={{ headerShown: false }} />
+        
+        {/* <Stack.Screen name="logout" component={logout} options={{ headerShown: false }} /> */}
       </Stack.Navigator>
     </NavigationContainer>
   );
@@ -82,7 +86,7 @@ function TabNavigator() {
         headerShown: false 
       }}
     />
-    <Tab.Screen
+    {/* <Tab.Screen
       name="Map"
       component={Map}
       options={{
@@ -94,7 +98,7 @@ function TabNavigator() {
         ),
         headerShown: false 
       }}
-    />
+    /> */}
     <Tab.Screen
       name="UserProfile"
       component={UserProfile}

@@ -3,8 +3,8 @@ const db = require('../Database/index');
 module.exports = {
   createReview: async (req, res) => {
     try {
-      const { userId, productId, stars, comment } = req.body;
-      const review = await db.Review.create({ userId, productId, stars, comment });
+      const { userId, productId, stars } = req.body;
+      const review = await db.Review.create({ userId, productId, stars });
       res.status(201).send(review);
     } catch (error) {
       res.status(500).send(error.message);

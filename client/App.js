@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { SafeAreaView } from 'react-native';
 import NAVSTART from './screens/Navigation';
-import ProductPacksList from './components//ProductPacksList';
+import MapCoffe from './components/MapCoffe';
 import ProductList from './components/ProductList';
 import { Provider } from 'react-redux';
 import { store } from './redux/store';
-import Map from './components/MapCoffe';
+import AllCoffeShops from './components/UserProfile';
 import HomePage from './components/homepage';
 import SellerPage from './components/SellerPage';
 import Paye from './components/Payment';
@@ -19,7 +19,7 @@ function App() {
  return (
   <Provider store={store}>
     <SafeAreaView style={{ flex: 1 }}>
-    <ProductPacksList />
+    <NAVSTART />
  </SafeAreaView>
  </Provider>
   );
