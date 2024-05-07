@@ -8,14 +8,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 function Start3({ navigation }) {
  
  
-    const removeTokenFromStorage = async () => {
-      try {
-        await AsyncStorage.removeItem('userToken');
-        console.log('Token removed successfully');
-      } catch (error) {
-        console.error('Error removing token:', error);
-      }
-    };
+   
    
 
   const navigateToUserAccount = () => {
@@ -23,8 +16,7 @@ function Start3({ navigation }) {
   };
   
   const navigateToUserAccount2 = () => {
-     removeTokenFromStorage();
-    navigation.navigate('Login');
+    navigation.navigate('st4');
   };
 
   return (
