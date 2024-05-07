@@ -2,6 +2,8 @@ import React from 'react';
 import { SafeAreaView, StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import AsyncStorage from '@react-native-async-storage/async-storage'; 
+
 
 function Start3({ navigation }) {
  

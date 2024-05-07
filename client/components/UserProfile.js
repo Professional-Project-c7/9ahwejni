@@ -10,19 +10,14 @@ import logoImage from "../image/logo.png";
 import { useNavigation } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage'; 
 import { launchImageLibrary } from 'react-native-image-picker';
-import { Cloudinary } from 'cloudinary-react-native'; // Import Cloudinary
+import {v2 as cloudinary } from 'cloudinary-react-native'; // Import Cloudinary
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { white } from 'react-native-paper/lib/typescript/styles/themes/v2/colors';
-
+import { CommonActions } from '@react-navigation/native';
 // Configure Cloudinary
-const cloudinaryConfig = {
-  cloud_name: 'dmqumly45',
-  api_key: '739151141682318',
-  api_secret: 'lwkhlYbntud_BfDr3ys9jLHKiRM',
-  upload_preset: 'YOUR_UPLOAD_PRESET'
-};
 
 const UserProfile = ({ navigation }) => {
+
   const removeTokenFromStorage = async () => {
     try {
       await AsyncStorage.removeItem('userToken');
@@ -33,9 +28,17 @@ const UserProfile = ({ navigation }) => {
   };
 
   const navigateToUserAccount2 = () => {
+     
+
     removeTokenFromStorage();
-    navigation.navigate('Login');
+    navigation.dispatch(
+      CommonActions.reset({
+        index: 0,
+        routes: [{ name: 'Login' }],
+      })
+    );
   };
+ 
 
   const [profile, setProfile] = useState({
     FirstName: '',
@@ -88,15 +91,11 @@ const UserProfile = ({ navigation }) => {
     setShowOtherComponent(false); 
     setFavoritelist(false);
   };
-
+ 
   const handleChooseImage = () => {
-    launchImageLibrary({}, response => {
-      if (response.didCancel) {
-        Alert.alert('Error', 'User cancelled image picker');
-      } else if (response.error) {
-        Alert.alert('Error', 'ImagePicker Error: ' + response.error);
-      } else {
-        const uri = response.uri;
+    launchImageLibrary({ mediaType: 'photo' }, response => {
+      if (!response.didCancel) {
+        const uri = response.assets[0].uri;
         setImageUri(uri);
         uploadImage(uri);
       }
@@ -105,30 +104,16 @@ const UserProfile = ({ navigation }) => {
 
   const uploadImage = async (uri) => {
     try {
-      const data = new FormData();
-      data.append('file', {
-        uri: uri,
-        type: 'image/jpeg', // Adjust the type according to your image type
-        name: 'test.jpg' // Adjust the name if needed
-      });
-
-      data.append('upload_preset', cloudinaryConfig.upload_preset); 
-
-      const cloudinaryResponse = await axios.post(`https://api.cloudinary.com/v1_1/${cloudinaryConfig.cloud_name}/image/upload`, data);
-      console.log('Uploaded image URL:', cloudinaryResponse.data.secure_url);
-
-      // Update the user profile with the new image URL
-      // For example, you can send a request to your backend to update the user's profile image
-      // Here's a hypothetical example:
-      // await axios.post(`http://${ipAdress}:3000/api/updateProfileImage`, { userId: profile.userId, imageUrl: cloudinaryResponse.data.secure_url });
-      // Make sure to replace "userId" and "imageUrl" with your actual field names
+      const response = await cloudinary.uploader.upload(uri);
+      console.log('Upload successful:', response);
     } catch (error) {
       console.error('Error uploading image:', error);
     }
   };
+
   const toggleFormVisibility = () => {
     setFormVisible(!isFormVisible);
-  };
+  }
 
   return (
     <ScrollView style={styles.container}>
@@ -196,6 +181,7 @@ const UserProfile = ({ navigation }) => {
       >
          <View style={styles.centeredView}>
           <View style={styles.modalView}>
+            {/* <Text style={styles.textStyle2}> | </Text> */}
             {/* Your form components here */}
             <TouchableOpacity
               style={{ ...styles.closeButton, backgroundColor: '#2196F3' }}
@@ -231,6 +217,16 @@ const styles = {
     fontWeight: 'bold',
     textAlign: 'center',
     backgroundColor:'white',
+    fontSize:18,
+    // marginBottom:10
+
+   
+  },
+  textStyle2: {
+    color: 'black',
+    fontWeight: 'bold',
+    textAlign: 'center',
+    backgroundColor:'white',
     fontSize:18
 
    
@@ -253,6 +249,7 @@ const styles = {
     justifyContent: 'center',
     alignItems: 'center',
     marginTop: 22,
+    // backgroundColor:'black'
   },
   modalView: {
     margin: 20,
