@@ -1,7 +1,12 @@
 
-const ipAdress = "192.168.104.17";
+export const ipAdress = "192.168.103.8";
 
 
-module.exports = {
-    ipAdress: ipAdress 
-};
+
+
+
+
+// export const ipAdress = "192.168.103.7";
+
+
+

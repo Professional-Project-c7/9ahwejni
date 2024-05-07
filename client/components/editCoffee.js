@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   View,
   Text,
@@ -6,49 +6,68 @@ import {
   ImageBackground,
   TextInput,
   StyleSheet,
+  Alert,
 } from 'react-native';
-
 import {useTheme} from 'react-native-paper';
-
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Feather from 'react-native-vector-icons/Feather';
+import AsyncStorage from '@react-native-async-storage/async-storage'; // Import AsyncStorage
+import axios from 'axios';
+import { ipAdress } from '../config';
 
-// import BottomSheet from 'reanimated-bottom-sheet';
-// import Animated from 'react-native-reanimated';
 
-// import ImagePicker from 'react-native-image-crop-picker';
-
-const EditProfileScreen = () => {
-
-  const [image, setImage] = useState('https://api.adorable.io/avatars/80/abott@adorable.png');
+const EditProfileScreen = ({navigation}) => {
+  const [userID, setUserID] = useState(null);
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
+  const [phone, setPhone] = useState('');
+  const [email, setEmail] = useState('');
+  const [country, setCountry] = useState('');
+  const [city, setCity] = useState('');
+  const [image, setImage] = useState(
+    'https://api.adorable.io/avatars/80/abott@adorable.png',
+  );
   const {colors} = useTheme();
 
-//   const takePhotoFromCamera = () => {
-//     ImagePicker.openCamera({
-//       compressImageMaxWidth: 300,
-//       compressImageMaxHeight: 300,
-//       cropping: true,
-//       compressImageQuality: 0.7
-//     }).then(image => {
-//       console.log(image);
-//       setImage(image.path);
-//       this.bs.current.snapTo(1);
-//     });
-//   }
+  useEffect(() => {
+    retrieveData();
+  }, []);
 
-//   const choosePhotoFromLibrary = () => {
-//     ImagePicker.openPicker({
-//       width: 300,
-//       height: 300,
-//       cropping: true,
-//       compressImageQuality: 0.7
-//     }).then(image => {
-//       console.log(image);
-//       setImage(image.path);
-//       this.bs.current.snapTo(1);
-//     });
-//   }
+  const retrieveData = async () => {
+    try {
+      const value = await AsyncStorage.getItem('userToken');
+      if (value !== null) {
+        const tokenObject = JSON.parse(value);
+        const userId = tokenObject.userId;
+        console.log(userId);
+        setUserID(userId);
+      }
+    } catch (error) {
+      console.error('Error retrieving data:', error);
+    }
+  };
+
+  const handleUpdateProfile = async () => {
+    try {
+      const userData = {
+        firstName: firstName,
+        lastName: lastName,
+        phone: phone,
+        email: email,
+        country: country,
+        city: city
+      };
+  
+      const response = await axios.put(`http://${ipAdress}:3000/api/user/${userID}`, userData);
+      
+      console.log('Update successful:', response.data);
+      navigation.navigate('InfoCoffee');
+    } catch (error) {
+      console.error('Update failed:', error);
+      
+    }
+  };
 
   renderInner = () => (
     <View style={styles.panel}>
@@ -56,12 +75,7 @@ const EditProfileScreen = () => {
         <Text style={styles.panelTitle}>Upload Photo</Text>
         <Text style={styles.panelSubtitle}>Choose Your Profile Picture</Text>
       </View>
-      {/* <TouchableOpacity style={styles.panelButton} onPress={takePhotoFromCamera}>
-        <Text style={styles.panelButtonTitle}>Take Photo</Text>
-      </TouchableOpacity> */}
-      {/* <TouchableOpacity style={styles.panelButton} onPress={choosePhotoFromLibrary}>
-        <Text style={styles.panelButtonTitle}>Choose From Library</Text>
-      </TouchableOpacity> */}
+      
       <TouchableOpacity
         style={styles.panelButton}
         onPress={() => this.bs.current.snapTo(1)}>
@@ -70,31 +84,18 @@ const EditProfileScreen = () => {
     </View>
   );
 
-  renderHeader = () => (
-    <View style={styles.header}>
-      <View style={styles.panelHeader}>
-        <View style={styles.panelHandle} />
-      </View>
-    </View>
-  );
+  // renderHeader = () => (
+  //   <View style={styles.header}>
+  //     <View style={styles.panelHeader}>
+  //       <View style={styles.panelHandle} />
+  //     </View>
+  //   </View>
+  // );
 
-//   bs = React.createRef();
-//   fall = new Animated.Value(1);
 
   return (
     <View style={styles.container}>
-      {/* <BottomSheet
-        ref={this.bs}
-        snapPoints={[330, 0]}
-        renderContent={this.renderInner}
-        renderHeader={this.renderHeader}
-        initialSnap={1}
-        callbackNode={this.fall}
-        enabledGestureInteraction={true}
-      />
-      <Animated.View style={{margin: 20,
-        opacity: Animated.add(0.1, Animated.multiply(this.fall, 1.0)),
-    }}> */}
+    
         <View style={{alignItems: 'center', marginTop:15}}>
           <TouchableOpacity >
             <View
@@ -124,9 +125,7 @@ const EditProfileScreen = () => {
                       opacity: 0.7,
                       alignItems: 'center',
                       justifyContent: 'center',
-                    //   borderWidth: 1,
-                    //   borderColor: '#dba617',
-                    //   borderRadius: 10,
+                    
                     }}
                   />
                 </View>
@@ -142,6 +141,8 @@ const EditProfileScreen = () => {
           <FontAwesome name="user-o" color={'#dba617'} size={20} />
           <TextInput
             placeholder="First Name"
+            value={firstName}
+        onChangeText={text => setFirstName(text)}
             placeholderTextColor="#666666"
             autoCorrect={false}
             style={[
@@ -157,6 +158,8 @@ const EditProfileScreen = () => {
           <TextInput
             placeholder="Last Name"
             placeholderTextColor="#666666"
+            value={lastName}
+        onChangeText={text => setLastName(text)}
             autoCorrect={false}
             style={[
               styles.textInput,
@@ -171,6 +174,8 @@ const EditProfileScreen = () => {
           <TextInput
             placeholder="Phone"
             placeholderTextColor="#666666"
+            value={phone}
+        onChangeText={text => setPhone(text)}
             keyboardType="number-pad"
             autoCorrect={false}
             style={[
@@ -186,6 +191,8 @@ const EditProfileScreen = () => {
           <TextInput
             placeholder="Email"
             placeholderTextColor="#666666"
+            value={email}
+            onChangeText={text => setEmail(text)}
             keyboardType="email-address"
             autoCorrect={false}
             style={[
@@ -224,10 +231,10 @@ const EditProfileScreen = () => {
             ]}
           />
         </View>
-        <TouchableOpacity style={styles.commandButton} onPress={() => {}}>
+        <TouchableOpacity style={styles.commandButton} onPress={handleUpdateProfile}>
           <Text style={styles.panelButtonTitle}>Submit</Text>
         </TouchableOpacity>
-      {/* </Animated.View> */}
+      
     </View>
   );
 };
