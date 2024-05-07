@@ -17,7 +17,7 @@ function Start3({ navigation }) {
     <SafeAreaView style={styles.container}>
       <View style={styles.imageContainer}>
         <Image
-          source={require('../image/2.png')}
+          source={require('../image/5.png')}
           style={styles.image}
           resizeMode="contain"
         />
@@ -64,7 +64,7 @@ const styles = StyleSheet.create({
     fontSize: 30, // Increased font size
     fontWeight: 'bold',
     marginBottom: 10,
-    // color: '#dba617',
+    color: 'black',
 
   },
   buttonContainer: {
@@ -77,11 +77,12 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     paddingHorizontal: 20,
     borderRadius: 5,
+  
   },
   buttonText: {
    
-
-    fontSize:20, // Increased font size
+color: '#dba617', 
+    fontSize:22, // Increased font size
   },
 });
 
