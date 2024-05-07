@@ -1,74 +1,93 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
 import { Button } from 'react-native-paper';
+import axios from 'axios';
+import { ipAddress } from '../config'; // Assuming 'ipAddress' is correct in your config file
 
 const ProductDetailsPage = () => {
+    const [products, setProducts] = useState([]);
+
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const response = await axios.get(`http://${ipAddress}:3000/api/product/SearchById/2`);
+                setProducts(response.data);
+            } catch (error) {
+                console.error('Error fetching data: ', error);
+            }
+        };
+
+        fetchData();
+    }, []);
+
     return (
         <View style={styles.container}>
-            <Image
-                source={require('../image/expresso.png')}
-                style={styles.productImage}
-            />
-            <View style={styles.body}>
-            <Text style={styles.name}>Expresso</Text>
-            <Text style={styles.description}>
-                As a beverage, espresso is a concentrated form of coffee brewed with high pressure.
-            </Text>
-            <View style={styles.bottomContainer}>
-                <Text style={styles.sectionTitle}>Customize</Text>
-                <View style={styles.optionContainer}>
-                    <View style={styles.optionButtonsContainer}>
-                        <Text style={styles.optionTitle}>Size</Text>
+            {products.map((product, index) => (
+                <View key={index} style={styles.productContainer}>
+                    <Image
+                        source={{ uri: product.imgUrl }}
+                        style={styles.productImage}
+                    />
+                    <View style={styles.body}>
+                        <Text style={styles.name}>{product.name}</Text>
+                        <Text style={styles.description}>{product.description}</Text>
+                        <View style={styles.bottomContainer}>
+                            <Text style={styles.sectionTitle}>Customize</Text>
+                            <View style={styles.optionContainer}>
+                                <View style={styles.optionButtonsContainer}>
+                                    <Text style={styles.optionTitle}>Size</Text>
 
-                        <TouchableOpacity style={styles.optionButton}>
-                            <Text style={styles.optionButtonText}>Smal</Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity style={styles.optionButton}>
-                            <Text style={styles.optionButtonText}>Regulor</Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity style={styles.optionButton}>
-                            <Text style={styles.optionButtonText}>Large</Text>
-                        </TouchableOpacity>
+                                    <TouchableOpacity style={styles.optionButton}>
+                                        <Text style={styles.optionButtonText}>Small</Text>
+                                    </TouchableOpacity>
+                                    <TouchableOpacity style={styles.optionButton}>
+                                        <Text style={styles.optionButtonText}>Regular</Text>
+                                    </TouchableOpacity>
+                                    <TouchableOpacity style={styles.optionButton}>
+                                        <Text style={styles.optionButtonText}>Large</Text>
+                                    </TouchableOpacity>
+                                </View>
+                            </View>
+                            <View style={styles.optionContainer}>
+                                <View style={styles.optionButtonsContainer}>
+                                    <Text style={styles.optionTitle}>Sugar:</Text>
+
+                                    <TouchableOpacity style={styles.optionButton}>
+                                        <Text style={styles.optionButtonText}>Normal</Text>
+                                    </TouchableOpacity>
+                                    <TouchableOpacity style={styles.optionButton}>
+                                        <Text style={styles.optionButtonText}>Less</Text>
+                                    </TouchableOpacity>
+                                    <TouchableOpacity style={styles.optionButton}>
+                                        <Text style={styles.optionButtonText}>No</Text>
+                                    </TouchableOpacity>
+                                </View>
+                            </View>
+                            <View style={styles.optionContainer}>
+                                <View style={styles.optionButtonsContainer}>
+                                    <Text style={styles.optionTitle}>Ice:</Text>
+
+                                    <TouchableOpacity style={styles.optionButton}>
+                                        <Text style={styles.optionButtonText}>Normal</Text>
+                                    </TouchableOpacity>
+                                    <TouchableOpacity style={styles.optionButton}>
+                                        <Text style={styles.optionButtonText}>Less</Text>
+                                    </TouchableOpacity>
+                                    <TouchableOpacity style={styles.optionButton}>
+                                        <Text style={styles.optionButtonText}>No</Text>
+                                    </TouchableOpacity>
+                                </View>
+                            </View>
+                            <View style={styles.priceContainer}>
+                                <Text style={styles.productPrice}>${product.price}</Text>
+                                <TouchableOpacity>
+                                    <Text style={styles.add}>Add to Cart</Text>
+                                </TouchableOpacity>
+                            </View>
+                        </View>
                     </View>
                 </View>
-                <View style={styles.optionContainer}>
-                    <View style={styles.optionButtonsContainer}>
-                        <Text style={styles.optionTitle}>Sugar:</Text>
-
-                        <TouchableOpacity style={styles.optionButton}>
-                            <Text style={styles.optionButtonText}>Normal</Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity style={styles.optionButton}>
-                            <Text style={styles.optionButtonText}>Less</Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity style={styles.optionButton}>
-                            <Text style={styles.optionButtonText}>No</Text>
-                        </TouchableOpacity>
-                    </View>
-                </View>
-                <View style={styles.optionContainer}>
-                    <View style={styles.optionButtonsContainer}>
-                        <Text style={styles.optionTitle}>Ice:</Text>
-
-                        <TouchableOpacity style={styles.optionButton}>
-                            <Text style={styles.optionButtonText}>Normal</Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity style={styles.optionButton}>
-                            <Text style={styles.optionButtonText}>Less</Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity style={styles.optionButton}>
-                            <Text style={styles.optionButtonText}>No</Text>
-                        </TouchableOpacity>
-                    </View>
-                </View>
-                <View style={styles.priceContainer}>
-                    <Text style={styles.productPrice}>$10</Text>
-                    <TouchableOpacity >
-                        <Text style={styles.add}>Add to Cart</Text>
-                    </TouchableOpacity>
-                </View>
-                </View>
-            </View>
+            ))}
         </View>
     );
 };
@@ -76,93 +95,89 @@ const ProductDetailsPage = () => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        borderRadius: 25,
-       
+        padding: 10,
+        backgroundColor: '#FFFFFF',
+    },
+    productContainer: {
+        marginBottom: 20,
     },
     productImage: {
         width: '100%',
         height: 250,
         borderRadius: 25,
-      
     },
-    body:{ 
-        padding:10,
+    body: {
+        padding: 10,
+        backgroundColor: '#F7F7F7',
+        borderRadius: 25,
     },
     name: {
         fontSize: 24,
         fontWeight: 'bold',
         textAlign: 'center',
-        marginBottom:15,
-        marginHorizontal:20,
-        paddingTop:10,
-        color:'#FFBB70',
+        marginTop: 10,
+        color: '#FFBB70',
     },
     description: {
         marginBottom: 20,
-        fontSize: 20,
-
+        fontSize: 16,
+        textAlign: 'center',
     },
     bottomContainer: {
-        padding:10
+        padding: 10,
     },
-    add:{
-
-        fontSize: 26,
+    add: {
+        borderWidth: 1,
+        borderColor: '#FFBB70',
+        width: '100%',
+        fontSize: 20,
         borderRadius: 25,
-       
-        alignContent:'center',
-        textAlign:'center',
-marginLeft:90     
+        color: '#FFBB70',
+        textAlign: 'center',
+        marginTop: 10,
     },
     sectionTitle: {
         fontSize: 20,
         fontWeight: 'bold',
         marginBottom: 10,
-    },
-    optionContainer: {
-        marginBottom: 20,
-    },
-    optionTitle: {
-        fontWeight: 'bold',
-        marginBottom: 5,
-        textAlign: 'left',
-        fontSize: 20,
-        
-    },
-    optionButtonsContainer: {
-        flexDirection: 'row',
-alignItems:'center'
-
-    },
-    optionButton: {
-        paddingHorizontal: 10,
-        paddingVertical: 5,
-        marginHorizontal: 5,
-        borderRadius: 25,
-      alignItems:'center' ,
-       
-    },
-    optionButtonText: {
-        fontSize: 19,
-        borderRadius: 25,
-        marginRight:"10%",
-        color:'#FFBB70',
-        borderColor: '#FFBB70'
+        textAlign: 'center',
     },
     priceContainer: {
         flexDirection: 'row',
-        marginTop: 20,
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        marginTop: 10,
     },
     productPrice: {
-        fontSize: 26,
+        fontSize: 22,
+        fontWeight: 'bold',
+        color: '#333333',
+    },
+    optionContainer: {
+        marginBottom: 10,
+    },
+    optionButtonsContainer: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        paddingHorizontal: 20,
+    },
+    optionTitle: {
+        fontSize: 18,
         fontWeight: 'bold',
         marginRight: 10,
     },
-    Button:{
-        backgroundColor: '#FFBB70',
-        marginBottom: 20,
-        borderRadius: 25,
-    }
+    optionButton: {
+        borderWidth: 1,
+        borderColor: '#FFBB70',
+        borderRadius: 15,
+        paddingVertical: 5,
+        paddingHorizontal: 10,
+    },
+    optionButtonText: {
+        fontSize: 16,
+        color: '#FFBB70',
+    },
 });
 
 export default ProductDetailsPage;

@@ -1,5 +1,6 @@
+// UserProfile.js
 import React, { useState, useEffect } from 'react';
-import { View, Text, Image, ScrollView, TouchableOpacity } from 'react-native';
+import { View, Text, Image, ScrollView, TouchableOpacity, Alert } from 'react-native';
 import SettingComponent from './Setting';
 import axios from 'axios';
 import { ipAdress } from '../config';
@@ -7,24 +8,26 @@ import { IconButton } from 'react-native-paper';
 import Aother from './Another';
 import Favoritelist from './Favoritelist';
 import logoImage from "../image/logo.png";
- import { useNavigation } from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage'; 
-
+import Login  from './Login';
+// import { uploadImageToCloudinary } from './Cloudinary'; // Import the Cloudinary upload function
+import { launchImageLibrary } from 'react-native-image-picker'; // Import the image picker
+import { Cloudinary } from 'cloudinary-react-native';
 const UserProfile = () => {
-  const navigation = useNavigation(); 
-   
-
   const [profile, setProfile] = useState({
     FirstName: '',
     Password: '',
     LastName: '',
     Adresse: '',
+   
   });
   const [showSetting, setShowSetting] = useState(false);
   const [showOtherComponent, setShowOtherComponent] = useState(false);
   const [ShowMainView, setShowMainView] = useState(true);
   const [favoritelist, setFavoritelist] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(true);
+  const [imageUri, setImageUri] = useState(null);
 
   const fetchUserProfile = async () => {  
     try {
@@ -35,8 +38,6 @@ const UserProfile = () => {
       console.error('Error fetching user profile:', error);
     }
   };
-
- 
 
   useEffect(() => {
     fetchUserProfile();
@@ -67,15 +68,28 @@ const UserProfile = () => {
     setFavoritelist(false);
   };
 
-  const handleLogout = async () => {
+  const handleChooseImage = () => {
+    launchImageLibrary({}, response => {
+      if (response.didCancel) {
+        Alert.alert('Error', 'User cancelled image picker');
+      } else if (response.error) {
+        Alert.alert('Error', 'ImagePicker Error: ' + response.error);
+      } else {
+        const uri = response.uri;
+        setImageUri(uri);
+        uploadImage(uri);
+      }
+    });
+  };
+  const uploadImage = async (uri) => {
     try {
-      await AsyncStorage.clear(); // Clear AsyncStorage
-      navigation.navigate('Login'); // Navigate to Login screen after successful logout
+      const cloudinaryResponse = await Cloudinary.upload(uri, "dmqumly45", "YOUR_UPLOAD_PRESET");
+      console.log('Uploaded image URL:', cloudinaryResponse.secure_url);
     } catch (error) {
-      console.error('Error logging out:', error);
-      // Handle any errors that occur during logout
+      console.error('Error uploading image:', error);
     }
   };
+
 
   return (
     <ScrollView style={styles.container}>
@@ -86,12 +100,12 @@ const UserProfile = () => {
              <View style={styles.top}>
                <Image source={logoImage} style={styles.logo} /> 
              </View>
-             <View style={styles.profileContainer1}>
+             <TouchableOpacity style={styles.profileContainer1} onPress={handleChooseImage}>
                <Image
                  style={styles.profilePhoto}
-                 source={{ uri: 'https://www.bootdey.com/img/Content/avatar/avatar1.png' }}
+                 source={{ uri: profile.ProfileImage }}
                />
-             </View>
+             </TouchableOpacity>
              <View style={styles.profileContainer}>
                <Text style={styles.Name}>{profile.FirstName}</Text>
              </View>
@@ -117,9 +131,9 @@ const UserProfile = () => {
         </IconButton> 
           <Text style={styles.buttonText1}>Order List</Text>
       </View>
-      <TouchableOpacity style={styles.button}   onPress={handleLogout}>
-            <Text > Log out</Text>
-          </TouchableOpacity>
+     
+        <IconButton  icon="account-plus-outline" onPress={Login} />
+       
     </ScrollView>
   );
 };

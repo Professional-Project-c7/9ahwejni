@@ -9,7 +9,7 @@ const RandomProducts = () => {
     const [products, setProducts] = useState([]);
     const [favorites, setFavorites] = useState({});
     const [error, setError] = useState(null);
-
+console.log(products);
     useEffect(() => {
         const fetchProducts = async () => {
             try {
