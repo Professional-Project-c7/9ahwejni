@@ -15,13 +15,13 @@ import ProductDetailsPage from './components/ProdDetails';
 
 function App() {
 
-
- return (
+  return (
   <Provider store={store}>
     <SafeAreaView style={{ flex: 1 }}>
 
-
-    <NAVSTART />
+    <ProductPacksList />
+    {/* <ProductDetailsPage/> */}
+    {/* <NAVSTART /> */}
 
  </SafeAreaView>
  </Provider>
