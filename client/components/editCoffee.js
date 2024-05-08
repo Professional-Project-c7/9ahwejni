@@ -58,16 +58,18 @@ const EditProfileScreen = ({navigation}) => {
         country: country,
         city: city
       };
-  
+      console.log(userData); // Check if userData is correct before sending the request
       const response = await axios.put(`http://${ipAdress}:3000/api/user/${userID}`, userData);
       
       console.log('Update successful:', response.data);
+     
+      console.log(userID);
       navigation.navigate('InfoCoffee');
     } catch (error) {
       console.error('Update failed:', error);
-      
     }
   };
+  
 
   renderInner = () => (
     <View style={styles.panel}>
