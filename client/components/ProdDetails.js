@@ -2,15 +2,22 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
 import { Button } from 'react-native-paper';
 import axios from 'axios';
-import { ipAddress } from '../config'; // Assuming 'ipAddress' is correct in your config file
+import { ipAdress } from '../config'; 
 
 const ProductDetailsPage = () => {
     const [products, setProducts] = useState([]);
+    const [selectedSize, setSelectedSize] = useState(null);
+    const [selectedSugar, setSelectedSugar] = useState(null);
+    const [selectedIce, setSelectedIce] = useState(null);
+
+console.log(products);
+console.log(ipAdress);
+
 
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await axios.get(`http://${ipAddress}:3000/api/product/SearchById/2`);
+                const response = await axios.get(`http://${ipAdress}:3000/api/product/SearchById/47`);
                 setProducts(response.data);
             } catch (error) {
                 console.error('Error fetching data: ', error);
@@ -19,6 +26,19 @@ const ProductDetailsPage = () => {
 
         fetchData();
     }, []);
+
+    const handleSizeSelection = (size) => {
+        setSelectedSize(size);
+    };
+
+    const handleSugarSelection = (sugar) => {
+        setSelectedSugar(sugar);
+    };
+
+    const handleIceSelection = (ice) => {
+        setSelectedIce(ice);
+    };
+
 
     return (
         <View style={styles.container}>
@@ -37,51 +57,95 @@ const ProductDetailsPage = () => {
                                 <View style={styles.optionButtonsContainer}>
                                     <Text style={styles.optionTitle}>Size</Text>
 
-                                    <TouchableOpacity style={styles.optionButton}>
+                                    <TouchableOpacity
+                                        style={[styles.optionButton, selectedSize === 'Small' && styles.selectedOption]}
+                                        onPress={() => handleSizeSelection('Small')}
+                                    >
                                         <Text style={styles.optionButtonText}>Small</Text>
                                     </TouchableOpacity>
-                                    <TouchableOpacity style={styles.optionButton}>
+                                    <TouchableOpacity
+                                        style={[styles.optionButton, selectedSize === 'Regular' && styles.selectedOption]}
+                                        onPress={() => handleSizeSelection('Regular')}
+                                    >
                                         <Text style={styles.optionButtonText}>Regular</Text>
                                     </TouchableOpacity>
-                                    <TouchableOpacity style={styles.optionButton}>
+                                    <TouchableOpacity
+                                        style={[styles.optionButton, selectedSize === 'Large' && styles.selectedOption]}
+                                        onPress={() => handleSizeSelection('Large')}
+                                    >
                                         <Text style={styles.optionButtonText}>Large</Text>
                                     </TouchableOpacity>
                                 </View>
                             </View>
                             <View style={styles.optionContainer}>
-                                <View style={styles.optionButtonsContainer}>
-                                    <Text style={styles.optionTitle}>Sugar:</Text>
+                            <View style={styles.optionButtonsContainer}>
+    <Text style={styles.optionTitle}>Sugar:</Text>
 
-                                    <TouchableOpacity style={styles.optionButton}>
-                                        <Text style={styles.optionButtonText}>Normal</Text>
-                                    </TouchableOpacity>
-                                    <TouchableOpacity style={styles.optionButton}>
-                                        <Text style={styles.optionButtonText}>Less</Text>
-                                    </TouchableOpacity>
-                                    <TouchableOpacity style={styles.optionButton}>
-                                        <Text style={styles.optionButtonText}>No</Text>
-                                    </TouchableOpacity>
-                                </View>
+    <TouchableOpacity
+        style={[
+            styles.optionButton,
+            selectedSugar === 'Normal' && styles.selectedOption
+        ]}
+        onPress={() => handleSugarSelection('Normal')}
+    >
+        <Text style={styles.optionButtonText}>Normal</Text>
+    </TouchableOpacity>
+    <TouchableOpacity
+        style={[
+            styles.optionButton,
+            selectedSugar === 'Less' && styles.selectedOption
+        ]}
+        onPress={() => handleSugarSelection('Less')}
+    >
+        <Text style={styles.optionButtonText}>Less</Text>
+    </TouchableOpacity>
+    <TouchableOpacity
+        style={[
+            styles.optionButton,
+            selectedSugar === 'No' && styles.selectedOption
+        ]}
+        onPress={() => handleSugarSelection('No')}
+    >
+        <Text style={styles.optionButtonText}>No</Text>
+    </TouchableOpacity>
+                            </View>
                             </View>
                             <View style={styles.optionContainer}>
-                                <View style={styles.optionButtonsContainer}>
-                                    <Text style={styles.optionTitle}>Ice:</Text>
-
-                                    <TouchableOpacity style={styles.optionButton}>
-                                        <Text style={styles.optionButtonText}>Normal</Text>
-                                    </TouchableOpacity>
-                                    <TouchableOpacity style={styles.optionButton}>
-                                        <Text style={styles.optionButtonText}>Less</Text>
-                                    </TouchableOpacity>
-                                    <TouchableOpacity style={styles.optionButton}>
-                                        <Text style={styles.optionButtonText}>No</Text>
-                                    </TouchableOpacity>
-                                </View>
+                            <View style={styles.optionButtonsContainer}>
+                                <Text style={styles.optionTitle}>Ice:</Text>
+                                <TouchableOpacity
+                                    style={[
+                                        styles.optionButton,
+                                        selectedIce === 'Normal' && styles.selectedOption
+                                    ]}
+                                    onPress={() => handleIceSelection('Normal')}
+                                >
+                                    <Text style={styles.optionButtonText}>Normal</Text>
+                                </TouchableOpacity>
+                                <TouchableOpacity
+                                    style={[
+                                        styles.optionButton,
+                                        selectedIce === 'Less' && styles.selectedOption
+                                    ]}
+                                    onPress={() => handleIceSelection('Less')}
+                                >
+                                    <Text style={styles.optionButtonText}>Less</Text>
+                                </TouchableOpacity>
+                                <TouchableOpacity
+                                    style={[
+                                        styles.optionButton,
+                                        selectedIce === 'No' && styles.selectedOption
+                                    ]}
+                                    onPress={() => handleIceSelection('No')}
+                                >
+                                    <Text style={styles.optionButtonText}>No</Text>
+                                </TouchableOpacity>
+                            </View>
                             </View>
                             <View style={styles.priceContainer}>
                                 <Text style={styles.productPrice}>${product.price}</Text>
                                 <TouchableOpacity>
-                                    <Text style={styles.add}>Add to Cart</Text>
+                                    <Text style={styles.add} onPress={console.log("hello")}   >Add to Cart</Text>
                                 </TouchableOpacity>
                             </View>
                         </View>
@@ -91,12 +155,11 @@ const ProductDetailsPage = () => {
         </View>
     );
 };
-
 const styles = StyleSheet.create({
     container: {
         flex: 1,
         padding: 10,
-        backgroundColor: '#FFFFFF',
+       
     },
     productContainer: {
         marginBottom: 20,
@@ -130,11 +193,13 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         borderColor: '#FFBB70',
         width: '100%',
-        fontSize: 20,
+        fontSize: 22,
         borderRadius: 25,
         color: '#FFBB70',
         textAlign: 'center',
         marginTop: 10,
+        marginRight:140,
+        
     },
     sectionTitle: {
         fontSize: 20,
@@ -146,12 +211,15 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
-        marginTop: 10,
+        textAlign: 'center',
+        marginTop: 11,
+        marginLeft:40
     },
     productPrice: {
         fontSize: 22,
         fontWeight: 'bold',
         color: '#333333',
+
     },
     optionContainer: {
         marginBottom: 10,
@@ -178,6 +246,12 @@ const styles = StyleSheet.create({
         fontSize: 16,
         color: '#FFBB70',
     },
+    selectedOption: {
+        backgroundColor: 'white',
+        color: 'black',
+        borderColor: 'black', // Change text color to black
+    },
+    
 });
 
 export default ProductDetailsPage;

@@ -5,11 +5,25 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import axios from 'axios';
 import { ipAdress } from '../config';
 
-const RandomProducts = () => {
+const RandomProducts = ({navigation}) => {
     const [products, setProducts] = useState([]);
     const [favorites, setFavorites] = useState({});
     const [error, setError] = useState(null);
-console.log(products);
+
+
+
+    const handleSignIn =  () => {
+    
+         
+          navigation.navigate('prd')
+      
+      };
+
+
+
+
+
+
     useEffect(() => {
         const fetchProducts = async () => {
             try {
@@ -41,7 +55,7 @@ console.log(products);
                 ) : (
                     <View style={styles.productsContainer}>
                         {products.map((product) => (
-                            <View style={styles.card} key={product.id}>
+                            <View style={styles.card} key={product.id} onPress={handleSignIn}   >
                                 <Image source={{ uri: product.imgUrl }} style={styles.image} />
                                 <Icon
                                     name={favorites[product.id]?.favored ? 'heart' : 'heart-outline'}
@@ -50,7 +64,7 @@ console.log(products);
                                     onPress={() => toggleFeature(product.id, 'favored')}
                                     style={styles.favIcon}
                                 />
-                                <View style={styles.infoContainer}>
+                                <View style={styles.infoContainer}> 
                                     <Text style={styles.name}>{product.name}</Text>
                                     <Text style={styles.price}>${product.price}</Text>
                                     <Text style={styles.productDescription}>{product.description}</Text>

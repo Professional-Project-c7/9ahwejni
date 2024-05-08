@@ -30,6 +30,7 @@ import InfoCoffee from '../components/informationsCoffee';
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 import { IconButton } from 'react-native-paper';
+import ProductDetailsPage from '../components/ProdDetails';
 
 
 function NAVSTART() {
@@ -51,6 +52,7 @@ function NAVSTART() {
         <Stack.Screen name="ReviewsCoffee" component={ReviewsCoffee} ptions={{ headerShown: false }} />
         <Stack.Screen name="PaymentCardsDetails" component={PaymentCardsDetails} ptions={{ headerShown: false }} />
         <Stack.Screen name="User" component={UserProfile} />
+        <Stack.Screen name="prd" component={ProductDetailsPage} />
         
         <Stack.Screen name="menu" component={MenuItems} options={{ headerShown: false }} />
         <Stack.Screen name="coffeeProfile" component={coffeeprofile} options={{ headerShown: false }} />
