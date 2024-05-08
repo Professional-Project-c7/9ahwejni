@@ -8,12 +8,16 @@ import {
   Text,
   TouchableOpacity
 } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+
 import { Rating } from 'react-native-ratings';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import axios from 'axios';
 import { ipAdress } from '../config';
 
-const RandomProducts = ({ navigation }) => {
+const RandomProducts = () => {
+  const navigation = useNavigation(); // Use the useNavigation hook here
+
   const [products, setProducts] = useState([]);
   const [favorites, setFavorites] = useState({});
   const [error, setError] = useState(null);
@@ -41,8 +45,8 @@ const RandomProducts = ({ navigation }) => {
     }));
   };
 
-  const handleNavigateToDetails = (product) => {
-    navigation.navigate('prd', { product });
+  const handleNavigateToDetails = (product) => { 
+    navigation.navigate('prd', { product }); 
   };
 
   return (
@@ -96,7 +100,7 @@ const RandomProducts = ({ navigation }) => {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 5,
+    flex: 1,
     justifyContent: 'space-between',
   },
   productsContainer: {
