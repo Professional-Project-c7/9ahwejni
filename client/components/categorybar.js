@@ -6,7 +6,7 @@ const CategoryBar = () => {
   const categories = [
     { key: 'coffee', image: require('../image/coffee-nice.png'), label: 'Coffees' },
     { key: 'drink', image: require('../image/melon-juice.png'), label: 'Drinks' },
-    { key: 'cake', image: require('../image/best-cake.png'), label: 'Cakes' },
+    { key: 'cake', image: require('../image/cakes.png'), label: 'Cakes' },
     { key: 'pack', image: require('../image/take-away.png'), label: 'Packs' }
   ];
 
