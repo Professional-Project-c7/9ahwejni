@@ -7,13 +7,13 @@ const HomeCarousel = () => {
   const [selectedIndex, setSelectedIndex] = useState(0);
   const scrollRef = useRef();
 
+  const onChange = ({ window }) => {
+    setDimension(window);
+  };
   useEffect(() => {
-    const onChange = ({ window }) => {
-      setDimension(window);
-    };
-    Dimensions.addEventListener('change', onChange);
+    const subscription= Dimensions.addEventListener('change', onChange);
     return () => {
-      Dimensions.removeEventListener('change', onChange);
+      subscription.remove()
     };
   }, []);
 

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { SafeAreaView } from 'react-native';
 import NAVSTART from './screens/Navigation';
-import MapCoffe from './components/MapCoffe';
+import ProductPacksList from './components/ProductPacksList';
 import ProductList from './components/ProductList';
 import { Provider } from 'react-redux';
 import { store } from './redux/store';
@@ -10,11 +10,11 @@ import HomePage from './components/homepage';
 import AdvancedFilter from './components/AdvancedFilter';
 
 function App() {
-  
- return (
+
+  return (
   <Provider store={store}>
     <SafeAreaView style={{ flex: 1 }}>
-    <HomePage />
+    <NAVSTART />
  </SafeAreaView>
  </Provider>
   );

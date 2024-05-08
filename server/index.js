@@ -10,7 +10,7 @@ const db = require ("./Database/index")
 
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
-
+// require('./fake.js')()
 const User = require('./Routers/user.routes.js')
 const ProductRoutes=require("./Routers/products.routes.js")
 const Cofee = require('./Routers/cofee.routes.js')
@@ -20,7 +20,9 @@ const Payment=require('./Routers/Payment.routers')
 const reviewRouter = require('./Routers/review.router.js');
 
 
-app.use(cors())
+
+app.use(cors()) 
+
 
 app.use("/api/auth", Authentication);
 app.use('/api/messages', messagesRouter);
