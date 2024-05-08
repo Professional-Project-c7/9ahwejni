@@ -54,6 +54,8 @@ function NAVSTART() {
         <Stack.Screen name="User" component={UserProfile} />
         <Stack.Screen name="prd" component={ProductDetailsPage} />
         
+       {/* <Stack.Screen name="RandomProducts" component={RandomProducts} options={{ headerShown: false }}/> */}
+
         <Stack.Screen name="menu" component={MenuItems} options={{ headerShown: false }} />
         <Stack.Screen name="coffeeProfile" component={coffeeprofile} options={{ headerShown: false }} />
         <Stack.Screen name="st2" component={Start2} options={{ headerShown: false }} />
