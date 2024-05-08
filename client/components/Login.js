@@ -16,7 +16,7 @@ const Login = ({ navigation }) => {
         `http://${ipAdress}:3000/api/auth/login`,
         { Email: email, Password: password }
       );
-      AsyncStorage.setItem('userToken', response.data.userId); 
+      AsyncStorage.setItem('userToken', JSON.stringify(response.data));
      console.log(response.data.userId);
       navigation.navigate('st2'); 
 
