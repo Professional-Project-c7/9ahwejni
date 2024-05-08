@@ -114,16 +114,16 @@ const styles = StyleSheet.create({
     paddingVertical: 5,
   },
   logoContainer: {
-    width: 80,
-    height: 77,
+    width: 82,
+    height: 79,
     borderRadius: 28,
     backgroundColor: 'white',
     justifyContent: 'center',
     alignItems: 'center',
   },
   logo: {
-    width: 62,
-    height: 62,
+    width: 66,
+    height: 66,
   },
   categoryBarContainer: {
     flexDirection: 'column',
