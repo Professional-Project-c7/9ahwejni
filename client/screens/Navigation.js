@@ -32,7 +32,6 @@ const Tab = createBottomTabNavigator();
 import { IconButton } from 'react-native-paper';
 import ProductDetailsPage from '../components/ProdDetails';
 
-
 function NAVSTART() {
   return (
     <NavigationContainer>
@@ -54,7 +53,6 @@ function NAVSTART() {
         <Stack.Screen name="User" component={UserProfile} />
         <Stack.Screen name="prd" component={ProductDetailsPage} />
         
-       {/* <Stack.Screen name="RandomProducts" component={RandomProducts} options={{ headerShown: false }}/> */}
 
         <Stack.Screen name="menu" component={MenuItems} options={{ headerShown: false }} />
         <Stack.Screen name="coffeeProfile" component={coffeeprofile} options={{ headerShown: false }} />
