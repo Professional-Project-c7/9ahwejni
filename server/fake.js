@@ -43,16 +43,28 @@ module.exports = async (sequelize) => {
             imgUrl:faker.image.url(),
             description:faker.commerce.productDescription(),
             userId: user.id, 
-            size: getRandomElementFromArray(["S","M","L"]),
+      
 
            
           });
         })
       );
-      
+      const options = await Promise.all(
+        Array.from({ length: productCount }).map(async () => {
+          const product = Products[Math.floor(Math.random() *productCount )];
+          return await db.Options.create({
+         
+            price: faker.commerce.price(),   
+            option : getRandomElementFromArray(["Small","Medium","Large"]),
+            prodId:product.id
+
+           
+          });
+        })
+      );
 
       const pack =await Promise.all(
-        Array.from({ length: packCount}).map(async () => {
+        Array.from({ length: packCount }).map(async () => {
          
           return await db.Pack.create({
             name: faker.person.firstName(),

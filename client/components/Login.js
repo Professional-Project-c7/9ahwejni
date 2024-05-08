@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { StyleSheet, Text, View, TextInput, TouchableOpacity, Image } from 'react-native';
 import { Button } from 'react-native-paper';
 import axios from 'axios';
@@ -10,6 +10,8 @@ const Login = ({ navigation }) => {
   const [password, setPassword] = useState('');
   const [error, setError] = useState(null);
 
+
+
   const handleSubmit = async () => {
     try {
       const response = await axios.post(
@@ -18,7 +20,7 @@ const Login = ({ navigation }) => {
       );
       AsyncStorage.setItem('userToken', JSON.stringify(response.data));
       navigation.navigate('st2'); 
-
+      
     } catch (error) {            
         console.log(error);  
         setError(error.message);    
