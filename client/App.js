@@ -7,10 +7,7 @@ import { Provider } from 'react-redux';
 import { store } from './redux/store';
 import AllCoffeShops from './components/UserProfile';
 import HomePage from './components/homepage';
-import SellerPage from './components/SellerPage';
-import Paye from './components/Payment';
-import PaymentCardsDetails from './components/paymentcardsdetailsCoffee';
-import ProductDetailsPage from './components/ProdDetails';
+import AdvancedFilter from './components/AdvancedFilter';
 
 
 function App() {
@@ -19,8 +16,8 @@ function App() {
   <Provider store={store}>
     <SafeAreaView style={{ flex: 1 }}>
 
-    <NAVSTART />
-    
+    {/* <Posts /> */}
+    <NAVSTART/>
 
  </SafeAreaView>
  </Provider>
