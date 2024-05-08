@@ -38,7 +38,7 @@ const ProductList = () => {
               style={styles.shopImage}
               source={{ uri: filteredProducts[0].imgUrl }}
             />
-            <Text style={styles.shopSubtitle}>Explore Our Exclusive Coffee Collection</Text>
+            {/* <Text style={styles.shopSubtitle}>Explore Our Exclusive Coffee Collection</Text> */}
           </>
         )}
 
@@ -89,12 +89,13 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   shopTitle: {
-    fontSize: 28,
+    fontSize: 30,
     fontWeight: '700',
     textAlign: 'center',
     marginTop: 16,
     color: '#3e3e3e',
     fontFamily: 'Roboto',
+    
   },
   shopImage: {
     width: '100%',

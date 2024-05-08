@@ -44,7 +44,7 @@ module.exports = async (sequelize) => {
             description:faker.commerce.productDescription(),
             userId: user.id, 
             size: getRandomElementFromArray(["S","M","L"]),
-
+            category: getRandomElementFromArray(["pack","product"]),
            
           });
         })

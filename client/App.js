@@ -8,6 +8,7 @@ import { store } from './redux/store';
 import AllCoffeShops from './components/UserProfile';
 import HomePage from './components/homepage';
 import AdvancedFilter from './components/AdvancedFilter';
+
 function App() {
   
  return (
