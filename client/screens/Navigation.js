@@ -88,7 +88,7 @@ function TabNavigator() {
         headerShown: false 
       }}
     />
-    {/* <Tab.Screen
+    <Tab.Screen
       name="Map"
       component={Map}
       options={{
@@ -100,7 +100,7 @@ function TabNavigator() {
         ),
         headerShown: false 
       }}
-    /> */}
+    />
     <Tab.Screen
       name="coffeeProfile"
       component={coffeeprofile}
