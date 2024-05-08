@@ -12,12 +12,6 @@ const RandomProducts = ({navigation}) => {
 
 
 
-    const handleSignIn =  () => {
-    
-         
-          navigation.navigate('prd')
-      
-      };
 
 
 
