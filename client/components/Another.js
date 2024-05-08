@@ -1,12 +1,14 @@
-import React, { useState } from 'react'
-import { StyleSheet, Text,TouchableOpacity, View,TextInput, ScrollView, Image, FlatList } from 'react-native'
+import React, { useState } from 'react';
+import { StyleSheet, Text, TouchableOpacity, View, Modal, TextInput, ScrollView, Image, FlatList } from 'react-native';
 import { IconButton } from 'react-native-paper';
-export default Posts = ({ onClose }) => {
+import Icon from 'react-native-vector-icons/FontAwesome';
+
+const Posts = ({ onClose }) => {
   const data = [
     {
       id: 1,
       title: 'Lorem ipsum dolor',
-      time: '1 days a go',
+      time: '',
       image: 'https://images.pexels.com/photos/312418/pexels-photo-312418.jpeg',
     },
     {
@@ -57,69 +59,80 @@ export default Posts = ({ onClose }) => {
       time: '9 minutes a go',
       image: 'https://images.pexels.com/photos/312418/pexels-photo-312418.jpeg',
     },
-  ]
-  
-  const [posts, setPosts] = useState(data)
- 
+  ];
+
+  const [posts, setPosts] = useState(data);
+  const [isFormVisible, setFormVisible] = useState(false);
+
+  const deletePost = (id) => {
+    setPosts(prevPosts => prevPosts.filter(post => post.id !== id));
+  };
+
+  const toggleFormVisibility = () => {
+    setFormVisible(!isFormVisible);
+  };
+
+  const renderPostItem = ({ item }) => (
+    <View style={styles.card}>
+      <View style={styles.cardHeader}>
+        <Image style={styles.cardImage} source={{ uri: item.image }} />
+        <View style={styles.cardContent}>
+          <Text style={styles.time}>{item.time}</Text>
+          <Text style={styles.title}>{item.title}</Text>
+        </View>
+        <TouchableOpacity style={styles.deleteButton} onPress={() => deletePost(item.id)}>
+          <Icon name="heart" size={20} color="red" />
+        </TouchableOpacity>
+      </View>
+    </View>
+  );
 
   return (
     <View style={{ flex: 1 }}>
-        <View style={styles.icon} >
-                <IconButton  icon="close" onPress={onClose}   />
-</View>
-  <ScrollView style={{ flex: 1 }}>
-    <View style={styles.container}>
-      <FlatList
-        style={styles.list}
-        data={posts}
-        keyExtractor={item => item.id}
-        ItemSeparatorComponent={() => <View style={styles.separator} />}
-        renderItem={post => {
-          const item = post.item;
-          return (
-            <View style={styles.card}>
-              <View style={styles.cardHeader}>
-                <Image style={styles.cardImage} source={{ uri: item.image }} />
-                <View style={{ marginLeft: 10 }}>
-                  <Text style={styles.time}>{item.time}</Text>
-                  <Text style={styles.title}>{item.title}</Text>
-                </View>
-              </View>
-            </View>
-          );
+      <View style={styles.icon}>
+        <Icon name="close" size={25} onPress={onClose} />
+      </View>
+      <ScrollView style={{ flex: 1 }}>
+        <FlatList
+          style={styles.container}
+          data={posts}
+          keyExtractor={item => item.id.toString()}
+          ItemSeparatorComponent={() => <View style={styles.separator} />}
+          renderItem={renderPostItem}
+        />
+      </ScrollView>
+      <TouchableOpacity onPress={toggleFormVisibility} style={styles.addButton}>
+        <Text style={styles.addButtonText}>Add Post</Text>
+      </TouchableOpacity>
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={isFormVisible}
+        onRequestClose={() => {
+          setFormVisible(!isFormVisible);
         }}
-      />
+      >
+        <View style={styles.centeredView}>
+          <View style={styles.modalView}>
+            {/* Your form components here */}
+            <TouchableOpacity
+              style={{ ...styles.closeButton, backgroundColor: '#2196F3' }}
+              onPress={toggleFormVisibility}
+            >
+              <Text style={styles.textStyle}>Close</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
     </View>
-  </ScrollView>
-  <View style={{ flex: 1, paddingHorizontal: 20, paddingTop: 20 }}>
-    <Text style={{ marginBottom: 10 }}>Discount coupon</Text>
-    
-  
- 
-  
- 
-  
-  
-  </View>
-</View>
-
-  )
-}
+  );
+};
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     marginTop: 20,
-    // backgroundColor:'black'
   },
-  list: {
-    paddingHorizontal: 17,
-    backgroundColor: '#E6E6E6',
-  },
-  separator: {
-    marginTop: 10,
-  },
-  /******** card **************/
   card: {
     shadowColor: 'white',
     shadowOffset: {
@@ -136,66 +149,59 @@ const styles = StyleSheet.create({
     padding: 10,
     borderBottomWidth: 1,
     borderBottomColor: '#ddd',
-   
-    
   },
   cardContent: {
     paddingVertical: 12.5,
     paddingHorizontal: 16,
   },
-  cardFooter: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    paddingTop: 12.5,
-    paddingBottom: 25,
-    paddingHorizontal: 16,
-    borderBottomLeftRadius: 1,
-    borderBottomRightRadius: 1,
-  },
   cardImage: {
-    width: 180, // Adjust width according to your design
-    height: 150, // Adjust height according to your design
+    width: 180,
+    height: 150,
     resizeMode: 'cover',
-   
   },
-  /******** card components **************/
   title: {
     fontSize: 18,
     flex: 1,
     color: 'black',
-    marginTop:45
+    marginTop: 45,
   },
   time: {
     fontSize: 13,
     color: 'black',
     marginTop: 10,
   },
+  addButton: {
+    backgroundColor: '#f4511e',
+    padding: 10,
+    margin: 20,
+    borderRadius: 5,
+    alignItems: 'center',
+  },
+  addButtonText: {
+    color: 'white',
+    fontSize: 16,
+  },
+  modalView: {
+    margin: 20,
+    backgroundColor: 'white',
+    borderRadius: 20,
+    padding: 35,
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    }
+  },
   icon: {
     width: 25,
     height: 25,
-    // flexDirection: 'row-reverse'
-    
   },
-  /******** social bar ******************/
-  socialBarContainer: {
-    justifyContent: 'center',
-    alignItems: 'center',
-    flexDirection: 'row',
-    flex: 1,
+  deleteButton: {
+    position: 'absolute',
+    top: 10,
+    right: 10,
   },
-  socialBarSection: {
-    justifyContent: 'center',
-    flexDirection: 'row',
-    flex: 1,
-  },
-  socialBarlabel: {
-    marginLeft: 8,
-    alignSelf: 'flex-end',
-    justifyContent: 'center',
-  },
-  socialBarButton: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-})
+});
+
+export default Posts;

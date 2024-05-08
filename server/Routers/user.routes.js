@@ -10,9 +10,9 @@ const {getAll,addOne,updateOne,deleteOne,selectOne}=require('../controller/UserC
 router.get("/",getAll);
 router.get("/:id",selectOne);
 router.post("/",addOne);
-router.patch("/:id",updateOne);
+router.put("/:id",updateOne);
 router.delete("/:id",deleteOne);
-// router.post("/upload", uploadImage); 
+// router.post("/upload", upload); 
 
 
 
