@@ -15,7 +15,7 @@ import ProductDetailsPage from './components/ProdDetails';
 
 function App() {
 
-  console.log(process.env.ipAdress);
+ 
  return (
   <Provider store={store}>
     <SafeAreaView style={{ flex: 1 }}>

@@ -17,7 +17,7 @@ function Paye() {
     expiry_year: '',
     cvv: ''
   });
- console.log(ipAdress);
+ 
   const handleChange = (name, value) => {
     setFormData({
       ...formData,
