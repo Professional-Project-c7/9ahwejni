@@ -4,7 +4,7 @@ import { Button } from 'react-native-paper';
 import axios from 'axios';
 import { ipAdress } from '../config'; 
 
-const ProductDetailsPage = () => {
+const ProductDetailsPage = ({ navigation }) => {
     const [products, setProducts] = useState([]);
     const [selectedSize, setSelectedSize] = useState(null);
     const [selectedSugar, setSelectedSugar] = useState(null);
@@ -38,8 +38,8 @@ console.log(products);
         setSelectedIce(ice);
     };
     const handleAddToCart = () => {
-        // Navigate to cart page and pass product ID as parameter
-        navigation.navigate('Cart', { productId: products[0].id });
+        
+        navigation.navigate('panier', { productId: products[0].id });
     };
 
     return (
