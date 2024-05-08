@@ -49,7 +49,7 @@ const RandomProducts = ({navigation}) => {
                 ) : (
                     <View style={styles.productsContainer}>
                         {products.map((product) => (
-                            <View style={styles.card} key={product.id} onPress={handleSignIn}   >
+                            <View style={styles.card} key={product.id}   >
                                 <Image source={{ uri: product.imgUrl }} style={styles.image} />
                                 <Icon
                                     name={favorites[product.id]?.favored ? 'heart' : 'heart-outline'}
