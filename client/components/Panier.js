@@ -1,129 +1,111 @@
-import React, { useState } from 'react'
-import { StyleSheet, Text,TouchableOpacity, View,TextInput, ScrollView, Image, FlatList } from 'react-native'
-import { IconButton } from 'react-native-paper';
+import React, { useState, useEffect } from 'react';
+import { StyleSheet, Text, TouchableOpacity, View, ScrollView, Image, FlatList } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import Icon from 'react-native-vector-icons/FontAwesome'
+import Icon from 'react-native-vector-icons/FontAwesome'; // Import FontAwesome for close icon
+import MaterialIcon from 'react-native-vector-icons/MaterialIcons'; // Import MaterialIcons for delete icon
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
+const Panier = () => {
+  const navigation = useNavigation(); // Use the useNavigation hook here
 
+  const [posts, setPosts] = useState([]);
+  const [totalPrice, setTotalPrice] = useState(0);
 
-export default Carts = ({ navigation }) => {
-  // const navigation = useNavigation();
-  const data = [
-    
-    {
-      id: 4,
-      title: 'Commodo ligula eget dolor.',
-      time: '4 months a go',
-      image: 'https://bootdey.com/image/400x200/8A2BE2/000000',
-    },
-    {
-      id: 5,
-      title: 'Aenean massa. Cum sociis',
-      time: '5 weeks a go',
-      image: 'https://bootdey.com/image/400x200/008B8B/000000',
-    }
-   
-  ]
-  
-  const [posts, setPosts] = useState(data)
-  const data2 = posts.slice(0 , 2)
-  const handleAddToCart = () => {
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const storedPosts = await AsyncStorage.getItem('favorites');
         
+        if (storedPosts) {
+          const parsedPosts = JSON.parse(storedPosts);
+          setPosts(parsedPosts);
+          calculateTotalPrice(parsedPosts);
+        }
+      } catch (error) {
+        console.log('Error fetching data:', error); 
+      }
+    };
+    fetchData();
+  }, []);
+
+  const handleAddToCart = () => {
     navigation.navigate('Tabs');
-};
+  };
+
+  const handleDeleteItem = async (itemId) => {
+    const updatedPosts = posts.filter(item => item.id !== itemId);
+    setPosts(updatedPosts);
+    try {
+      await AsyncStorage.setItem('favorites', JSON.stringify(updatedPosts));
+      calculateTotalPrice(updatedPosts);
+    } catch (error) {
+      console.log('Error updating favorites:', error);
+    }
+  };
+
+  const calculateTotalPrice = (items) => {
+    let totalPrice = 0;
+    items.forEach(item => {
+      totalPrice += item.price;
+    });
+    setTotalPrice(totalPrice);
+  };
 
   return (
-    <View style={{ flex: 1 }}>
-        <View style={styles.icon} >
-        <Icon name="close"  size={30}  onPress={handleAddToCart}   />
-              
-</View>
-  <ScrollView style={{ flex: 1 }}>
     <View style={styles.container}>
-      <FlatList
-        style={styles.list}
-        data={data2}
-        keyExtractor={item => item.id}
-        ItemSeparatorComponent={() => <View style={styles.separator} />}
-        renderItem={post => {
-          const item = post.item;
-          return (
+      <View style={styles.icon}>
+        <Icon name="close" size={30} onPress={handleAddToCart} />
+      </View>
+      <ScrollView>
+        <FlatList
+          data={posts}
+          keyExtractor={(item) => item.id.toString()} 
+          renderItem={({ item }) => (
             <View style={styles.card}>
               <View style={styles.cardHeader}>
-                <Image style={styles.cardImage} source={{ uri: item.image }} />
+                <Image style={styles.cardImage} source={{ uri: item.imgUrl }} />
                 <View style={{ marginLeft: 10 }}>
-                  <Text style={styles.time}>{item.time}</Text>
-                  <Text style={styles.title}>{item.title}</Text>
+                  <Text style={styles.time}>{item.createdAt}</Text>
+                  <Text style={styles.title}>{item.name}</Text>
+                  <Text style={styles.description}>{item.description}</Text>
+                  <Text style={styles.price}>${item.price}</Text>
+                  <TouchableOpacity  style={styles.delete} onPress={() => handleDeleteItem(item.id)}>
+                    <MaterialIcon name="delete" size={27} color="#dba617" />
+                  </TouchableOpacity>
                 </View>
               </View>
             </View>
-          );
-        }}
-      />
+          )}
+          ItemSeparatorComponent={() => <View style={styles.separator} />}
+        />
+      </ScrollView>
+      <View style={styles.footer}>
+        <Text style={styles.deliveryCharge}>Delivery charge: $1.5</Text>
+        <Text style={styles.discount}>Discount: 5%</Text>
+        <View style={styles.totalContainer}>
+          <Text>Total Price: ${totalPrice.toFixed(2)}</Text>
+        </View>
+      </View>
     </View>
-  </ScrollView>
-  <View style={{ flex: 1, paddingHorizontal: 20, paddingTop: 20 }}>
-    <Text style={{ marginBottom: 10 }}>Discount coupon</Text>
-    
-  
-    <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 20 }}>
-  <TextInput
-    style={{ borderWidth: 1,width:100, borderColor: 'gray', borderRadius: 1, padding: 10, flex: 1 }}
-    placeholder="Promo Code"
-  />
-  <TouchableOpacity style={{ backgroundColor: '#E4C59E', borderRadius: 1, paddingVertical: 10, paddingHorizontal: 20 }}>
-    <Text style={{ color: 'white' }}>Apply</Text>
-  </TouchableOpacity>
-</View>
-  
- 
-  <View>
-    <Text style={{marginLeft:100}}>
-      Subtotal                                      19$
-    </Text>
-    <Text style={{marginLeft:100}}>
-    Delevry charge                            1$
-    </Text>
-    <Text style={{marginLeft:100}}>
-    Discount                                      0.2$
-    </Text> 
-    <Text style={{marginLeft:100}}>
-     -------------------------------------------------------
-    </Text>
-    <Text style={{fontSize:20, marginTop:20,marginLeft:100 }}>
-      Total                          20.2$
-    </Text>
-  </View>
-  </View>
-   
-</View>
-
-  )
-}
+  );
+};
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    marginTop: 20,
-    // backgroundColor:'black'
   },
-  list: {
-    paddingHorizontal: 17,
-    backgroundColor: '#E6E6E6',
+  icon: {
+    alignSelf: 'flex-end',
+    marginRight: 10,
   },
-  separator: {
-    marginTop: 10,
+  delete: {
+    marginLeft: 230,
   },
-  /******** card **************/
   card: {
-    shadowColor: 'white',
-    shadowOffset: {
-      width: 2,
-    },
-    shadowOpacity: 0.5,
-    shadowRadius: 4,
     marginVertical: 8,
     backgroundColor: 'white',
+    elevation: 3,
+    borderRadius: 10,
   },
   cardHeader: {
     flexDirection: 'row',
@@ -131,66 +113,59 @@ const styles = StyleSheet.create({
     padding: 10,
     borderBottomWidth: 1,
     borderBottomColor: '#ddd',
-   
-    
-  },
-  cardContent: {
-    paddingVertical: 12.5,
-    paddingHorizontal: 16,
-  },
-  cardFooter: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    paddingTop: 12.5,
-    paddingBottom: 25,
-    paddingHorizontal: 16,
-    borderBottomLeftRadius: 1,
-    borderBottomRightRadius: 1,
   },
   cardImage: {
-    width: 180, // Adjust width according to your design
-    height: 150, // Adjust height according to your design
-    resizeMode: 'cover',
-   
-  },
-  /******** card components **************/
-  title: {
-    fontSize: 18,
-    flex: 1,
-    color: 'black',
-    marginTop:45
+    width: 120,
+    height: 100,
+    borderRadius: 10,
   },
   time: {
     fontSize: 13,
     color: 'black',
     marginTop: 10,
   },
-  icon: {
-    width: 25,
-    height: 25,
-    // flexDirection: 'row-reverse'
-    
-  },
-  /******** social bar ******************/
-  socialBarContainer: {
-    justifyContent: 'center',
-    alignItems: 'center',
-    flexDirection: 'row',
+  title: {
+    fontSize: 18,
     flex: 1,
+    color: 'black',
+    marginTop: 5,
   },
-  socialBarSection: {
-    justifyContent: 'center',
+  description: {
+    color: 'gray',
+    marginTop: 5,
+  },
+  price: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: 'black',
+    marginTop: 5,
+  },
+  separator: {
+    height: 1,
+    backgroundColor: '#ddd',
+  },
+  footer: {
+    paddingHorizontal: 20,
+    paddingTop: 20,
+    borderTopWidth: 1,
+    borderTopColor: '#ddd',
+  },
+  subtotal: {
+    marginBottom: 10,
+  },
+  deliveryCharge: {
+    marginBottom: 10,
+  },
+  discount: {
+    marginBottom: 10,
+  },
+  totalContainer: {
     flexDirection: 'row',
-    flex: 1,
+    justifyContent: 'space-between',
   },
-  socialBarlabel: {
-    marginLeft: 8,
-    alignSelf: 'flex-end',
-    justifyContent: 'center',
+  total: {
+    fontSize: 20,
   },
-  socialBarButton: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-})
+});
+
+export default Panier;
