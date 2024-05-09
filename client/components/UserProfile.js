@@ -152,7 +152,7 @@ const handleLogout = () => {
         </View>
        
         <View style={styles.optionsContainer}>
-          <TouchableOpacity style={styles.option} onPress={() => navigation.navigate('Order')}>
+          <TouchableOpacity style={styles.option} onPress={() => navigation.navigate('panier')}>
           <View style={styles.test} >
             <Image source={require("../image/online-order.png")} style={styles.optionImage} /></View>
             <Text style={styles.optionText}>ORDERS</Text>
