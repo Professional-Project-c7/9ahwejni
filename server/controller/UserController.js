@@ -58,13 +58,16 @@ module.exports = {
         },
 
      updateOne:async function(req,res){
+
         try {
+            console.log(req.params);
+
             const user= await db.User.update({
-                FirstName:req.body.FirstName,
-                LastName:req.body.LastName,
+                FirstName:req.body.firstName,
+                LastName:req.body.lastName,
                             
                
-                Email:req.body.Email,
+                Email:req.body.email,
                 password:req.body.password,
                 Address:req.body.Address,
                 
