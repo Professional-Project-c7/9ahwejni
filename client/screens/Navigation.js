@@ -37,14 +37,11 @@ import ProductDetailsPage from '../components/ProdDetails';
 import Paye from '../components/Payment';
 import Panier from '../components/Panier';
 import Onboarding from '../components/Onboarding';
-import NextButtonOnboarding from '../components/NextButtonOnboarding';
 function NAVSTART() {
   return (
     <NavigationContainer>
       <Stack.Navigator initialRouteName='Start'>
         <Stack.Screen name="Onboarding" component={Onboarding} options={{ headerShown: false }} />
-        <Stack.Screen name="NextButtonOnboarding" component={NextButtonOnboarding} options={{ headerShown: false }} />
-
         <Stack.Screen name="Login" component={Login} options={{ headerShown: false }} />
         <Stack.Screen name="UserSignUp" component={SignUser} options={{ headerShown: false }} />
         <Stack.Screen name="CoffeeShopSignUp" component={SignCofee} options={{ headerShown: false }} />

@@ -10,20 +10,20 @@ const dummyData = [
     "id": 1,
     "title": "Lorem Ipsum",
     "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-    image: require("../image/PaimentPic.png")
+    image: require("../image/ob1.png")
   },
   {
     "id": 2,
     "title": "Dolor Sit Amet",
     "description": "Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.",
-    image: require("../image/data-security.png")
+    image: require("../image/ob2.png")
   },
   {
     "id": 3,
     "title": "Consectetur Adipiscing",
     "description": "Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
-    image: require("../image/data-security.png")
-  },
+    image: require("../image/ob3.png")
+  }, 
   {
     "id": 5,
     "title": "Consectetur Adipiscing",
@@ -116,6 +116,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: 'white',
   },
+  
   buttonContainer: {
     position: 'absolute',
     bottom: 20,
