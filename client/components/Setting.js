@@ -5,21 +5,37 @@ import { launchImageLibrary } from 'react-native-image-picker';
 import { ipAdress } from '../config';
 import Icon from 'react-native-vector-icons/FontAwesome'
 import {Cloudinary} from "@cloudinary/url-gen";
-          
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const SettingComponent = ({ onClose }) => {
   const cld = new Cloudinary({cloud: {cloudName: 'dmqumly45'}});
     const [imageUrl, setImageUrl] = useState(imageUrl);
+    const [userData, setUserData] = useState(null);
+    const [userID,setuserID] = useState(null)
     const [profile, setProfile] = useState({
       FirstName: '',
       Password: '',
       LastName: '',
       Adresse: '',
     });
-   
-    const fetchUserProfile = async () => {  
+     
+    const retrieveData = async () => {
       try {
-        const response = await axios.get(`http://${ipAdress}:3000/api/user/1`); // Assuming user ID is 1
+        const value = await AsyncStorage.getItem('userToken');
+        if (value !== null) {
+          const tokenObject = JSON.parse(value);
+          const userId = tokenObject.userId; 
+          console.log(userId);
+          setuserID(userId);
+        }
+      } catch (error) {
+        console.error('Error retrieving data:', error);
+      }
+    };
+   
+    const fetchUserProfile = async (userID) => {  
+      try {
+        const response = await axios.get(`http://${ipAdress}:3000/api/user/${userID}`); // Assuming user ID is 1
         const userData = response.data;
         setProfile(userData);
       } catch (error) {
@@ -28,43 +44,49 @@ const SettingComponent = ({ onClose }) => {
     };
   
     useEffect(() => {
-      fetchUserProfile();
+      fetchUserProfile(userID);
     }, []);
-  
+   
     const handleSave = async () => {
       try {
-        await axios.patch(`http://${ipAdress}:3000/api/user/1`, profile);
+        await axios.patch(`http://${ipAdress}:3000/api/user/${userID}`, userData);
         console.log('Changes saved');
       } catch (error) {
         console.error('Error updating user profile:', error);
       }
     };
+  
+    
+    useEffect(() => {
+      retrieveData();
+    }, []);
 
   return (
   
     
       <View style={styles.profileInfo}>
-        <View style={styles.icon} >
-        <Icon name="close" size={30} onPress={onClose}   />
-</View>
-              <Text style={[styles.label, { marginTop: 100 }]}>FirstName:</Text>
+        <ScrollView>
+        <View >
+        {userData && (
+        <>
+           <Text style={[styles.label, { marginTop: 100 }]}>FirstName:</Text>
               <TextInput
                 style={styles.input}
-                value={profile.FirstName}
+                value={userData.FirstName}
                 onChangeText={value => setProfile({ ...profile, FirstName: value })}
                 placeholder="Enter your name"
               />
               <Text style={styles.label}>LastName:</Text>
               <TextInput
                 style={styles.input}
-                value={profile.LastName}
+                value={userData.LastName}
                 onChangeText={value => setProfile({ ...profile, LastName: value })}
                 placeholder="Enter your last name"
               />
               <Text style={styles.label}>Password:</Text>
               <TextInput
                 style={styles.input}
-                value={profile.Password}
+                value={userData.Password}
                 onChangeText={value => setProfile({ ...profile, Password: value })}
                 placeholder="Enter your password"
                 secureTextEntry={true}
@@ -72,7 +94,7 @@ const SettingComponent = ({ onClose }) => {
               <Text style={styles.label}>Config Ps:</Text>
                <TextInput
                 style={styles.input}
-                value={profile.Password}
+                value={userData.Password}
                 onChangeText={value => setProfile({ ...profile, Password: value })}
                 placeholder="Enter your password"
                 secureTextEntry={true}
@@ -80,12 +102,17 @@ const SettingComponent = ({ onClose }) => {
               <Text style={styles.label}>Adresse:</Text>
               <TextInput
                 style={styles.input}
-                value={profile.Adresse}
+                value={userData.Adresse}
                 onChangeText={value => setProfile({ ...profile, Adresse: value })}
                 placeholder="Enter your address"
               />
                   <Icon name="save" style={{color:'black'}}  size={30} onPress={handleSave} />
-             
+            
+                  </>
+      )}
+                 </View>
+             </ScrollView>
+
              </View>
   );
 };
