@@ -36,7 +36,7 @@ import { IconButton } from 'react-native-paper';
 import ProductDetailsPage from '../components/ProdDetails';
 import Paye from '../components/Payment';
 import Panier from '../components/Panier';
-// import AdvancedFilter from '../components/AdvancedFilter';
+
 
 function NAVSTART() {
   return (
@@ -61,10 +61,6 @@ function NAVSTART() {
         <Stack.Screen name="panier" component={Panier} options={{ headerShown: false }} />
         
        <Stack.Screen name="Paye" component={Paye} options={{ headerShown: false }}/>
-
-        {/* <Stack.Screen name="AdvancedFilter" component={AdvancedFilter} options={{ headerShown: false }} /> */}
-
-
 
         <Stack.Screen name="menu" component={MenuItems} options={{ headerShown: false }} />
         <Stack.Screen name="coffeeProfile" component={coffeeprofile} options={{ headerShown: false }} />
@@ -116,7 +112,7 @@ function TabNavigator() {
     />
     <Tab.Screen
       name="coffeeProfile"
-      component={coffeeprofile}
+      component={UserProfile}
       options={{
         tabBarIcon: ({ color, size }) => (
           <IconButton icon="account" size={size} iconColor={color} />
@@ -133,4 +129,3 @@ function TabNavigator() {
 }
 
 export default NAVSTART;
-

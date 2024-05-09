@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { StyleSheet, Text, View, Image, TouchableOpacity, ScrollView, FlatList, StatusBar } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
-import SearchBar from '../components/searchbar';
+// import SearchBar from '../components/searchbar';
 import { IconButton } from 'react-native-paper';
 import RandomProducts from "../components/randomproducts";
 import Pub from "../components/pub";
@@ -39,7 +39,7 @@ const HomePage = ({ navigation }) => {
         </View>
       </LinearGradient>
       <View style={styles.searchContainer}>
-        <SearchBar />
+        {/* <SearchBar /> */}
       </View>
       <View style={styles.categoryBarContainer}>
         <Text style={styles.categoryTitle}>Category</Text>
