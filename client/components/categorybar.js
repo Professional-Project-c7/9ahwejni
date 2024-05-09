@@ -41,8 +41,8 @@ const styles = StyleSheet.create({
     marginRight: 45,
   },
   categoryImage: {
-    width: 50,
-    height: 50,
+    width: 52,
+    height: 52,
     marginBottom: 5,
   },
   categoryText: {

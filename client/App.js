@@ -9,12 +9,15 @@ import AllCoffeShops from './components/UserProfile';
 import HomePage from './components/homepage';
 import AdvancedFilter from './components/AdvancedFilter';
 
+
 function App() {
 
   return (
   <Provider store={store}>
     <SafeAreaView style={{ flex: 1 }}>
-    <HomePage />
+
+    <NAVSTART/>
+
  </SafeAreaView>
  </Provider>
   );

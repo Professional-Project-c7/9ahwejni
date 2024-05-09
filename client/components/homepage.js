@@ -47,7 +47,7 @@ const HomePage = ({ navigation }) => {
           <View style={styles.logoContainer}>
             <Image source={logoImage} style={styles.logo} />
           </View>
-          <IconButton icon="bell-outline" iconColor='#FFF' />
+          <IconButton icon="cart" iconColor='#FFF' />
         </View>
       </LinearGradient>
       <View style={styles.searchContainer}>

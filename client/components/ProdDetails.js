@@ -4,14 +4,13 @@ import { Button } from 'react-native-paper';
 import axios from 'axios';
 import { ipAdress } from '../config'; 
 
-const ProductDetailsPage = () => {
+const ProductDetailsPage = ({ navigation }) => {
     const [products, setProducts] = useState([]);
     const [selectedSize, setSelectedSize] = useState(null);
     const [selectedSugar, setSelectedSugar] = useState(null);
     const [selectedIce, setSelectedIce] = useState(null);
 
 console.log(products);
-console.log(ipAdress);
 
 
     useEffect(() => {
@@ -38,7 +37,10 @@ console.log(ipAdress);
     const handleIceSelection = (ice) => {
         setSelectedIce(ice);
     };
-
+    const handleAddToCart = () => {
+        
+        navigation.navigate('panier', { productId: products[0].id });
+    };
 
     return (
         <View style={styles.container}>
@@ -145,7 +147,7 @@ console.log(ipAdress);
                             <View style={styles.priceContainer}>
                                 <Text style={styles.productPrice}>${product.price}</Text>
                                 <TouchableOpacity>
-                                    <Text style={styles.add} onPress={console.log("hello")}   >Add to Cart</Text>
+                                    <Text style={styles.add} onPress={handleAddToCart }   >Add to Cart</Text>
                                 </TouchableOpacity>
                             </View>
                         </View>
