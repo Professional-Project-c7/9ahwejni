@@ -1,3 +1,7 @@
+
+
+
+
 import React, { useEffect, useState } from 'react';
 import {
   SafeAreaView,
@@ -6,8 +10,11 @@ import {
   View,
   Image,
   Text,
-  TouchableOpacity
+  TouchableOpacity,
+
 } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 import { useNavigation } from '@react-navigation/native';
 
 import { Rating } from 'react-native-ratings';
@@ -16,10 +23,12 @@ import axios from 'axios';
 import { ipAdress } from '../config';
 
 const RandomProducts = () => {
-  const navigation = useNavigation(); // Use the useNavigation hook here
+  const navigation = useNavigation(); 
 
   const [products, setProducts] = useState([]);
   const [favorites, setFavorites] = useState({});
+  const [hearttt, sethearttt] = useState({});
+  
   const [error, setError] = useState(null);
 
   useEffect(() => {
@@ -27,27 +36,43 @@ const RandomProducts = () => {
       try {
         const response = await axios.get(`http://${ipAdress}:3000/api/product/`);
         const shuffledProducts = response.data.sort(() => 0.5 - Math.random());
-        setProducts(shuffledProducts.slice(0, 4));
+        setProducts(shuffledProducts.slice(0, 16));
       } catch (err) {
         setError(err.message);
       }
     };
     fetchProducts();
+    // AsyncStorage.clear()
   }, []);
 
-  const toggleFeature = (id, feature) => {
-    setFavorites((prev) => ({
-      ...prev,
-      [id]: {
-        ...prev[id],
-        [feature]: !prev[id]?.[feature],
-      },
-    }));
+  const toggleFeature = async (id, feature) => {
+    try {
+      const isFavorited = favorites[id]?.[feature];
+      const product = products.find((product) => product.id === id);
+      const storedFavorites = await AsyncStorage.getItem("favorites");
+      let favoritesArray = storedFavorites ? JSON.parse(storedFavorites) : [];
+      if (!isFavorited) {
+        setFavorites((prevFavorites) => ({
+          ...prevFavorites,
+          [id]: {
+            ...prevFavorites[id],
+            [feature]: true,
+          },
+        }));
+
+        favoritesArray.push(product);
+        await AsyncStorage.setItem("favorites", JSON.stringify(favoritesArray));
+      } 
+      
+    } catch (error) {
+      console.log('Error toggling feature:', error);
+    }
   };
 
   const handleNavigateToDetails = (product) => { 
     navigation.navigate('prd', { product }); 
   };
+
 
   return (
     <SafeAreaView style={styles.container}>
@@ -62,14 +87,15 @@ const RandomProducts = () => {
                   <Image source={{ uri: product.imgUrl }} style={styles.image} />
                 </TouchableOpacity>
                 <Icon
-                  name={favorites[product.id]?.favored ? 'heart' : 'heart-outline'}
-                  color={favorites[product.id]?.favored ? 'red' : '#dba617'}
+                  name={hearttt[product.id]?.favored ? 'heart' : 'heart-outline'}
+                  color={hearttt[product.id]?.favored ? 'red' : '#dba617'}
                   size={27}
-                  onPress={() => toggleFeature(product.id, 'favored')}
                   style={styles.favIcon}
                 />
                 <View style={styles.infoContainer}>
-                  <TouchableOpacity onPress={() => handleNavigateToDetails(product)}>
+                  <TouchableOpacity 
+                
+                  >
                     <Text style={styles.name}>{product.name}</Text>
                   </TouchableOpacity>
                   <Text style={styles.price}>${product.price}</Text>
@@ -164,3 +190,10 @@ const styles = StyleSheet.create({
 });
 
 export default RandomProducts;
+
+
+
+
+
+
+
