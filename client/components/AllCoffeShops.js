@@ -1,18 +1,49 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, StyleSheet, FlatList, Image, TouchableOpacity } from 'react-native';
 import axios from 'axios';
-import FlatListPopularShops from './FlatListPopularShops';
 import { ipAdress } from '../config';
-
+import FlatListPopularShops from './FlatListPopularShops';
 const CoffeeShopsList = () => {
   const [coffeeShopsData, setCoffeeShopsData] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
 
+  // Define dummy data within the scope of the component
+  const dummyData = [
+    {
+      id: 1,
+      FirstName: "John",
+      LastName: "Doe",
+      Address: "123 Main St",
+      Email: "john@example.com",
+      Password: "password123",
+      ImageUrl: "https://example.com/images/john.jpg",
+      UserType: "coffee",
+      createdAt: "2024-05-07T14:25:42.000Z",
+      updatedAt: "2024-05-07T14:25:42.000Z"
+    },
+    {
+      id: 2,
+      FirstName: "Jane",
+      LastName: "Smith",
+      Address: "456 Elm St",
+      Email: "jane@example.com",
+      Password: "password456",
+      ImageUrl: "https://example.com/images/jane.jpg",
+      UserType: "coffee",
+      createdAt: "2024-05-07T14:25:42.000Z",
+      updatedAt: "2024-05-07T14:25:42.000Z"
+    },
+    // Add more dummy data as needed
+  ];
+
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get(`http://${ipAdress}:3000/api/cofee`);
-        setCoffeeShopsData(response.data);
+        // Instead of fetching from an API, use the dummy data for testing
+        // const response = await axios.get(`http://${ipAdress}:3000/api/auth/all`);
+        // Filter the coffee shops data on the client-side by UserType "coffee"
+        const filteredData = dummyData.filter(user => user.UserType === "coffee");
+        setCoffeeShopsData(filteredData);
       } catch (error) {
         console.error('Error fetching data: ', error);
       }
@@ -35,25 +66,23 @@ const CoffeeShopsList = () => {
           placeholder="Search..."
           onChangeText={text => setSearchQuery(text)}
           value={searchQuery}
-        />
+          />
       </View>
-      <FlatListPopularShops />
-      <Text style={styles.TxtList}>List Coffee Shops ({coffeeShopsData.length})</Text>
+          <FlatListPopularShops/>
+      <Text style={styles.TxtList}>List Coffee Shops ({filteredCoffeeShops.length})</Text>
       <FlatList
         data={filteredCoffeeShops}
-        keyExtractor={item => item.id}
+        keyExtractor={item => item.id.toString()}
         renderItem={({ item }) => (
           <View style={styles.card}>
             <Image
               style={styles.image}
-              source={{ uri: item.imgUrl }}
+              source={{ uri: item.ImageUrl }}
             />
             <View style={styles.info}>
               <Text style={styles.name}>{item.FirstName} {item.LastName}</Text>
-              <Text style={styles.address}>{item.Adress}</Text>
-              <View style={styles.ratingSection}>
-                <Text style={styles.ratingText}>{`${item.rating} (${item.reviews} reviews)`}</Text>
-              </View>
+              <Text style={styles.address}>{item.Address}</Text>
+              {/* Add your rating and reviews here if available */}
             </View>
             <TouchableOpacity style={styles.favoriteButton}>
               {/* You can add favorite functionality here */}
@@ -129,14 +158,6 @@ const styles = StyleSheet.create({
   address: {
     fontSize: 16,
     color: '#555',
-  },
-  ratingSection: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  ratingText: {
-    marginLeft: 5,
-    fontSize: 16,
   },
   favoriteButton: {
     padding: 10,
