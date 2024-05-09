@@ -15,8 +15,7 @@ import Onboarding from './components/Onboarding';
 
 function App() {
 
-
- return (
+  return (
   <Provider store={store}>
     <SafeAreaView style={{ flex: 1 }}>
     <Onboarding />

@@ -31,7 +31,7 @@ export default function SearchBar() {
 
   const applyFilters = () => {
     // Implement your advanced search logic here
-    console.log('Applying filters:', filterOptions);
+   
     setDialogVisible(false);
   };
 
