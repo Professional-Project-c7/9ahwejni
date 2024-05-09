@@ -59,7 +59,7 @@ const MyComponent = ({navigation}) => {
           <Text style={styles.name}>COFFEESHOP</Text>
         </View>
         <View style={styles.optionsContainerOne}>
-        <TouchableOpacity style={styles.optionOne} onPress={() => navigation.navigate('InfoCoffee')}>
+        <TouchableOpacity style={styles.optionOne} onPress={() => navigation.navigate('Info')}>
   <View style={styles.optionContent}>
     <Image source={require("../image/profile.png")} style={styles.optionImageE} />
     <Text style={styles.optionText}>INFORMATIONS</Text>
