@@ -19,6 +19,7 @@ import { ipAdress } from '../config';
 
 const EditProfileScreen = ({navigation}) => {
   const [userID, setUserID] = useState(null);
+  const [userData, setUserData] = useState(null);
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [phone, setPhone] = useState('');
@@ -59,16 +60,45 @@ const EditProfileScreen = ({navigation}) => {
         city: city
       };
       console.log(userData); // Check if userData is correct before sending the request
-      const response = await axios.put(`http://${ipAdress}:3000/api/user/${userID}`, userData);
+      const response = await axios.patch(`http://${ipAdress}:3000/api/user/${userID}`, userData);
       
       console.log('Update successful:', response.data);
      
       console.log(userID);
-      navigation.navigate('InfoCoffee');
+      navigation.navigate('User');
     } catch (error) {
       console.error('Update failed:', error);
     }
   };
+
+  // const handleUpdateProfile = async () => {
+  //   try {
+  //     await axios.patch(`http://${ipAdress}:3000/api/user/${userID}`, userData);
+  //     console.log('Changes saved');
+  //   } catch (error) {
+  //     console.error('Error updating user profile:', error);
+  //   }
+  // };
+  
+const getUserData = async (userId) => {
+  try {
+    const response = await axios.get(`http://${ipAdress}:3000/api/user/${userId}`);
+    console.log(response.data); // Check response data
+    if (response.status === 200) {
+      setUserData(response.data);
+    } else {
+      console.error('Failed to fetch user data');
+    }
+  } catch (error) {
+    console.error('Error fetching user data:', error.message);
+  }
+};
+useEffect(() => {
+  if (userID) {
+    getUserData(userID);
+  }
+}, [userID]);
+
   
 
   renderInner = () => (
@@ -97,7 +127,8 @@ const EditProfileScreen = ({navigation}) => {
 
   return (
     <View style={styles.container}>
-    
+     {userData && (
+        <>
         <View style={{alignItems: 'center', marginTop:15}}>
           <TouchableOpacity >
             <View
@@ -135,10 +166,13 @@ const EditProfileScreen = ({navigation}) => {
             </View>
           </TouchableOpacity>
           <Text style={{marginTop: 10, fontSize: 18, fontWeight: 'bold'}}>
-            John Doe
+          {userData.FirstName }
+
           </Text>
         </View>
 
+        </>
+      )}
         <View style={styles.action}>
           <FontAwesome name="user-o" color={'#dba617'} size={20} />
           <TextInput
