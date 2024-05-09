@@ -24,7 +24,7 @@ const EditProfileScreen = ({navigation}) => {
   const [lastName, setLastName] = useState('');
   const [phone, setPhone] = useState('');
   const [email, setEmail] = useState('');
-  const [country, setCountry] = useState('');
+  const [address, setAddress] = useState('');
   const [city, setCity] = useState('');
   const [image, setImage] = useState(
     'https://api.adorable.io/avatars/80/abott@adorable.png',
@@ -52,12 +52,12 @@ const EditProfileScreen = ({navigation}) => {
   const handleUpdateProfile = async () => {
     try {
       const userData = {
-        firstName: firstName,
-        lastName: lastName,
-        phone: phone,
-        email: email,
-        country: country,
-        city: city
+        FirstName: firstName,
+        LastName: lastName,
+       
+    
+        Address: address,
+     
       };
       console.log(userData); // Check if userData is correct before sending the request
       const response = await axios.patch(`http://${ipAdress}:3000/api/user/${userID}`, userData);
@@ -70,6 +70,15 @@ const EditProfileScreen = ({navigation}) => {
       console.error('Update failed:', error);
     }
   };
+
+  // const handleUpdateProfile = async () => {
+  //   try {
+  //     await axios.patch(`http://${ipAdress}:3000/api/user/${userID}`, userData);
+  //     console.log('Changes saved');
+  //   } catch (error) {
+  //     console.error('Error updating user profile:', error);
+  //   }
+  // };
   
 const getUserData = async (userId) => {
   try {
@@ -218,9 +227,9 @@ useEffect(() => {
           <TextInput
             placeholder="Email"
             placeholderTextColor="#666666"
-            value={email}
-            onChangeText={text => setEmail(text)}
-            keyboardType="email-address"
+            value={address}
+            onChangeText={text => setAddress(text)}
+            keyboardType="address-address"
             autoCorrect={false}
             style={[
               styles.textInput,
