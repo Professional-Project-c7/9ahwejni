@@ -5,9 +5,9 @@ const CategoryBar = () => {
   const [selectedCategory, setSelectedCategory] = useState(null);
   const categories = [
     { key: 'coffee', image: require('../image/coffee-nice.png'), label: 'Coffees' },
-    { key: 'drink', image: require('../image/melon-juice.png'), label: 'Drinks' },
+    { key: 'drink', image: require('../image/orange-juice.png'), label: 'Drinks' },
     { key: 'cake', image: require('../image/cakes.png'), label: 'Cakes' },
-    { key: 'pack', image: require('../image/take-away.png'), label: 'Packs' }
+    { key: 'pack', image: require('../image/packos.png'), label: 'Packs' }
   ];
 
   const handlePress = (key) => {
@@ -41,8 +41,8 @@ const styles = StyleSheet.create({
     marginRight: 45,
   },
   categoryImage: {
-    width: 50,
-    height: 50,
+    width: 52,
+    height: 52,
     marginBottom: 5,
   },
   categoryText: {
