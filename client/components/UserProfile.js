@@ -6,6 +6,11 @@ import addProducts from './addproducts';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { ipAdress } from '../config';
+import addProducts from './addproducts';
+import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { useNavigation } from '@react-navigation/native';
 import SettingComponent from './Setting';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -209,9 +214,18 @@ const handleLogout = () => {
       
     </ScrollView>
     
+    
   );
 };
 
+const styles = StyleSheet.create({
+  test :{
+    backgroundColor: 'white',
+  },
+    textWithIcon: {
+        flexDirection: 'row',
+        alignItems: 'center',
+      },
 const styles = StyleSheet.create({
   test :{
     backgroundColor: 'white',
@@ -395,7 +409,20 @@ backgroundColor:'black'
   optionText: {
     fontSize: 16,
     textAlign: 'center',
+    textAlign: 'center',
     padding: 10,
+    color: '#ffffff',
+    marginRight:20
+  },
+  logoutButton: {
+    backgroundColor: 'black',
+    padding: 8,
+    borderRadius: 8,
+    width: '40%',
+    alignSelf: 'center',
+    marginTop: 16,
+    marginBottom: 40,
+    marginLeft: 36,
     color: '#ffffff',
     marginRight:20
   },
@@ -412,7 +439,58 @@ backgroundColor:'black'
   logoutText: {
     fontSize: 22,
     color: 'white',
+  logoutText: {
+    fontSize: 22,
+    color: 'white',
     textAlign: 'center',
+    marginLeft: 16,
+  },
+  leftTextContainer: {
+    position: 'absolute',
+    left: 10,
+    bottom: 10,
+    backgroundColor: 'white',
+    borderRadius: 15,
+    padding: 5,
+    height:30,
+    width:70
+  },
+ 
+  rightTextContainer: {
+    position: 'absolute',
+    right: 10,
+    bottom: 10,
+    backgroundColor: 'white',
+    borderRadius: 15,
+    
+    padding: 5,
+    height:30,
+    width:80
+  },
+  textrate: {
+    color: '#dba617',
+    top:-15,
+    right:-7,
+    fontSize:17
+  },
+  starIcon: {
+    left:-5,
+      top:-15
+
+    },
+    textloc: {
+        color: '#dba617',
+        top:-15,
+        right:32,
+        fontSize:17
+      },
+      locIcon: {
+        left:-18,
+          top:-15
+    
+        }
+  
+});
     marginLeft: 16,
   },
   leftTextContainer: {

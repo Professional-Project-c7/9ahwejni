@@ -44,15 +44,14 @@ module.exports = async (sequelize) => {
             description:faker.commerce.productDescription(),
             userId: user.id, 
             size: getRandomElementFromArray(["S","M","L"]),
-
+            category: getRandomElementFromArray(["pack","product"]),
            
           });
         })
       );
-      
 
       const pack =await Promise.all(
-        Array.from({ length: packCount}).map(async () => {
+        Array.from({ length: packCount }).map(async () => {
          
           return await db.Pack.create({
             name: faker.person.firstName(),

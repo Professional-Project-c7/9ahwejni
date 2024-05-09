@@ -3,27 +3,13 @@ import { StyleSheet, Text,TouchableOpacity, View,TextInput, ScrollView, Image, F
 import { IconButton } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/FontAwesome'
-export default Posts = () => {
+
+
+
+export default Carts = ({ navigation }) => {
   // const navigation = useNavigation();
   const data = [
-    {
-      id: 1,
-      title: 'Lorem ipsum dolor',
-      time: '1 days a go',
-      image: 'https://images.pexels.com/photos/312418/pexels-photo-312418.jpeg',
-    },
-    {
-      id: 2,
-      title: 'Sit amet, consectetuer',
-      time: '2 minutes a go',
-      image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/32/Cofee_Espresso_in_french_cafe.jpg/1200px-Cofee_Espresso_in_french_cafe.jpg',
-    },
-    {
-      id: 3,
-      title: 'Dipiscing elit. Aenean ',
-      time: '3 hour a go',
-      image: 'https://bootdey.com/image/400x200/6495ED/000000',
-    },
+    
     {
       id: 4,
       title: 'Commodo ligula eget dolor.',
@@ -35,42 +21,21 @@ export default Posts = () => {
       title: 'Aenean massa. Cum sociis',
       time: '5 weeks a go',
       image: 'https://bootdey.com/image/400x200/008B8B/000000',
-    },
-    {
-      id: 6,
-      title: 'Natoque penatibus et magnis',
-      time: '6 year a go',
-      image: 'https://bootdey.com/image/400x200/9932CC/000000',
-    },
-    {
-      id: 7,
-      title: 'Dis parturient montes, nascetur',
-      time: '7 minutes a go',
-      image: 'https://bootdey.com/image/400x200/00CED1/000000',
-    },
-    {
-      id: 8,
-      title: 'Ridiculus mus. Donec quam',
-      time: '8 days a go',
-      image: 'https://bootdey.com/image/400x200/1E90FF/000000',
-    },
-    {
-      id: 9,
-      title: 'Felis, ultricies nec, pellentesque',
-      time: '9 minutes a go',
-      image: 'https://bootdey.com/image/400x200/FF69B4/000000',
-    },
+    }
+   
   ]
   
   const [posts, setPosts] = useState(data)
   const data2 = posts.slice(0 , 2)
- 
+  const handleAddToCart = () => {
+        
+    navigation.navigate('Tabs');
+};
 
   return (
     <View style={{ flex: 1 }}>
         <View style={styles.icon} >
-       
-        {/* <Icon name="close"  size={30}  onPress={onClose}   /> */}
+        <Icon name="close"  size={30}  onPress={handleAddToCart}   />
               
 </View>
   <ScrollView style={{ flex: 1 }}>

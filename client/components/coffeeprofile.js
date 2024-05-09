@@ -7,12 +7,28 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { useNavigation } from '@react-navigation/native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 const MyComponent = ({navigation}) => {
     
+  const removeTokenFromStorage = async () => {
+    try {
+      await AsyncStorage.removeItem('userToken');
+      console.log('Token removed successfully');
+    } catch (error) {
+      console.error('Error removing token:', error);
+    }
+  };
+  
+  const handleLogout = () => {
+    removeTokenFromStorage();
+    navigation.navigate('Login');
+  };
+  
+
   return (
     <ScrollView>
       <View style={styles.container}>
@@ -102,7 +118,7 @@ const MyComponent = ({navigation}) => {
         
         {/* Add more options here */}
         <View style={styles.logout}>
-        <TouchableOpacity style={styles.optionOne} onPress={() => navigation.navigate('InfoCoffee')}>
+        <TouchableOpacity style={styles.optionOne} onPress={handleLogout}>
   <View style={styles.optionContent}>
     <Image source={require("../image/logout.png")} style={styles.optionImageE} />
     <Text style={styles.optionText}>LOG OUT  </Text>

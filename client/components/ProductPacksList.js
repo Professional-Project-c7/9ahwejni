@@ -4,78 +4,54 @@ import { View, Text, StyleSheet, TouchableOpacity, FlatList, Image, ScrollView }
 import soloPackImage from '../image/soloPack.png';
 import duoPackImage from '../image/duoPack.png';
 import familyPackImage from '../image/groupPack.png';
-
-const coffeeData = [
+const testData = [
   {
     id: '1',
     title: 'Premium Coffee',
-    description: `Premium quality coffee blend for a perfect start to your day.`,
-    image: { uri: 'https://neurosciencenews.com/files/2023/06/coffee-brain-caffeine-neuroscincces.jpg' }, 
-    rating: 4,
-    reviews: 99,
+    description: 'Premium quality coffee blend for a perfect start to your day.',
+    Coffeimage: [
+      { uri: 'https://www.acouplecooks.com/wp-content/uploads/2021/08/Cafe-Au-Lait-001s.jpg' },
+    ],
+    JuiceImage: [
+      { uri: 'https://cdn.chefclub.tools/uploads/recipes/cover-thumbnail/c5467a25-be83-4fc7-a193-173f78e6dd89_5Sg4yJD.jpg' },
+    ],
+    CakesImage: [
+      { uri: 'https://img.restaurantguru.com/re86-Roots-Coffee-Shop-interior-2022-10.jpg' },
+    ],
+    CakesImage: [
+      { uri: 'https://sugargeekshow.com/wp-content/uploads/2023/10/easy_chocolate_cake_slice.jpg' },
+    ],
+    subtitle: 'Coffee',
+    // rating: 4,
+    // reviews: 99,
     price: 4.99,
-    available: true,
+    available: true 
   },
   {
     id: '2',
     title: 'Premium Coffee',
-    description: `Premium quality coffee blend for a perfect start to your day.`,
-    image: { uri: 'https://www.tamingtwins.com/wp-content/uploads/2018/07/iced-coffee-recipe-11.jpg' }, 
-    rating: 4,
-    reviews: 99,
+    description: 'Premium quality coffee blend for a perfect start to your day.',
+    Coffeimage: [
+      { uri: 'https://img.restaurantguru.com/re86-Roots-Coffee-Shop-interior-2022-10.jpg' },
+    ],
+    JuiceImage: [
+      { uri: 'https://img.restaurantguru.com/re86-Roots-Coffee-Shop-interior-2022-10.jpg' },
+    ],
+    CakesImage: [
+      { uri: 'https://img.restaurantguru.com/re86-Roots-Coffee-Shop-interior-2022-10.jpg' },
+    ],
+    CakesImage: [
+      { uri: 'https://img.restaurantguru.com/re86-Roots-Coffee-Shop-interior-2022-10.jpg' },
+    ],
+    subtitle: 'Coffee',
+    // rating: 4,
+    // reviews: 99,
     price: 4.99,
-    available: true,
-  },
-];
-
-const juiceData = [
-  {
-    id: '1',
-    title: 'Fresh Juice',
-    description: `Freshly squeezed juice made from organic fruits.`,
-    image: { uri: 'https://cdn.chefclub.tools/uploads/recipes/cover-thumbnail/c5467a25-be83-4fc7-a193-173f78e6dd89_5Sg4yJD.jpg' }, 
-    rating: 4.5,
-    
-    reviews: 120,
-    price: 3.99,
-    available: false,
-  },
-  {
-    id: '2',
-    title: 'Fresh Juice',
-    description: 'Freshly squeezed juice made from organic fruits.',
-    image: { uri: 'https://upload.wikimedia.org/wikipedia/commons/thumb/f/fd/Orange_juice_1.jpg/800px-Orange_juice_1.jpg' }, 
-    rating: 4.5,
-    reviews: 120,
-    price: 3.99,
-    available: false,
+    available: false 
   }
-  
-  
 ];
 
-const cakeData = [
-  {
-    id: '1',
-    title: 'Delicious Cake',
-    description: `Delicious cake baked with love, perfect for any occasion.`,
-    image: { uri: 'https://joyfoodsunshine.com/wp-content/uploads/2020/08/best-chocolate-cake-recipe-from-scratch-8.jpg' },     
-    rating: 5,
-    reviews: 150,
-    price: 19.99,
-    available: false,
-  },
-  {
-    id: '2',
-    title: 'Delicious Cake',
-    description: `Delicious cake baked with love, perfect for any occasion.`,
-    image: { uri: 'https://production-assets-cakerhq.s3.ap-southeast-2.amazonaws.com/29mn2l9mnxdjjabb68cp9992d392' }, 
-    rating: 5,
-    reviews: 150,
-    price: 19.99,
-    available: false,
-  },
-];
+
 
 const ProductPacksList = () => {
   const [selectedPack, setSelectedPack] = useState(null);
@@ -85,39 +61,12 @@ const ProductPacksList = () => {
     setSelectedPack(selectedPack === packName ? null : packName);
   };
 
-
-
   const renderAvailabilityIndicator = (available) => available ? (
     <Text style={styles.availableText}>Available</Text>
   ) : (
     <Text style={styles.unavailableText}>Out of Stock</Text>
   );
-
- 
-
-  const renderProducts = (products ) => (
-    <FlatList
-      data={products}
-      horizontal
-      keyExtractor={(item) => item.id.toString()}
-      renderItem={({ item }) => (
-        <View style={styles.card}>
-          <View style={styles.cardImgWrapper}>
-            <Image source={item.image} style={styles.cardImg} />
-          </View>
-          <View style={styles.cardInfo}>
-            <Text style={styles.cardTitle}>{item.title}</Text>
-            <Text style={styles.cardDetails}>{item.description}</Text>
-         
-            {renderAvailabilityIndicator(item.available)}
-            <Text style={styles.cardDetails}>Price: ${item.price.toFixed(2)}</Text>
-        
-          </View>
-        </View>
-      )}
-    />
-  );
-
+  
   return (
     <ScrollView style={styles.scrollContainer} >
       <View style={styles.container}>
@@ -127,14 +76,40 @@ const ProductPacksList = () => {
           <Text style={styles.packTitle}>Solo Pack</Text>
         </TouchableOpacity>
         {selectedPack === 'Solo Pack' && (
-          <View style={styles.soloPack}>
-            <Text style={styles.packSubtitle}>Coffee </Text>
-            {renderProducts(coffeeData)}
-            <Text style={styles.packSubtitle}>Juice </Text>
-            {renderProducts(juiceData)}
-            <Text style={styles.packSubtitle}>Cake </Text>
-            {renderProducts(cakeData)}
+        <View style={styles.cards}>
+           <ScrollView
+  horizontal={true}>
+        {testData.map(item => (
+          <View key={item.id}>
+              <Text style={styles.packTitle}>{item.title}</Text>
+            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+              {item.Coffeimage.map((image, index) => (
+                <Image key={index} source={image} style={styles.packImages} />
+              ))}
+              {item.JuiceImage.map((image, index) => (
+                <Image key={index} source={image} style={styles.packImages} />
+              ))}
+                </View>
+            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+
+              {item.CakesImage.map((image, index) => (
+                <Image key={index} source={image} style={styles.packImages} />
+              ))}
+              {item.CakesImage.map((image, index) => (
+                <Image key={index} source={image} style={styles.packImages} />
+              ))}
+                </View>
+                <View style={styles.cardDetails}>
+                <Text style={styles.carddescription}>{item.description}</Text>
+            <Text style={styles.cardprice}>Price: ${item.price.toFixed(2)}</Text>
+            {renderAvailabilityIndicator(item.available)}
+                </View>
+
           </View>
+        ))}
+      </ScrollView>
+      </View>
+           
         )}
 
         {/* Duo Pack */}
@@ -143,14 +118,41 @@ const ProductPacksList = () => {
           <Text style={styles.packTitle}>Duo Pack</Text>
         </TouchableOpacity>
         {selectedPack === 'Duo Pack' && (
-          <View>
-            <Text style={styles.packSubtitle}>Coffee </Text>
-            {renderProducts(coffeeData)}
-            <Text style={styles.packSubtitle}>Juice </Text>
-            {renderProducts(juiceData)}
-            <Text style={styles.packSubtitle}>Cake </Text>
-            {renderProducts(cakeData)}
-          </View>
+    <View style={styles.cards}>
+    <ScrollView
+horizontal={true}>
+ {testData.map(item => (
+   <View key={item.id}>
+       <Text style={styles.packTitle}>{item.title}</Text>
+     <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+       {item.Coffeimage.map((image, index) => (
+         <Image key={index} source={image} style={styles.packImages} />
+       ))}
+       {item.JuiceImage.map((image, index) => (
+         <Image key={index} source={image} style={styles.packImages} />
+       ))}
+         </View>
+     <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+
+       {item.CakesImage.map((image, index) => (
+         <Image key={index} source={image} style={styles.packImages} />
+       ))}
+       {item.CakesImage.map((image, index) => (
+         <Image key={index} source={image} style={styles.packImages} />
+       ))}
+         </View>
+         <View style={styles.cardDetails}>
+
+         <Text style={styles.carddescription}>{item.description}</Text>
+            <Text style={styles.cardprice}>Price: ${item.price.toFixed(2)}</Text>
+     {renderAvailabilityIndicator(item.available)}
+         </View>
+
+   </View>
+ ))}
+</ScrollView>
+</View>
+ 
         )}
 
         {/* Family Pack */}
@@ -159,14 +161,42 @@ const ProductPacksList = () => {
           <Text style={styles.packTitle}>Family Pack</Text>
         </TouchableOpacity>
         {selectedPack === 'Family Pack' && (
-          <View>
-            <Text style={styles.packSubtitle}>Coffee </Text>
-            {renderProducts(coffeeData )}
-            <Text style={styles.packSubtitle}>Juice </Text>
-            {renderProducts(juiceData )}
-            <Text style={styles.packSubtitle}>Cake </Text>
-            {renderProducts(cakeData)}
+     <View style={styles.cards}>
+           <ScrollView
+  horizontal={true}>
+        {testData.map(item => (
+          <View key={item.id}>
+              <Text style={styles.packTitle}>{item.title}</Text>
+            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+              {item.Coffeimage.map((image, index) => (
+                <Image key={index} source={image} style={styles.packImages} />
+              ))}
+              {item.JuiceImage.map((image, index) => (
+                <Image key={index} source={image} style={styles.packImages} />
+              ))}
+                </View>
+            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+
+              {item.CakesImage.map((image, index) => (
+                <Image key={index} source={image} style={styles.packImages} />
+              ))}
+              {item.CakesImage.map((image, index) => (
+                <Image key={index} source={image} style={styles.packImages} />
+              ))}
+                </View>
+                <View style={styles.cardDetails}>
+
+            <Text style={styles.carddescription}>{item.description}</Text>
+            <Text style={styles.cardprice}>Price: ${item.price.toFixed(2)}</Text>
+            {renderAvailabilityIndicator(item.available)}
+                </View>
+
           </View>
+        ))}
+      </ScrollView>
+      </View>
+
+       
         )}
       </View>
     </ScrollView>
@@ -195,50 +225,48 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginLeft: 30,
   },
-  packSubtitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    marginBottom: 10,
-  
-  },
+ 
+  packImages : {
+    width: 160,
+    height: 160,
+    marginLeft: 20,
+    borderRadius : 10,
+    marginTop: 10,
+   
+  } ,
   packImage: {
     width: 90,
     height: 90,
     marginLeft: 10,
     borderRadius : 10,
   },
-  card: {
-    marginBottom: 10,
-    marginHorizontal: 5,
-    borderRadius: 8,
-    backgroundColor: '#fff',
-    width: 250,
-  },
-  cardImgWrapper: {
-    height: 120,
-    borderTopLeftRadius: 8,
-    borderTopRightRadius: 8,
-    overflow: 'hidden',
-  },
-  cardImg: {
-    height: '40%',
-    width: '40%',
-    alignSelf: 'center',
-  },
-  cardInfo: {
-    padding: 10,
-  },
-  cardTitle: {
-    fontWeight: 'bold',
-    fontSize: 16,
-    marginBottom: 5,
-  },
-  cardDetails: {
-    fontSize: 12,
-    color: '#444',
-    marginBottom: 5,
-  },
  
+  
+  cards : {
+    height: 500,
+    width : 380,
+    backgroundColor : '#F0EBE3',
+    borderRadius : 20
+  }, 
+ 
+
+  cardDetails: { 
+    width  : 340,
+    marginLeft: 20,
+    marginTop: 20,
+  },
+  carddescription : {
+    fontWeight: 'bold',
+     fontSize : 17,
+     
+color : '#322C2B',
+
+  } ,  
+  cardprice : {
+    fontWeight: 'bold',
+color : 'black',
+    fontSize : 15,
+  },
   availableText: {
     color: 'green',
     fontWeight: 'bold',

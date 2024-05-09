@@ -16,6 +16,8 @@ const HomePage = ({ navigation }) => {
   const coffeeUsers = userData.filter(user => user.UserType === "coffee");
   const clientUsers = userData.filter(user => user.UserType === "client");
 
+
+
   // useEffect(() => {
   //   const fetchUserData = async () => {
   //     try {
@@ -72,10 +74,10 @@ const HomePage = ({ navigation }) => {
         renderItem={({ item }) => (
           <TouchableOpacity style={styles.card}>
             <View style={styles.imageBox}>
-              <Image source={{ uri: item.ImageUrl }} style={styles.imageCoffee} />
+              <Image source={{ uri: item.ImageUrl }} style={styles.imageCoffee}  />
             </View>
             <View style={styles.titleBox}>
-              <Text style={styles.titleCoffee}>{item.FirstName} {item.LastName}</Text>
+              <Text style={styles.titleCoffee}     >{item.FirstName} {item.LastName}</Text>
             </View>
           </TouchableOpacity>
         )}
@@ -112,16 +114,16 @@ const styles = StyleSheet.create({
     paddingVertical: 5,
   },
   logoContainer: {
-    width: 80,
-    height: 77,
+    width: 82,
+    height: 79,
     borderRadius: 28,
     backgroundColor: 'white',
     justifyContent: 'center',
     alignItems: 'center',
   },
   logo: {
-    width: 62,
-    height: 62,
+    width: 66,
+    height: 66,
   },
   categoryBarContainer: {
     flexDirection: 'column',
