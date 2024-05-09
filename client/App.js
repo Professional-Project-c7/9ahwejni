@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { SafeAreaView } from 'react-native';
 import NAVSTART from './screens/Navigation';
-import Start from './components/Start2';
+import ProductPacksList from './components/ProductPacksList';
 import ProductList from './components/ProductList';
 import { Provider } from 'react-redux';
 import { store } from './redux/store';
