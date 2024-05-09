@@ -25,6 +25,9 @@ import ReviewsCoffee from '../components/ReviewsCoffee';
 import PaymentCardsDetails from '../components/paymentcardsdetailsCoffee';
 import EditCoffee from '../components/editCoffee';
 import InfoCoffee from '../components/informationsCoffee';
+import SettingComponent from '../components/Setting'
+import Favorit from '../components/Another'
+// import Order from '../components/Favoritelist'
 // import Map from '../components/MapCoffe'
 // import logout from '../components/logout';
 const Stack = createNativeStackNavigator();
@@ -48,8 +51,8 @@ function NAVSTART() {
         <Stack.Screen name="AddPacks" component={AddPacks} ptions={{ headerShown: false }} />
         <Stack.Screen name="AddProducts" component={AddProducts} options={{ headerShown: false }} />
         <Stack.Screen name="Orders" component={Orders} ptions={{ headerShown: false }} />
-        <Stack.Screen name="EditCoffee" component={EditCoffee} options={{ headerShown: false }} />
-        <Stack.Screen name="InfoCoffee" component={InfoCoffee} options={{ headerShown: false }} />
+        <Stack.Screen name="Edit" component={EditCoffee}  />
+        <Stack.Screen name="Info" component={InfoCoffee} />
         <Stack.Screen name="TransactionScreenCoffee" component={TransactionScreenCoffee} ptions={{ headerShown: false }} />
         <Stack.Screen name="ReviewsCoffee" component={ReviewsCoffee} options={{ headerShown: false }} />
         <Stack.Screen name="PaymentCardsDetails" component={PaymentCardsDetails} options={{ headerShown: false }} />
@@ -69,6 +72,7 @@ function NAVSTART() {
         <Stack.Screen name="st3" component={Start3} options={{ headerShown: false }} />
         <Stack.Screen name="st4" component={Start4} options={{ headerShown: false }} />
         <Stack.Screen name="Tabs" component={TabNavigator} options={{ headerShown: false }} />
+        <Stack.Screen name="SettingComponent" component={SettingComponent}  />
         
         {/* <Stack.Screen name="logout" component={logout} options={{ headerShown: false }} /> */}
       </Stack.Navigator>
@@ -112,7 +116,7 @@ function TabNavigator() {
     />
     <Tab.Screen
       name="coffeeProfile"
-      component={UserProfile}
+      component={coffeeprofile}
       options={{
         tabBarIcon: ({ color, size }) => (
           <IconButton icon="account" size={size} iconColor={color} />
@@ -129,3 +133,4 @@ function TabNavigator() {
 }
 
 export default NAVSTART;
+

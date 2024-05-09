@@ -1,9 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { View, SafeAreaView, StyleSheet, TouchableOpacity, ImageBackground } from 'react-native';
+// import { ipAdress } from '../config';
+// import { Avatar, Title, Caption, Text, TouchableRipple } from 'react-native-paper';
+// import React, { useState, useEffect } from 'react';
+// import { View, SafeAreaView, StyleSheet, TouchableOpacity, ImageBackground } from 'react-native';
 import { ipAdress } from '../config';
 import { Avatar, Title, Caption, Text, TouchableRipple } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+// import axios from 'axios';
+// import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 
 const ProfileScreen = ({ navigation }) => {
@@ -86,7 +92,7 @@ useEffect(() => {
       )}
 
       <View style={styles.menuWrapper}>
-        <TouchableRipple onPress={() => navigation.navigate('EditCoffee')}>
+        <TouchableRipple onPress={() => navigation.navigate('Edit')}>
           <View style={styles.menuItem}>
             <Icon name="account-edit" color='#dba617' size={25} />
             <Text style={styles.menuItemText}>Edit Informations</Text>
@@ -132,7 +138,7 @@ const styles = StyleSheet.create({
     marginTop: 10
   },
   menuWrapper: {
-    marginTop: 25,
+    // marginBottom: 55,
   },
   menuItem: {
     flexDirection: 'row',

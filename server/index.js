@@ -6,7 +6,7 @@ app.use(cors())
 app.use(express.static(__dirname + "/../client/dist"));
 const db = require ("./Database/index")
 
-// require('./fake.js')()
+
 
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
