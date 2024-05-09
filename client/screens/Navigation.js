@@ -30,6 +30,9 @@ import InfoCoffee from '../components/informationsCoffee';
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 import { IconButton } from 'react-native-paper';
+import ProductDetailsPage from '../components/ProdDetails';
+import Paye from '../components/Payment';
+import Panier from '../components/Panier';
 
 
 function NAVSTART() {
@@ -45,13 +48,17 @@ function NAVSTART() {
         <Stack.Screen name="AddPacks" component={AddPacks} ptions={{ headerShown: false }} />
         <Stack.Screen name="AddProducts" component={AddProducts} options={{ headerShown: false }} />
         <Stack.Screen name="Orders" component={Orders} ptions={{ headerShown: false }} />
-        <Stack.Screen name="EditCoffee" component={EditCoffee} ptions={{ headerShown: false }} />
-        <Stack.Screen name="InfoCoffee" component={InfoCoffee} ptions={{ headerShown: false }} />
+        <Stack.Screen name="EditCoffee" component={EditCoffee} options={{ headerShown: false }} />
+        <Stack.Screen name="InfoCoffee" component={InfoCoffee} options={{ headerShown: false }} />
         <Stack.Screen name="TransactionScreenCoffee" component={TransactionScreenCoffee} ptions={{ headerShown: false }} />
-        <Stack.Screen name="ReviewsCoffee" component={ReviewsCoffee} ptions={{ headerShown: false }} />
-        <Stack.Screen name="PaymentCardsDetails" component={PaymentCardsDetails} ptions={{ headerShown: false }} />
+        <Stack.Screen name="ReviewsCoffee" component={ReviewsCoffee} options={{ headerShown: false }} />
+        <Stack.Screen name="PaymentCardsDetails" component={PaymentCardsDetails} options={{ headerShown: false }} />
         <Stack.Screen name="User" component={UserProfile} />
+        <Stack.Screen name="prd" component={ProductDetailsPage} options={{ headerShown: false }} />
+        <Stack.Screen name="panier" component={Panier} options={{ headerShown: false }} />
         
+       <Stack.Screen name="Paye" component={Paye} options={{ headerShown: false }}/>
+
         <Stack.Screen name="menu" component={MenuItems} options={{ headerShown: false }} />
         <Stack.Screen name="coffeeProfile" component={coffeeprofile} options={{ headerShown: false }} />
         <Stack.Screen name="st2" component={Start2} options={{ headerShown: false }} />
@@ -86,7 +93,7 @@ function TabNavigator() {
         headerShown: false 
       }}
     />
-    {/* <Tab.Screen
+    <Tab.Screen
       name="Map"
       component={Map}
       options={{
@@ -98,10 +105,10 @@ function TabNavigator() {
         ),
         headerShown: false 
       }}
-    /> */}
+    />
     <Tab.Screen
       name="coffeeProfile"
-      component={coffeeprofile}
+      component={UserProfile}
       options={{
         tabBarIcon: ({ color, size }) => (
           <IconButton icon="account" size={size} iconColor={color} />

@@ -1,11 +1,19 @@
 import React, { useEffect, useState } from 'react';
-import { SafeAreaView, ScrollView, StyleSheet, View, Image, Text } from 'react-native';
+import {
+  SafeAreaView,
+  ScrollView,
+  StyleSheet,
+  View,
+  Image,
+  Text,
+  TouchableOpacity,
+} from 'react-native';
 import { Title } from 'react-native-paper';
 import { Rating } from 'react-native-ratings';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { useProducts } from '../redux/products/productHooks';
 
-const ProductList = () => {
+const ProductList = ({ navigation }) => {
   const { products, getProducts, status, error } = useProducts();
   const [favorites, setFavorites] = useState({});
 
@@ -25,8 +33,12 @@ const ProductList = () => {
     }));
   };
 
-  const userId =10;
-  const filteredProducts = products.filter(product => product.userId === userId);
+  const handleNavigateToDetails = (product) => {
+    navigation.navigate('prd', { product });
+  };
+
+  const userId = 10;
+  const filteredProducts = products.filter((product) => product.userId === userId);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -38,7 +50,6 @@ const ProductList = () => {
               style={styles.shopImage}
               source={{ uri: filteredProducts[0].imgUrl }}
             />
-            <Text style={styles.shopSubtitle}>Explore Our Exclusive Coffee Collection</Text>
           </>
         )}
 
@@ -46,7 +57,9 @@ const ProductList = () => {
         <View style={styles.productsContainer}>
           {filteredProducts.map((product) => (
             <View style={styles.card} key={product.id}>
-              <Image source={{ uri: product.imgUrl }} style={styles.image} />
+              <TouchableOpacity onPress={() => handleNavigateToDetails(product)}>
+                <Image source={{ uri: product.imgUrl }} style={styles.image} />
+              </TouchableOpacity>
               <Icon
                 name={favorites[product.id]?.favored ? 'heart' : 'heart-outline'}
                 color={favorites[product.id]?.favored ? 'red' : '#dba617'}
@@ -55,9 +68,10 @@ const ProductList = () => {
                 style={styles.favIcon}
               />
               <View style={styles.infoContainer}>
-                <Text style={styles.name}>{product.name}</Text>
+                <TouchableOpacity onPress={() => handleNavigateToDetails(product)}>
+                  <Text style={styles.name}>{product.name}</Text>
+                </TouchableOpacity>
                 <Text style={styles.price}>${product.price}</Text>
-                <Text style={styles.productDescription}>{product.description}</Text>
                 <Rating
                   type="star"
                   ratingCount={5}
@@ -89,12 +103,11 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   shopTitle: {
-    fontSize: 28,
+    fontSize: 30,
     fontWeight: '700',
     textAlign: 'center',
     marginTop: 16,
     color: '#3e3e3e',
-    fontFamily: 'Roboto',
   },
   shopImage: {
     width: '100%',
@@ -106,10 +119,6 @@ const styles = StyleSheet.create({
     marginBottom: 16,
     overflow: 'hidden',
     elevation: 2,
-  },
-  shopSubtitle: {
-    textAlign: 'center',
-    marginBottom: 16,
   },
   productListTitle: {
     fontSize: 20,
@@ -134,7 +143,7 @@ const styles = StyleSheet.create({
     shadowRadius: 6,
     borderColor: '#ccc',
     borderWidth: 1.5,
-    marginTop : 12,
+    marginTop: 12,
   },
   image: {
     height: 210,
@@ -162,11 +171,6 @@ const styles = StyleSheet.create({
     fontSize: 20,
     color: '#000',
     marginTop: 5,
-  },
-  productDescription: {
-    fontSize: 15,
-    marginTop: 5,
-    color: '#000',
   },
   starRating: {
     marginTop: 5,
