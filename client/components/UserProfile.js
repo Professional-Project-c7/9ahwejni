@@ -41,13 +41,10 @@ const retrieveData = async () => {
 
 const getUserData = async (userId) => {
   try {
-    const response = await axios.get(`http://${ipAdress}:3000/api/user/${userId}`);
-    console.log(response.data); // Check response data
-    if (response.status === 200) {
+    const response = await axios.get(`http://${ipAdress}:3000/api/user/${userId}`)
+   
       setUserData(response.data);
-    } else {
-      console.error('Failed to fetch user data');
-    }
+  
   } catch (error) {
     console.error('Error fetching user data:', error.message);
   }
@@ -62,13 +59,11 @@ useEffect(() => {
     getUserData(userID);
   }
 }, [userID]);
-
+console.log(userData);
 
   return (
     <ScrollView>
       <View style={styles.container}>
-        {userData && (
-        <>
       <View style={{alignItems: 'center',marginTop:40}}>
           <TouchableOpacity >
             <View
@@ -106,12 +101,11 @@ useEffect(() => {
               </ImageBackground>
             </View>
           </TouchableOpacity>
-          <Text style={{ marginTop: 10, fontSize: 18, fontWeight: 'bold' }}>{userData.FirstName }</Text>
+          <Text style={{ marginTop: 10, fontSize: 18, fontWeight: 'bold' }}>{userData.FirstName + userData.LastName}</Text>
         </View>
        
 
-        </>
-      )}
+       
         <View style={styles.optionsContainerOne}>
         <TouchableOpacity style={styles.optionOne} onPress={() => navigation.navigate('InfoCoffee')}>
   <View style={styles.optionContent}>

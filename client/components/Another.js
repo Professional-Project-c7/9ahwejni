@@ -1,8 +1,9 @@
-import React, { useState } from 'react'
-import { StyleSheet, Text,TouchableOpacity, View,Modal,TextInput, ScrollView, Image, FlatList } from 'react-native'
+import React, { useState } from 'react';
+import { StyleSheet, Text, TouchableOpacity, View, Modal, TextInput, ScrollView, Image, FlatList } from 'react-native';
 import { IconButton } from 'react-native-paper';
-import Icon from 'react-native-vector-icons/FontAwesome'
-export default Posts = ({ onClose }) => {
+import Icon from 'react-native-vector-icons/FontAwesome';
+
+const Posts = ({ onClose }) => {
   const data = [
     {
       id: 1,
@@ -58,12 +59,10 @@ export default Posts = ({ onClose }) => {
       time: '9 minutes a go',
       image: 'https://images.pexels.com/photos/312418/pexels-photo-312418.jpeg',
     },
-  ]
-  
-  const [posts, setPosts] = useState(data)
- 
+  ];
+
+  const [posts, setPosts] = useState(data);
   const [isFormVisible, setFormVisible] = useState(false);
- 
 
   const deletePost = (id) => {
     setPosts(prevPosts => prevPosts.filter(post => post.id !== id));
@@ -81,12 +80,9 @@ export default Posts = ({ onClose }) => {
           <Text style={styles.time}>{item.time}</Text>
           <Text style={styles.title}>{item.title}</Text>
         </View>
-        <Icon
-          name="heart"
-          size={20}
-          color="red"
-          onPress={() => deletePost(item.id)} // Assuming you want to delete when heart is pressed
-        />
+        <TouchableOpacity style={styles.deleteButton} onPress={() => deletePost(item.id)}>
+          <Icon name="heart" size={20} color="red" />
+        </TouchableOpacity>
       </View>
     </View>
   );
@@ -131,20 +127,12 @@ export default Posts = ({ onClose }) => {
     </View>
   );
 };
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     marginTop: 20,
-    // backgroundColor:'black'
   },
-  list: {
-    paddingHorizontal: 17,
-    backgroundColor: '#E6E6E6',
-  },
-  separator: {
-    marginTop: 10,
-  },
-  /******** card **************/
   card: {
     shadowColor: 'white',
     shadowOffset: {
@@ -161,43 +149,37 @@ const styles = StyleSheet.create({
     padding: 10,
     borderBottomWidth: 1,
     borderBottomColor: '#ddd',
-   
-    
   },
   cardContent: {
     paddingVertical: 12.5,
     paddingHorizontal: 16,
   },
-  cardFooter: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    paddingTop: 12.5,
-    paddingBottom: 25,
-    paddingHorizontal: 16,
-    borderBottomLeftRadius: 1,
-    borderBottomRightRadius: 1,
-  },
   cardImage: {
-    width: 180, // Adjust width according to your design
-    height: 150, // Adjust height according to your design
+    width: 180,
+    height: 150,
     resizeMode: 'cover',
-   
   },
-  /******** card components **************/
   title: {
     fontSize: 18,
     flex: 1,
     color: 'black',
-    marginTop:45
-  },
-  addButtonText: {
-    color: 'white',
-    fontSize: 16,
+    marginTop: 45,
   },
   time: {
     fontSize: 13,
     color: 'black',
     marginTop: 10,
+  },
+  addButton: {
+    backgroundColor: '#f4511e',
+    padding: 10,
+    margin: 20,
+    borderRadius: 5,
+    alignItems: 'center',
+  },
+  addButtonText: {
+    color: 'white',
+    fontSize: 16,
   },
   modalView: {
     margin: 20,
@@ -214,42 +196,12 @@ const styles = StyleSheet.create({
   icon: {
     width: 25,
     height: 25,
-    // flexDirection: 'row-reverse'
-    
   },
-  /******** social bar ******************/
-  socialBarContainer: {
-    justifyContent: 'center',
-    alignItems: 'center',
-    flexDirection: 'row',
-    flex: 1,
+  deleteButton: {
+    position: 'absolute',
+    top: 10,
+    right: 10,
   },
-  socialBarSection: {
-    justifyContent: 'center',
-    flexDirection: 'row',
-    flex: 1,
-  },
-  addButton: {
-    backgroundColor: '#f4511e',
-    padding: 10,
-    margin: 20,
-    borderRadius: 5,
-    alignItems: 'center',
-  },
-  centeredView: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginTop: 22,
-  },
-  socialBarlabel: {
-    marginLeft: 8,
-    alignSelf: 'flex-end',
-    justifyContent: 'center',
-  },
-  socialBarButton: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-})
+});
+
+export default Posts;
