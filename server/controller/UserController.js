@@ -58,7 +58,10 @@ module.exports = {
         },
 
      updateOne:async function(req,res){
+
         try {
+            console.log(req.params);
+
             const user= await db.User.update({
                 FirstName:req.body.FirstName,
                 LastName:req.body.LastName,

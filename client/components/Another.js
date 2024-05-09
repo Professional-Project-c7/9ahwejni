@@ -3,7 +3,7 @@ import { StyleSheet, Text, TouchableOpacity, View, Modal, TextInput, ScrollView,
 import { IconButton } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/FontAwesome';
 
-const Posts = ({ onClose }) => {
+const Posts = () => {
   const data = [
     {
       id: 1,
@@ -87,10 +87,12 @@ const Posts = ({ onClose }) => {
     </View>
   );
 
+
   return (
     <View style={{ flex: 1 }}>
       <View style={styles.icon}>
-        <Icon name="close" size={25} onPress={onClose} />
+      {/* <Icon name="close" size={25}  style={styles.option} onPress={() => navigation.navigate('User')}/> */}
+      
       </View>
       <ScrollView style={{ flex: 1 }}>
         <FlatList
@@ -101,9 +103,7 @@ const Posts = ({ onClose }) => {
           renderItem={renderPostItem}
         />
       </ScrollView>
-      <TouchableOpacity onPress={toggleFormVisibility} style={styles.addButton}>
-        <Text style={styles.addButtonText}>Add Post</Text>
-      </TouchableOpacity>
+     
       <Modal
         animationType="slide"
         transparent={true}

@@ -37,7 +37,7 @@ function Start({navigation}) {
     }, 1000); 
   }, []);
   const navigateToUserAccount = () => {
-    navigation.navigate('Login'); 
+    navigation.navigate('st2'); 
   };
   
 
