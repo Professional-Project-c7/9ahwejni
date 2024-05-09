@@ -87,39 +87,43 @@ const ProductList = () => {
         const tokenObject = JSON.parse(value);
         const userId = tokenObject.userId;
         setUserID(userId);
+        console.log("id :",userId);
       }
     } catch (error) {
       console.error('Error retrieving user ID:', error);
     }
   };
 
-  const handleAddProduct = async () => {
-    try {
-      if (!userID) {
-        console.error('User ID not found.');
-        return;
-      }
-
-      const newProduct = {
-        name: productName,
-        description: productDescription,
-        size: productSize,
-        price: productPrice,
-      };
-      console.log(newProduct);
-      console.log(newProduct);
-      const response = await axios.post(`http://${ipAdress}:3000/api/product/${userID}`, newProduct);
-
-      console.log('Product added successfully:', response.data);
-
-      // setProductName('');
-      // setProductDescription('');
-      // setProductSize('');
-      // setProductPrice('');
-    } catch (error) {
-      console.error('Error adding product:', error);
+  // Modify the handleAddProduct function to include the correct endpoint URL
+const handleAddProduct = async () => {
+  try {
+    if (!userID) {
+      console.error('User ID not found.');
+      return;
     }
-  };
+console.log("before" ,userID);
+    const newProduct = {
+      name: productName,
+      description: productDescription,
+      // size: productSize,
+      price: productPrice,
+      // Include the user ID in the request body
+      UserId: userID,
+    };
+
+    const response = await axios.post(`http://${ipAdress}:3000/api/product`, newProduct);
+    console.log('Product added successfully:', response.data);
+
+    // Clear input fields after successful submission
+    setProductName('');
+    setProductDescription('');
+    setProductSize('');
+    setProductPrice('');
+  } catch (error) {
+    console.error('Error adding product:', error);
+  }
+};
+
 
   return (
     <ScrollView>
