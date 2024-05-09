@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TouchableOpacity, Image, StyleSheet, ScrollView,ImageBackground } from 'react-native';
+import { View, Text, Modal,TouchableOpacity, Image, StyleSheet, ScrollView,ImageBackground } from 'react-native';
 import { IconButton } from 'react-native-paper';
 import { ipAdress } from '../config';
 import addProducts from './addproducts';
@@ -17,11 +17,22 @@ const MyComponent = ({navigation}) => {
 
   const [userData, setUserData] = useState(null);
 const [userID,setuserID] = useState(null)
+const [isModalVisible, setIsModalVisible] = useState(false);
 
 
 
+const removeTokenFromStorage = async () => {
+  try {
+    await AsyncStorage.removeItem('userToken');
+    console.log('Token removed successfully');
+  } catch (error) {
+    console.error('Error removing token:', error);
+  }
+};
 
-  
+const toggleModal = () => {
+  setIsModalVisible(!isModalVisible);
+};
     
 const retrieveData = async () => {
   try {
@@ -62,6 +73,10 @@ useEffect(() => {
     getUserData(userID);
   }
 }, [userID]);
+const handleLogout = () => {
+  removeTokenFromStorage();
+  navigation.navigate('Login');
+};
 
 
   return (
@@ -158,7 +173,7 @@ useEffect(() => {
         
         {/* Add more options here */}
         <View style={styles.logout}>
-        <TouchableOpacity style={styles.optionOne} onPress={() => navigation.navigate('InfoCoffee')}>
+        <TouchableOpacity style={styles.optionOne} onPress={toggleModal}>
   <View style={styles.optionContent}>
     <Image source={require("../image/logout.png")} style={styles.optionImageE} />
     <Text style={styles.optionText}>LOG OUT  </Text>
@@ -166,6 +181,31 @@ useEffect(() => {
 </TouchableOpacity>
       </View>
       </View>
+      <View style={styles.container}>
+      {/* <TouchableOpacity style={styles.button} onPress={toggleModal}>
+        <Text style={styles.buttonText}>Show Popup</Text>
+      </TouchableOpacity> */}
+
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={isModalVisible}
+        onRequestClose={toggleModal}
+      >
+        <View style={styles.centeredView}>
+          <View style={styles.modalView}>
+            <Text style={styles.modalText}>do you want logout !</Text>
+            <TouchableOpacity style={styles.closeButton} onPress={toggleModal}>
+              <Text style={styles.closeButtonText}>Close</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.closeButton} onPress={handleLogout}>
+              <Text style={styles.closeButtonText}>log out</Text>
+            </TouchableOpacity>
+            
+          </View>
+        </View>
+      </Modal>
+    </View>
       
     </ScrollView>
     
@@ -184,8 +224,60 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: 'white',
   },
+  // container: {
+  //   flex: 1,
+  //   justifyContent: 'center',
+  //   alignItems: 'center',
+  // },
+  button: {
+    backgroundColor: 'blue',
+    padding: 10,
+    borderRadius: 5,
+  },
+  buttonText: {
+    color: 'white',
+    fontSize: 16,
+  },
+  centeredView: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    flexDirection: 'row',
+  },
+  modalView: {
+    backgroundColor: 'white',
+    borderRadius: 10,
+    padding: 20,
+    alignItems: 'center',
+    elevation: 5,
+  },
+  modalText: {
+    fontSize: 18,
+    marginBottom: 20,
+    flexDirection: 'row',
+  },
+  closeButton: {
+    // marginTop: 10,
+    backgroundColor: 'goldenrod',
+    padding: 10,
+    borderRadius: 5,
+    // flexDirection: 'row',
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    width: '100%',
+    marginTop: 20,
+  },
+  closeButtonText: {
+    color: 'white',
+    fontSize: 16,
+  },
   header: {
     backgroundColor: '#dba617',
+  },
+  textStyle:{
+fontSize:20,
+backgroundColor:'black'
   },
   profileImage: {
     width: '100%',
@@ -194,6 +286,7 @@ const styles = StyleSheet.create({
     borderBottomLeftRadius: 100,
     borderBottomRightRadius: 100,
   },
+ 
   backIcon: {
     position: 'absolute',
     top: 20,
@@ -242,11 +335,12 @@ const styles = StyleSheet.create({
   },
   logout: {
    
-    marginLeft:40,
-    marginRight:40,
+    marginLeft:80,
+    // marginRight:100,
     marginTop:30,
     marginBottom:30,
     padding: 16,
+    flexDirection: 'row',
     // backgroundColor: "rgba(219, 219, 219, 0.8)",
     borderRadius: 10,
     width:250

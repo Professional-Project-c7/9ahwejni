@@ -63,11 +63,11 @@ module.exports = {
             console.log(req.params);
 
             const user= await db.User.update({
-                FirstName:req.body.firstName,
-                LastName:req.body.lastName,
+                FirstName:req.body.FirstName,
+                LastName:req.body.LastName,
                             
                
-                Email:req.body.email,
+                Email:req.body.Email,
                 password:req.body.password,
                 Address:req.body.Address,
                 
