@@ -9,12 +9,12 @@ module.exports=(sequelize,DataTypes)=>{
       allowNull: false
     },
     price: {
-      type: DataTypes.INTEGER
-      
+      type: DataTypes.INTEGER,
+      allowNull: false
     },
     imgUrl: {
       type: DataTypes.STRING,
-      // allowNull :false
+      allowNull :true
     },
     description: {
         type: DataTypes.STRING,
