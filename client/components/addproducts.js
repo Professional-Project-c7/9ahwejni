@@ -1,10 +1,13 @@
-import React from 'react';
-import { StyleSheet, Text, View, Image, FlatList,TextInput,Button,TouchableOpacity,ImageBackground,ScrollView } from 'react-native';
-import {useTheme} from 'react-native-paper';
-
+import React, { useState, useEffect } from 'react';
+import { StyleSheet, Text, View, Image, FlatList, TextInput, TouchableOpacity, ImageBackground, ScrollView, SafeAreaView } from 'react-native';
+import { useTheme } from 'react-native-paper';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import axios from 'axios';
+import { ipAdress } from '../config';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Feather from 'react-native-vector-icons/Feather';
+
 const data = [
   {
     id: '1',
@@ -44,38 +47,8 @@ const data = [
   },
 ];
 
-renderInner = () => (
-  <View style={styles.panel}>
-    <View style={{alignItems: 'center'}}>
-      <Text style={styles.panelTitle}>Upload Photo</Text>
-      <Text style={styles.panelSubtitle}>Choose Your Profile Picture</Text>
-    </View>
-    {/* <TouchableOpacity style={styles.panelButton} onPress={takePhotoFromCamera}>
-      <Text style={styles.panelButtonTitle}>Take Photo</Text>
-    </TouchableOpacity> */}
-    {/* <TouchableOpacity style={styles.panelButton} onPress={choosePhotoFromLibrary}>
-      <Text style={styles.panelButtonTitle}>Choose From Library</Text>
-    </TouchableOpacity> */}
-    <TouchableOpacity
-      style={styles.panelButton}
-      onPress={() => this.bs.current.snapTo(1)}>
-      <Text style={styles.panelButtonTitle}>Cancel</Text>
-    </TouchableOpacity>
-  </View>
-);
-
-renderHeader = () => (
-  <View style={styles.header}>
-    <View style={styles.panelHeader}>
-      <View style={styles.panelHandle} />
-    </View>
-  </View>
-);
-
-
 const ProductCard = ({ product }) => {
   return (
-    
     <View style={styles.card}>
       <Image source={product.imagelink_square} style={styles.image} />
       <View style={styles.details}>
@@ -91,148 +64,189 @@ const ProductCard = ({ product }) => {
         </View>
       </View>
     </View>
-    
   );
 };
 
 const ProductList = () => {
-  const {colors} = useTheme();
+  const { colors } = useTheme();
+  const [productName, setProductName] = useState('');
+  const [productDescription, setProductDescription] = useState('');
+  const [productSize, setProductSize] = useState('');
+  const [productPrice, setProductPrice] = useState('');
+  const [userID, setUserID] = useState(null);
+
+  console.log(productName);
+  useEffect(() => {
+    retrieveUserID();
+  }, []);
+
+  const retrieveUserID = async () => {
+    try {
+      const value = await AsyncStorage.getItem('userToken');
+      if (value !== null) {
+        const tokenObject = JSON.parse(value);
+        const userId = tokenObject.userId;
+        setUserID(userId);
+      }
+    } catch (error) {
+      console.error('Error retrieving user ID:', error);
+    }
+  };
+
+  const handleAddProduct = async () => {
+    try {
+      if (!userID) {
+        console.error('User ID not found.');
+        return;
+      }
+
+      const newProduct = {
+        name: productName,
+        description: productDescription,
+        size: productSize,
+        price: productPrice,
+      };
+      console.log(newProduct);
+      console.log(newProduct);
+      const response = await axios.post(`http://${ipAdress}:3000/api/product/${userID}`, newProduct);
+
+      console.log('Product added successfully:', response.data);
+
+      // setProductName('');
+      // setProductDescription('');
+      // setProductSize('');
+      // setProductPrice('');
+    } catch (error) {
+      console.error('Error adding product:', error);
+    }
+  };
+
   return (
     <ScrollView>
-    <View>
-      <View style={styles.top}>
-        <Text style={styles.Texttitlepacks} >Products's List</Text>
-        <Text style={styles.seeAllpacks} >See All</Text>
-      </View>
-      <FlatList
-        data={data}
-        renderItem={({ item }) => <ProductCard product={item} />}
-        keyExtractor={(item) => item.id}
-        contentContainerStyle={styles.container}
-      />
-       <View style={styles.container}>
-      {/* <BottomSheet
-        ref={this.bs}
-        snapPoints={[330, 0]}
-        renderContent={this.renderInner}
-        renderHeader={this.renderHeader}
-        initialSnap={1}
-        callbackNode={this.fall}
-        enabledGestureInteraction={true}
-      />
-      <Animated.View style={{margin: 20,
-        opacity: Animated.add(0.1, Animated.multiply(this.fall, 1.0)),
-    }}> */}
-        <View style={{alignItems: 'center', marginTop:15}}>
-          <TouchableOpacity >
-            <View
-              style={{
-                height: 100,
-                width: 100,
-                borderRadius: 15,
-                justifyContent: 'center',
-                alignItems: 'center',
-                
-              }}>
-              <ImageBackground
-                source={require("../image/square.png")} 
-                style={{height: 120, width: 125}}
-                imageStyle={{borderRadius: 15}}>
-                <View
-                  style={{
-                    flex: 1,
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                  }}>
-                  <Icon
-                    name="camera"
-                    size={35}
-                    color='#dba617'
+      <View>
+        <View style={styles.top}>
+          <Text style={styles.Texttitlepacks} >Products's List</Text>
+          <Text style={styles.seeAllpacks} >See All</Text>
+        </View>
+        <SafeAreaView style={{ flex: 1 }}>
+          <FlatList
+            data={data}
+            renderItem={({ item }) => <ProductCard product={item} />}
+            keyExtractor={(item) => item.id}
+            contentContainerStyle={styles.container}
+          />
+        </SafeAreaView>
+        <View style={styles.container}>
+          <View style={{ alignItems: 'center', marginTop: 15 }}>
+            <TouchableOpacity >
+              <View
+                style={{
+                  height: 100,
+                  width: 100,
+                  borderRadius: 15,
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                }}>
+                <ImageBackground
+                  source={require("../image/square.png")}
+                  style={{ height: 120, width: 125 }}
+                  imageStyle={{ borderRadius: 15 }}>
+                  <View
                     style={{
-                      opacity: 0.7,
-                      alignItems: 'center',
+                      flex: 1,
                       justifyContent: 'center',
-                    //   borderWidth: 1,
-                    //   borderColor: '#dba617',
-                    //   borderRadius: 10,
-                    }}
-                  />
-                </View>
-              </ImageBackground>
-            </View>
+                      alignItems: 'center',
+                    }}>
+                    <Icon
+                      name="camera"
+                      size={35}
+                      color='#dba617'
+                      style={{
+                        opacity: 0.7,
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                      }}
+                    />
+                  </View>
+                </ImageBackground>
+              </View>
+            </TouchableOpacity>
+            <Text style={{ marginTop: 10, fontSize: 18, fontWeight: 'bold' }}>
+              Add Product Photo
+            </Text>
+          </View>
+          <View style={styles.action}>
+            <FontAwesome name="user-o" color={'#dba617'} size={20} />
+            <TextInput
+            
+              placeholder="Name"
+              placeholderTextColor="#666666"
+              autoCorrect={false}
+              style={[
+                styles.textInput,
+                {
+                  color: colors.text,
+                },
+              ]}
+              value={productName}
+              onChangeText={setProductName}
+            />
+          </View>
+          <View style={styles.action}>
+            <FontAwesome name="file-text" color={'#dba617'} size={20} />
+            <TextInput
+              placeholder="Description"
+              placeholderTextColor="#666666"
+              keyboardType="number-pad"
+              autoCorrect={false}
+              style={[
+                styles.textInput,
+                {
+                  color: colors.text,
+                },
+              ]}
+              value={productDescription}
+              onChangeText={setProductDescription}
+            />
+          </View>
+          <View style={styles.action}>
+            <FontAwesome name="expand" color={'#dba617'} size={20} />
+            <TextInput
+              placeholder="Size"
+              placeholderTextColor="#666666"
+              keyboardType="email-address"
+              autoCorrect={false}
+              style={[
+                styles.textInput,
+                {
+                  color: colors.text,
+                },
+              ]}
+              value={productSize}
+              onChangeText={setProductSize}
+            />
+          </View>
+          <View style={styles.action}>
+            <FontAwesome name="dollar" color={'#dba617'} size={20} />
+            <TextInput
+              placeholder="Price"
+              placeholderTextColor="#666666"
+              autoCorrect={false}
+              style={[
+                styles.textInput,
+                {
+                  color: colors.text,
+                },
+              ]}
+              value={productPrice}
+              onChangeText={setProductPrice}
+            />
+          </View>
+          <TouchableOpacity style={styles.commandButton} onPress={handleAddProduct}>
+            <Text style={styles.panelButtonTitle}>Submit</Text>
           </TouchableOpacity>
-          <Text style={{marginTop: 10, fontSize: 18, fontWeight: 'bold'}}>
-            Add Product Photo
-          </Text>
         </View>
-
-        <View style={styles.action}>
-          <FontAwesome name="user-o" color={'#dba617'} size={20} />
-          <TextInput
-            placeholder="First Name"
-            placeholderTextColor="#666666"
-            autoCorrect={false}
-            style={[
-              styles.textInput,
-              {
-                color: colors.text,
-              },
-            ]}
-          />
-        </View>
-     
-        <View style={styles.action}>
-          <Feather name="description" color={'#dba617'} size={20} />
-          <TextInput
-            placeholder="Description"
-            placeholderTextColor="#666666"
-            keyboardType="number-pad"
-            autoCorrect={false}
-            style={[
-              styles.textInput,
-              {
-                color: colors.text,
-              },
-            ]}
-          />
-        </View>
-        <View style={styles.action}>
-          <FontAwesome name="size" color={'#dba617'} size={20} />
-          <TextInput
-            placeholder="Size"
-            placeholderTextColor="#666666"
-            keyboardType="email-address"
-            autoCorrect={false}
-            style={[
-              styles.textInput,
-              {
-                color: colors.text,
-              },
-            ]}
-          />
-        </View>
-        <View style={styles.action}>
-          <FontAwesome name="price" color={'#dba617'} size={20} />
-          <TextInput
-            placeholder="Price"
-            placeholderTextColor="#666666"
-            autoCorrect={false}
-            style={[
-              styles.textInput,
-              {
-                color: colors.text,
-              },
-            ]}
-          />
-        </View>
-        
-        <TouchableOpacity style={styles.commandButton} onPress={() => {}}>
-          <Text style={styles.panelButtonTitle}>Submit</Text>
-        </TouchableOpacity>
-      {/* </Animated.View> */}
-    </View>
-  
-    </View>
+      </View>
     </ScrollView>
   );
 };
@@ -414,10 +428,3 @@ const styles = StyleSheet.create({
 });
 
 export default ProductList;
-
-
-// Usage:
-
-
-
-

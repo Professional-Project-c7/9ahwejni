@@ -29,6 +29,11 @@ async function connectionTest (){
   db.Packproduct=require('./packproduct')(connection,DataTypes)
   db.Payments=require('./Payment.model')(connection,DataTypes)
   db.Review = require('./review.model')(connection, DataTypes);
+  db.Options = require('./options.model')(connection, DataTypes);
+
+
+
+
   db.Pack=require('./pack.model')(connection,DataTypes)
   db.Size=require('./size.model')(connection,DataTypes)
 
@@ -39,6 +44,10 @@ async function connectionTest (){
 
   db.Products.hasMany(db.Size);
   db.Size.belongsTo(db.Products);
+
+  db.Products.hasMany(db.Options);
+  db.Options.belongsTo(db.Products);
+
 
 
   db.User.hasMany(db.Products);
@@ -58,7 +67,7 @@ db.Review.belongsTo(db.Products);
 
 // Sync the models with the database
 
-//  connection.sync({force:true})
+//  connection.sync()
 //     .then(() => {
 //         console.log('Models synced with the database.')
 //     })
