@@ -59,7 +59,7 @@ const MyComponent = ({navigation}) => {
           <Text style={styles.name}>COFFEESHOP</Text>
         </View>
         <View style={styles.optionsContainerOne}>
-        <TouchableOpacity style={styles.optionOne} onPress={() => navigation.navigate('InfoCoffee')}>
+        <TouchableOpacity style={styles.optionOne} onPress={() => navigation.navigate('Info')}>
   <View style={styles.optionContent}>
     <Image source={require("../image/profile.png")} style={styles.optionImageE} />
     <Text style={styles.optionText}>INFORMATIONS</Text>
@@ -184,9 +184,9 @@ const styles = StyleSheet.create({
   optionsContainer: {
     flexDirection: 'row',
     justifyContent: 'space-around',
-    backgroundColor: "rgba(219, 219, 219, 0.8)",
+    // backgroundColor: "white",
     padding: 16,
-    margin:20,
+    marginBottom:-30,
     borderRadius: 10,
   },
   optionsContainerOne: {
@@ -216,11 +216,11 @@ const styles = StyleSheet.create({
     margin: 8,
     backgroundColor: '#dba617',
     borderRadius: 10,
-    elevation: 5,
-    shadowColor: '#000000',
+    elevation: 50,
+    shadowColor: 'black',
     shadowOffset: {
-      width: 0,
-      height: 2,
+      width: 20,
+      height: 20,
     },
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
@@ -259,7 +259,7 @@ const styles = StyleSheet.create({
     
   },
   optionText: {
-    fontSize: 16,
+    fontSize: 14,
     textAlign: 'center',
     padding: 10,
     color: '#ffffff',

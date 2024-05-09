@@ -1,6 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TouchableOpacity, Image, StyleSheet, ScrollView,ImageBackground } from 'react-native';
+import { View, Text, Modal,TouchableOpacity, Image, StyleSheet, ScrollView,ImageBackground } from 'react-native';
 import { IconButton } from 'react-native-paper';
+// import { ipAdress } from '../config';
+// import addProducts from './addproducts';
+// import { NavigationContainer } from '@react-navigation/native';
+// import { createNativeStackNavigator } from '@react-navigation/native-stack';
+// import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { ipAdress } from '../config';
 import addProducts from './addproducts';
 import { NavigationContainer } from '@react-navigation/native';
@@ -17,11 +22,22 @@ const MyComponent = ({navigation}) => {
 
   const [userData, setUserData] = useState(null);
 const [userID,setuserID] = useState(null)
+const [isModalVisible, setIsModalVisible] = useState(false);
 
 
 
+const removeTokenFromStorage = async () => {
+  try {
+    await AsyncStorage.removeItem('userToken');
+    console.log('Token removed successfully');
+  } catch (error) {
+    console.error('Error removing token:', error);
+  }
+};
 
-  
+const toggleModal = () => {
+  setIsModalVisible(!isModalVisible);
+};
     
 const retrieveData = async () => {
   try {
@@ -41,10 +57,13 @@ const retrieveData = async () => {
 
 const getUserData = async (userId) => {
   try {
-    const response = await axios.get(`http://${ipAdress}:3000/api/user/${userId}`)
-   
+    const response = await axios.get(`http://${ipAdress}:3000/api/user/${userId}`);
+    console.log(response.data); // Check response data
+    if (response.status === 200) {
       setUserData(response.data);
-  
+    } else {
+      console.error('Failed to fetch user data');
+    }
   } catch (error) {
     console.error('Error fetching user data:', error.message);
   }
@@ -59,11 +78,17 @@ useEffect(() => {
     getUserData(userID);
   }
 }, [userID]);
-console.log(userData);
+const handleLogout = () => {
+  removeTokenFromStorage();
+  navigation.navigate('Login');
+};
+
 
   return (
     <ScrollView>
       <View style={styles.container}>
+        {userData && (
+        <>
       <View style={{alignItems: 'center',marginTop:40}}>
           <TouchableOpacity >
             <View
@@ -101,13 +126,14 @@ console.log(userData);
               </ImageBackground>
             </View>
           </TouchableOpacity>
-          <Text style={{ marginTop: 10, fontSize: 18, fontWeight: 'bold' }}>{userData.FirstName + userData.LastName}</Text>
+          <Text style={{ marginTop: 10, fontSize: 18, fontWeight: 'bold' }}>{userData.FirstName }</Text>
         </View>
        
 
-       
+        </>
+      )}
         <View style={styles.optionsContainerOne}>
-        <TouchableOpacity style={styles.optionOne} onPress={() => navigation.navigate('InfoCoffee')}>
+        <TouchableOpacity style={styles.optionOne} onPress={() => navigation.navigate('Info')}>
   <View style={styles.optionContent}>
     <Image source={require("../image/profile.png")} style={styles.optionImageE} />
     <Text style={styles.optionText}>INFORMATIONS</Text>
@@ -115,12 +141,9 @@ console.log(userData);
 </TouchableOpacity>
           
 <TouchableOpacity style={styles.optionOne} onPress={() => navigation.navigate('InfoCoffee')}>
-  <View style={styles.optionContent}>
-    <Image source={require("../image/availability.png")} style={styles.optionImageE} />
-    <Text style={styles.optionText}>AVAILABILITY</Text>
-  </View>
+ 
 </TouchableOpacity>
-<TouchableOpacity style={styles.optionOne} onPress={() => navigation.navigate('InfoCoffee')}>
+<TouchableOpacity style={styles.optionOne} onPress={() => navigation.navigate('Edit')}>
   <View style={styles.optionContent}>
     <Image source={require("../image/settings.png")} style={styles.optionImageE} />
     <Text style={styles.optionText}>SETTINGS</Text>
@@ -129,12 +152,12 @@ console.log(userData);
         </View>
        
         <View style={styles.optionsContainer}>
-          <TouchableOpacity style={styles.option} onPress={() => navigation.navigate('Orders')}>
+          <TouchableOpacity style={styles.option} onPress={() => navigation.navigate('panier')}>
           <View style={styles.test} >
             <Image source={require("../image/online-order.png")} style={styles.optionImage} /></View>
             <Text style={styles.optionText}>ORDERS</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.option} onPress={() => navigation.navigate('ReviewsCoffee')}>
+          <TouchableOpacity style={styles.option} onPress={() => navigation.navigate('Favorit')}>
           <View style={styles.test} >
             <Image source={require("../image/reviews.png")} style={styles.optionImage} /></View>
             <Text style={styles.optionText}>Favorite</Text>
@@ -155,7 +178,7 @@ console.log(userData);
         
         {/* Add more options here */}
         <View style={styles.logout}>
-        <TouchableOpacity style={styles.optionOne} onPress={() => navigation.navigate('InfoCoffee')}>
+        <TouchableOpacity style={styles.optionOne} onPress={toggleModal}>
   <View style={styles.optionContent}>
     <Image source={require("../image/logout.png")} style={styles.optionImageE} />
     <Text style={styles.optionText}>LOG OUT  </Text>
@@ -163,11 +186,38 @@ console.log(userData);
 </TouchableOpacity>
       </View>
       </View>
+      <View style={styles.container}>
+      {/* <TouchableOpacity style={styles.button} onPress={toggleModal}>
+        <Text style={styles.buttonText}>Show Popup</Text>
+      </TouchableOpacity> */}
+
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={isModalVisible}
+        onRequestClose={toggleModal}
+      >
+        <View style={styles.centeredView}>
+          <View style={styles.modalView}>
+            <Text style={styles.modalText}>do you want logout !</Text>
+            <TouchableOpacity style={styles.closeButton} onPress={toggleModal}>
+              <Text style={styles.closeButtonText}>Close</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.closeButton} onPress={handleLogout}>
+              <Text style={styles.closeButtonText}>log out</Text>
+            </TouchableOpacity>
+            
+          </View>
+        </View>
+      </Modal>
+    </View>
       
     </ScrollView>
     
+    
   );
 };
+
 
 const styles = StyleSheet.create({
   test :{
@@ -181,8 +231,60 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: 'white',
   },
+  // container: {
+  //   flex: 1,
+  //   justifyContent: 'center',
+  //   alignItems: 'center',
+  // },
+  button: {
+    backgroundColor: 'blue',
+    padding: 10,
+    borderRadius: 5,
+  },
+  buttonText: {
+    color: 'white',
+    fontSize: 16,
+  },
+  centeredView: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    flexDirection: 'row',
+  },
+  modalView: {
+    backgroundColor: 'white',
+    borderRadius: 10,
+    padding: 20,
+    alignItems: 'center',
+    elevation: 5,
+  },
+  modalText: {
+    fontSize: 18,
+    marginBottom: 20,
+    flexDirection: 'row',
+  },
+  closeButton: {
+    // marginTop: 10,
+    backgroundColor: 'goldenrod',
+    padding: 10,
+    borderRadius: 5,
+    // flexDirection: 'row',
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    width: '100%',
+    marginTop: 20,
+  },
+  closeButtonText: {
+    color: 'white',
+    fontSize: 16,
+  },
   header: {
     backgroundColor: '#dba617',
+  },
+  textStyle:{
+fontSize:20,
+backgroundColor:'black'
   },
   profileImage: {
     width: '100%',
@@ -191,6 +293,7 @@ const styles = StyleSheet.create({
     borderBottomLeftRadius: 100,
     borderBottomRightRadius: 100,
   },
+ 
   backIcon: {
     position: 'absolute',
     top: 20,
@@ -239,11 +342,12 @@ const styles = StyleSheet.create({
   },
   logout: {
    
-    marginLeft:40,
-    marginRight:40,
+    marginLeft:80,
+    // marginRight:100,
     marginTop:30,
     marginBottom:30,
     padding: 16,
+    flexDirection: 'row',
     // backgroundColor: "rgba(219, 219, 219, 0.8)",
     borderRadius: 10,
     width:250
@@ -298,7 +402,20 @@ const styles = StyleSheet.create({
   optionText: {
     fontSize: 16,
     textAlign: 'center',
+    textAlign: 'center',
     padding: 10,
+    color: '#ffffff',
+    marginRight:20
+  },
+  logoutButton: {
+    backgroundColor: 'black',
+    padding: 8,
+    borderRadius: 8,
+    width: '40%',
+    alignSelf: 'center',
+    marginTop: 16,
+    marginBottom: 40,
+    marginLeft: 36,
     color: '#ffffff',
     marginRight:20
   },
@@ -315,8 +432,59 @@ const styles = StyleSheet.create({
   logoutText: {
     fontSize: 22,
     color: 'white',
+  logoutText: {
+    fontSize: 22,
+    color: 'white',
     textAlign: 'center',
     marginLeft: 16,
+  },
+  leftTextContainer: {
+    position: 'absolute',
+    left: 10,
+    bottom: 10,
+    backgroundColor: 'white',
+    borderRadius: 15,
+    padding: 5,
+    height:30,
+    width:70
+  },
+ 
+  rightTextContainer: {
+    position: 'absolute',
+    right: 10,
+    bottom: 10,
+    backgroundColor: 'white',
+    borderRadius: 15,
+    
+    padding: 5,
+    height:30,
+    width:80
+  },
+  textrate: {
+    color: '#dba617',
+    top:-15,
+    right:-7,
+    fontSize:17
+  },
+  starIcon: {
+    left:-5,
+      top:-15
+
+    },
+    textloc: {
+        color: '#dba617',
+        top:-15,
+        right:32,
+        fontSize:17
+      },
+      locIcon: {
+        left:-18,
+          top:-15
+    
+        }
+  
+
+  
   },
   leftTextContainer: {
     position: 'absolute',
