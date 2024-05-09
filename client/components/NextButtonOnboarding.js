@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Animated } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 
-function NextButtonOnboarding({ percentage, scrollTo, onFinish }) {
+function NextButtonOnboarding({ navigation,percentage, scrollTo, onFinish }) {
   const [showGetStarted, setShowGetStarted] = useState(false);
   const size = 128;
   const strokeWidth = 2;
@@ -39,19 +39,22 @@ function NextButtonOnboarding({ percentage, scrollTo, onFinish }) {
     };
   }, []);
 
-  useEffect(() => {
-    if (percentage === 100) {
-      // If on the last slide, show the "Get Started" button
-      setShowGetStarted(true);
-    } else {
-      setShowGetStarted(false);
-    }
-  }, [percentage]);
+  // useEffect(() => {
+  //   if (percentage === 100) {
+  //     // If on the last slide, show the "Get Started" button
+  //     setShowGetStarted(true);
+  //   } else {
+  //     setShowGetStarted(false);
+  //   }
+  // }, [percentage]);
+  const navigateToUserAccount = () => {
+    navigation.navigate('Login'); 
+  };
 
   return (
     <View style={styles.container}>
-      {showGetStarted ? (
-        <TouchableOpacity onPress={onFinish} style={styles.button} activeOpacity={0.6}>
+      {/* {showGetStarted ? (
+        <TouchableOpacity onPress={navigateToUserAccount} style={styles.button} activeOpacity={0.6}>
           <Text style={styles.getStartedText}>Get Started</Text>
         </TouchableOpacity>
       ) : (
@@ -59,11 +62,11 @@ function NextButtonOnboarding({ percentage, scrollTo, onFinish }) {
         <TouchableOpacity onPress={scrollTo} style={styles.button} activeOpacity={0.6}>
           <Icon name="arrow-circle-right" size={60} color="#dba617" />
         </TouchableOpacity>
-        <TouchableOpacity onPress={scrollTo} style={styles.Skip} activeOpacity={0.6} >
+        <TouchableOpacity onPress={navigateToUserAccount} style={styles.Skip} activeOpacity={0.6} >
      <Text style={styles.Skip}> Skip </Text>
       </TouchableOpacity>
         </View>
-      )}
+      )} */}
     </View>
   );
 }

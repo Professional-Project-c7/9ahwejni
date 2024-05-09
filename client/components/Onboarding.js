@@ -1,8 +1,10 @@
-import React , {useState,useRef}from 'react'
-import {View  , Text , Styls, StyleSheet  ,FlatList ,Animated} from 'react-native'
+import React , { useEffect,useState,useRef}from 'react'
+import {View  , Text , Styls, StyleSheet  ,FlatList ,Animated,TouchableOpacity} from 'react-native'
 import OnboardingItem from './OnboardingItem'
 import NextButtonOnboarding from './NextButtonOnboarding'
 import Paginator from './Paginator'
+import Icon from 'react-native-vector-icons/FontAwesome';
+
 const dummyData = [
     {
       "id": 1,
@@ -27,13 +29,16 @@ const dummyData = [
       image: require("../image/data-security.png")    }
   ]
   
-function Onboarding() {
+function Onboarding({navigation ,percentage}) {
 
     const [currentIndex , setCurrentIndex] = useState(0)
     const scrollX = useRef(new Animated.Value(0)).current;
     const SlidesRef = useRef(null);
+    const [showGetStarted, setShowGetStarted] = useState(false);
 
-
+    const progressAnimation = useRef(new Animated.Value(0)).current;
+    const progressRef = useRef(null);
+  
     const viewableItemsChanged  = useRef(({viewableItems})=> {
         setCurrentIndex(viewableItems[0].index); 
     }).current
@@ -51,6 +56,37 @@ function Onboarding() {
         console.log('last item.')
       }
      }
+
+
+
+     useEffect(() => {
+      if (percentage === 100) {
+        // If on the last slide, show the "Get Started" button
+        setShowGetStarted(true);
+      } else {
+        setShowGetStarted(false);
+      }
+
+    }, [percentage]);
+     const navigateToUserAccount = () => {
+    navigation.navigate('Login'); 
+  }; 
+
+
+  const animation = (toValue) => {
+    return Animated.timing(progressAnimation, {
+      toValue,
+      duration: 250,
+      useNativeDriver: true,
+    }).start();
+  };
+
+
+
+  useEffect(() => {
+    animation(percentage);
+  }, [percentage]);
+
   return (
     <View style={styles.container}>
         <View style={{flex : 3}}>
@@ -71,6 +107,24 @@ function Onboarding() {
         </View>
        < Paginator data={dummyData} scrollX={scrollX}/>
         <NextButtonOnboarding scrollTo={scrollTo} percentage={(currentIndex+1)*(100/dummyData.length)}/>
+        <View>
+
+        {showGetStarted ? (
+        <TouchableOpacity onPress={navigateToUserAccount} style={styles.button} activeOpacity={0.6}>
+          <Text style={styles.getStartedText}>Get Started</Text>
+        </TouchableOpacity>
+      ) : (
+        <View >
+        <TouchableOpacity onPress={scrollTo} style={styles.button} activeOpacity={0.6}>
+          <Icon name="arrow-circle-right" size={60} color="#dba617" />
+        </TouchableOpacity>
+        <TouchableOpacity onPress={navigateToUserAccount} style={styles.Skip} activeOpacity={0.6} >
+     <Text style={styles.Skip}> Skip </Text>
+      </TouchableOpacity>
+        </View>
+      )}
+        </View>
+
     </View>
   )
 }
@@ -81,6 +135,22 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         backgroundColor: 'white',
     },
+    button: {
+      position: 'absolute',
+      borderRadius: 100,
+      padding: 20,
+      marginTop: -25,
+      marginLeft: 90,
+    },
+    getStartedText: {
+      fontSize: 25,
+      color: '#dba617',
+    },
+    Skip : {
+      fontSize : 35 , 
+      marginLeft : -90 ,
+      color : 'black'
+     } ,
   
 })
 export default Onboarding
