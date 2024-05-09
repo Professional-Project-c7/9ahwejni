@@ -39,34 +39,35 @@ function NextButtonOnboarding({ navigation,percentage, scrollTo, onFinish }) {
     };
   }, []);
 
-  // useEffect(() => {
-  //   if (percentage === 100) {
-  //     // If on the last slide, show the "Get Started" button
-  //     setShowGetStarted(true);
-  //   } else {
-  //     setShowGetStarted(false);
-  //   }
-  // }, [percentage]);
+  useEffect(() => {
+    if (percentage === 100) {
+      // If on the last slide, show the "Get Started" button
+      setShowGetStarted(true);
+    } else {
+      setShowGetStarted(false);
+    }
+  }, [percentage]);
+
   const navigateToUserAccount = () => {
     navigation.navigate('Login'); 
   };
 
   return (
     <View style={styles.container}>
-      {/* {showGetStarted ? (
-        <TouchableOpacity onPress={navigateToUserAccount} style={styles.button} activeOpacity={0.6}>
+       {/* {showGetStarted ? (
+        <TouchableOpacity  style={styles.button} activeOpacity={0.6}>
           <Text style={styles.getStartedText}>Get Started</Text>
         </TouchableOpacity>
       ) : (
         <View >
         <TouchableOpacity onPress={scrollTo} style={styles.button} activeOpacity={0.6}>
           <Icon name="arrow-circle-right" size={60} color="#dba617" />
-        </TouchableOpacity>
-        <TouchableOpacity onPress={navigateToUserAccount} style={styles.Skip} activeOpacity={0.6} >
+        </TouchableOpacity> */}
+        {/* <TouchableOpacity onPress={navigateToUserAccount} style={styles.Skip} activeOpacity={0.6} >
      <Text style={styles.Skip}> Skip </Text>
-      </TouchableOpacity>
-        </View>
-      )} */}
+      </TouchableOpacity> */}
+        {/* </View>
+      )}   */}
     </View>
   );
 }
