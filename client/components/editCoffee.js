@@ -1,4 +1,5 @@
 import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   View,
   Text,
@@ -6,6 +7,7 @@ import {
   ImageBackground,
   TextInput,
   StyleSheet,
+  Alert,
   Alert,
 } from 'react-native';
 import {useTheme} from 'react-native-paper';
@@ -108,6 +110,7 @@ useEffect(() => {
         <Text style={styles.panelSubtitle}>Choose Your Profile Picture</Text>
       </View>
       
+      
       <TouchableOpacity
         style={styles.panelButton}
         onPress={() => this.bs.current.snapTo(1)}>
@@ -115,6 +118,14 @@ useEffect(() => {
       </TouchableOpacity>
     </View>
   );
+
+  // renderHeader = () => (
+  //   <View style={styles.header}>
+  //     <View style={styles.panelHeader}>
+  //       <View style={styles.panelHandle} />
+  //     </View>
+  //   </View>
+  // );
 
   // renderHeader = () => (
   //   <View style={styles.header}>
@@ -159,6 +170,7 @@ useEffect(() => {
                       alignItems: 'center',
                       justifyContent: 'center',
                     
+                    
                     }}
                   />
                 </View>
@@ -179,6 +191,8 @@ useEffect(() => {
             placeholder="First Name"
             value={firstName}
         onChangeText={text => setFirstName(text)}
+            value={firstName}
+        onChangeText={text => setFirstName(text)}
             placeholderTextColor="#666666"
             autoCorrect={false}
             style={[
@@ -196,6 +210,8 @@ useEffect(() => {
             placeholderTextColor="#666666"
             value={lastName}
         onChangeText={text => setLastName(text)}
+            value={lastName}
+        onChangeText={text => setLastName(text)}
             autoCorrect={false}
             style={[
               styles.textInput,
@@ -210,6 +226,8 @@ useEffect(() => {
           <TextInput
             placeholder="Phone"
             placeholderTextColor="#666666"
+            value={phone}
+        onChangeText={text => setPhone(text)}
             value={phone}
         onChangeText={text => setPhone(text)}
             keyboardType="number-pad"
@@ -268,8 +286,10 @@ useEffect(() => {
           />
         </View>
         <TouchableOpacity style={styles.commandButton} onPress={handleUpdateProfile}>
+        <TouchableOpacity style={styles.commandButton} onPress={handleUpdateProfile}>
           <Text style={styles.panelButtonTitle}>Submit</Text>
         </TouchableOpacity>
+      
       
     </View>
   );

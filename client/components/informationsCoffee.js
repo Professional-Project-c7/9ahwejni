@@ -2,7 +2,13 @@ import React, { useState, useEffect } from 'react';
 import { View, SafeAreaView, StyleSheet, TouchableOpacity, ImageBackground } from 'react-native';
 import { ipAdress } from '../config';
 import { Avatar, Title, Caption, Text, TouchableRipple } from 'react-native-paper';
+import React, { useState, useEffect } from 'react';
+import { View, SafeAreaView, StyleSheet, TouchableOpacity, ImageBackground } from 'react-native';
+import { ipAdress } from '../config';
+import { Avatar, Title, Caption, Text, TouchableRipple } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 
@@ -33,7 +39,6 @@ const getUserData = async (userId) => {
     console.log(response.data); // Check response data
     if (response.status === 200) {
       setUserData(response.data);
-      
     } else {
       console.error('Failed to fetch user data');
     }
@@ -41,7 +46,6 @@ const getUserData = async (userId) => {
     console.error('Error fetching user data:', error.message);
   }
 };
-console.log(userData)
 
 useEffect(() => {
   retrieveData();
@@ -60,24 +64,12 @@ useEffect(() => {
         <>
           <View style={{ alignItems: 'center', marginTop: 40 }}>
             <TouchableOpacity>
-            <View
-              style={{
-                height: 100,
-                width: 100,
-                borderRadius: 15,
-                justifyContent: 'center',
-                alignItems: 'center',
-              }}>
+              <View style={{ height: 100, width: 100, borderRadius: 15, justifyContent: 'center', alignItems: 'center' }}>
                 <ImageBackground
-                source={require("../image/image.png")} 
-                style={{height: 100, width: 100}}
-                imageStyle={{borderRadius: 15}}>
-                   <View
-                  style={{
-                    flex: 1,
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                  }}>
+                  source={{ uri: userData.avatar }} // Assuming the API response has an 'avatar' field
+                  style={{ height: 100, width: 100 }}
+                  imageStyle={{ borderRadius: 15 }}>
+                  <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
                     <Icon name="camera" size={35} color='#dba617' style={{ opacity: 0.7 }} />
                   </View>
                 </ImageBackground>
@@ -100,7 +92,12 @@ useEffect(() => {
       )}
 
       <View style={styles.menuWrapper}>
-       
+        <TouchableRipple onPress={() => navigation.navigate('EditCoffee')}>
+          <View style={styles.menuItem}>
+            <Icon name="account-edit" color='#dba617' size={25} />
+            <Text style={styles.menuItemText}>Edit Informations</Text>
+          </View>
+        </TouchableRipple>
         <TouchableRipple >
           <View style={styles.menuItem}>
             <Icon name="share-outline" color='#dba617' size={25}/>
@@ -133,7 +130,7 @@ const styles = StyleSheet.create({
   userInfoSection: {
     paddingHorizontal: 30,
     marginBottom: 65,
-    marginTop: 20
+    marginTop: 50
   },
   row: {
     flexDirection: 'row',
