@@ -7,7 +7,7 @@ function Start2({ navigation }) {
   
 
   const navigateToUserAccount = () => {
-    navigation.navigate('Tabs');
+    navigation.navigate('Login');
   };
   
   const navigateToUserAccount2 = () => {
