@@ -3,7 +3,7 @@ import { StyleSheet, Text,TouchableOpacity, View,TextInput, ScrollView, Image, F
 import { IconButton } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/FontAwesome'
-export default Posts = ({ onClose }) => {
+export default Posts = () => {
   // const navigation = useNavigation();
   const data = [
     {
@@ -69,7 +69,8 @@ export default Posts = ({ onClose }) => {
   return (
     <View style={{ flex: 1 }}>
         <View style={styles.icon} >
-        <Icon name="close"  size={30}  onPress={onClose}   />
+       
+        {/* <Icon name="close"  size={30}  onPress={onClose}   /> */}
               
 </View>
   <ScrollView style={{ flex: 1 }}>
