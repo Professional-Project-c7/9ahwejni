@@ -112,7 +112,7 @@ function TabNavigator() {
     />
     <Tab.Screen
       name="coffeeProfile"
-      component={coffeeprofile}
+      component={UserProfile}
       options={{
         tabBarIcon: ({ color, size }) => (
           <IconButton icon="account" size={size} iconColor={color} />
