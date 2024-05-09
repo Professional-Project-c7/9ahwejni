@@ -18,19 +18,7 @@ const HomePage = ({ navigation }) => {
 
 
 
-  // useEffect(() => {
-  //   const fetchUserData = async () => {
-  //     try {
-  //       const response = await axios.get(`http://${ipAdress}:3000/api/user/`);
-  //       const coffeeUsers = response.data.filter(user => user.UserType === "coffee");
-  //       setUserData(coffeeUsers);
-  //     } catch (error) {
-  //       console.error('Error fetching user data:', error);
-  //     }
-  //   };
 
-  //   fetchUserData();
-  // }, []);
 
   const firstTwoImages = userData.slice(0, 3);
 
@@ -47,7 +35,7 @@ const HomePage = ({ navigation }) => {
           <View style={styles.logoContainer}>
             <Image source={logoImage} style={styles.logo} />
           </View>
-          <IconButton icon="bell-outline" iconColor='#FFF' />
+          <IconButton icon="cart" iconColor='#FFF' onPress={() => navigation.navigate('panier')} />
         </View>
       </LinearGradient>
       <View style={styles.searchContainer}>
