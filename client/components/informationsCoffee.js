@@ -1,15 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { View, SafeAreaView, StyleSheet, TouchableOpacity, ImageBackground } from 'react-native';
-import { ipAdress } from '../config';
-import { Avatar, Title, Caption, Text, TouchableRipple } from 'react-native-paper';
-import React, { useState, useEffect } from 'react';
-import { View, SafeAreaView, StyleSheet, TouchableOpacity, ImageBackground } from 'react-native';
+// import { ipAdress } from '../config';
+// import { Avatar, Title, Caption, Text, TouchableRipple } from 'react-native-paper';
+// import React, { useState, useEffect } from 'react';
+// import { View, SafeAreaView, StyleSheet, TouchableOpacity, ImageBackground } from 'react-native';
 import { ipAdress } from '../config';
 import { Avatar, Title, Caption, Text, TouchableRipple } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import axios from 'axios';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+// import axios from 'axios';
+// import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 
 const ProfileScreen = ({ navigation }) => {

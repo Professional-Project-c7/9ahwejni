@@ -1,5 +1,4 @@
 import React, {useState, useEffect} from 'react';
-import React, {useState, useEffect} from 'react';
 import {
   View,
   Text,
@@ -7,7 +6,6 @@ import {
   ImageBackground,
   TextInput,
   StyleSheet,
-  Alert,
   Alert,
 } from 'react-native';
 import {useTheme} from 'react-native-paper';
@@ -26,7 +24,7 @@ const EditProfileScreen = ({navigation}) => {
   const [lastName, setLastName] = useState('');
   const [phone, setPhone] = useState('');
   const [email, setEmail] = useState('');
-  const [address, setAddress] = useState('');
+  const [country, setCountry] = useState('');
   const [city, setCity] = useState('');
   const [image, setImage] = useState(
     'https://api.adorable.io/avatars/80/abott@adorable.png',
@@ -54,12 +52,12 @@ const EditProfileScreen = ({navigation}) => {
   const handleUpdateProfile = async () => {
     try {
       const userData = {
-        FirstName: firstName,
-        LastName: lastName,
-       
-    
-        Address: address,
-     
+        firstName: firstName,
+        lastName: lastName,
+        phone: phone,
+        email: email,
+        country: country,
+        city: city
       };
       console.log(userData); // Check if userData is correct before sending the request
       const response = await axios.patch(`http://${ipAdress}:3000/api/user/${userID}`, userData);
@@ -110,7 +108,6 @@ useEffect(() => {
         <Text style={styles.panelSubtitle}>Choose Your Profile Picture</Text>
       </View>
       
-      
       <TouchableOpacity
         style={styles.panelButton}
         onPress={() => this.bs.current.snapTo(1)}>
@@ -118,14 +115,6 @@ useEffect(() => {
       </TouchableOpacity>
     </View>
   );
-
-  // renderHeader = () => (
-  //   <View style={styles.header}>
-  //     <View style={styles.panelHeader}>
-  //       <View style={styles.panelHandle} />
-  //     </View>
-  //   </View>
-  // );
 
   // renderHeader = () => (
   //   <View style={styles.header}>
@@ -170,7 +159,6 @@ useEffect(() => {
                       alignItems: 'center',
                       justifyContent: 'center',
                     
-                    
                     }}
                   />
                 </View>
@@ -191,8 +179,6 @@ useEffect(() => {
             placeholder="First Name"
             value={firstName}
         onChangeText={text => setFirstName(text)}
-            value={firstName}
-        onChangeText={text => setFirstName(text)}
             placeholderTextColor="#666666"
             autoCorrect={false}
             style={[
@@ -208,8 +194,6 @@ useEffect(() => {
           <TextInput
             placeholder="Last Name"
             placeholderTextColor="#666666"
-            value={lastName}
-        onChangeText={text => setLastName(text)}
             value={lastName}
         onChangeText={text => setLastName(text)}
             autoCorrect={false}
@@ -228,8 +212,6 @@ useEffect(() => {
             placeholderTextColor="#666666"
             value={phone}
         onChangeText={text => setPhone(text)}
-            value={phone}
-        onChangeText={text => setPhone(text)}
             keyboardType="number-pad"
             autoCorrect={false}
             style={[
@@ -245,9 +227,9 @@ useEffect(() => {
           <TextInput
             placeholder="Email"
             placeholderTextColor="#666666"
-            value={address}
-            onChangeText={text => setAddress(text)}
-            keyboardType="address-address"
+            value={email}
+            onChangeText={text => setEmail(text)}
+            keyboardType="email-address"
             autoCorrect={false}
             style={[
               styles.textInput,
@@ -286,10 +268,8 @@ useEffect(() => {
           />
         </View>
         <TouchableOpacity style={styles.commandButton} onPress={handleUpdateProfile}>
-        <TouchableOpacity style={styles.commandButton} onPress={handleUpdateProfile}>
           <Text style={styles.panelButtonTitle}>Submit</Text>
         </TouchableOpacity>
-      
       
     </View>
   );

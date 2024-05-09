@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, Modal,TouchableOpacity, Image, StyleSheet, ScrollView,ImageBackground } from 'react-native';
 import { IconButton } from 'react-native-paper';
-import { ipAdress } from '../config';
-import addProducts from './addproducts';
-import { NavigationContainer } from '@react-navigation/native';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+// import { ipAdress } from '../config';
+// import addProducts from './addproducts';
+// import { NavigationContainer } from '@react-navigation/native';
+// import { createNativeStackNavigator } from '@react-navigation/native-stack';
+// import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { ipAdress } from '../config';
 import addProducts from './addproducts';
 import { NavigationContainer } from '@react-navigation/native';
@@ -133,7 +133,7 @@ const handleLogout = () => {
         </>
       )}
         <View style={styles.optionsContainerOne}>
-        <TouchableOpacity style={styles.optionOne} onPress={() => navigation.navigate('InfoCoffee')}>
+        <TouchableOpacity style={styles.optionOne} onPress={() => navigation.navigate('Info')}>
   <View style={styles.optionContent}>
     <Image source={require("../image/profile.png")} style={styles.optionImageE} />
     <Text style={styles.optionText}>INFORMATIONS</Text>
@@ -143,7 +143,7 @@ const handleLogout = () => {
 <TouchableOpacity style={styles.optionOne} onPress={() => navigation.navigate('InfoCoffee')}>
  
 </TouchableOpacity>
-<TouchableOpacity style={styles.optionOne} onPress={() => navigation.navigate('EditCoffee')}>
+<TouchableOpacity style={styles.optionOne} onPress={() => navigation.navigate('Edit')}>
   <View style={styles.optionContent}>
     <Image source={require("../image/settings.png")} style={styles.optionImageE} />
     <Text style={styles.optionText}>SETTINGS</Text>
@@ -218,14 +218,7 @@ const handleLogout = () => {
   );
 };
 
-const styles = StyleSheet.create({
-  test :{
-    backgroundColor: 'white',
-  },
-    textWithIcon: {
-        flexDirection: 'row',
-        alignItems: 'center',
-      },
+
 const styles = StyleSheet.create({
   test :{
     backgroundColor: 'white',
@@ -490,8 +483,8 @@ backgroundColor:'black'
     
         }
   
-});
-    marginLeft: 16,
+
+  
   },
   leftTextContainer: {
     position: 'absolute',
