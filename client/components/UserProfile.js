@@ -16,6 +16,7 @@ import SettingComponent from './Setting';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
+
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 const MyComponent = ({navigation}) => {
@@ -44,7 +45,7 @@ const retrieveData = async () => {
     const value = await AsyncStorage.getItem('IdUser');
     if (value !== null) {
       const tokenObject = JSON.parse(value);
-      const userId = tokenObject.userId; 
+      const userId = tokenObject; 
       console.log('helllllo',userId);
       setuserID(userId);
     }
@@ -83,11 +84,11 @@ const handleLogout = () => {
   navigation.navigate('Login');
 };
 
-
   return (
     <ScrollView>
       <View style={styles.container}>
-      
+      {userData && (
+        <>
       <View style={{alignItems: 'center',marginTop:40}}>
           <TouchableOpacity >
             <View
@@ -125,10 +126,12 @@ const handleLogout = () => {
               </ImageBackground>
             </View>
           </TouchableOpacity>
-          <Text style={{ marginTop: 10, fontSize: 18, fontWeight: 'bold' }}>'ggg'</Text>
+          <Text style={{ marginTop: 10, fontSize: 18, fontWeight: 'bold' }}>{userData.FirstName}</Text>
         </View>
        
-
+    
+        </>
+      )}
        
         <View style={styles.optionsContainerOne}>
         <TouchableOpacity style={styles.optionOne} onPress={() => navigation.navigate('Info')}>
@@ -148,6 +151,43 @@ const handleLogout = () => {
   </View>
 </TouchableOpacity>
         </View>
+    
+
+        {/* <View>
+  <Text>Bezier Line Chart</Text>
+  <LineChart
+    data={{
+      labels: ["January", "February", "March", "April", "May", "June"],
+      datasets: [
+        {
+          data: [
+            Math.random() * 100,
+            Math.random() * 100,
+            Math.random() * 100,
+            Math.random() * 100,
+            Math.random() * 100,
+            Math.random() * 100
+          ]
+        }
+      ]
+    }}
+    // width={Dimensions.get("window").width} // from react-native
+    height={220}
+    yAxisLabel="$"
+    yAxisSuffix="k"
+    yAxisInterval={1} // optional, defaults to 1
+    chartConfig={{
+      backgroundColor: "#e26a00",
+      backgroundGradientFrom: "#fb8c00",
+      backgroundGradientTo: "#ffa726",
+      decimalPlaces: 2, // optional, defaults to 2dp
+      color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
+      labelColor: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
+     
+    }}
+   
+  />
+</View> */}
        
         <View style={styles.optionsContainer}>
           <TouchableOpacity style={styles.option} onPress={() => navigation.navigate('panier')}>

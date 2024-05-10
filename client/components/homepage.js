@@ -42,7 +42,7 @@ const HomePage = ({ navigation }) => {
         <Searchbar />
       </View>
       <View style={styles.categoryBarContainer}>
-        <Text style={styles.categoryTitle}>Category</Text>
+        {/* <Text style={styles.categoryTitle}>Category</Text> */}
         <CategoryBar />
       </View>
       <Pub />
@@ -105,7 +105,7 @@ const styles = StyleSheet.create({
   logoContainer: {
     width: 82,
     height: 79,
-    borderRadius: 28,
+    borderRadius: 33,
     backgroundColor: 'white',
     justifyContent: 'center',
     alignItems: 'center',
