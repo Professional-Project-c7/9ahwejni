@@ -86,6 +86,19 @@ function TabNavigator() {
           headerShown: false
         }}
       />
+       <Tab.Screen
+        name="Allcoffeeshops"
+        component={Allcoffeeshops}
+        options={{
+          tabBarIcon: ({ color, size }) => (
+            <IconButton icon="coffee" size={size} iconColor={color} />
+          ),
+          tabBarLabel: ({ focused, color }) => (
+            <Text style={{ color: focused ? '#dba617' : 'gray' }}>Shops</Text>
+          ),
+          headerShown: false
+        }}
+      />
       <Tab.Screen
         name="Map"
         component={Map}
