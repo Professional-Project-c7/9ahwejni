@@ -16,7 +16,6 @@ function App() {
   <Provider store={store}>
     <SafeAreaView style={{ flex: 1 }}>
 
-    {/* <Posts /> */}
     <NAVSTART/>
 
  </SafeAreaView>
