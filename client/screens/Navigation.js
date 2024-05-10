@@ -38,7 +38,6 @@ import Allcoffeeshops from '../components/AllCoffeShops';
 import Onboarding from '../components/Onboarding';
 import AdvancedFilter from '../components/AdvancedFilter';
 // import { useNavigation } from '@react-navigation/native';
-// import Fav from '../components/fav'
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 function TabNavigator() {

@@ -1,3 +1,4 @@
+// AdvancedFilter.js
 import React, { useState, useEffect } from 'react';
 import {
   View,
@@ -126,56 +127,54 @@ const AdvancedFilter = () => {
   );
 
   return (
-    <View style={styles.container}>
-      <Card style={styles.card}>
+    <View style={styles.fullScreenCard}>
+      <Card style={styles.fullScreenCard}>
         <Card.Title title="Advanced Filter" titleStyle={styles.cardTitle} />
-        <Card.Content>
-          <Divider style={styles.divider} />
-          <Text style={styles.label}>Category</Text>
-          <FlatList
-            data={categories}
-            renderItem={renderCategoryItem}
-            keyExtractor={(item) => item.value}
-            numColumns={2}
-            showsHorizontalScrollIndicator={false}
-            contentContainerStyle={{ marginBottom: 20 }}
-          />
-          <Text style={styles.label}>Minimum Price</Text>
-          <TextInput
-            keyboardType="numeric"
-            placeholder="Enter minimum price"
-            value={minPrice}
-            onChangeText={handleMinPriceChange}
-            style={styles.filterInput}
-          />
-          <View style={styles.spaceBetweenInputs} />
-          <Text style={styles.label}>Maximum Price</Text>
-          <TextInput
-            keyboardType="numeric"
-            placeholder="Enter maximum price"
-            value={maxPrice}
-            onChangeText={handleMaxPriceChange}
-            style={styles.filterInput}
-          />
-          <View style={styles.spaceBetweenInputs} />
-          <Text style={styles.label}>Rating</Text>
-          <Picker
-            selectedValue={rating}
-            style={styles.picker}
-            onValueChange={handleRatingChange}
-          >
-            <Picker.Item label="Please select a rating" value="" />
-            <Picker.Item label="1 Star" value="1" />
-            <Picker.Item label="2 Stars" value="2" />
-            <Picker.Item label="3 Stars" value="3" />
-            <Picker.Item label="4 Stars" value="4" />
-            <Picker.Item label="5 Stars" value="5" />
-          </Picker>
-          <View style={styles.spaceBetweenInputs} />
-          <Button mode="contained" style={styles.button} onPress={filterProducts}>
-            Apply Filter
-          </Button>
-        </Card.Content>
+        <Divider style={styles.divider} />
+        <Text style={styles.label}>Category</Text>
+        <FlatList
+          data={categories}
+          renderItem={renderCategoryItem}
+          keyExtractor={(item) => item.value}
+          numColumns={2}
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={{ marginBottom: 20 }}
+        />
+        <Text style={styles.label}>Minimum Price</Text>
+        <TextInput
+          keyboardType="numeric"
+          placeholder="Enter minimum price"
+          value={minPrice}
+          onChangeText={handleMinPriceChange}
+          style={styles.filterInput}
+        />
+        <View style={styles.spaceBetweenInputs} />
+        <Text style={styles.label}>Maximum Price</Text>
+        <TextInput
+          keyboardType="numeric"
+          placeholder="Enter maximum price"
+          value={maxPrice}
+          onChangeText={handleMaxPriceChange}
+          style={styles.filterInput}
+        />
+        <View style={styles.spaceBetweenInputs} />
+        <Text style={styles.label}>Rating</Text>
+        <Picker
+          selectedValue={rating}
+          style={styles.picker}
+          onValueChange={handleRatingChange}
+        >
+          <Picker.Item label="Please select a rating" value="" />
+          <Picker.Item label="1 Star" value="1" />
+          <Picker.Item label="2 Stars" value="2" />
+          <Picker.Item label="3 Stars" value="3" />
+          <Picker.Item label="4 Stars" value="4" />
+          <Picker.Item label="5 Stars" value="5" />
+        </Picker>
+        <View style={styles.spaceBetweenInputs} />
+        <Button mode="contained" style={styles.button} onPress={filterProducts}>
+          Apply Filter
+        </Button>
       </Card>
       <Modal
         visible={resultsModalVisible}
@@ -183,23 +182,23 @@ const AdvancedFilter = () => {
         transparent
         onRequestClose={() => setResultsModalVisible(false)}
       >
-        <View style={styles.modalContainer}>
-          <View style={styles.modalContent}>
-            <View style={styles.modalHeader}>
-              <Text style={styles.modalTitle}>Filtered Results</Text>
+        <View style={styles.resultsModalContainer}>
+          <View style={styles.resultsModalContent}>
+            <View style={styles.resultsModalHeader}>
+              <Text style={styles.resultsModalTitle}>Filtered Results</Text>
               <IconButton
                 icon="close"
                 onPress={() => setResultsModalVisible(false)}
                 size={24}
-                style={styles.closeButton}
+                style={styles.resultsCloseButton}
               />
             </View>
             <FlatList
               data={filteredProducts}
               keyExtractor={(item, index) => index.toString()}
               renderItem={renderDropdownItem}
-              style={styles.dropdownList}
-              showsVerticalScrollIndicator
+              style={styles.resultsDropdownList}
+              showsVerticalScrollIndicator={false}
             />
           </View>
         </View>
@@ -209,18 +208,11 @@ const AdvancedFilter = () => {
 };
 
 const styles = StyleSheet.create({
-  container: {
-    padding: 10,
-    backgroundColor: '#f5f5f5',
-    alignItems: 'center',
+  fullScreenCard: {
     flex: 1,
-  },
-  card: {
-    width: '100%',
-    maxWidth: 400,
-    elevation: 3,
     padding: 20,
-    borderRadius: 15,
+    backgroundColor: 'white',
+    borderRadius: 12, // Adjust the border radius
   },
   cardTitle: {
     fontSize: 26,
@@ -287,30 +279,35 @@ const styles = StyleSheet.create({
     borderBottomColor: '#e0e0e0',
     paddingVertical: 8,
   },
-  modalContainer: {
+  resultsModalContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: 'rgba(0,0,0,0.5)',
   },
-  modalContent: {
+  resultsModalContent: {
     width: '90%',
     height: '80%',
     backgroundColor: 'white',
     borderRadius: 15,
     padding: 20,
   },
-  modalHeader: {
+  resultsModalHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
   },
-  modalTitle: {
+  resultsModalTitle: {
     fontSize: 20,
     fontWeight: 'bold',
+    color:'#dba617'
+
   },
-  closeButton: {
+  resultsCloseButton: {
     marginTop: -10,
+  },
+  resultsDropdownList: {
+    marginTop: 10,
   },
 });
 
