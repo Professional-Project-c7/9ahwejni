@@ -19,7 +19,7 @@ export const store = configureStore({
       serializableCheck: false, // Disable the middleware
       immutableCheck: false,
     }),
-//   .concat(serializableMiddleware)
-//   .concat(immutableMiddleware),
+  // .concat(serializableMiddleware)
+  // .concat(immutableMiddleware),
 
 });

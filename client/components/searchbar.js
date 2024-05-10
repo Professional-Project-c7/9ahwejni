@@ -1,56 +1,92 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { View, FlatList, TouchableOpacity, StyleSheet } from 'react-native';
-import { Searchbar, List, Avatar } from 'react-native-paper';
+import { Searchbar, List, Avatar, IconButton } from 'react-native-paper';
+import LinearGradient from 'react-native-linear-gradient';
 import axios from 'axios';
-import { useProducts } from '../redux/products/productHooks';
 import { ipAdress } from '../config';
 
+// Debounce utility function
+const debounce = (func, delay) => {
+  let timer;
+  return (...args) => {
+    clearTimeout(timer);
+    timer = setTimeout(() => {
+      func.apply(this, args);
+    }, delay);
+  };
+};
+
 export default function CustomSearchBar() {
-  const { products, getProducts } = useProducts();
   const [searchQuery, setSearchQuery] = useState('');
-  const [filteredProducts, setFilteredProducts] = useState([]);
-  const [filteredUsers, setFilteredUsers] = useState([]);
+  const [allUsers, setAllUsers] = useState([]);
+  const [filteredData, setFilteredData] = useState([]);
   const [dropdownVisible, setDropdownVisible] = useState(false);
 
+  // Fetch all "coffee" users, reviews, and products initially
   useEffect(() => {
-    const fetchUsers = async () => {
+    const fetchCoffeeUsersReviewsAndProducts = async () => {
       try {
-        const response = await axios.get(`http://${ipAdress}:3000/api/user/`);
-        setFilteredUsers(response.data.filter(user => user.UserType === 'coffee'));
+        const usersResponse = await axios.get(`http://${ipAdress}:3000/api/user`);
+        const reviewsResponse = await axios.get(`http://${ipAdress}:3000/api/review`);
+        const productsResponse = await axios.get(`http://${ipAdress}:3000/api/product`);
+
+        // Aggregate reviews and products per user, only for coffee shops
+        const coffeeUsersWithDetails = usersResponse.data
+          .filter((user) => user.UserType === 'coffee')
+          .map((user) => {
+            const userReviews = reviewsResponse.data.filter((review) => review.userId === user.id);
+            const totalReviews = userReviews.length;
+            const averageRating = totalReviews
+              ? userReviews.reduce((acc, review) => acc + review.stars, 0) / totalReviews
+              : 0;
+
+            const userProducts = productsResponse.data.filter((product) => product.userId === user.id);
+
+            return {
+              ...user,
+              totalReviews,
+              averageRating: averageRating.toFixed(1),
+              totalProducts: userProducts.length,
+            };
+          });
+
+        setAllUsers(coffeeUsersWithDetails);
       } catch (error) {
-        console.error('Failed to fetch users:', error);
+        console.error('Error fetching data:', error);
       }
     };
 
-    fetchUsers();
-    getProducts();
-  }, [getProducts]);
+    fetchCoffeeUsersReviewsAndProducts();
+  }, []);
 
-  const onChangeSearch = query => {
+  // Debounced search function
+  const debouncedSearch = useCallback(
+    debounce((query) => {
+      const filtered = allUsers.filter(
+        (user) =>
+          user.FirstName.toLowerCase().includes(query.toLowerCase()) ||
+          user.LastName.toLowerCase().includes(query.toLowerCase()) ||
+          user.UserType.toLowerCase().includes(query.toLowerCase())
+      );
+      setFilteredData(filtered);
+      setDropdownVisible(query.length > 0);
+    }, 300),
+    [allUsers]
+  );
+
+  const onChangeSearch = (query) => {
     setSearchQuery(query);
-
-    const filteredProductsList = products.filter(product =>
-      product.name.toLowerCase().includes(query.toLowerCase())
-    );
-    const filteredUsersList = filteredUsers.filter(
-      user =>
-        (user.FirstName.toLowerCase() + ' ' + user.LastName.toLowerCase()).includes(query.toLowerCase())
-    );
-
-    setFilteredProducts(filteredProductsList);
-    setFilteredUsers(filteredUsersList);
-
-    setDropdownVisible(query.length > 0 && (filteredProductsList.length > 0 || filteredUsersList.length > 0));
+    debouncedSearch(query);
   };
 
   const renderDropdownItem = ({ item }) => (
     <TouchableOpacity onPress={() => console.log('Item selected', item)}>
       <List.Item
-        title={item.name || `${item.FirstName} ${item.LastName}`}
-        description={item.description || `UserType: ${item.UserType}`}
+        title={`${item.FirstName} ${item.LastName}`}
+        description={`(${item.totalReviews} ratings) Average: ${item.averageRating}, Products: ${item.totalProducts}`}
         left={() =>
-          item.imgUrl || item.ImageUrl ? (
-            <Avatar.Image size={50} source={{ uri: item.imgUrl || item.ImageUrl }} />
+          item.ImageUrl ? (
+            <Avatar.Image size={50} source={{ uri: item.ImageUrl }} />
           ) : (
             <Avatar.Icon size={50} icon="folder" />
           )
@@ -60,18 +96,35 @@ export default function CustomSearchBar() {
     </TouchableOpacity>
   );
 
+  const handleSearchButtonPress = () => {
+    console.log('Search button pressed', searchQuery);
+    debouncedSearch(searchQuery);
+  };
+
   return (
     <View style={styles.container}>
-      <Searchbar
-        placeholder="Search"
-        onChangeText={onChangeSearch}
-        value={searchQuery}
-        style={styles.searchbar}
-      />
+      <View style={styles.searchContainer}>
+        <Searchbar
+          placeholder="Search"
+          onChangeText={onChangeSearch}
+          value={searchQuery}
+          style={styles.searchbar}
+        />
+        <TouchableOpacity style={styles.searchButtonContainer} onPress={handleSearchButtonPress}>
+          <LinearGradient
+            colors={['rgba(253,190,29,1)', 'rgba(252,145,69,1)']}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 0 }}
+            style={styles.searchButton}
+          >
+            <IconButton icon="magnify" color="white" size={24} />
+          </LinearGradient>
+        </TouchableOpacity>
+      </View>
       {dropdownVisible && (
         <View style={styles.dropdownContainer}>
           <FlatList
-            data={[...filteredProducts, ...filteredUsers]}
+            data={filteredData}
             keyExtractor={(item, index) => index.toString()}
             renderItem={renderDropdownItem}
             style={styles.dropdownList}
@@ -86,10 +139,35 @@ export default function CustomSearchBar() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 16,
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+  },
+  searchContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    position: 'relative',
   },
   searchbar: {
-    marginBottom: 16,
+    flex: 1,
+    marginBottom: 8,
+    height: 48,
+    borderTopRightRadius: 0,
+    borderBottomRightRadius: 0,
+    marginRight: 0, // Ensure no gap between search bar and button
+  },
+  searchButtonContainer: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 8, // Aligns with the search bar's marginBottom
+    
+  },
+  searchButton: {
+    borderTopRightRadius: 25,
+    borderBottomRightRadius: 25,
+    paddingHorizontal: 12,
+    height: 50, // Ensure the button height matches the search bar height
+    borderWidth: 0.9,
+    borderColor: 'white',
   },
   dropdownContainer: {
     backgroundColor: 'white',
