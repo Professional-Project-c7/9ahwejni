@@ -258,7 +258,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
     borderWidth: 1,
     borderColor: '#ccc',
-    borderRadius: 4,
+    borderRadius: 15,
     fontSize: 16,
   },
   coffeeShopsList: {
