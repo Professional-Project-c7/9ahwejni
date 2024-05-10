@@ -28,7 +28,7 @@ const [isModalVisible, setIsModalVisible] = useState(false);
 
 const removeTokenFromStorage = async () => {
   try {
-    await AsyncStorage.removeItem('userToken');
+    await AsyncStorage.removeItem('IdUser');
     console.log('Token removed successfully');
   } catch (error) {
     console.error('Error removing token:', error);
@@ -41,10 +41,10 @@ const toggleModal = () => {
     
 const retrieveData = async () => {
   try {
-    const value = await AsyncStorage.getItem('userToken');
+    const value = await AsyncStorage.getItem('IdUser');
     if (value !== null) {
       const tokenObject = JSON.parse(value);
-      const userId = tokenObject.userId; 
+      const userId = tokenObject; 
       console.log('helllllo',userId);
       setuserID(userId);
     }
@@ -87,7 +87,8 @@ const handleLogout = () => {
   return (
     <ScrollView>
       <View style={styles.container}>
-      
+      {userData && (
+        <>
       <View style={{alignItems: 'center',marginTop:40}}>
           <TouchableOpacity >
             <View
@@ -125,10 +126,12 @@ const handleLogout = () => {
               </ImageBackground>
             </View>
           </TouchableOpacity>
-          <Text style={{ marginTop: 10, fontSize: 18, fontWeight: 'bold' }}>'ggg'</Text>
+          <Text style={{ marginTop: 10, fontSize: 18, fontWeight: 'bold' }}>{userData.FirstName}</Text>
         </View>
        
-
+    
+        </>
+      )}
        
         <View style={styles.optionsContainerOne}>
         <TouchableOpacity style={styles.optionOne} onPress={() => navigation.navigate('Info')}>

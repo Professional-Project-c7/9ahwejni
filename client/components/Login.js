@@ -19,6 +19,7 @@ const Login = ({ navigation }) => {
         { Email: email, Password: password }
       );
       AsyncStorage.setItem('userToken', JSON.stringify(response.data.userId));
+      AsyncStorage.setItem('IdUser', JSON.stringify(response.data.IdUser));
      console.log(response.data.userId);
       navigation.navigate('Tabs'); 
 
