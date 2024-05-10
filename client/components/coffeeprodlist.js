@@ -4,26 +4,28 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import { ipAdress } from '../config';
 import { Checkbox } from 'react-native-paper';
+import { IconButton } from 'react-native-paper';
 
 const NumberInput = ({ value, onIncrement, onDecrement }) => {
   return (
     <View style={styles.numberInput}>
       <TouchableOpacity onPress={onDecrement}>
-        <Text style={styles.buttonText}>-</Text>
+        <IconButton icon="minus-circle" iconColor="#dba617" />
       </TouchableOpacity>
       <Text style={styles.value}>{value}</Text>
       <TouchableOpacity onPress={onIncrement}>
-        <Text style={styles.buttonText}>+</Text>
+        <IconButton icon="plus-circle" iconColor="#dba617" />
       </TouchableOpacity>
     </View>
   );
 };
 
-const CoffeeProductList = () => {
+const CoffeeProductList = ({navigation}) => {
   const [userData, setUserData] = useState(null);
   const [userID, setUserID] = useState(null);
   const [checkedItems, setCheckedItems] = useState({}); // Store checked state for each product
   const [productQuantities, setProductQuantities] = useState({}); // Store selected quantities for each product
+  const [checkedProductIDs, setCheckedProductIDs] = useState([]); // Array to store checked product IDs
 
   useEffect(() => {
     const retrieveData = async () => {
@@ -75,11 +77,21 @@ const CoffeeProductList = () => {
   }, [userID]);
 
   const handleCheckboxToggle = (productId) => {
-    setCheckedItems(prevState => ({
+    setCheckedItems((prevState) => ({
       ...prevState,
-      [productId]: !prevState[productId] // Toggle the checked state for the specific product
+      [productId]: !prevState[productId], // Toggle the checked state for the specific product
     }));
+  
+    // Update the array of checked product IDs
+    setCheckedProductIDs((prevState) => {
+      if (prevState.includes(productId)) {
+        return prevState.filter((id) => id !== productId); // Remove ID if already exists
+      } else {
+        return [...prevState, productId]; // Add ID if not already present
+      }
+    });
   };
+  
 
   const handleQuantityIncrement = (productId) => {
     const newValue = parseInt(productQuantities[productId]) + 1;
@@ -99,8 +111,23 @@ const CoffeeProductList = () => {
     }
   };
 
-  const filteredProducts = userData ? userData.filter(product => product.userId === userID) : [];
+  const setArrayOfProductsIds = async () => {
+    try {
+      await  AsyncStorage.setItem('ArrayOfProductsIds', JSON.stringify(checkedProductIDs));
+      console.log('Array Stored successfully');
+    } catch (error) {
+      console.error('Error Stored array:', error);
+    }
+  };
+  
+  const handlesetArray = () => {
+    setArrayOfProductsIds();
+    navigation.navigate('AddPacks');
+  };
 
+  const filteredProducts = userData ? userData.filter(product => product.userId === userID) : [];
+  console.log('filtered',filteredProducts);
+  console.log("checkedProductIDs",checkedProductIDs);
   return (
     <View style={styles.container}>
       <Text style={styles.header}>Product List</Text>
@@ -109,12 +136,13 @@ const CoffeeProductList = () => {
           data={filteredProducts}
           keyExtractor={(item) => item.id.toString()}
           renderItem={({ item }) => (
+            <View>
             <View style={styles.product}>
               <Image source={{ uri: item.imgUrl }} style={styles.productImage} />
               <View style={styles.productDetails}>
                 <Text style={styles.productName}>{item.name}</Text>
                 <Text style={styles.productDescription}>{item.description}</Text>
-                <Text style={styles.productPrice}>{item.price}</Text>
+                <Text style={styles.productPrice}>{item.price} $</Text>
               </View>
               <NumberInput
                 value={parseInt(productQuantities[item.id])}
@@ -126,17 +154,52 @@ const CoffeeProductList = () => {
                 onPress={() => handleCheckboxToggle(item.id)}
                 style={styles.checkbox}
               />
+             
             </View>
+            
+             </View>
           )}
         />
       ) : (
         <Text>No products found</Text>
       )}
+      <TouchableOpacity style={styles.centered} onPress={handlesetArray}>
+  <View style={styles.saveButton}>
+    <IconButton icon="content-save" iconColor="white"  />
+    <Text style={styles.saveButtonText}>Save</Text>
+  </View>
+</TouchableOpacity>
+
     </View>
   );
 };
 
 const styles = StyleSheet.create({
+  centered: {
+    alignItems: 'center',
+  },
+  saveButton: {
+    backgroundColor: '#dba617',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginTop: 20,
+    marginLeft: -15,
+    paddingHorizontal: 5, // Reduce horizontal padding
+    paddingVertical: 2, // Reduce vertical padding
+    borderWidth: 1,
+    borderColor: 'black',
+    borderRadius: 8,
+    width: 100, // Set a smaller width
+  },
+  saveButtonText: {
+    fontSize: 18,
+    color: 'white',
+    marginLeft: -5,
+  },
+  
+  
+  
   container: {
     flex: 1,
     backgroundColor: '#fff',
@@ -155,7 +218,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     padding: 10,
     borderWidth: 1,
-    borderColor: '#ccc',
+    borderColor: '#dba617',
     borderRadius: 8,
   },
   productImage: {
@@ -184,10 +247,13 @@ const styles = StyleSheet.create({
   numberInput: {
     flexDirection: 'row',
     alignItems: 'center',
+    borderWidth: 1,
+    borderColor: '#dba617',
+    borderRadius: 8,
   },
   buttonText: {
     fontSize: 20,
-    color: 'blue',
+    color: '#dba617',
     marginHorizontal: 10,
   },
   value: {
