@@ -21,7 +21,7 @@ const SettingComponent = ({ onClose }) => {
      
     const retrieveData = async () => {
       try {
-        const value = await AsyncStorage.getItem('userToken');
+        const value = await AsyncStorage.getItem('IdUser');
         if (value !== null) {
           const tokenObject = JSON.parse(value);
           const userId = tokenObject.userId; 
