@@ -36,8 +36,15 @@ const AddPacks = ({navigation}) => {
       console.error('Error retrieving data:', error);
     }
   };
-  
-
+  const getArrayOfProductsIds = async () => {
+    try {
+      const res = await  AsyncStorage.getItem('ArrayOfProductsIds');
+      console.log("array getted",res);
+    } catch (error) {
+      console.error('Error getted array:', error);
+    }
+  };
+  getArrayOfProductsIds()
  
 const handleAddpack = async () => {
   try {

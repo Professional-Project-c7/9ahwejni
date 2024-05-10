@@ -73,6 +73,8 @@ const ProductList = () => {
   const [productDescription, setProductDescription] = useState('');
   const [productSize, setProductSize] = useState('');
   const [productPrice, setProductPrice] = useState('');
+  const [imgUrl, setimgUrl] = useState('https://cdn.vox-cdn.com/thumbor/6kLvmWfhU4h64EhC0S6tsn714fI=/0x0:4032x3024/1200x900/filters:focal(1694x1190:2338x1834)/cdn.vox-cdn.com/uploads/chorus_image/image/59740845/IMG_1503.42.jpg');
+
   const [userID, setUserID] = useState(0);
 
   console.log(productName);
@@ -108,6 +110,7 @@ console.log("before" ,userID);
       description: productDescription,
       price: productPrice,
       userId: userID,
+      imgUrl:imgUrl
     };
 
     const response = await axios.post(`http://${ipAdress}:3000/api/product`, newProduct);
