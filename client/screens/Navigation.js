@@ -37,10 +37,7 @@ import Panier from '../components/Panier';
 import Allcoffeeshops from '../components/AllCoffeShops';
 import Onboarding from '../components/Onboarding';
 import AdvancedFilter from '../components/AdvancedFilter';
-import CoffeeProdList from "../components/coffeeprodlist"
-
 // import { useNavigation } from '@react-navigation/native';
-import Transactions from '../components/transactionScreenCoffe'
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 function TabNavigator() {
@@ -86,6 +83,19 @@ function TabNavigator() {
           ),
           tabBarLabel: ({ focused, color }) => (
             <Text style={{ color: focused ? '#dba617' : 'gray' }}>Home</Text>
+          ),
+          headerShown: false
+        }}
+      />
+       <Tab.Screen
+        name="Allcoffeeshops"
+        component={Allcoffeeshops}
+        options={{
+          tabBarIcon: ({ color, size }) => (
+            <IconButton icon="coffee" size={size} iconColor={color} />
+          ),
+          tabBarLabel: ({ focused, color }) => (
+            <Text style={{ color: focused ? '#dba617' : 'gray' }}>Shops</Text>
           ),
           headerShown: false
         }}
@@ -138,8 +148,6 @@ function TabNavigator() {
 function NAVSTART() {
 
 
- 
-
 
   
   
@@ -157,8 +165,6 @@ function NAVSTART() {
         <Stack.Screen name="Orders" component={Orders} options={{ headerShown: false }} />
         <Stack.Screen name="Edit" component={EditCoffee} />
         <Stack.Screen name="Info" component={InfoCoffee} />
-        <Stack.Screen name="CoffeeProdList" component={CoffeeProdList} />
-
         <Stack.Screen
           name="TransactionScreenCoffee"
           component={TransactionScreenCoffee}
