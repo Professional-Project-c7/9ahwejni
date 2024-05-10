@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity, Image } from 'react-native';
 import TrackPlayer from 'react-native-track-player';
 import { IconButton } from 'react-native-paper';
-import testMusic from '../music/testMusic.mp3'; // Assuming this is your audio file
+import testMusic from '../music/testMusic.mp3'; 
 
 const MusicPlayer = () => {
   const [isPlaying, setIsPlaying] = useState(true); // Initialize with false, as the music initially isn't playing
