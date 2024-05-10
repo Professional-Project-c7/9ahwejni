@@ -168,7 +168,7 @@ function NAVSTART() {
         <Stack.Screen
           name="TransactionScreenCoffee"
           component={TransactionScreenCoffee}
-          options={{ headerShown: false }}
+         
         />
         <Stack.Screen name="ReviewsCoffee" component={ReviewsCoffee} options={{ headerShown: false }} />
         <Stack.Screen name="PaymentCardsDetails" component={PaymentCardsDetails} options={{ headerShown: false }} />

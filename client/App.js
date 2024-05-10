@@ -6,6 +6,7 @@ import ProductList from './components/ProductList';
 import { Provider } from 'react-redux';
 import { store } from './redux/store';
 import AllCoffeShops from './components/AllCoffeShops';
+import   User from './components/UserProfile'
 import HomePage from './components/homepage';
 import SellerPage from './components/SellerPage';
 import Paye from './components/Payment';
@@ -19,7 +20,7 @@ function App() {
   return (
   <Provider store={store}>
     <SafeAreaView style={{ flex: 1 }}>
-    <NAVSTART  />
+        <NAVSTART  />
  </SafeAreaView>
  </Provider>
   );
