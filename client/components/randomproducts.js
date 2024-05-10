@@ -69,8 +69,14 @@ const RandomProducts = () => {
     }
   };
 
-  const handleNavigateToDetails = (product) => { 
-    navigation.navigate('prd', { product }); 
+  const handleNavigateToDetails = async (product) => {
+    try {
+     
+      await AsyncStorage.setItem('selectedProductId', product.id.toString());
+      navigation.navigate('prd', { product });
+    } catch (error) {
+      console.log('Error storing selected product ID:', error);
+    }
   };
 
 
@@ -90,6 +96,7 @@ const RandomProducts = () => {
                   name={hearttt[product.id]?.favored ? 'heart' : 'heart-outline'}
                   color={hearttt[product.id]?.favored ? 'red' : '#dba617'}
                   size={27}
+                  // onPress={() => toggleFeature(product.id, 'hearttt')}
                   style={styles.favIcon}
                 />
                 <View style={styles.infoContainer}>
@@ -108,8 +115,8 @@ const RandomProducts = () => {
                     style={styles.starRating}
                   />
                   <Icon
-                    name={favorites[product.id]?.inCart ? 'cart' : 'cart-outline'}
-                    color={favorites[product.id]?.inCart ? 'red' : 'white'}
+                    name={favorites[product.id]?.inCart ? 'cart' : 'cart'}
+                    // color={favorites[product.id]?.inCart ? 'red' : 'white'}
                     size={24}
                     onPress={() => toggleFeature(product.id, 'inCart')}
                     style={styles.cartIcon}
