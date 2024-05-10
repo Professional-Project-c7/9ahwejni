@@ -96,7 +96,7 @@ const RandomProducts = () => {
                   name={hearttt[product.id]?.favored ? 'heart' : 'heart-outline'}
                   color={hearttt[product.id]?.favored ? 'red' : '#dba617'}
                   size={27}
-                  // onPress={() => toggleFeature(product.id, 'AMINE')}
+                  // onPress={() => toggleFeature(product.id, 'hearttt')}
                   style={styles.favIcon}
                 />
                 <View style={styles.infoContainer}>
