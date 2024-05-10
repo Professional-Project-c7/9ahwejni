@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity, Image } from 'react-native';
-import TrackPlayer from 'react-native-track-player';
 import { IconButton } from 'react-native-paper';
 import testMusic from '../music/testMusic.mp3'; 
+import TrackPlayer, { useTrackPlayerProgress } from 'react-native-track-player';
 
 const MusicPlayer = () => {
-  const [isPlaying, setIsPlaying] = useState(false); // Initialize with false, as the music initially isn't playing
+  const [isPlaying, setIsPlaying] = useState(true); // Initialize with false, as the music initially isn't playing
 
   useEffect(() => {
     const initializeTrackPlayer = async () => {
@@ -25,7 +25,7 @@ const MusicPlayer = () => {
     initializeTrackPlayer(); // Initialize TrackPlayer when the component mounts
   
     return () => {
-      TrackPlayer.destroy(); // Clean up when the component unmounts
+       // Clean up when the component unmounts
     };
   }, []);
   
@@ -45,7 +45,7 @@ const MusicPlayer = () => {
       {/* Display track title, artist, and artwork here */}
       <Text style={{ fontSize: 20, fontWeight: 'bold' }}>Now Playing:</Text>
       <Text style={{ fontSize: 16 }}>Test Song - Test Artist</Text>
-      <Image source={require('../image/1.png')} style={{ width: 1, height: 1 }} />
+      {/* <Image source={require('../image/1.png')} style={{ width: 1, height: 1 }} /> */}
       
       {/* Button to toggle playback */}
       <TouchableOpacity onPress={togglePlayback}>
