@@ -20,10 +20,7 @@ const Login = ({ navigation }) => {
       );
       AsyncStorage.setItem('userToken', JSON.stringify(response.data.userId));
       AsyncStorage.setItem('IdUser', JSON.stringify(response.data.IdUser));
-      
-    //  console.log(response.data.userId);
-     console.log('hhhhhhhhhhhh',response.data.IdUser);
-
+     console.log(response.data.userId);
       navigation.navigate('Tabs'); 
 
     } catch (error) {            
