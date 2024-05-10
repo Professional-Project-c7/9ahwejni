@@ -13,7 +13,7 @@ app.use(express.urlencoded({extended: true}));
 // require('./fake.js')()
 const User = require('./Routers/user.routes.js')
 const ProductRoutes=require("./Routers/products.routes.js")
-const Cofee = require('./Routers/cofee.routes.js')
+const packs = require('./Routers/packs.routes.js')
 const Authentication = require('./Routers/login.routers.js');
 const messagesRouter = require('./Routers/messages.routers')
 const Payment=require('./Routers/Payment.js')
@@ -28,7 +28,7 @@ app.use("/api/auth", Authentication);
 app.use('/api/messages', messagesRouter);
 app.use('/api/user', User);
 app.use("/api/product", ProductRoutes);
-app.use("/api/cofee", Cofee);
+app.use("/api/packs", packs);
 app.use('/api/payment', Payment);
 app.use('/api/review', reviewRouter);
 
