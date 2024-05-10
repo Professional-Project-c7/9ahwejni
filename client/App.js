@@ -12,7 +12,8 @@ import SellerPage from './components/SellerPage';
 import Paye from './components/Payment';
 import PaymentCardsDetails from './components/paymentcardsdetailsCoffee';
 import ProductDetailsPage from './components/ProdDetails';
-
+import Onboarding from './components/Onboarding';
+import AdvancedFilter from './components/AdvancedFilter';
 
 function App() {
 
