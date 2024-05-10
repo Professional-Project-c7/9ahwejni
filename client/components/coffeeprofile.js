@@ -16,7 +16,7 @@ const MyComponent = ({navigation}) => {
     
   const removeTokenFromStorage = async () => {
     try {
-      await AsyncStorage.removeItem('userToken');
+      await AsyncStorage.removeItem('IdUser');
       console.log('Token removed successfully');
     } catch (error) {
       console.error('Error removing token:', error);
