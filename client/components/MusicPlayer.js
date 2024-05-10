@@ -25,7 +25,7 @@ const MusicPlayer = () => {
     initializeTrackPlayer(); // Initialize TrackPlayer when the component mounts
   
     return () => {
-       // Clean up when the component unmounts
+      TrackPlayer.destroy(); // Clean up when the component unmounts
     };
   }, []);
   
@@ -45,7 +45,7 @@ const MusicPlayer = () => {
       {/* Display track title, artist, and artwork here */}
       <Text style={{ fontSize: 20, fontWeight: 'bold' }}>Now Playing:</Text>
       <Text style={{ fontSize: 16 }}>Test Song - Test Artist</Text>
-      {/* <Image source={require('../image/1.png')} style={{ width: 1, height: 1 }} /> */}
+      <Image source={require('../image/1.png')} style={{ width: 1, height: 1 }} />
       
       {/* Button to toggle playback */}
       <TouchableOpacity onPress={togglePlayback}>
