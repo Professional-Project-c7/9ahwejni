@@ -1,129 +1,89 @@
-import React, { useState } from 'react';
-import { StyleSheet, Text, TouchableOpacity, View, Modal, TextInput, ScrollView, Image, FlatList } from 'react-native';
-import { IconButton } from 'react-native-paper';
-import Icon from 'react-native-vector-icons/FontAwesome';
+import React from 'react';
+import { View, Text, FlatList, Image, TouchableOpacity, StyleSheet } from 'react-native';
+import Icon from 'react-native-vector-icons/Ionicons';
 
-const Posts = () => {
-  const data = [
-    {
-      id: 1,
-      title: 'Lorem ipsum dolor',
-      time: '',
-      image: 'https://images.pexels.com/photos/312418/pexels-photo-312418.jpeg',
-    },
-    {
-      id: 2,
-      title: 'Sit amet, consectetuer',
-      time: '2 minutes a go',
-      image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/32/Cofee_Espresso_in_french_cafe.jpg/1200px-Cofee_Espresso_in_french_cafe.jpg',
-    },
-    {
-      id: 3,
-      title: 'Dipiscing elit. Aenean ',
-      time: '3 hour a go',
-      image: 'https://images.pexels.com/photos/312418/pexels-photo-312418.jpeg',
-    },
-    {
-      id: 4,
-      title: 'Commodo ligula eget dolor.',
-      time: '4 months a go',
-      image: 'https://images.pexels.com/photos/312418/pexels-photo-312418.jpeg',
-    },
-    {
-      id: 5,
-      title: 'Aenean massa. Cum sociis',
-      time: '5 weeks a go',
-      image: 'https://images.pexels.com/photos/312418/pexels-photo-312418.jpeg',
-    },
-    {
-      id: 6,
-      title: 'Natoque penatibus et magnis',
-      time: '6 year a go',
-      image: 'https://images.pexels.com/photos/312418/pexels-photo-312418.jpeg',
-    },
-    {
-      id: 7,
-      title: 'Dis parturient montes, nascetur',
-      time: '7 minutes a go',
-      image: 'https://images.pexels.com/photos/312418/pexels-photo-312418.jpeg',
-    },
-    {
-      id: 8,
-      title: 'Ridiculus mus. Donec quam',
-      time: '8 days a go',
-      image: 'https://images.pexels.com/photos/312418/pexels-photo-312418.jpeg',
-    },
-    {
-      id: 9,
-      title: 'Felis, ultricies nec, pellentesque',
-      time: '9 minutes a go',
-      image: 'https://images.pexels.com/photos/312418/pexels-photo-312418.jpeg',
-    },
-  ];
+const favorites = [
+  {
+    id: '1',
+    title: 'ALHASAWI CLINIC',
+    category: 'CLINICS',
+    location: 'Kuwait',
+    rating: 4.8,
+    isFavorite: true,
+    logo: 'https://via.placeholder.com/40x40?text=A',
+  },
+  {
+    id: '2',
+    title: 'NEXT SPA SALON',
+    category: 'MEN GROOMING',
+    location: 'Kuwait',
+    rating: 4.7,
+    isFavorite: false,
+    logo: 'https://via.placeholder.com/40x40?text=N',
+  },
+  {
+    id: '3',
+    title: 'THE ORGANIC SPA',
+    category: 'HEALTH & FITNESS',
+    location: 'Kuwait',
+    rating: 4.9,
+    isFavorite: true,
+    logo: 'https://via.placeholder.com/40x40?text=O',
+  },
+  {
+    id: '4',
+    title: 'NIU COLLABORATIVE COMM.',
+    category: 'VENUE BOOKING',
+    location: 'Kuwait',
+    rating: 4.8,
+    isFavorite: true,
+    logo: 'https://via.placeholder.com/40x40?text=N',
+  },
+];
 
-  const [posts, setPosts] = useState(data);
-  const [isFormVisible, setFormVisible] = useState(false);
-
-  const deletePost = (id) => {
-    setPosts(prevPosts => prevPosts.filter(post => post.id !== id));
-  };
-
-  const toggleFormVisibility = () => {
-    setFormVisible(!isFormVisible);
-  };
-
-  const renderPostItem = ({ item }) => (
-    <View style={styles.card}>
-      <View style={styles.cardHeader}>
-        <Image style={styles.cardImage} source={{ uri: item.image }} />
-        <View style={styles.cardContent}>
-          <Text style={styles.time}>{item.time}</Text>
-          <Text style={styles.title}>{item.title}</Text>
+const Favorit = () => {
+  const renderItem = ({ item }) => (
+    <View style={styles.itemContainer}>
+      <Image source={{ uri: item.logo }} style={styles.logo} />
+      <View style={styles.details}>
+        <Text style={styles.title}>{item.title}</Text>
+        <Text style={styles.subtitle}>{item.category}</Text>
+        <View style={styles.row}>
+          <Icon name="location-outline" size={16} color="#9e9e9e" />
+          <Text style={styles.location}>{item.location}</Text>
         </View>
-        <TouchableOpacity style={styles.deleteButton} onPress={() => deletePost(item.id)}>
-          <Icon name="heart" size={20} color="red" />
-        </TouchableOpacity>
+        <View style={styles.row}>
+          {Array.from({ length: 5 }).map((_, index) => (
+            <Icon
+              key={index}
+              name="star"
+              size={16}
+              color={index < Math.floor(item.rating) ? '#FFD700' : '#E0E0E0'}
+            />
+          ))}
+          <Text style={styles.rating}>{item.rating.toFixed(1)}</Text>
+        </View>
       </View>
+      <TouchableOpacity style={styles.favoriteButton}>
+        <Icon
+          name={item.isFavorite ? 'heart' : 'heart-outline'}
+          size={24}
+          color={item.isFavorite ? '#FF0000' : '#9e9e9e'}
+        />
+      </TouchableOpacity>
+      <TouchableOpacity style={styles.openButton}>
+        <Text style={styles.openText}>OPEN</Text>
+      </TouchableOpacity>
     </View>
   );
 
-
   return (
-    <View style={{ flex: 1 }}>
-      <View style={styles.icon}>
-      {/* <Icon name="close" size={25}  style={styles.option} onPress={() => navigation.navigate('User')}/> */}
-      
-      </View>
-      <ScrollView style={{ flex: 1 }}>
-        <FlatList
-          style={styles.container}
-          data={posts}
-          keyExtractor={item => item.id.toString()}
-          ItemSeparatorComponent={() => <View style={styles.separator} />}
-          renderItem={renderPostItem}
-        />
-      </ScrollView>
-     
-      <Modal
-        animationType="slide"
-        transparent={true}
-        visible={isFormVisible}
-        onRequestClose={() => {
-          setFormVisible(!isFormVisible);
-        }}
-      >
-        <View style={styles.centeredView}>
-          <View style={styles.modalView}>
-            {/* Your form components here */}
-            <TouchableOpacity
-              style={{ ...styles.closeButton, backgroundColor: '#2196F3' }}
-              onPress={toggleFormVisibility}
-            >
-              <Text style={styles.textStyle}>Close</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-      </Modal>
+    <View style={styles.container}>
+      <FlatList
+        data={favorites}
+        keyExtractor={(item) => item.id}
+        renderItem={renderItem}
+      />
     </View>
   );
 };
@@ -131,77 +91,62 @@ const Posts = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    marginTop: 20,
+    backgroundColor: '#f2f2f2',
+    padding: 10,
   },
-  card: {
-    shadowColor: 'white',
-    shadowOffset: {
-      width: 2,
-    },
-    shadowOpacity: 0.5,
-    shadowRadius: 4,
-    marginVertical: 8,
-    backgroundColor: 'white',
-  },
-  cardHeader: {
+  itemContainer: {
     flexDirection: 'row',
     alignItems: 'center',
+    backgroundColor: '#fff',
+    borderRadius: 8,
     padding: 10,
-    borderBottomWidth: 1,
-    borderBottomColor: '#ddd',
+    marginVertical: 5,
+    elevation: 2,
   },
-  cardContent: {
-    paddingVertical: 12.5,
-    paddingHorizontal: 16,
+  logo: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
   },
-  cardImage: {
-    width: 180,
-    height: 150,
-    resizeMode: 'cover',
+  details: {
+    flex: 1,
+    marginHorizontal: 10,
   },
   title: {
-    fontSize: 18,
-    flex: 1,
-    color: 'black',
-    marginTop: 45,
-  },
-  time: {
-    fontSize: 13,
-    color: 'black',
-    marginTop: 10,
-  },
-  addButton: {
-    backgroundColor: '#f4511e',
-    padding: 10,
-    margin: 20,
-    borderRadius: 5,
-    alignItems: 'center',
-  },
-  addButtonText: {
-    color: 'white',
     fontSize: 16,
+    fontWeight: 'bold',
   },
-  modalView: {
-    margin: 20,
-    backgroundColor: 'white',
-    borderRadius: 20,
-    padding: 35,
+  subtitle: {
+    fontSize: 14,
+    color: '#9e9e9e',
+  },
+  row: {
+    flexDirection: 'row',
     alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    }
+    marginTop: 5,
   },
-  icon: {
-    width: 25,
-    height: 25,
+  location: {
+    fontSize: 12,
+    color: '#9e9e9e',
+    marginLeft: 5,
   },
-  deleteButton: {
-    position: 'absolute',
-    top: 10,
-    right: 10,
+  rating: {
+    fontSize: 14,
+    marginLeft: 5,
+  },
+  favoriteButton: {
+    marginRight: 10,
+  },
+  openButton: {
+    backgroundColor: '#00C853',
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 4,
+  },
+  openText: {
+    color: '#fff',
+    fontWeight: 'bold',
   },
 });
 
-export default Posts;
+export default Favorit;
