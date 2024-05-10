@@ -77,22 +77,23 @@ const ProductList = () => {
 
   console.log(productName);
   useEffect(() => {
-    retrieveUserID();
+    retrieveData();
   }, []);
 
-  const retrieveUserID = async () => {
+  const retrieveData = async () => {
     try {
-      const value = await AsyncStorage.getItem('userToken');
+      const value = await AsyncStorage.getItem('IdUser');
       if (value !== null) {
         const tokenObject = JSON.parse(value);
-        const userId = tokenObject.userId;
+        const userId = tokenObject; 
+        console.log("taww",userId);
         setUserID(userId);
-        console.log("id :",userId);
       }
     } catch (error) {
-      console.error('Error retrieving user ID:', error);
+      console.error('Error retrieving data:', error);
     }
   };
+  
 
  
 const handleAddProduct = async () => {

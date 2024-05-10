@@ -8,64 +8,7 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Feather from 'react-native-vector-icons/Feather';
 
-// const data = [
-//   {
-//     id: '1',
-//     name: 'Product 1',
-//     description: 'Description for Product 1',
-//     imagelink_square: require("../image/breakfast.webp"),
-//     prices: [
-//       { size: 'S', price: '10', currency: '$' },
-//       { size: 'M', price: '15', currency: '$' },
-//       { size: 'L', price: '20', currency: '$' },
-//     ],
-//     average_rating: 4,
-//   },
-//   {
-//     id: '2',
-//     name: 'Product 2',
-//     description: 'Description for Product 2',
-//     imagelink_square: require("../image/breakfast.webp"),
-//     prices: [
-//       { size: 'S', price: '12', currency: '$' },
-//       { size: 'M', price: '18', currency: '$' },
-//       { size: 'L', price: '24', currency: '$' },
-//     ],
-//     average_rating: 3,
-//   },
-//   {
-//     id: '3',
-//     name: 'Product 3',
-//     description: 'Description for Product 3',
-//     imagelink_square: require("../image/breakfast.webp"),
-//     prices: [
-//       { size: 'S', price: '8', currency: '$' },
-//       { size: 'M', price: '12', currency: '$' },
-//       { size: 'L', price: '16', currency: '$' },
-//     ],
-//     average_rating: 5,
-//   },
-// ];
 
-// const ProductCard = ({ product }) => {
-//   return (
-//     <View style={styles.card}>
-//       <Image source={product.imagelink_square} style={styles.image} />
-//       <View style={styles.details}>
-//         <Text style={styles.name}>{product.name}</Text>
-//         <Text style={styles.description}>{product.description}</Text>
-//         <Text style={styles.price}>
-//           {product.prices[0].currency}
-//           {product.prices[0].price}
-//         </Text>
-//         <View style={styles.bottomRow}>
-//           <Text style={styles.size}>Size: {product.prices[0].size}</Text>
-//           <Text style={styles.rating}>Rating: {product.average_rating}</Text>
-//         </View>
-//       </View>
-//     </View>
-//   );
-// };
 
 const AddPacks = ({navigation}) => {
   const { colors } = useTheme();
@@ -75,24 +18,25 @@ const AddPacks = ({navigation}) => {
   const [packPrice, setpackPrice] = useState('');
   const [userID, setUserID] = useState(0);
 
-  console.log(packName);
+  console.log(userID);
   useEffect(() => {
-    retrieveUserID();
+    retrieveData();
   }, []);
 
-  const retrieveUserID = async () => {
+  const retrieveData = async () => {
     try {
-      const value = await AsyncStorage.getItem('userToken');
+      const value = await AsyncStorage.getItem('IdUser');
       if (value !== null) {
         const tokenObject = JSON.parse(value);
-        const userId = tokenObject.userId;
+        const userId = tokenObject; 
+        console.log("taww",userId);
         setUserID(userId);
-        console.log("id :",userId);
       }
     } catch (error) {
-      console.error('Error retrieving user ID:', error);
+      console.error('Error retrieving data:', error);
     }
   };
+  
 
  
 const handleAddpack = async () => {
@@ -244,11 +188,12 @@ console.log("before" ,userID);
               onChangeText={setpackPrice}
             />
           </View>
-          <TouchableOpacity onPress={() => navigation.navigate('CoffeeProductList')}>
+          <TouchableOpacity onPress={() => navigation.navigate('CoffeeProdList')}>
           <Image source={require("../image/coffee-cup.png")} style={styles.optionImage} /></TouchableOpacity>
           <TouchableOpacity style={styles.commandButton} onPress={handleAddpack}>
             <Text style={styles.panelButtonTitle}>Submit</Text>
           </TouchableOpacity>
+          
         </View>
       </View>
     </ScrollView>
@@ -342,11 +287,11 @@ const styles = StyleSheet.create({
   },
   addProductContainer: {
     padding: 20,
-    backgroundColor: '#f0f0f0', // Example background color
+    backgroundColor: 'white', // Example background color
   },
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: 'white',
     paddingHorizontal: 20,
     paddingVertical: 30,
   },
@@ -385,7 +330,7 @@ const styles = StyleSheet.create({
   action: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginTop: 10,
+    marginTop: 20,
     borderBottomWidth: 1,
     borderBottomColor: '#ccc',
     paddingBottom: 5,

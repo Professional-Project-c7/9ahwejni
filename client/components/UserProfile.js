@@ -28,7 +28,7 @@ const [isModalVisible, setIsModalVisible] = useState(false);
 
 const removeTokenFromStorage = async () => {
   try {
-    await AsyncStorage.removeItem('userToken');
+    await AsyncStorage.removeItem('IdUser');
     console.log('Token removed successfully');
   } catch (error) {
     console.error('Error removing token:', error);
@@ -41,7 +41,7 @@ const toggleModal = () => {
     
 const retrieveData = async () => {
   try {
-    const value = await AsyncStorage.getItem('userToken');
+    const value = await AsyncStorage.getItem('IdUser');
     if (value !== null) {
       const tokenObject = JSON.parse(value);
       const userId = tokenObject.userId; 
