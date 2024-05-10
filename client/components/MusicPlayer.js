@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TouchableOpacity } from 'react-native';
+import { View, TouchableOpacity } from 'react-native';
 import { IconButton } from 'react-native-paper';
 import { FontAwesome5 } from '@expo/vector-icons';
 import testMusic from '../music/testMusic.mp3'; 
@@ -42,9 +42,6 @@ const MusicPlayer = () => {
 
   return (
     <View style={{ alignItems: 'center' }}>
-      <Text style={{ fontSize: 20, fontWeight: 'bold' }}>Now Playing:</Text>
-      <Text style={{ fontSize: 16 }}>Test Song - Test Artist</Text>
-      
       <FontAwesome5 name="spotify" size={100} color="green" />
       
       <TouchableOpacity onPress={togglePlayback}>

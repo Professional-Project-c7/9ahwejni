@@ -16,6 +16,7 @@ import SettingComponent from './Setting';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
+
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 const MyComponent = ({navigation}) => {
@@ -82,7 +83,6 @@ const handleLogout = () => {
   removeTokenFromStorage();
   navigation.navigate('Login');
 };
-
 
   return (
     <ScrollView>
@@ -151,6 +151,43 @@ const handleLogout = () => {
   </View>
 </TouchableOpacity>
         </View>
+    
+
+        {/* <View>
+  <Text>Bezier Line Chart</Text>
+  <LineChart
+    data={{
+      labels: ["January", "February", "March", "April", "May", "June"],
+      datasets: [
+        {
+          data: [
+            Math.random() * 100,
+            Math.random() * 100,
+            Math.random() * 100,
+            Math.random() * 100,
+            Math.random() * 100,
+            Math.random() * 100
+          ]
+        }
+      ]
+    }}
+    // width={Dimensions.get("window").width} // from react-native
+    height={220}
+    yAxisLabel="$"
+    yAxisSuffix="k"
+    yAxisInterval={1} // optional, defaults to 1
+    chartConfig={{
+      backgroundColor: "#e26a00",
+      backgroundGradientFrom: "#fb8c00",
+      backgroundGradientTo: "#ffa726",
+      decimalPlaces: 2, // optional, defaults to 2dp
+      color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
+      labelColor: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
+     
+    }}
+   
+  />
+</View> */}
        
         <View style={styles.optionsContainer}>
           <TouchableOpacity style={styles.option} onPress={() => navigation.navigate('panier')}>
