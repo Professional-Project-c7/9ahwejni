@@ -37,7 +37,7 @@ exports.login = async (req, res) => {
     try {
         const { Email, Password } = req.body;
         const user = await db.User.findOne({ where: { Email:Email } });
-        
+
         if (!user) {
             return res.status(401).json({ error: 'Invalid credentials' });
         }
@@ -58,6 +58,7 @@ exports.login = async (req, res) => {
         res.status(500).json({ error: 'Login failed' });
     }
 };
+
 exports.getAllUsers = async (req, res) => {
     try {
         const users = await db.User.findAll();

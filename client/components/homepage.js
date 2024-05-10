@@ -11,7 +11,7 @@ import RandomProducts from "../components/randomproducts";
 import Pub from "../components/pub";
 import TopShops from "../components/TopShops";
 import axios from 'axios';
-import logoImage from "../image/logo.png";
+import logoImage from "../image/logo.png"; 
 import { ipAdress } from '../config';
 import CategoryBar from '../components/categorybar';
 

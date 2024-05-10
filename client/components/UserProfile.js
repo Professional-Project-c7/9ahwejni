@@ -45,7 +45,7 @@ const retrieveData = async () => {
     if (value !== null) {
       const tokenObject = JSON.parse(value);
       const userId = tokenObject.userId; 
-      console.log(userId);
+      console.log('helllllo',userId);
       setuserID(userId);
     }
   } catch (error) {
@@ -87,8 +87,7 @@ const handleLogout = () => {
   return (
     <ScrollView>
       <View style={styles.container}>
-        {userData && (
-        <>
+      
       <View style={{alignItems: 'center',marginTop:40}}>
           <TouchableOpacity >
             <View
@@ -126,12 +125,11 @@ const handleLogout = () => {
               </ImageBackground>
             </View>
           </TouchableOpacity>
-          <Text style={{ marginTop: 10, fontSize: 18, fontWeight: 'bold' }}>{userData.FirstName }</Text>
+          <Text style={{ marginTop: 10, fontSize: 18, fontWeight: 'bold' }}>'ggg'</Text>
         </View>
        
 
-        </>
-      )}
+       
         <View style={styles.optionsContainerOne}>
         <TouchableOpacity style={styles.optionOne} onPress={() => navigation.navigate('Info')}>
   <View style={styles.optionContent}>
@@ -164,11 +162,7 @@ const handleLogout = () => {
           </TouchableOpacity>
         </View>
         <View style={styles.optionsContainer}>
-          <TouchableOpacity style={styles.option } onPress={() => navigation.navigate('PaymentCardsDetails')}>
-          <View style={styles.test} >
-            <Image source={require("../image/credit-card.png")} style={styles.optionImage} /></View>
-            <Text style={styles.optionText}>PAYMENT DETAILS</Text>
-          </TouchableOpacity>
+        
           <TouchableOpacity style={styles.option} onPress={() => navigation.navigate('TransactionScreenCoffee')}>
           <View style={styles.test} >
             <Image source={require("../image/transaction.png")} style={styles.optionImage} /></View>
@@ -201,7 +195,7 @@ const handleLogout = () => {
           <View style={styles.modalView}>
             <Text style={styles.modalText}>do you want logout !</Text>
             <TouchableOpacity style={styles.closeButton} onPress={toggleModal}>
-              <Text style={styles.closeButtonText}>Close</Text>
+              <Text style={styles.closeButtonText}>Cancel</Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.closeButton} onPress={handleLogout}>
               <Text style={styles.closeButtonText}>log out</Text>
