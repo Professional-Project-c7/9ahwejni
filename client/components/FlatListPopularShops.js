@@ -38,7 +38,7 @@ const FlatListPopularShops = () => {
 const styles = StyleSheet.create({
     textStyle: {
         fontSize: 14,
-        padding: 20,
+        padding: 16,
         backgroundColor: '#DDDDDD',
         margin: 5,
         color: "black",
