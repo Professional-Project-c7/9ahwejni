@@ -4,12 +4,14 @@ import LinearGradient from 'react-native-linear-gradient';
 import { IconButton } from 'react-native-paper';
 // import TrackPlayer, { useTrackPlayerProgress } from 'react-native-track-player';
 // import testMusic from '../music/testMusic.mp3';
-// import MusicPlayer from './MusicPlayer'; // Import MusicPlayer component
+// import MusicPlayer from './MusicPlayer'; 
+
+import MusicPlayer from './MusicPlayer'; 
 import RandomProducts from "../components/randomproducts";
 import Pub from "../components/pub";
 import TopShops from "../components/TopShops";
 import axios from 'axios';
-import logoImage from "../image/logo.png";
+import logoImage from "../image/logo.png"; 
 import { ipAdress } from '../config';
 import CategoryBar from '../components/categorybar';
 import Searchbar from '../components/searchbar';

@@ -7,7 +7,7 @@ import familyPackImage from '../image/groupPack.png';
 const testData = [
   {
     id: '1',
-    title: 'Premium Coffee',
+    title: ' Pack  1 ',
     description: 'Premium quality coffee blend for a perfect start to your day.',
     Coffeimage: [
       { uri: 'https://www.acouplecooks.com/wp-content/uploads/2021/08/Cafe-Au-Lait-001s.jpg' },
@@ -29,7 +29,7 @@ const testData = [
   },
   {
     id: '2',
-    title: 'Premium Coffee',
+    title: 'Pack 2 ',
     description: 'Premium quality coffee blend for a perfect start to your day.',
     Coffeimage: [
       { uri: 'https://img.restaurantguru.com/re86-Roots-Coffee-Shop-interior-2022-10.jpg' },
@@ -243,6 +243,7 @@ const styles = StyleSheet.create({
  
   
   cards : {
+   marginBottom : 20 , 
     height: 500,
     width : 380,
     backgroundColor : '#F0EBE3',
