@@ -35,6 +35,7 @@ import ProductDetailsPage from '../components/ProdDetails';
 import Paye from '../components/Payment';
 import Panier from '../components/Panier';
 import Allcoffeeshops from '../components/AllCoffeShops';
+import Onboarding from '../components/Onboarding';
 // import { useNavigation } from '@react-navigation/native';
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -81,6 +82,19 @@ function TabNavigator() {
           ),
           tabBarLabel: ({ focused, color }) => (
             <Text style={{ color: focused ? '#dba617' : 'gray' }}>Home</Text>
+          ),
+          headerShown: false
+        }}
+      />
+       <Tab.Screen
+        name="Allcoffeeshops"
+        component={Allcoffeeshops}
+        options={{
+          tabBarIcon: ({ color, size }) => (
+            <IconButton icon="coffee" size={size} iconColor={color} />
+          ),
+          tabBarLabel: ({ focused, color }) => (
+            <Text style={{ color: focused ? '#dba617' : 'gray' }}>Shops</Text>
           ),
           headerShown: false
         }}
@@ -133,14 +147,13 @@ function TabNavigator() {
 function NAVSTART() {
 
 
- 
 
   
   
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="Start">
-        <Stack.Screen name="Start" component={Start} options={{ headerShown: false }} />
+      <Stack.Navigator initialRouteName="Onboarding">
+        {/* <Stack.Screen name="Start" component={Start} options={{ headerShown: false }} /> */}
         <Stack.Screen name="Login" component={Login} options={{ headerShown: false }} />
         <Stack.Screen name="UserSignUp" component={SignUser} options={{ headerShown: false }} />
         <Stack.Screen name="CoffeeShopSignUp" component={SignCofee} options={{ headerShown: false }} />
@@ -169,6 +182,8 @@ function NAVSTART() {
         <Stack.Screen name="st3" component={Start3} options={{ headerShown: false }} />
         <Stack.Screen name="st4" component={Start4} options={{ headerShown: false }} />
         <Stack.Screen name="Tabs"  component={TabNavigator} options={{ headerShown: false }} />
+        <Stack.Screen name="Onboarding" component={Onboarding} options={{ headerShown: false }} />
+
         <Stack.Screen  name="SettingComponent" component={SettingComponent} />
       </Stack.Navigator>
     </NavigationContainer>
