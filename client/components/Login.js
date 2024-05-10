@@ -18,7 +18,7 @@ const Login = ({ navigation }) => {
         `http://${ipAdress}:3000/api/auth/login`,
         { Email: email, Password: password }
       );
-      AsyncStorage.setItem('userToken', JSON.stringify(response.data));
+      AsyncStorage.setItem('userToken', JSON.stringify(response.data.userId));
      console.log(response.data.userId);
       navigation.navigate('Tabs'); 
 

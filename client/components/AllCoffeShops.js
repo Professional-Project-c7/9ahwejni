@@ -10,6 +10,35 @@ const CoffeeShopsList = ({ navigation }) => {
   const [coffeeShopsData, setCoffeeShopsData] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
 
+  // Define dummy data within the scope of the component
+  const dummyData = [
+    {
+      id: 1,
+      FirstName: "John",
+      LastName: "Doe",
+      Address: "123 Main St",
+      Email: "john@example.com",
+      Password: "password123",
+      ImageUrl: "https://example.com/images/john.jpg",
+      UserType: "coffee",
+      createdAt: "2024-05-07T14:25:42.000Z",
+      updatedAt: "2024-05-07T14:25:42.000Z"
+    },
+    {
+      id: 2,
+      FirstName: "Jane",
+      LastName: "Smith",
+      Address: "456 Elm St",
+      Email: "jane@example.com",
+      Password: "password456",
+      ImageUrl: "https://example.com/images/jane.jpg",
+      UserType: "coffee",
+      createdAt: "2024-05-07T14:25:42.000Z",
+      updatedAt: "2024-05-07T14:25:42.000Z"
+    },
+    // Add more dummy data as needed
+  ];
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -49,13 +78,13 @@ const CoffeeShopsList = ({ navigation }) => {
           placeholder="Search..."
           onChangeText={text => setSearchQuery(text)}
           value={searchQuery}
-        />
+          />
       </View>
       <FlatListPopularShops />
       <Text style={styles.TxtList}>List of our shops ({filteredCoffeeShops.length})</Text>
       <FlatList
         data={filteredCoffeeShops}
-        keyExtractor={item => item.id}
+        keyExtractor={item => item.id.toString()}
         renderItem={({ item }) => (
           <TouchableOpacity
             style={styles.card}
