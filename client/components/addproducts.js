@@ -73,7 +73,7 @@ const ProductList = () => {
   const [productDescription, setProductDescription] = useState('');
   const [productSize, setProductSize] = useState('');
   const [productPrice, setProductPrice] = useState('');
-  const [userID, setUserID] = useState(null);
+  const [userID, setUserID] = useState(0);
 
   console.log(productName);
   useEffect(() => {
@@ -94,7 +94,7 @@ const ProductList = () => {
     }
   };
 
-  // Modify the handleAddProduct function to include the correct endpoint URL
+ 
 const handleAddProduct = async () => {
   try {
     if (!userID) {
@@ -105,16 +105,14 @@ console.log("before" ,userID);
     const newProduct = {
       name: productName,
       description: productDescription,
-      // size: productSize,
       price: productPrice,
-      // Include the user ID in the request body
-      UserId: userID,
+      userId: userID,
     };
 
     const response = await axios.post(`http://${ipAdress}:3000/api/product`, newProduct);
     console.log('Product added successfully:', response.data);
 
-    // Clear input fields after successful submission
+    
     setProductName('');
     setProductDescription('');
     setProductSize('');

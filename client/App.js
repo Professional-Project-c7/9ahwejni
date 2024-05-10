@@ -8,7 +8,7 @@ import { store } from './redux/store';
 import AllCoffeShops from './components/UserProfile';
 import HomePage from './components/homepage';
 import AdvancedFilter from './components/AdvancedFilter';
-
+import TestCloudinary from "./components/testcloudinary"
 
 function App() {
 
@@ -16,7 +16,7 @@ function App() {
   <Provider store={store}>
     <SafeAreaView style={{ flex: 1 }}>
 
-    {/* <Posts /> */}
+   
     <NAVSTART/>
 
  </SafeAreaView>

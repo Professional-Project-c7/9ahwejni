@@ -36,6 +36,7 @@ import { IconButton } from 'react-native-paper';
 import ProductDetailsPage from '../components/ProdDetails';
 import Paye from '../components/Payment';
 import Panier from '../components/Panier';
+import CoffeeProductList from "../components/coffeeprodlist"
 
 
 function NAVSTART() {
@@ -59,7 +60,8 @@ function NAVSTART() {
         <Stack.Screen name="User" component={UserProfile} />
         <Stack.Screen name="prd" component={ProductDetailsPage} options={{ headerShown: false }} />
         <Stack.Screen name="panier" component={Panier} options={{ headerShown: false }} />
-        
+        <Stack.Screen name="CoffeeProductList" component={CoffeeProductList} options={{ headerShown: false }} />
+
        <Stack.Screen name="Paye" component={Paye} options={{ headerShown: false }}/>
 
         <Stack.Screen name="menu" component={MenuItems} options={{ headerShown: false }} />
