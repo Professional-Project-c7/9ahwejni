@@ -31,7 +31,7 @@ const Panier = ({ navigation }) => {
     navigation.navigate('Tabs');
   };
   const handlepayment = () => {
-
+    AsyncStorage.setItem('PRICE', JSON.stringify(totalPrice))
     navigation.navigate('Paye');
     };
   const handleDeleteItem = async (itemId) => {
@@ -52,6 +52,7 @@ const Panier = ({ navigation }) => {
     });
     setTotalPrice(totalPrice);
   };
+  console.log(totalPrice);
 
   return (
     <View style={styles.container}>
@@ -85,10 +86,9 @@ const Panier = ({ navigation }) => {
         {/* <Text style={styles.deliveryCharge}>Delivery charge: $1.5</Text>
         <Text style={styles.discount}>Discount: 5%</Text> */}
         <View >
-          <Text>Total Price: ${totalPrice.toFixed(2)}</Text>
+          <Text>Total Price: ${totalPrice.toFixed(3)}</Text>
           
           </View >
-
       </View>
              <View>
               <TouchableOpacity> 
