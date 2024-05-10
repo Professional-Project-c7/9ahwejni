@@ -27,7 +27,6 @@ async function connectionTest (){
   db.Coffee=require('./cofee.model')(connection,DataTypes)
   db.Message=require('./Message.model')(connection,DataTypes)
   db.Packproduct=require('./packproduct')(connection,DataTypes)
-  db.Payments=require('./Payment.model')(connection,DataTypes)
   db.Review = require('./review.model')(connection, DataTypes);
   db.Options = require('./options.model')(connection, DataTypes);
 
