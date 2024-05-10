@@ -3,29 +3,38 @@ import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
 import { Button } from 'react-native-paper';
 import axios from 'axios';
 import { ipAdress } from '../config'; 
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import Icon from 'react-native-vector-icons/FontAwesome'; 
 
 const ProductDetailsPage = ({ navigation }) => {
     const [products, setProducts] = useState([]);
     const [selectedSize, setSelectedSize] = useState(null);
     const [selectedSugar, setSelectedSugar] = useState(null);
     const [selectedIce, setSelectedIce] = useState(null);
-
+    const [selectedProductId, setSelectedProductId] = useState(null);
 console.log(products);
 
 
-    useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const response = await axios.get(`http://${ipAdress}:3000/api/product/SearchById/47`);
-                setProducts(response.data);
-            } catch (error) {
-                console.error('Error fetching data: ', error);
-            }
-        };
+useEffect(() => {
+    const fetchProductDetails = async () => {
+      try {
+      
+        const productId = await AsyncStorage.getItem('selectedProductId');
+        setSelectedProductId(productId);
+        
+        const response = await axios.get(`http://${ipAdress}:3000/api/product/SearchById/${productId}`);
+        setProducts(response.data); // Remove [0] from here
+      } catch (error) {
+        console.error('Error fetching product details:', error);
+      }
+    };
 
-        fetchData();
-    }, []);
+    fetchProductDetails();
+  }, []);
 
+  const handleAddTohome = () => {
+    navigation.navigate('Tabs');
+  };
     const handleSizeSelection = (size) => {
         setSelectedSize(size);
     };
@@ -37,13 +46,22 @@ console.log(products);
     const handleIceSelection = (ice) => {
         setSelectedIce(ice);
     };
-    const handleAddToCart = () => {
-        
-        navigation.navigate('panier', { productId: products[0].id });
+ const handleAddToCart = async (product) => {
+        try {
+            const existingCartItems = await AsyncStorage.getItem('favorites');
+            const cartItems = existingCartItems ? JSON.parse(existingCartItems) : [];
+            console.log("cartItems",cartItems);
+            cartItems.push(products[0]);
+            await AsyncStorage.setItem('favorites', JSON.stringify(cartItems));
+        } catch (error) {
+            console.error('Error adding product to cart:', error);
+        }
     };
-
+    
     return (
+        
         <View style={styles.container}>
+             <Icon name="arrow-left" size={30}   onPress={handleAddTohome} />
             {products.map((product, index) => (
                 <View key={index} style={styles.productContainer}>
                     <Image
@@ -54,7 +72,9 @@ console.log(products);
                         <Text style={styles.name}>{product.name}</Text>
                         <Text style={styles.description}>{product.description}</Text>
                         <View style={styles.bottomContainer}>
+                            
                             <Text style={styles.sectionTitle}>Customize</Text>
+                            
                             <View style={styles.optionContainer}>
                                 <View style={styles.optionButtonsContainer}>
                                     <Text style={styles.optionTitle}>Size</Text>
@@ -147,7 +167,9 @@ console.log(products);
                             <View style={styles.priceContainer}>
                                 <Text style={styles.productPrice}>${product.price}</Text>
                                 <TouchableOpacity>
-                                    <Text style={styles.add} onPress={handleAddToCart }   >Add to Cart</Text>
+                                    <Text style={styles.add}
+                                     onPress={handleAddToCart } 
+                                      >Add to Cart</Text>
                                 </TouchableOpacity>
                             </View>
                         </View>
@@ -160,8 +182,7 @@ console.log(products);
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        padding: 10,
-       
+marginHorizontal:15       
     },
     productContainer: {
         marginBottom: 20,
