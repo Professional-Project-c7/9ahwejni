@@ -1,4 +1,4 @@
-const ipAdress = "192.168.103.2";
+const ipAdress = "192.168.1.19";
 
 
 
