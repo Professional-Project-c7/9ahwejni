@@ -11,9 +11,9 @@ const HomeCarousel = () => {
     setDimension(window);
   };
   useEffect(() => {
-    const subscription= Dimensions.addEventListener('change', onChange);
+    const subscription = Dimensions.addEventListener('change', onChange);
     return () => {
-      subscription.remove()
+      subscription.remove();
     };
   }, []);
 
@@ -59,23 +59,16 @@ const HomeCarousel = () => {
           <Image
             key={key}
             source={{ uri: `${value.url}` }}
-            style={{ width: dimension?.width, height: 200, resizeMode: 'cover' }}
+            style={[styles.image, { width: dimension.width }]}
             PlaceholderContent={<ActivityIndicator />}
           />
         ))}
       </ScrollView>
-      <View
-        style={{
-          flexDirection: 'row',
-          position: 'absolute',
-          bottom: 0,
-          alignSelf: 'center',
-        }}
-      >
+      <View style={styles.pagination}>
         {carouselImages.map((val, key) => (
           <Text
             key={key}
-            style={key === selectedIndex ? { color: 'white' } : { color: '#888' }}
+            style={key === selectedIndex ? styles.paginationActiveText : styles.paginationText}
           >
             ⬤
           </Text>
@@ -85,6 +78,29 @@ const HomeCarousel = () => {
   );
 };
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+  image: {
+    height: 200,
+    borderRadius: 15,
+    marginHorizontal: 0.0001,
+    resizeMode: 'cover',
+  },
+  pagination: {
+    flexDirection: 'row',
+    position: 'absolute',
+    bottom: 10,
+    alignSelf: 'center',
+  },
+  paginationText: {
+    color: '#888',
+    margin: 3,
+    fontSize: 16,
+  },
+  paginationActiveText: {
+    color: 'white',
+    margin: 3,
+    fontSize: 16,
+  },
+});
 
 export default HomeCarousel;

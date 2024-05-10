@@ -15,7 +15,8 @@ module.exports = async (sequelize) => {
     const userCount = 50;
     const productCount = 100;
     const packCount = 50;
-    // Generate random users
+    const reviewCount = 50;
+        // Generate random users
     const users = await Promise.all(
       Array.from({ length: userCount }).map(async () => {
         return await db.User.create({
@@ -77,19 +78,19 @@ module.exports = async (sequelize) => {
 
 
 
-      const Review =await Promise.all(
-        Array.from({ length: indoo }).map(async () => {
-            const user = users[Math.floor(Math.random() * userCount)];
-            const oneproduct = Products[Math.floor(Math.random() * packCount)];
+      // Create Reviews
+  const reviews = await Promise.all(
+    Array.from({ length: reviewCount }).map(async () => {
+      const user = users[Math.floor(Math.random() * userCount)];
+      const product = Products[Math.floor(Math.random() * productCount)];
+      return await db.Review.create({
+        stars: getRandomElementFromArray([1, 2, 3, 4, 5]),
+        comment: faker.commerce.productDescription(),
+        UserId: user.id,
+        ProductId: product.id
+      });
+    })
+  );
 
-          return await db.Review.create({
-            stars:getRandomElementFromArray([1,2,3,4,5]),
-            comment:faker.commerce.productDescription(),
-            userId:user.id,
-            prodId:oneproduct.id
-          });
-        })
-      )
-      
-
-}
+  console.log('Reviews seeded successfully.');
+};

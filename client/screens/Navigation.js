@@ -37,7 +37,7 @@ import ProductDetailsPage from '../components/ProdDetails';
 import Paye from '../components/Payment';
 import Panier from '../components/Panier';
 // import AdvancedFilter from '../components/AdvancedFilter';
-
+import Allcoffeeshops from '../components/AllCoffeShops'
 function NAVSTART() {
   return (
     <NavigationContainer>
@@ -59,6 +59,7 @@ function NAVSTART() {
         <Stack.Screen name="User" component={UserProfile} />
         <Stack.Screen name="prd" component={ProductDetailsPage} options={{ headerShown: false }} />
         <Stack.Screen name="panier" component={Panier} options={{ headerShown: false }} />
+        <Stack.Screen name="Allcoffeeshops" component={Allcoffeeshops} options={{ headerShown: false }} />
         
        <Stack.Screen name="Paye" component={Paye} options={{ headerShown: false }}/>
 
@@ -88,6 +89,7 @@ function TabNavigator() {
       inactiveTintColor: 'gray',
     }}
   >
+    
     <Tab.Screen
       name="homePage"
       component={HomePage}
@@ -97,6 +99,19 @@ function TabNavigator() {
         ),
         tabBarLabel: ({ focused, color }) => (
           <Text style={{ color: focused ? '#dba617' : 'gray' }}>Home</Text>
+        ),
+        headerShown: false 
+      }}
+    />
+     <Tab.Screen
+      name="Allcoffeeshops"
+      component={Allcoffeeshops}
+      options={{
+        tabBarIcon: ({ color, size }) => (
+          <IconButton icon="coffee" size={size} iconColor={color} />
+        ),
+        tabBarLabel: ({ focused, color }) => (
+          <Text style={{ color: focused ? '#dba617' : 'gray' }}>shops</Text>
         ),
         headerShown: false 
       }}

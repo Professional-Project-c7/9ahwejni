@@ -31,7 +31,7 @@ const HomePage = ({ navigation }) => {
         style={styles.topBackground}
       >
         <View style={styles.top}>
-          <IconButton icon="menu" iconColor='#FFF' />
+          <IconButton icon="bell" iconColor='#FFF' />
           <View style={styles.logoContainer}>
             <Image source={logoImage} style={styles.logo} />
           </View>
@@ -39,7 +39,8 @@ const HomePage = ({ navigation }) => {
         </View>
       </LinearGradient>
       <View style={styles.searchContainer}>
-        <SearchBar />
+        <SearchBar /> 
+       {/* data={userData} */}
       </View>
       <View style={styles.categoryBarContainer}>
         <Text style={styles.categoryTitle}>Category</Text>
@@ -132,7 +133,7 @@ const styles = StyleSheet.create({
     Texttitlecoffee: {
       fontSize: 20,
       fontWeight: 'bold',
-      fontFamily: 'Montserrat',
+      fontFamily: 'Poppins',
       color: '#dba617',
       textAlign: 'center',
       marginTop: 40,
