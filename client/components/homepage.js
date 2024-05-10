@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { StyleSheet, Text, View, Image, TouchableOpacity, ScrollView, FlatList, StatusBar } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import { IconButton } from 'react-native-paper';
-import TrackPlayer, { useTrackPlayerProgress } from 'react-native-track-player';
+// import TrackPlayer, { useTrackPlayerProgress } from 'react-native-track-player';
 // import MusicPlayer from './MusicPlayer'; 
 import RandomProducts from "../components/randomproducts";
 import Pub from "../components/pub";
@@ -105,7 +105,7 @@ const styles = StyleSheet.create({
   logoContainer: {
     width: 82,
     height: 79,
-    borderRadius: 28,
+    borderRadius: 33,
     backgroundColor: 'white',
     justifyContent: 'center',
     alignItems: 'center',
