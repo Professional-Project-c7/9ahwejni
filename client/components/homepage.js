@@ -3,9 +3,6 @@ import { StyleSheet, Text, View, Image, TouchableOpacity, ScrollView, FlatList, 
 import LinearGradient from 'react-native-linear-gradient';
 import { IconButton } from 'react-native-paper';
 // import TrackPlayer, { useTrackPlayerProgress } from 'react-native-track-player';
-// import testMusic from '../music/testMusic.mp3';
-// import MusicPlayer from './MusicPlayer'; 
-
 // import MusicPlayer from './MusicPlayer'; 
 import RandomProducts from "../components/randomproducts";
 import Pub from "../components/pub";
