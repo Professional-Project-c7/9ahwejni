@@ -35,6 +35,7 @@ import ProductDetailsPage from '../components/ProdDetails';
 import Paye from '../components/Payment';
 import Panier from '../components/Panier';
 import Allcoffeeshops from '../components/AllCoffeShops';
+import Onboarding from '../components/Onboarding';
 // import { useNavigation } from '@react-navigation/native';
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -133,64 +134,14 @@ function TabNavigator() {
 function NAVSTART() {
 
 
-  // function TabNavigator() {
-  //   return (
-  //     <Tab.Navigator
-  //       screenOptions={({ route }) => ({
-  //         tabBarIcon: ({ color, size }) => {
-  //           let iconName;
 
-  //           if (route.name === 'homePage') {
-  //             iconName = 'home';
-  //           } else if (route.name === 'Allcoffeeshops') {
-  //             iconName = 'coffee';
-  //           } else if (route.name === 'Map') {
-  //             iconName = 'google-maps';
-  //           } else if (route.name === 'Profile') {
-  //             iconName = 'account';
-  //           }
-
-  //           return <IconButton icon={iconName} size={size} iconColor={color} />;
-  //         },
-  //         tabBarLabel: ({ focused, color }) => {
-  //           let label = '';
-
-  //           if (route.name === 'homePage') {
-  //             label = 'Home';
-  //           } else if (route.name === 'Allcoffeeshops') {
-  //             label = 'Shops';
-  //           } else if (route.name === 'Map') {
-  //             label = 'Map';
-  //           } else if (route.name === 'Profile') {
-  //             label = 'Profile';
-  //           }
-
-  //           return <Text style={{ color: focused ? '#dba617' : 'gray' }}>{label}</Text>;
-  //         },
-  //         headerShown: false,
-  //       })}
-  //       tabBarOptions={{
-  //         activeTintColor: '#dba617',
-  //         inactiveTintColor: 'gray',
-  //       }}
-  //     >
-  //       <Tab.Screen name="homePage" component={HomePage} />
-  //       <Tab.Screen name="Allcoffeeshops" component={Allcoffeeshops} />
-  //       <Tab.Screen name="Map" component={Map} />
-  //       <Tab.Screen
-  //         name="Profile"
-  //         component={userType === 'User' ? UserProfile : coffeeprofile}
-  //       />
-  //     </Tab.Navigator>
-  //   );
-  // }
 
   
   
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="Start">
-        <Stack.Screen name="Start" component={Start} options={{ headerShown: false }} />
+      <Stack.Navigator initialRouteName="Onboarding">
+        {/* <Stack.Screen name="Start" component={Start} options={{ headerShown: false }} /> */}
         <Stack.Screen name="Login" component={Login} options={{ headerShown: false }} />
         <Stack.Screen name="UserSignUp" component={SignUser} options={{ headerShown: false }} />
         <Stack.Screen name="CoffeeShopSignUp" component={SignCofee} options={{ headerShown: false }} />
@@ -219,6 +170,8 @@ function NAVSTART() {
         <Stack.Screen name="st3" component={Start3} options={{ headerShown: false }} />
         <Stack.Screen name="st4" component={Start4} options={{ headerShown: false }} />
         <Stack.Screen name="Tabs"  component={TabNavigator} options={{ headerShown: false }} />
+        <Stack.Screen name="Onboarding" component={Onboarding} options={{ headerShown: false }} />
+
         <Stack.Screen  name="SettingComponent" component={SettingComponent} />
       </Stack.Navigator>
     </NavigationContainer>
