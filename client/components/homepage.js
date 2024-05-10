@@ -42,7 +42,7 @@ const HomePage = ({ navigation }) => {
         <Searchbar />
       </View>
       <View style={styles.categoryBarContainer}>
-        <Text style={styles.categoryTitle}>Category</Text>
+        {/* <Text style={styles.categoryTitle}>Category</Text> */}
         <CategoryBar />
       </View>
       <Pub />
