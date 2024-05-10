@@ -43,7 +43,7 @@ const HomePage = ({ navigation }) => {
         <Searchbar onFilterPress={showFilterModal} />
       </View>
       <View style={styles.categoryBarContainer}>
-        <Text style={styles.categoryTitle}>Category</Text>
+        {/* <Text style={styles.categoryTitle}>Category</Text> */}
         <CategoryBar />
       </View>
       <Pub />
