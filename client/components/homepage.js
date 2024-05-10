@@ -1,8 +1,12 @@
+// HomePage.js
+
 import React, { useState, useEffect } from 'react';
 import { StyleSheet, Text, View, Image, TouchableOpacity, ScrollView, FlatList, StatusBar } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
-// import SearchBar from '../components/searchbar';
 import { IconButton } from 'react-native-paper';
+// import TrackPlayer, { useTrackPlayerProgress } from 'react-native-track-player';
+// import testMusic from '../music/testMusic.mp3';
+import MusicPlayer from './MusicPlayer'; // Import MusicPlayer component
 import RandomProducts from "../components/randomproducts";
 import Pub from "../components/pub";
 import TopShops from "../components/TopShops";
@@ -16,11 +20,9 @@ const HomePage = ({ navigation }) => {
   const coffeeUsers = userData.filter(user => user.UserType === "coffee");
   const clientUsers = userData.filter(user => user.UserType === "client");
 
-
-
-
-
   const firstTwoImages = userData.slice(0, 3);
+  
+  
 
   return (
     <ScrollView style={styles.container}>
@@ -65,7 +67,7 @@ const HomePage = ({ navigation }) => {
               <Image source={{ uri: item.ImageUrl }} style={styles.imageCoffee}  />
             </View>
             <View style={styles.titleBox}>
-              <Text style={styles.titleCoffee}     >{item.FirstName} {item.LastName}</Text>
+              <Text style={styles.titleCoffee}>{item.FirstName} {item.LastName}</Text>
             </View>
           </TouchableOpacity>
         )}
@@ -76,6 +78,7 @@ const HomePage = ({ navigation }) => {
       </View>
       <TopShops />
       <StatusBar style="auto" />
+      <MusicPlayer />
     </ScrollView>
   );
 }
@@ -128,58 +131,59 @@ const styles = StyleSheet.create({
     color: '#000',
     marginBottom: 10,
     justifyContent: 'center',
-    right : 15},
-    Texttitlecoffee: {
-      fontSize: 20,
-      fontWeight: 'bold',
-      fontFamily: 'Montserrat',
-      color: '#dba617',
-      textAlign: 'center',
-      marginTop: 40,
-      marginLeft: 20,
-      flex: 1,
-    },
-    seeAllText: {
-      fontSize: 16,
-      fontWeight: 'bold',
-      color: '#dba617',
-      marginTop: 40,
-      marginRight: 20,
-    },
-    card: {
-      width: 180,
-      height: 140,
-      marginLeft: 9,
-      marginRight: 5,
-      marginTop: 15,
-    },
-    imageBox: {
-      width: '100%',
-      height: '100%',
-      borderRadius: 20,
-      overflow: 'hidden',
-    },
-    imageCoffee: {
-      width: '100%',
-      height: '100%',
-      resizeMode: 'cover',
-    },
-    titleBox: {
-      position: 'absolute',
-      bottom: 0,
-      left: 0,
-      right: 0,
-      backgroundColor: "rgba(219, 166, 23, 0.4)",
-      padding: 10,
-      borderBottomLeftRadius: 20,
-      borderBottomRightRadius: 20,
-    },
-    titleCoffee: {
-      fontSize: 18,
-      fontWeight: 'bold',
-      color: 'white',
-      textAlign: 'center',
-    },
-  });
-  
-  export default HomePage;
+    right : 15
+  },
+  Texttitlecoffee: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    fontFamily: 'Montserrat',
+    color: '#dba617',
+    textAlign: 'center',
+    marginTop: 40,
+    marginLeft: 20,
+    flex: 1,
+  },
+  seeAllText: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#dba617',
+    marginTop: 40,
+    marginRight: 20,
+  },
+  card: {
+    width: 180,
+    height: 140,
+    marginLeft: 9,
+    marginRight: 5,
+    marginTop: 15,
+  },
+  imageBox: {
+    width: '100%',
+    height: '100%',
+    borderRadius: 20,
+    overflow: 'hidden',
+  },
+  imageCoffee: {
+    width: '100%',
+    height: '100%',
+    resizeMode: 'cover',
+  },
+  titleBox: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    backgroundColor: "rgba(219, 166, 23, 0.4)",
+    padding: 10,
+    borderBottomLeftRadius: 20,
+    borderBottomRightRadius: 20,
+  },
+  titleCoffee: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: 'white',
+    textAlign: 'center',
+  },
+});
+
+export default HomePage;
