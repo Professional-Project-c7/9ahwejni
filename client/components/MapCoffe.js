@@ -4,7 +4,7 @@ import MapView, { Marker, Polyline } from 'react-native-maps';
 import Geolocation from '@react-native-community/geolocation';
 import Geocoder from 'react-native-geocoding';
 import { Button, List, IconButton } from 'react-native-paper';
-
+import coffeeIcon from '../image/coffee-shop-logo.png'
 const GOOGLE_MAPS_API_KEY = 'AIzaSyDYm4cfAj3Lrk6HqMJZHGeB1JevFbEC55o'; // Replace with your Google Maps API Key
 Geocoder.init('AIzaSyDYm4cfAj3Lrk6HqMJZHGeB1JevFbEC55o');
 
@@ -186,13 +186,21 @@ export default function MapCoffe() {
         <MapView style={styles.map} initialRegion={region}>
           <Marker coordinate={{ latitude: region.latitude, longitude: region.longitude }} />
           {coffeeShops.map((marker, index) => (
-            <Marker key={index} coordinate={{ latitude: marker.latitude, longitude: marker.longitude }} pinColor="blue" onPress={() => handleGetDirections(marker)} />
-          ))}
+  <Marker
+  key={index}
+  coordinate={{ latitude: marker.latitude, longitude: marker.longitude }}
+  onPress={() => handleGetDirections(marker)}
+>
+  <Image
+    source={coffeeIcon}
+    style={{ width: 20, height: 35 }} // Set the width and height of your coffee icon
+  />
+</Marker>          ))}
           {directions && directions.routes && directions.routes.length > 0 && directions.routes[0].overview_polyline && (
             <Polyline
               coordinates={decodePolyline(directions.routes[0].overview_polyline.points)}
               strokeWidth={5}
-              strokeColor="red"
+              strokeColor="blue"
             />
           )}
         </MapView>
