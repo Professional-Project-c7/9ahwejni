@@ -37,7 +37,7 @@ const ProductList = ({ navigation }) => {
     navigation.navigate('prd', { product });
   };
 
-  const userId = 10;
+  const userId = 5;
   const filteredProducts = products.filter((product) => product.userId === userId);
 
   return (
