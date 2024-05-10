@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { StyleSheet, Text, View, Image, TouchableOpacity, ScrollView, FlatList, StatusBar } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
-import SearchBar from '../components/searchbar';
 import { IconButton } from 'react-native-paper';
+// import TrackPlayer, { useTrackPlayerProgress } from 'react-native-track-player';
+// import testMusic from '../music/testMusic.mp3';
+// import MusicPlayer from './MusicPlayer'; // Import MusicPlayer component
 import RandomProducts from "../components/randomproducts";
 import Pub from "../components/pub";
 import TopShops from "../components/TopShops";
@@ -10,17 +12,16 @@ import axios from 'axios';
 import logoImage from "../image/logo.png";
 import { ipAdress } from '../config';
 import CategoryBar from '../components/categorybar';
+import Searchbar from '../components/searchbar';
 
 const HomePage = ({ navigation }) => {
   const [userData, setUserData] = useState([]);
   const coffeeUsers = userData.filter(user => user.UserType === "coffee");
   const clientUsers = userData.filter(user => user.UserType === "client");
 
-
-
-
-
   const firstTwoImages = userData.slice(0, 3);
+  
+  
 
   return (
     <ScrollView style={styles.container}>
@@ -39,8 +40,7 @@ const HomePage = ({ navigation }) => {
         </View>
       </LinearGradient>
       <View style={styles.searchContainer}>
-        <SearchBar /> 
-       {/* data={userData} */}
+        <Searchbar />
       </View>
       <View style={styles.categoryBarContainer}>
         <Text style={styles.categoryTitle}>Category</Text>
@@ -66,7 +66,7 @@ const HomePage = ({ navigation }) => {
               <Image source={{ uri: item.ImageUrl }} style={styles.imageCoffee}  />
             </View>
             <View style={styles.titleBox}>
-              <Text style={styles.titleCoffee}     >{item.FirstName} {item.LastName}</Text>
+              <Text style={styles.titleCoffee}>{item.FirstName} {item.LastName}</Text>
             </View>
           </TouchableOpacity>
         )}
@@ -77,6 +77,7 @@ const HomePage = ({ navigation }) => {
       </View>
       <TopShops />
       <StatusBar style="auto" />
+      {/* <MusicPlayer /> */}
     </ScrollView>
   );
 }
@@ -133,7 +134,7 @@ const styles = StyleSheet.create({
     Texttitlecoffee: {
       fontSize: 20,
       fontWeight: 'bold',
-      fontFamily: 'Poppins',
+      fontFamily: 'Montserrat',
       color: '#dba617',
       textAlign: 'center',
       marginTop: 40,

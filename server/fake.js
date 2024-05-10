@@ -36,32 +36,56 @@ module.exports = async (sequelize) => {
       })
     );
     const Products = await Promise.all(
-        Array.from({ length: productCount }).map(async () => {
+      Array.from({ length: productCount }).map(async () => {
           const user = users[Math.floor(Math.random() * userCount)];
+          const category = getRandomElementFromArray(["pack", "coffee"]); // Adjusted category options
+          
+          let imgUrl;
+          if (category === "coffee") {
+              // Generate image URL specifically for coffee products
+              imgUrl = faker.image.imageUrl(400, 400, "food", true, true, "coffee");
+          } else {
+              // Generate a generic image URL for other categories
+              imgUrl = faker.image.imageUrl();
+          }
+  
           return await db.Products.create({
-            name: faker.commerce.product(),
-            price: faker.commerce.price(),
-            imgUrl:faker.image.url(),
-            description:faker.commerce.productDescription(),
-            userId: user.id, 
-            size: getRandomElementFromArray(["S","M","L"]),
-            category: getRandomElementFromArray(["pack","product"]),
-           
+              name: faker.commerce.product(),
+              price: faker.commerce.price(),
+              imgUrl: imgUrl,
+              description: faker.commerce.productDescription(),
+              userId: user.id,
+              size: getRandomElementFromArray(["S", "M", "L"]),
+              category: category,
           });
-        })
-      );
+      })
+  );
+  
 
-      const pack =await Promise.all(
-        Array.from({ length: packCount }).map(async () => {
-         
-          return await db.Pack.create({
-            name: faker.person.firstName(),
+  const pack = await Promise.all(
+    Array.from({ length: packCount }).map(async () => {
+        const category = getRandomElementFromArray(["food", "coffee"]); // Randomly select category
+        
+        let name, description;
+        if (category === "food") {
+            // If the category is food, generate food-related data
+            name = faker.commerce.productName();
+            description = faker.commerce.productDescription();
+        } else {
+            // If the category is coffee, generate coffee-related data
+            name = faker.random.word() + " Coffee Pack";
+            description = faker.lorem.sentence();
+        }
+
+        return await db.Pack.create({
+            name: name,
             price: faker.commerce.price(),
-            description:faker.person.firstName(),
-           
-          });
-        })
-      )
+            description: description,
+            category: category,
+        });
+    })
+);
+
 
       const packproduct =await Promise.all(
         Array.from({ length: packCount }).map(async () => {
