@@ -1,9 +1,11 @@
+// CustomSearchBar.js
 import React, { useState, useEffect, useCallback } from 'react';
 import { View, FlatList, TouchableOpacity, StyleSheet } from 'react-native';
 import { Searchbar, List, Avatar, IconButton } from 'react-native-paper';
 import LinearGradient from 'react-native-linear-gradient';
 import axios from 'axios';
 import { ipAdress } from '../config';
+import { useNavigation } from '@react-navigation/native';
 
 const debounce = (func, delay) => {
   let timer;
@@ -15,7 +17,8 @@ const debounce = (func, delay) => {
   };
 };
 
-export default function CustomSearchBar({ navigation }) {
+export default function CustomSearchBar({ onFilterPress }) {
+  const navigation = useNavigation();
   const [searchQuery, setSearchQuery] = useState('');
   const [allProducts, setAllProducts] = useState([]);
   const [filteredData, setFilteredData] = useState([]);
@@ -68,8 +71,16 @@ export default function CustomSearchBar({ navigation }) {
     debouncedSearch(query);
   };
 
+  const handleNavigateToDetails = async (product) => {
+    try {
+      navigation.navigate('prd', { product });
+    } catch (error) {
+      console.log('Error navigating to product details:', error);
+    }
+  };
+
   const renderDropdownItem = ({ item }) => (
-    <TouchableOpacity onPress={() => console.log('Product selected', item)}>
+    <TouchableOpacity onPress={() => handleNavigateToDetails(item)}>
       <List.Item
         title={item.name}
         description={`(${item.totalReviews} ratings) Average: ${item.averageRating}, Price: $${item.price}`}
@@ -86,12 +97,7 @@ export default function CustomSearchBar({ navigation }) {
   );
 
   const handleSearchButtonPress = () => {
-    console.log('Search button pressed', searchQuery);
     debouncedSearch(searchQuery);
-  };
-
-  const handleFilterButtonPress = () => {
-    navigation.navigate('AdvancedFilter');
   };
 
   return (
@@ -113,7 +119,7 @@ export default function CustomSearchBar({ navigation }) {
             <IconButton icon="magnify" color="white" size={24} />
           </LinearGradient>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.filterButtonContainer} >
+        <TouchableOpacity style={styles.filterButtonContainer} onPress={onFilterPress}>
           <LinearGradient
             colors={['rgba(253,190,29,1)', 'rgba(252,145,69,1)']}
             start={{ x: 0, y: 0 }}
@@ -122,7 +128,7 @@ export default function CustomSearchBar({ navigation }) {
           >
             <IconButton icon="filter-variant" color="white" size={24} />
           </LinearGradient>
-        </TouchableOpacity >
+        </TouchableOpacity>
       </View>
       {dropdownVisible && (
         <View style={styles.dropdownContainer}>
