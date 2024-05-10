@@ -36,7 +36,7 @@ const RandomProducts = () => {
       try {
         const response = await axios.get(`http://${ipAdress}:3000/api/product/`);
         const shuffledProducts = response.data.sort(() => 0.5 - Math.random());
-        setProducts(shuffledProducts.slice(0, 16));
+        setProducts(shuffledProducts.slice(0, 6));
       } catch (err) {
         setError(err.message);
       }
@@ -69,8 +69,14 @@ const RandomProducts = () => {
     }
   };
 
-  const handleNavigateToDetails = (product) => { 
-    navigation.navigate('prd', { product }); 
+  const handleNavigateToDetails = async (product) => {
+    try {
+     
+      await AsyncStorage.setItem('selectedProductId', product.id.toString());
+      navigation.navigate('prd', { product });
+    } catch (error) {
+      console.log('Error storing selected product ID:', error);
+    }
   };
 
 
@@ -90,6 +96,7 @@ const RandomProducts = () => {
                   name={hearttt[product.id]?.favored ? 'heart' : 'heart-outline'}
                   color={hearttt[product.id]?.favored ? 'red' : '#dba617'}
                   size={27}
+                  // onPress={() => toggleFeature(product.id, 'hearttt')}
                   style={styles.favIcon}
                 />
                 <View style={styles.infoContainer}>
@@ -108,8 +115,8 @@ const RandomProducts = () => {
                     style={styles.starRating}
                   />
                   <Icon
-                    name={favorites[product.id]?.inCart ? 'cart' : 'cart-outline'}
-                    color={favorites[product.id]?.inCart ? 'red' : 'white'}
+                    name={favorites[product.id]?.inCart ? 'cart' : 'cart'}
+                    // color={favorites[product.id]?.inCart ? 'red' : 'white'}
                     size={24}
                     onPress={() => toggleFeature(product.id, 'inCart')}
                     style={styles.cartIcon}

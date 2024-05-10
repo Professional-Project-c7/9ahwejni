@@ -37,7 +37,7 @@ exports.login = async (req, res) => {
     try {
         const { Email, Password } = req.body;
         const user = await db.User.findOne({ where: { Email:Email } });
-        
+
         if (!user) {
             return res.status(401).json({ error: 'Invalid credentials' });
         }
@@ -51,13 +51,14 @@ exports.login = async (req, res) => {
             return res.status(401).json({ error: 'Invalid credentials' });
         }
 
-        const token = jwt.sign({ userId: user.id,FirstName:user.FirstName  }, 'your-secret-key', { expiresIn: '1h' });
-        res.status(200).json({ token, userId: user.id });
+        const token = jwt.sign({ userId: user.UserType,FirstName:user.FirstName  }, 'your-secret-key', { expiresIn: '1h' });
+        res.status(200).json({ token, userId: user.UserType });
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: 'Login failed' });
     }
 };
+
 exports.getAllUsers = async (req, res) => {
     try {
         const users = await db.User.findAll();

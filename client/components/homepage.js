@@ -1,26 +1,26 @@
 import React, { useState, useEffect } from 'react';
 import { StyleSheet, Text, View, Image, TouchableOpacity, ScrollView, FlatList, StatusBar } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
-import SearchBar from '../components/searchbar';
 import { IconButton } from 'react-native-paper';
+import TrackPlayer, { useTrackPlayerProgress } from 'react-native-track-player';
+import MusicPlayer from './MusicPlayer'; 
 import RandomProducts from "../components/randomproducts";
 import Pub from "../components/pub";
 import TopShops from "../components/TopShops";
 import axios from 'axios';
-import logoImage from "../image/logo.png";
+import logoImage from "../image/logo.png"; 
 import { ipAdress } from '../config';
 import CategoryBar from '../components/categorybar';
+import Searchbar from '../components/searchbar';
 
 const HomePage = ({ navigation }) => {
   const [userData, setUserData] = useState([]);
   const coffeeUsers = userData.filter(user => user.UserType === "coffee");
   const clientUsers = userData.filter(user => user.UserType === "client");
 
-
-
-
-
   const firstTwoImages = userData.slice(0, 3);
+  
+  
 
   return (
     <ScrollView style={styles.container}>
@@ -31,7 +31,7 @@ const HomePage = ({ navigation }) => {
         style={styles.topBackground}
       >
         <View style={styles.top}>
-          <IconButton icon="menu" iconColor='#FFF' />
+          <IconButton icon="bell" iconColor='#FFF' />
           <View style={styles.logoContainer}>
             <Image source={logoImage} style={styles.logo} />
           </View>
@@ -39,7 +39,7 @@ const HomePage = ({ navigation }) => {
         </View>
       </LinearGradient>
       <View style={styles.searchContainer}>
-        <SearchBar />
+        <Searchbar />
       </View>
       <View style={styles.categoryBarContainer}>
         <Text style={styles.categoryTitle}>Category</Text>
@@ -65,7 +65,7 @@ const HomePage = ({ navigation }) => {
               <Image source={{ uri: item.ImageUrl }} style={styles.imageCoffee}  />
             </View>
             <View style={styles.titleBox}>
-              <Text style={styles.titleCoffee}     >{item.FirstName} {item.LastName}</Text>
+              <Text style={styles.titleCoffee}>{item.FirstName} {item.LastName}</Text>
             </View>
           </TouchableOpacity>
         )}
@@ -76,6 +76,7 @@ const HomePage = ({ navigation }) => {
       </View>
       <TopShops />
       <StatusBar style="auto" />
+      <MusicPlayer />
     </ScrollView>
   );
 }
