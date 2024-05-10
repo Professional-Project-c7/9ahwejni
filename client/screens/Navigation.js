@@ -34,49 +34,39 @@ import Favorit from '../components/Another';
 import ProductDetailsPage from '../components/ProdDetails';
 import Paye from '../components/Payment';
 import Panier from '../components/Panier';
-import CoffeeProductList from "../components/coffeeprodlist"
-
-
-function NAVSTART() {
-  return (
-    <NavigationContainer>
-      <Stack.Navigator initialRouteName='Start'>
-        <Stack.Screen name="Start" component={Start} options={{ headerShown: false }} />
-        <Stack.Screen name="Login" component={Login} options={{ headerShown: false }} />
-        <Stack.Screen name="UserSignUp" component={SignUser} options={{ headerShown: false }} />
-        <Stack.Screen name="CoffeeShopSignUp" component={SignCofee} options={{ headerShown: false }} />
-        <Stack.Screen name="UserAccount" component={SignACC} options={{ headerShown: false }} />
-        <Stack.Screen name="ProductList" component={ProductList} options={{ headerShown: false }} />
-        <Stack.Screen name="AddPacks" component={AddPacks} ptions={{ headerShown: false }} />
-        <Stack.Screen name="AddProducts" component={AddProducts} options={{ headerShown: false }} />
-        <Stack.Screen name="Orders" component={Orders} ptions={{ headerShown: false }} />
-        <Stack.Screen name="Edit" component={EditCoffee}  />
-        <Stack.Screen name="Info" component={InfoCoffee} />
-        <Stack.Screen name="TransactionScreenCoffee" component={TransactionScreenCoffee} ptions={{ headerShown: false }} />
-        <Stack.Screen name="ReviewsCoffee" component={ReviewsCoffee} options={{ headerShown: false }} />
-        <Stack.Screen name="PaymentCardsDetails" component={PaymentCardsDetails} options={{ headerShown: false }} />
-        <Stack.Screen name="User" component={UserProfile} />
-        <Stack.Screen name="prd" component={ProductDetailsPage} options={{ headerShown: false }} />
-        <Stack.Screen name="panier" component={Panier} options={{ headerShown: false }} />
-        <Stack.Screen name="CoffeeProductList" component={CoffeeProductList} options={{ headerShown: false }} />
-
-       <Stack.Screen name="Paye" component={Paye} options={{ headerShown: false }}/>
-
-        <Stack.Screen name="menu" component={MenuItems} options={{ headerShown: false }} />
-        <Stack.Screen name="coffeeProfile" component={coffeeprofile} options={{ headerShown: false }} />
-        <Stack.Screen name="st2" component={Start2} options={{ headerShown: false }} />
-        <Stack.Screen name="st3" component={Start3} options={{ headerShown: false }} />
-        <Stack.Screen name="st4" component={Start4} options={{ headerShown: false }} />
-        <Stack.Screen name="Tabs" component={TabNavigator} options={{ headerShown: false }} />
-        <Stack.Screen name="SettingComponent" component={SettingComponent}  />
-        
-        {/* <Stack.Screen name="logout" component={logout} options={{ headerShown: false }} /> */}
-      </Stack.Navigator>
-    </NavigationContainer>
-  );
-}
-
+import Allcoffeeshops from '../components/AllCoffeShops';
+import Onboarding from '../components/Onboarding';
+import CoffeeProdList from "../components/coffeeprodlist"
+// import { useNavigation } from '@react-navigation/native';
+const Stack = createNativeStackNavigator();
+const Tab = createBottomTabNavigator();
 function TabNavigator() {
+  const [userType, setUserType] = useState("");
+  // const [x,setx]=useState(false);
+  
+    useEffect(() => {
+      const fetchData = async () => {
+        try {
+          const storedUserType = await AsyncStorage.getItem('userToken');
+            setUserType(JSON.parse(storedUserType));
+            console.log("userType",userType);
+          
+        } catch (error) {
+          console.log('Error fetching user type:', error);
+        }
+      };
+      fetchData();
+      
+    }, []);
+  
+    const storeUserType = async (type) => {
+      try {
+        await AsyncStorage.setItem('UserType', type);
+      } catch (error) {
+        console.log('Error storing user type:', error);
+      }
+    };
+  console.log("hello",userType)
   return (
     <Tab.Navigator
       tabBarOptions={{
@@ -93,19 +83,6 @@ function TabNavigator() {
           ),
           tabBarLabel: ({ focused, color }) => (
             <Text style={{ color: focused ? '#dba617' : 'gray' }}>Home</Text>
-          ),
-          headerShown: false
-        }}
-      />
-       <Tab.Screen
-        name="Allcoffeeshops"
-        component={Allcoffeeshops}
-        options={{
-          tabBarIcon: ({ color, size }) => (
-            <IconButton icon="coffee" size={size} iconColor={color} />
-          ),
-          tabBarLabel: ({ focused, color }) => (
-            <Text style={{ color: focused ? '#dba617' : 'gray' }}>Shops</Text>
           ),
           headerShown: false
         }}
@@ -176,6 +153,8 @@ function NAVSTART() {
         <Stack.Screen name="Orders" component={Orders} options={{ headerShown: false }} />
         <Stack.Screen name="Edit" component={EditCoffee} />
         <Stack.Screen name="Info" component={InfoCoffee} />
+        <Stack.Screen name="CoffeeProdList" component={CoffeeProdList} />
+
         <Stack.Screen
           name="TransactionScreenCoffee"
           component={TransactionScreenCoffee}

@@ -1,22 +1,38 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, FlatList, Image } from 'react-native';
+import { View, Text, StyleSheet, FlatList, Image, TouchableOpacity } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import { ipAdress } from '../config';
 import { Checkbox } from 'react-native-paper';
 
+const NumberInput = ({ value, onIncrement, onDecrement }) => {
+  return (
+    <View style={styles.numberInput}>
+      <TouchableOpacity onPress={onDecrement}>
+        <Text style={styles.buttonText}>-</Text>
+      </TouchableOpacity>
+      <Text style={styles.value}>{value}</Text>
+      <TouchableOpacity onPress={onIncrement}>
+        <Text style={styles.buttonText}>+</Text>
+      </TouchableOpacity>
+    </View>
+  );
+};
+
 const CoffeeProductList = () => {
   const [userData, setUserData] = useState(null);
   const [userID, setUserID] = useState(null);
   const [checkedItems, setCheckedItems] = useState({}); // Store checked state for each product
+  const [productQuantities, setProductQuantities] = useState({}); // Store selected quantities for each product
 
   useEffect(() => {
     const retrieveData = async () => {
       try {
-        const value = await AsyncStorage.getItem('userToken');
+        const value = await AsyncStorage.getItem('IdUser');
         if (value !== null) {
           const tokenObject = JSON.parse(value);
-          const userId = tokenObject.userId; 
+          const userId = tokenObject; 
+          console.log("taww",userId);
           setUserID(userId);
         }
       } catch (error) {
@@ -39,6 +55,12 @@ const CoffeeProductList = () => {
             return acc;
           }, {});
           setCheckedItems(initialCheckedState);
+          // Initialize product quantities for each product to 0
+          const initialQuantitiesState = response.data.reduce((acc, curr) => {
+            acc[curr.id] = '0'; // Start with quantity 0
+            return acc;
+          }, {});
+          setProductQuantities(initialQuantitiesState);
         } else {
           console.error('Failed to fetch user data');
         }
@@ -59,7 +81,24 @@ const CoffeeProductList = () => {
     }));
   };
 
-  // Filter the products based on the userID
+  const handleQuantityIncrement = (productId) => {
+    const newValue = parseInt(productQuantities[productId]) + 1;
+    setProductQuantities(prevState => ({
+      ...prevState,
+      [productId]: newValue.toString()
+    }));
+  };
+
+  const handleQuantityDecrement = (productId) => {
+    const newValue = parseInt(productQuantities[productId]) - 1;
+    if (newValue >= 0) {
+      setProductQuantities(prevState => ({
+        ...prevState,
+        [productId]: newValue.toString()
+      }));
+    }
+  };
+
   const filteredProducts = userData ? userData.filter(product => product.userId === userID) : [];
 
   return (
@@ -77,6 +116,11 @@ const CoffeeProductList = () => {
                 <Text style={styles.productDescription}>{item.description}</Text>
                 <Text style={styles.productPrice}>{item.price}</Text>
               </View>
+              <NumberInput
+                value={parseInt(productQuantities[item.id])}
+                onIncrement={() => handleQuantityIncrement(item.id)}
+                onDecrement={() => handleQuantityDecrement(item.id)}
+              />
               <Checkbox
                 status={checkedItems[item.id] ? 'checked' : 'unchecked'}
                 onPress={() => handleCheckboxToggle(item.id)}
@@ -136,6 +180,18 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
     color: 'green',
+  },
+  numberInput: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  buttonText: {
+    fontSize: 20,
+    color: 'blue',
+    marginHorizontal: 10,
+  },
+  value: {
+    fontSize: 18,
   },
   checkbox: {
     alignSelf: 'center',
