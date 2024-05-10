@@ -10,7 +10,7 @@ import { ipAdress } from '../config';
 
 function Paye() {
 
-  const [PRIXX, setPRIXX] = useState([]);
+  const [PRIXX, setPRIXX] = useState(0);
 
 console.log("hhhh",PRIXX);
 
