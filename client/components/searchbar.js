@@ -1,151 +1,113 @@
-import React, { useState } from 'react';
-import { View, TextInput, StyleSheet } from 'react-native';
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import { Button, Dialog, Portal, Text } from 'react-native-paper';
+// import React, { useState, useEffect } from 'react';
+// import { View, FlatList, TouchableOpacity, StyleSheet } from 'react-native';
+// import { Searchbar, List, Avatar } from 'react-native-paper';
+// import axios from 'axios';
+// import { useProducts } from '../redux/products/productHooks';
+// import { ipAdress } from '../config';
 
-export default function SearchBar() {
-  const [searchQuery, setSearchQuery] = useState("");
-  const [filterOptions, setFilterOptions] = useState({ minPrice: '', maxPrice: '', rating: '' });
-  const [searchActive, setSearchActive] = useState(false);
-  const [filterActive, setFilterActive] = useState(false);
-  const [dialogVisible, setDialogVisible] = useState(false);
+// export default function CustomSearchBar() {
+//   const { products, getProducts } = useProducts();
+//   const [searchQuery, setSearchQuery] = useState('');
+//   const [filteredProducts, setFilteredProducts] = useState([]);
+//   const [filteredUsers, setFilteredUsers] = useState([]);
+//   const [dropdownVisible, setDropdownVisible] = useState(false);
 
-  const toggleSearch = () => {
-    setSearchActive(true);
-    setTimeout(() => {
-      setSearchActive(false);
-    }, 500);
-  };
+//   useEffect(() => {
+//     const fetchUsers = async () => {
+//       try {
+//         const response = await axios.get(`http://${ipAdress}:3000/api/user/`);
+//         setFilteredUsers(response.data.filter(user => user.UserType === 'coffee'));
+//       } catch (error) {
+//         console.error('Failed to fetch users:', error);
+//       }
+//     };
 
-  const toggleFilter = () => {
-    setFilterActive(true);
-    setDialogVisible(!dialogVisible);
-    setTimeout(() => {
-      setFilterActive(false);
-    }, 500);
-  };
+//     fetchUsers();
+//     getProducts();
+//   }, [getProducts]);
 
-  const handleFilterChange = (key, value) => {
-    setFilterOptions({ ...filterOptions, [key]: value });
-  };
+//   const onChangeSearch = query => {
+//     setSearchQuery(query);
 
-  const applyFilters = () => {
-    // Implement your advanced search logic here
-   
-    setDialogVisible(false);
-  };
+//     const filteredProductsList = products.filter(product =>
+//       product.name.toLowerCase().includes(query.toLowerCase())
+//     );
+//     const filteredUsersList = filteredUsers.filter(
+//       user =>
+//         (user.FirstName.toLowerCase() + ' ' + user.LastName.toLowerCase()).includes(query.toLowerCase())
+//     );
 
-  return (
-    <View style={styles.asembler}>
-      <View style={styles.Main}>
-        <TextInput 
-          placeholder='Search ...' 
-          style={styles.Input}
-          value={searchQuery}
-          onChangeText={setSearchQuery}
-        />
-      </View>
-      <Icon
-        name="magnify"
-        color={searchActive ? '#dba617' : '#FFF'}
-        size={33}
-        style={[styles.searchIcon, searchActive ? styles.active : styles.inactive]}
-        onPress={toggleSearch}
-      />
-      <Icon
-        name="filter-variant"
-        color={filterActive ? '#dba617' : '#FFF'}
-        size={33}
-        style={[styles.filterIcon, filterActive ? styles.active : styles.inactive]}
-        onPress={toggleFilter}
-      />
+//     setFilteredProducts(filteredProductsList);
+//     setFilteredUsers(filteredUsersList);
 
-      <Portal>
-        <Dialog visible={dialogVisible} onDismiss={() => setDialogVisible(false)}>
-          <Dialog.Title>Advanced Filter</Dialog.Title>
-          <Dialog.Content>
-            <Text>Min Price:</Text>
-            <TextInput 
-              style={styles.filterInput} 
-              keyboardType="numeric" 
-              value={filterOptions.minPrice}
-              onChangeText={(value) => handleFilterChange('minPrice', value)}
-            />
-            <Text>Max Price:</Text>
-            <TextInput 
-              style={styles.filterInput} 
-              keyboardType="numeric" 
-              value={filterOptions.maxPrice}
-              onChangeText={(value) => handleFilterChange('maxPrice', value)}
-            />
-            <Text>Rating:</Text>
-            <TextInput 
-              style={styles.filterInput} 
-              keyboardType="numeric" 
-              value={filterOptions.rating}
-              onChangeText={(value) => handleFilterChange('rating', value)}
-            />
-          </Dialog.Content>
-          <Dialog.Actions>
-            <Button onPress={() => setDialogVisible(false)}>Cancel</Button>
-            <Button onPress={applyFilters}>Apply</Button>
-          </Dialog.Actions>
-        </Dialog>
-      </Portal>
-    </View>
-  );
-}
+//     setDropdownVisible(query.length > 0 && (filteredProductsList.length > 0 || filteredUsersList.length > 0));
+//   };
 
-const styles = StyleSheet.create({
-  asembler: {
-    flexDirection: 'row',
-    marginTop: 30,
-    marginBottom: 30,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  Main: {
-    backgroundColor: '#FFF',
-    width: 270,
-    height: 50,
-    borderWidth: 2,
-    borderColor: '#dba617',
-    borderTopLeftRadius: 40,
-    borderBottomLeftRadius: 40,
-  },
-  Input: {
-    marginLeft: 10,
-    marginTop: 3,
-    flex: 1,
-  },
-  searchIcon: {
-    backgroundColor: '#dba617',
-    borderWidth: 1,
-    borderTopRightRadius: 30,
-    borderBottomRightRadius: 30,
-    borderColor: '#dba617',
-    padding: 8,
-  },
-  filterIcon: {
-    borderWidth: 1,
-    borderRadius: 30,
-    borderColor: '#dba617',
-    padding: 8,
-    marginLeft: 5,
-    backgroundColor: '#dba617',
-  },
-  active: {
-    backgroundColor: '#FFF',
-  },
-  inactive: {
-    backgroundColor: '#dba617',
-  },
-  filterInput: {
-    borderWidth: 1,
-    borderColor: '#dba617',
-    borderRadius: 8,
-    padding: 5,
-    width: '100%',
-    marginBottom: 10,
-  },
-});
+//   const renderDropdownItem = ({ item }) => (
+//     <TouchableOpacity onPress={() => console.log('Item selected', item)}>
+//       <List.Item
+//         title={item.name || `${item.FirstName} ${item.LastName}`}
+//         description={item.description || `UserType: ${item.UserType}`}
+//         left={() =>
+//           item.imgUrl || item.ImageUrl ? (
+//             <Avatar.Image size={50} source={{ uri: item.imgUrl || item.ImageUrl }} />
+//           ) : (
+//             <Avatar.Icon size={50} icon="folder" />
+//           )
+//         }
+//         style={styles.dropdownItem}
+//       />
+//     </TouchableOpacity>
+//   );
+
+//   return (
+//     <View style={styles.container}>
+//       <Searchbar
+//         placeholder="Search"
+//         onChangeText={onChangeSearch}
+//         value={searchQuery}
+//         style={styles.searchbar}
+//       />
+//       {dropdownVisible && (
+//         <View style={styles.dropdownContainer}>
+//           <FlatList
+//             data={[...filteredProducts, ...filteredUsers]}
+//             keyExtractor={(item, index) => index.toString()}
+//             renderItem={renderDropdownItem}
+//             style={styles.dropdownList}
+//             showsVerticalScrollIndicator={false}
+//           />
+//         </View>
+//       )}
+//     </View>
+//   );
+// }
+
+// const styles = StyleSheet.create({
+//   container: {
+//     flex: 1,
+//     padding: 16,
+//   },
+//   searchbar: {
+//     marginBottom: 16,
+//   },
+//   dropdownContainer: {
+//     backgroundColor: 'white',
+//     borderRadius: 8,
+//     shadowColor: '#000',
+//     shadowOffset: { width: 0, height: 2 },
+//     shadowOpacity: 0.25,
+//     shadowRadius: 3.84,
+//     elevation: 5,
+//     maxHeight: 200,
+//     overflow: 'hidden',
+//   },
+//   dropdownList: {
+//     paddingHorizontal: 8,
+//   },
+//   dropdownItem: {
+//     borderBottomWidth: 1,
+//     borderBottomColor: '#e0e0e0',
+//     paddingVertical: 8,
+//   },
+// });

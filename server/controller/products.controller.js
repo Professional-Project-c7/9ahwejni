@@ -29,8 +29,9 @@ selectOne: async function(req, res) {
     },
 addOne:async function(req,res){
     try {
+        
         const product = await db.Products.create(req.body)
-    
+        console.log("res" , product);
     res.status(201).send(product)
     } catch (error) {
        console.log(error)

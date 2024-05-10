@@ -92,7 +92,7 @@ useEffect(() => {
       )}
 
       <View style={styles.menuWrapper}>
-        <TouchableRipple onPress={() => navigation.navigate('EditCoffee')}>
+        <TouchableRipple onPress={() => navigation.navigate('Edit')}>
           <View style={styles.menuItem}>
             <Icon name="account-edit" color='#dba617' size={25} />
             <Text style={styles.menuItemText}>Edit Informations</Text>
