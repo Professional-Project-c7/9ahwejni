@@ -13,7 +13,8 @@ import { Rating } from 'react-native-ratings';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { useProducts } from '../redux/products/productHooks';
 
-const ProductList = ({ navigation }) => {
+const ProductList = ({ navigation, route }) => {
+  const { coffeeShopId } = route.params;
   const { products, getProducts, status, error } = useProducts();
   const [favorites, setFavorites] = useState({});
 
@@ -37,8 +38,8 @@ const ProductList = ({ navigation }) => {
     navigation.navigate('prd', { product });
   };
 
-  const userId = 5;
-  const filteredProducts = products.filter((product) => product.userId === userId);
+  // Filter products based on the selected Coffee Shop ID
+  const filteredProducts = products.filter((product) => product.userId === coffeeShopId);
 
   return (
     <SafeAreaView style={styles.container}>

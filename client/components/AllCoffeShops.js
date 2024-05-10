@@ -1,18 +1,49 @@
+// CoffeeShopsList.js
 import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, StyleSheet, FlatList, Image, TouchableOpacity } from 'react-native';
 import axios from 'axios';
+import LinearGradient from 'react-native-linear-gradient';
 import FlatListPopularShops from './FlatListPopularShops';
 import { ipAdress } from '../config';
 
-const CoffeeShopsList = () => {
+const CoffeeShopsList = ({ navigation }) => {
   const [coffeeShopsData, setCoffeeShopsData] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
+
+  // Define dummy data within the scope of the component
+  const dummyData = [
+    {
+      id: 1,
+      FirstName: "John",
+      LastName: "Doe",
+      Address: "123 Main St",
+      Email: "john@example.com",
+      Password: "password123",
+      ImageUrl: "https://example.com/images/john.jpg",
+      UserType: "coffee",
+      createdAt: "2024-05-07T14:25:42.000Z",
+      updatedAt: "2024-05-07T14:25:42.000Z"
+    },
+    {
+      id: 2,
+      FirstName: "Jane",
+      LastName: "Smith",
+      Address: "456 Elm St",
+      Email: "jane@example.com",
+      Password: "password456",
+      ImageUrl: "https://example.com/images/jane.jpg",
+      UserType: "coffee",
+      createdAt: "2024-05-07T14:25:42.000Z",
+      updatedAt: "2024-05-07T14:25:42.000Z"
+    },
+    // Add more dummy data as needed
+  ];
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get(`http://${ipAdress}:3000/api/cofee`);
-        setCoffeeShopsData(response.data);
+        const response = await axios.get(`http://${ipAdress}:3000/api/user`);
+        setCoffeeShopsData(response.data.filter(user => user.UserType === 'coffee'));
       } catch (error) {
         console.error('Error fetching data: ', error);
       }
@@ -26,39 +57,48 @@ const CoffeeShopsList = () => {
     coffeeShop.LastName.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
+  // Navigate to the ProductList screen
+  const handleNavigateToProductList = (coffeeShopId) => {
+    navigation.navigate('ProductList', { coffeeShopId });
+  };
+
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Coffee Shop</Text>
+      <LinearGradient
+        colors={['rgba(253,190,29,1)', 'rgba(252,145,69,1)']}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 0 }}
+        style={styles.gradientBackground}
+      >
+        <Text style={styles.title}>Coffee Shops</Text>
+      </LinearGradient>
       <View style={styles.searchSection}>
         <TextInput
           style={styles.input}
           placeholder="Search..."
           onChangeText={text => setSearchQuery(text)}
           value={searchQuery}
-        />
+          />
       </View>
       <FlatListPopularShops />
-      <Text style={styles.TxtList}>List Coffee Shops ({coffeeShopsData.length})</Text>
+      <Text style={styles.TxtList}>List of our shops ({filteredCoffeeShops.length})</Text>
       <FlatList
         data={filteredCoffeeShops}
-        keyExtractor={item => item.id}
+        keyExtractor={item => item.id.toString()}
         renderItem={({ item }) => (
-          <View style={styles.card}>
+          <TouchableOpacity
+            style={styles.card}
+            onPress={() => handleNavigateToProductList(item.id)}
+          >
             <Image
               style={styles.image}
-              source={{ uri: item.imgUrl }}
+              source={{ uri: item.ImageUrl }}
             />
             <View style={styles.info}>
               <Text style={styles.name}>{item.FirstName} {item.LastName}</Text>
-              <Text style={styles.address}>{item.Adress}</Text>
-              <View style={styles.ratingSection}>
-                <Text style={styles.ratingText}>{`${item.rating} (${item.reviews} reviews)`}</Text>
-              </View>
+              <Text style={styles.address}>{item.Address}</Text>
             </View>
-            <TouchableOpacity style={styles.favoriteButton}>
-              {/* You can add favorite functionality here */}
-            </TouchableOpacity>
-          </View>
+          </TouchableOpacity>
         )}
       />
     </View>
@@ -69,14 +109,20 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
-    paddingTop: 50,
+  },
+  gradientBackground: {
+    borderBottomRightRadius: 5,
+    borderBottomLeftRadius: 5,
+    marginHorizontal: 0,
+    marginBottom: 10,
+    
   },
   title: {
     fontSize: 24,
     fontWeight: 'bold',
-    color: '#333',
-    marginLeft: 20,
-    marginBottom: 10,
+    color: '#fff',
+    textAlign: 'center',
+    paddingVertical: 10,
   },
   TxtList: {
     fontSize: 24,
@@ -102,13 +148,13 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     backgroundColor: '#fff',
     borderRadius: 8,
-    shadowColor: "#000",
+    shadowColor: '#000',
     shadowOffset: {
       width: 0,
       height: 2,
     },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
+    shadowOpacity: 0.3,
+    shadowRadius: 3.92,
     elevation: 5,
     marginHorizontal: 20,
     marginVertical: 10,
@@ -123,23 +169,14 @@ const styles = StyleSheet.create({
     padding: 10,
   },
   name: {
-    fontSize: 18,
+    fontSize: 22,
     fontWeight: 'bold',
+    color: '#000',
+    flexWrap: 'wrap',
   },
   address: {
-    fontSize: 16,
-    color: '#555',
-  },
-  ratingSection: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  ratingText: {
-    marginLeft: 5,
-    fontSize: 16,
-  },
-  favoriteButton: {
-    padding: 10,
+    fontSize: 18,
+    color: '#111',
   },
 });
 
