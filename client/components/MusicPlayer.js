@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
 import { IconButton } from 'react-native-paper';
-import { FontAwesome5 } from '@expo/vector-icons'; // Import the FontAwesome5 library
+import { FontAwesome5 } from '@expo/vector-icons';
 import testMusic from '../music/testMusic.mp3'; 
 import TrackPlayer from 'react-native-track-player';
 
@@ -19,8 +19,6 @@ const MusicPlayer = () => {
           artist: 'Test Artist',
           loop: true,
         });
-        await TrackPlayer.play();
-        setIsPlaying(true);
       } catch (error) {
         console.error("Error initializing TrackPlayer:", error);
       }
@@ -47,7 +45,6 @@ const MusicPlayer = () => {
       <Text style={{ fontSize: 20, fontWeight: 'bold' }}>Now Playing:</Text>
       <Text style={{ fontSize: 16 }}>Test Song - Test Artist</Text>
       
-      {/* Display the Spotify icon */}
       <FontAwesome5 name="spotify" size={100} color="green" />
       
       <TouchableOpacity onPress={togglePlayback}>

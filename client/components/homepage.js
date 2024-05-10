@@ -3,7 +3,7 @@ import { StyleSheet, Text, View, Image, TouchableOpacity, ScrollView, FlatList, 
 import LinearGradient from 'react-native-linear-gradient';
 import { IconButton } from 'react-native-paper';
 import TrackPlayer, { useTrackPlayerProgress } from 'react-native-track-player';
-// import MusicPlayer from './MusicPlayer'; 
+import MusicPlayer from './MusicPlayer'; 
 import RandomProducts from "../components/randomproducts";
 import Pub from "../components/pub";
 import TopShops from "../components/TopShops";
@@ -76,7 +76,7 @@ const HomePage = ({ navigation }) => {
       </View>
       <TopShops />
       <StatusBar style="auto" />
-      {/* <MusicPlayer /> */}
+      <MusicPlayer />
     </ScrollView>
   );
 }
