@@ -133,57 +133,7 @@ function TabNavigator() {
 function NAVSTART() {
 
 
-  // function TabNavigator() {
-  //   return (
-  //     <Tab.Navigator
-  //       screenOptions={({ route }) => ({
-  //         tabBarIcon: ({ color, size }) => {
-  //           let iconName;
-
-  //           if (route.name === 'homePage') {
-  //             iconName = 'home';
-  //           } else if (route.name === 'Allcoffeeshops') {
-  //             iconName = 'coffee';
-  //           } else if (route.name === 'Map') {
-  //             iconName = 'google-maps';
-  //           } else if (route.name === 'Profile') {
-  //             iconName = 'account';
-  //           }
-
-  //           return <IconButton icon={iconName} size={size} iconColor={color} />;
-  //         },
-  //         tabBarLabel: ({ focused, color }) => {
-  //           let label = '';
-
-  //           if (route.name === 'homePage') {
-  //             label = 'Home';
-  //           } else if (route.name === 'Allcoffeeshops') {
-  //             label = 'Shops';
-  //           } else if (route.name === 'Map') {
-  //             label = 'Map';
-  //           } else if (route.name === 'Profile') {
-  //             label = 'Profile';
-  //           }
-
-  //           return <Text style={{ color: focused ? '#dba617' : 'gray' }}>{label}</Text>;
-  //         },
-  //         headerShown: false,
-  //       })}
-  //       tabBarOptions={{
-  //         activeTintColor: '#dba617',
-  //         inactiveTintColor: 'gray',
-  //       }}
-  //     >
-  //       <Tab.Screen name="homePage" component={HomePage} />
-  //       <Tab.Screen name="Allcoffeeshops" component={Allcoffeeshops} />
-  //       <Tab.Screen name="Map" component={Map} />
-  //       <Tab.Screen
-  //         name="Profile"
-  //         component={userType === 'User' ? UserProfile : coffeeprofile}
-  //       />
-  //     </Tab.Navigator>
-  //   );
-  // }
+ 
 
   
   
