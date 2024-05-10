@@ -37,11 +37,11 @@ const EditProfileScreen = ({navigation}) => {
 
   const retrieveData = async () => {
     try {
-      const value = await AsyncStorage.getItem('userToken');
+      const value = await AsyncStorage.getItem('IdUser');
       if (value !== null) {
         const tokenObject = JSON.parse(value);
-        const userId = tokenObject.userId;
-        console.log(userId);
+        const userId = tokenObject; 
+        console.log("taww",userId);
         setUserID(userId);
       }
     } catch (error) {
@@ -60,7 +60,7 @@ const EditProfileScreen = ({navigation}) => {
         city: city
       };
       console.log(userData); // Check if userData is correct before sending the request
-      const response = await axios.patch(`http://${ipAdress}:3000/api/user/${userID}`, userData);
+      const response = await axios.put(`http://${ipAdress}:3000/api/user/${userID}`, userData);
       
       console.log('Update successful:', response.data);
      
