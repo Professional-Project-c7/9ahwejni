@@ -16,7 +16,7 @@ const ProductRoutes=require("./Routers/products.routes.js")
 const packs = require('./Routers/packs.routes.js')
 const Authentication = require('./Routers/login.routers.js');
 const messagesRouter = require('./Routers/messages.routers')
-const Payment=require('./Routers/Payment.routers')
+const Payment=require('./Routers/Payment.js')
 const reviewRouter = require('./Routers/review.router.js');
 
 
