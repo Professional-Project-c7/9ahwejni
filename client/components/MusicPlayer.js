@@ -5,10 +5,9 @@ import { IconButton } from 'react-native-paper';
 import testMusic from '../music/testMusic.mp3'; 
 
 const MusicPlayer = () => {
-  const [isPlaying, setIsPlaying] = useState(true); // Initialize with false, as the music initially isn't playing
+  const [isPlaying, setIsPlaying] = useState(false); // Initialize with false, as the music initially isn't playing
 
   useEffect(() => {
-    // Function to initialize TrackPlayer and add the track
     const initializeTrackPlayer = async () => {
       await TrackPlayer.setupPlayer();
       await TrackPlayer.add({
@@ -19,15 +18,17 @@ const MusicPlayer = () => {
         artwork: 'album_cover_image_url', // You can provide an actual image URL or leave it as a placeholder
         loop: true, // Enable looping for the track
       });
+      await TrackPlayer.play(); // Start playing the music automatically
+      setIsPlaying(true); // Update the state to reflect that music is playing
     };
-    
-
+  
     initializeTrackPlayer(); // Initialize TrackPlayer when the component mounts
-
+  
     return () => {
       TrackPlayer.destroy(); // Clean up when the component unmounts
     };
   }, []);
+  
 
   // Function to toggle playback (play/pause)
   const togglePlayback = async () => {
