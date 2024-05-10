@@ -27,7 +27,6 @@ async function connectionTest (){
   db.Coffee=require('./cofee.model')(connection,DataTypes)
   db.Message=require('./Message.model')(connection,DataTypes)
   db.Packproduct=require('./packproduct')(connection,DataTypes)
-  db.Payments=require('./Payment.model')(connection,DataTypes)
   db.Review = require('./review.model')(connection, DataTypes);
   db.Options = require('./options.model')(connection, DataTypes);
 
@@ -59,7 +58,10 @@ db.Review.belongsTo(db.User);
 db.Products.hasMany(db.Review);
 db.Review.belongsTo(db.Products);
 
-
+// db.User.hasMany(db.Review, { foreignKey: 'UserId' });
+// db.Review.belongsTo(db.User, { foreignKey: 'UserId' });
+// db.Products.hasMany(db.Review, { foreignKey: 'ProductId' });
+// db.Review.belongsTo(db.Products, { foreignKey: 'ProductId' });
 
 
 
