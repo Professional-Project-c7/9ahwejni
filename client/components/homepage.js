@@ -11,6 +11,7 @@ import { ipAdress } from '../config';
 import CategoryBar from '../components/categorybar';
 import Searchbar from '../components/searchbar';
 import AdvancedFilter from '../components/AdvancedFilter';
+import { useNavigation } from '@react-navigation/native';
 
 const HomePage = ({ navigation }) => {
   const [filterVisible, setFilterVisible] = useState(false);
@@ -22,6 +23,11 @@ const HomePage = ({ navigation }) => {
   const hideFilterModal = () => {
     setFilterVisible(false);
   };
+
+  const seeAll = async (product) => {
+      navigation.navigate('AllProducts');
+  };
+
 
   return (
     <ScrollView style={styles.container}>
@@ -50,7 +56,7 @@ const HomePage = ({ navigation }) => {
       <View style={styles.top}>
         <Text style={[styles.Texttitlecoffee, { marginLeft: 0 }]}>Products of the Day!</Text>
         <TouchableOpacity onPress={() => navigation.navigate("AllCoffees")}>
-          <Text style={styles.seeAllText}>See All</Text>
+          <Text style={styles.seeAllText}  onPress={seeAll}    >See All</Text>
         </TouchableOpacity>
       </View>
       <RandomProducts />
