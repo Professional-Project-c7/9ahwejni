@@ -86,7 +86,7 @@ const Panier = ({ navigation }) => {
         {/* <Text style={styles.deliveryCharge}>Delivery charge: $1.5</Text>
         <Text style={styles.discount}>Discount: 5%</Text> */}
         <View >
-          <Text>Total Price: ${totalPrice.toFixed(3)}</Text>
+          <Text>Total Price: {totalPrice.toFixed(3)}$</Text>
           
           </View >
       </View>
