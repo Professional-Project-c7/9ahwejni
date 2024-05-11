@@ -1,66 +1,41 @@
-
-
-
-
-import React, { useEffect, useState } from 'react';
-import {
-  SafeAreaView,
-  ScrollView,
-  StyleSheet,
-  View,
-  Image,
-  Text,
-  TouchableOpacity,
-  Alert,
-} from 'react-native';
-import Sound from 'react-native-sound';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-
-import { useNavigation } from '@react-navigation/native';
-
-import { Rating } from 'react-native-ratings';
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import axios from 'axios';
+import React, { useState, useEffect } from 'react';
+import {TouchableOpacity ,  StyleSheet, Text, View, Image, ScrollView, SafeAreaView } from 'react-native';
+import axios from 'axios'; // Import axios
 import { ipAdress } from '../config';
+import { useNavigation } from '@react-navigation/native';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
-const RandomProducts = () => {
+const AllProducts = () => {
+
   const navigation = useNavigation(); 
 
   const [products, setProducts] = useState([]);
+  const [error, setError] = useState(null); // Declare error state
   const [favorites, setFavorites] = useState({});
-  const [hearttt, sethearttt] = useState({});
+ 
   
-  const [error, setError] = useState(null);
-
+  const handleNavigateToDetails = async (product) => {
+    try {
+     
+      await AsyncStorage.setItem('selectedProductId', product.id.toString());
+      navigation.navigate('prd', { product });
+    } catch (error) {
+      console.log('Error storing selected product ID:', error);
+    }
+  };
   useEffect(() => {
     const fetchProducts = async () => {
       try {
         const response = await axios.get(`http://${ipAdress}:3000/api/product/`);
-        const shuffledProducts = response.data.sort(() => 0.5 - Math.random());
-        setProducts(shuffledProducts.slice(0, 6));
+        setProducts(response.data);
       } catch (err) {
         setError(err.message);
       }
     };
     fetchProducts();
-    // AsyncStorage.clear()
   }, []);
-  const playAlertSound = () => {
-    const alertSound = new Sound('alert.mp3', Sound.MAIN_BUNDLE, (error) => {
-      if (error) {
-        console.log('Failed to load the sound', error);
-        return;
-      }
-      // Play the alert sound
-      alertSound.play((success) => {
-        if (success) {
-          console.log('Alert sound played successfully');
-        } else {
-          console.log('Failed to play the alert sound');
-        }
-      });
-    });
-  };
+
+
   const toggleFeature = async (id, feature) => {
     try {
       const isFavorited = favorites[id]?.[feature];
@@ -79,12 +54,14 @@ const RandomProducts = () => {
         favoritesArray.push(product);
         await AsyncStorage.setItem('favorites', JSON.stringify(favoritesArray));
   
-        // Alert.alert('Item added to cart');
-        // playAlertSound();
+        // Show alert and play sound
+        Alert.alert('Item added to cart');
+        playAlertSound();
   
-        // setTimeout(() => {
-        //   Alert.alert('');
-        // }, 2000);
+        // Dismiss the alert after 2 seconds
+        setTimeout(() => {
+          Alert.alert('');
+        }, 2000);
       }
     } catch (error) {
       console.log('Error toggling feature:', error);
@@ -92,17 +69,6 @@ const RandomProducts = () => {
   };
   
 
-
-
-  const handleNavigateToDetails = async (product) => {
-    try {
-     
-      await AsyncStorage.setItem('selectedProductId', product.id.toString());
-      navigation.navigate('prd', { product });
-    } catch (error) {
-      console.log('Error storing selected product ID:', error);
-    }
-  };
 
 
   return (
@@ -117,28 +83,9 @@ const RandomProducts = () => {
                 <TouchableOpacity onPress={() => handleNavigateToDetails(product)}>
                   <Image source={{ uri: product.imgUrl }} style={styles.image} />
                 </TouchableOpacity>
-                <Icon
-                  name={hearttt[product.id]?.favored ? 'heart' : 'heart-outline'}
-                  color={hearttt[product.id]?.favored ? 'red' : '#dba617'}
-                  size={27}
-                  // onPress={() => toggleFeature(product.id, 'hearttt')}
-                  style={styles.favIcon}
-                />
                 <View style={styles.infoContainer}>
-                  <TouchableOpacity 
-                
-                  >
-                    <Text style={styles.name}>{product.name}</Text>
-                  </TouchableOpacity>
+                  <Text style={styles.name}>{product.name}</Text> 
                   <Text style={styles.price}>${product.price}</Text>
-                  <Rating
-                    type="star"
-                    ratingCount={5}
-                    imageSize={20}
-                    startingValue={product.rating}
-                    onFinishRating={(rating) => console.log('New rating is: ', rating)}
-                    style={styles.starRating}
-                  />
                   <Icon
                     name={favorites[product.id]?.inCart ? 'cart' : 'cart'}
                     size={24}
@@ -158,7 +105,6 @@ const RandomProducts = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'space-between',
   },
   productsContainer: {
     flexDirection: 'row',
@@ -184,11 +130,6 @@ const styles = StyleSheet.create({
     width: '100%',
     alignSelf: 'center',
   },
-  favIcon: {
-    position: 'absolute',
-    right: 10,
-    top: 10,
-  },
   infoContainer: {
     padding: 10,
     alignItems: 'flex-start',
@@ -207,24 +148,6 @@ const styles = StyleSheet.create({
     color: '#000',
     marginTop: 5,
   },
-  starRating: {
-    marginTop: 5,
-  },
-  cartIcon: {
-    position: 'absolute',
-    right: 5,
-    bottom: 1,
-    backgroundColor: '#dba617',
-    padding: 8,
-    borderRadius: 15,
-  },
 });
 
-export default RandomProducts;
-
-
-
-
-
-
-
+export default AllProducts;
