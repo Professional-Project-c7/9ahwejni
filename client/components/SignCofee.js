@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { StyleSheet, Text, View, TextInput,SafeAreaView, TouchableOpacity, Image ,ScrollView  } from 'react-native';
+import { StyleSheet, Text, View, TextInput,SafeAreaView, TouchableOpacity, Image ,ScrollView ,Alert } from 'react-native';
 import { Button } from 'react-native-paper';
 import axios from 'axios';
 import { ipAdress } from '../config';
@@ -9,11 +9,15 @@ const SignCofee = ({ navigation }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
-  
   const [Adress, setAdress] = useState('');
 
+  const isEmailValid = (email) => {
+    return /\S+@\S+\.\S+/.test(email);
+  };
+
+
   const HandleSubmit = async () => {
-    try {
+    
       const body = {
         UserType: 'coffee', 
         Adress:Adress,
@@ -21,10 +25,22 @@ const SignCofee = ({ navigation }) => {
         Password: password,
         FirstName: firstName,
         LastName: lastName,
-      
+        Adress:Adress
       
       };
-    
+      if (email === '' || password === '',firstName === '' || lastName === '',PhoneNumber === '') {
+        Alert.alert('Incomplete Information', 'Please fill in all fields.');
+        return;
+      }
+      if (!isEmailValid(email)) {
+        Alert.alert('Invalid Email', 'Please enter a valid email address.');
+        return;
+      }
+      try {
+        if (password.length < 6) {
+          Alert.alert('Invalid Password', 'Password must be at least 6 characters long.');
+          return;
+        }
       const response = await axios.post(
         
         `http://${ipAdress}:3000/api/auth/register`,
