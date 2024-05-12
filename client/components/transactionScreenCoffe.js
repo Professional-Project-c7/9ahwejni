@@ -66,9 +66,9 @@ const Transactions = () => {
   };
 
   const transactions = [
-    { initials: "JW", name: "Jenny Wilson", amount: "-$190", color: "#FFCC80", time: "Today, 12:30 pm" },
-    { initials: "WW", name: "Wade Warren", amount: "+$870", color: "#E1BEE7", time: "Today, 12:30 pm" },
-    { initials: "CW", name: "Cameron Williamson", amount: "-$1200", color: "#80DEEA", time: "Today, 12:30 pm" },
+    { initials: "JW", name: "Jenny Wilson", amount: "-$9", color: "#FFCC80", time: "Today, 12:30 pm" },
+    { initials: "WW", name: "Wade Warren", amount: "-$7", color: "#E1BEE7", time: "Today, 12:30 pm" },
+    { initials: "CW", name: "Cameron Williamson", amount: "-$12", color: "#80DEEA", time: "Today, 12:30 pm" },
   ];
 
   return (
@@ -270,7 +270,7 @@ const styles = StyleSheet.create({
   },
   transactionTime: {
     color: '#999',
-    marginBottom:20
+    marginBottom:19
   },
   transactionAmount: {
     fontSize: 16,
