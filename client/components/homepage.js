@@ -1,5 +1,4 @@
-// HomePage.js
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { StyleSheet, Text, View, Image, TouchableOpacity, ScrollView, StatusBar, Modal } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import { IconButton } from 'react-native-paper';
@@ -12,9 +11,11 @@ import CategoryBar from '../components/categorybar';
 import Searchbar from '../components/searchbar';
 import AdvancedFilter from '../components/AdvancedFilter';
 import { useNavigation } from '@react-navigation/native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const HomePage = ({ navigation }) => {
   const [filterVisible, setFilterVisible] = useState(false);
+  const [type, setType] = useState(true);
 
   const showFilterModal = () => {
     setFilterVisible(true);
@@ -28,6 +29,22 @@ const HomePage = ({ navigation }) => {
       navigation.navigate('AllProducts');
   };
 
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const storedPrice = await AsyncStorage.getItem('userToken');
+        if (storedPrice) {
+          const parsedPrice = JSON.parse(storedPrice);
+          if (parsedPrice === 'coffee'){
+            setType(false);
+          }
+        }
+      } catch (error) {
+        console.log('Error fetching data:', error); 
+      }
+    };
+    fetchData();
+  }, []);
 
   return (
     <ScrollView style={styles.container}>
@@ -39,10 +56,10 @@ const HomePage = ({ navigation }) => {
       >
         <View style={styles.top}>
           <IconButton icon="bell" iconColor='#FFF' />
-          <View style={styles.logoContainer}>
+          {/* <View style={styles.logoContainer}>
             <Image source={logoImage} style={styles.logo} />
-          </View>
-          <IconButton icon="cart" iconColor='#FFF' onPress={() => navigation.navigate('panier')} />
+          </View> */}
+          {type && <IconButton icon="cart" iconColor='#FFF' onPress={() => navigation.navigate('panier')} />}
         </View>
       </LinearGradient>
       <View style={styles.searchContainer}>
@@ -56,7 +73,7 @@ const HomePage = ({ navigation }) => {
       <View style={styles.top}>
         <Text style={[styles.Texttitlecoffee, { marginLeft: 0 }]}>Products of the Day!</Text>
         <TouchableOpacity onPress={() => navigation.navigate("AllCoffees")}>
-          <Text style={styles.seeAllText}  onPress={seeAll}    >See All</Text>
+          <Text style={styles.seeAllText} onPress={seeAll}>See All</Text>
         </TouchableOpacity>
       </View>
       <RandomProducts />

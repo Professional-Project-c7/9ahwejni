@@ -1,9 +1,40 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { View, Text, ScrollView, TouchableOpacity, StyleSheet, Dimensions } from 'react-native';
 import { LineChart } from 'react-native-chart-kit';
 
 const Transactions = () => {
   const [activeTab, setActiveTab] = useState('Week');
+  const [somme, setSomme] = useState(0);
+ console.log(somme);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const storedPosts = await AsyncStorage.getItem('PAYMENT_CONFIRMATION_DATE');
+        const sommme = await AsyncStorage.getItem('PAYMENT_AMOUNT');
+        
+        if (storedPosts) {
+          const somme = JSON.parse(sommme);
+          setSomme(somme);
+          console.log(setSomme);
+
+
+        }
+      } catch (error) {
+        console.log('Error fetching data:', error); 
+      }
+    };
+    fetchData();
+  }, []);
+
+
+
+
+
+
+
+
 
   const handleTabPress = (tab) => {
     setActiveTab(tab);
@@ -120,7 +151,7 @@ const Transactions = () => {
 
       <View style={styles.summarySection}>
         <View style={[styles.summaryBox, styles.balanceBox]}>
-          <Text style={styles.summaryAmount}>$12,635.00</Text>
+          <Text style={styles.summaryAmount}>${somme}</Text>
           <Text style={styles.summaryLabel}>Balance</Text>
         </View>
       </View>
