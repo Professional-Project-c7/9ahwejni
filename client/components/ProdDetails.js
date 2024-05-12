@@ -46,17 +46,31 @@ useEffect(() => {
     const handleIceSelection = (ice) => {
         setSelectedIce(ice);
     };
- const handleAddToCart = async (product) => {
+
+    // const ProductDetailsPage = ({ route, navigation }) => {
+    //     const [product, setProduct] = useState(route.params.product);
+    // }
+
+    const handleAddToCart = async (product) => {
         try {
             const existingCartItems = await AsyncStorage.getItem('favorites');
-            const cartItems = existingCartItems ? JSON.parse(existingCartItems) : [];
-            console.log("cartItems",cartItems);
-            cartItems.push(products[0]);
-            await AsyncStorage.setItem('favorites', JSON.stringify(cartItems));
+            let cartItems = existingCartItems ? JSON.parse(existingCartItems) : [];
+            
+            // Check if the product already exists in the favorites
+            const isProductInFavorites = cartItems.some(item => item.id === product.id);
+    
+            if (!isProductInFavorites) {
+                cartItems.push(product);
+                await AsyncStorage.setItem('favorites', JSON.stringify(cartItems));
+                console.log('Product added to favorites:', product);
+            } else {
+                console.log('Product already exists in favorites:', product);
+            }
         } catch (error) {
-            console.error('Error adding product to cart:', error);
+            console.error('Error adding product to favorites:', error);
         }
     };
+    
     
     return (
         

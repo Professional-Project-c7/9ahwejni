@@ -12,8 +12,9 @@ import { Title } from 'react-native-paper';
 import { Rating } from 'react-native-ratings';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { useProducts } from '../redux/products/productHooks';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const ProductList = ({ navigation, route }) => {
+const ProductList = ({ navigation ,route}) => {
   const { coffeeShopId } = route.params;
   const { products, getProducts, status, error } = useProducts();
   const [favorites, setFavorites] = useState({});
@@ -33,9 +34,14 @@ const ProductList = ({ navigation, route }) => {
       },
     }));
   };
-
-  const handleNavigateToDetails = (product) => {
-    navigation.navigate('prd', { product });
+  const handleNavigateToDetails = async (product) => {
+    try {
+     
+      await AsyncStorage.setItem('selectedProductId', product.id.toString());
+      navigation.navigate('prd', { product });
+    } catch (error) {
+      console.log('Error storing selected product ID:', error);
+    }
   };
 
   // Filter products based on the selected Coffee Shop ID
