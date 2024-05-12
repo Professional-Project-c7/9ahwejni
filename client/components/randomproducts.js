@@ -37,7 +37,7 @@ const RandomProducts = () => {
       try {
         const response = await axios.get(`http://${ipAdress}:3000/api/product/`);
         const shuffledProducts = response.data.sort(() => 0.5 - Math.random());
-        setProducts(shuffledProducts.slice(0, 6));
+        setProducts(shuffledProducts.slice(0, 4));
       } catch (err) {
         setError(err.message);
       }
