@@ -3,6 +3,11 @@ import { StyleSheet, Text, View, TextInput,SafeAreaView, TouchableOpacity, Image
 import { Button } from 'react-native-paper';
 import axios from 'axios';
 import { ipAdress } from '../config';
+
+
+
+
+
 const SignUser = ({navigation}) => {
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
@@ -11,6 +16,15 @@ const SignUser = ({navigation}) => {
   const [PhoneNumber, setPhoneNumber] = useState('');
   const [profilePicture, setProfilePicture] = useState(null);
   const [error, setError] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+
+
+
+
+  const isEmailValid = (email) => {
+    return /\S+@\S+\.\S+/.test(email);
+  };
+
 
   const handleSignIn = async () => {
    
@@ -25,6 +39,10 @@ const SignUser = ({navigation}) => {
       };
       if (email === '' || password === '',firstName === '' || lastName === '',PhoneNumber === '') {
         Alert.alert('Incomplete Information', 'Please fill in all fields.');
+        return;
+      }
+      if (!isEmailValid(email)) {
+        Alert.alert('Invalid Email', 'Please enter a valid email address.');
         return;
       }
       try {
@@ -86,14 +104,18 @@ const SignUser = ({navigation}) => {
           value={lastName}
           onChangeText={setLastName}
         />
-        <TextInput
+ <TextInput
           style={styles.input}
           placeholder="Email"
+          keyboardType="email-address"
           value={email}
           onChangeText={setEmail}
-          autoCapitalize="none"
-          keyboardType="email-address"
         />
+
+
+
+
+
         <TextInput
           style={styles.input}
           placeholder="Password"

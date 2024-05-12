@@ -11,6 +11,11 @@ const SignCofee = ({ navigation }) => {
   const [phoneNumber, setPhoneNumber] = useState('');
   const [Adress, setAdress] = useState('');
 
+  const isEmailValid = (email) => {
+    return /\S+@\S+\.\S+/.test(email);
+  };
+
+
   const HandleSubmit = async () => {
     
       const body = {
@@ -23,8 +28,12 @@ const SignCofee = ({ navigation }) => {
         Adress:Adress
       
       };
-      if (email === '' || password === '',firstName === '' || lastName === '',Adress === '') {
+      if (email === '' || password === '',firstName === '' || lastName === '',PhoneNumber === '') {
         Alert.alert('Incomplete Information', 'Please fill in all fields.');
+        return;
+      }
+      if (!isEmailValid(email)) {
+        Alert.alert('Invalid Email', 'Please enter a valid email address.');
         return;
       }
       try {
