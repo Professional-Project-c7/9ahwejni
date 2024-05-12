@@ -13,7 +13,7 @@ import {
   TouchableOpacity,
   Alert,
 } from 'react-native';
-import Sound from 'react-native-sound';
+// import Sound from 'react-native-sound';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import { useNavigation } from '@react-navigation/native';

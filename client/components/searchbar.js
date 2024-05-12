@@ -1,4 +1,3 @@
-// CustomSearchBar.js
 import React, { useState, useEffect, useCallback } from 'react';
 import { View, FlatList, TouchableOpacity, StyleSheet } from 'react-native';
 import { Searchbar, List, Avatar, IconButton } from 'react-native-paper';
@@ -6,6 +5,7 @@ import LinearGradient from 'react-native-linear-gradient';
 import axios from 'axios';
 import { ipAdress } from '../config';
 import { useNavigation } from '@react-navigation/native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const debounce = (func, delay) => {
   let timer;
@@ -30,26 +30,26 @@ export default function CustomSearchBar({ onFilterPress }) {
         const productsResponse = await axios.get(`http://${ipAdress}:3000/api/product`);
         const reviewsResponse = await axios.get(`http://${ipAdress}:3000/api/review`);
 
-        const productsWithReviews = productsResponse.data.map((product) => {
-          const productReviews = reviewsResponse.data.filter((review) => review.ProductId === product.id);
+        const productsWithReviews = productsResponse.data.map(product => {
+          const productReviews = reviewsResponse.data.filter(review => review.prodId === product.id);
           const totalReviews = productReviews.length;
           const averageRating = totalReviews
             ? productReviews.reduce((acc, review) => acc + review.stars, 0) / totalReviews
             : 0;
-
+          
           return {
             ...product,
             totalReviews,
             averageRating: averageRating.toFixed(1),
           };
         });
-
+        
         setAllProducts(productsWithReviews);
       } catch (error) {
         console.error('Error fetching data:', error);
       }
     };
-
+  
     fetchProductsAndReviews();
   }, []);
 
@@ -73,9 +73,10 @@ export default function CustomSearchBar({ onFilterPress }) {
 
   const handleNavigateToDetails = async (product) => {
     try {
+      await AsyncStorage.setItem('selectedProductId', product.id.toString());
       navigation.navigate('prd', { product });
     } catch (error) {
-      console.log('Error navigating to product details:', error);
+      console.log('Error storing selected product ID:', error);
     }
   };
 
@@ -83,22 +84,16 @@ export default function CustomSearchBar({ onFilterPress }) {
     <TouchableOpacity onPress={() => handleNavigateToDetails(item)}>
       <List.Item
         title={item.name}
-        description={`(${item.totalReviews} ratings) Average: ${item.averageRating}, Price: $${item.price}`}
-        left={() =>
-          item.imgUrl ? (
-            <Avatar.Image size={54} source={{ uri: item.imgUrl }} />
-          ) : (
-            <Avatar.Icon size={55} icon="folder" />
-          )
-        }
+        description={`(${item.totalReviews} ratings) ⭐: ${item.averageRating}, TND: $${item.price}`}
+        left={() => item.imgUrl ? (
+          <Avatar.Image size={54} source={{ uri: item.imgUrl }} />
+        ) : (
+          <Avatar.Icon size={55} icon="folder" />
+        )}
         style={styles.dropdownItem}
       />
     </TouchableOpacity>
   );
-
-  const handleSearchButtonPress = () => {
-    debouncedSearch(searchQuery);
-  };
 
   return (
     <View style={styles.container}>
@@ -109,7 +104,7 @@ export default function CustomSearchBar({ onFilterPress }) {
           value={searchQuery}
           style={styles.searchbar}
         />
-        <TouchableOpacity style={styles.searchButtonContainer} onPress={handleSearchButtonPress}>
+        <TouchableOpacity style={styles.searchButtonContainer} onPress={() => debouncedSearch(searchQuery)}>
           <LinearGradient
             colors={['rgba(253,190,29,1)', 'rgba(252,145,69,1)']}
             start={{ x: 0, y: 0 }}
@@ -168,7 +163,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     marginBottom: 8,
-    marginHorizontal: 5, // Add spacing between buttons
+    marginHorizontal: 0, 
   },
   searchButton: {
     borderTopRightRadius: 25,
@@ -182,7 +177,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     marginBottom: 8,
-    marginHorizontal: 5, // Add spacing between buttons
+    marginHorizontal: 3, 
   },
   filterButton: {
     borderRadius: 25,
