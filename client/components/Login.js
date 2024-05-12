@@ -13,12 +13,13 @@ const Login = ({ navigation }) => {
   const [error, setError] = useState(null);
   const [showPassword, setShowPassword] = useState(false);
 
+
+
   const handleSubmit = async () => {
     if (email === '' || password === '') {
       Alert.alert('Incomplete Information', 'Please fill in all fields.');
       return;
     }
- 
     try {
       const response = await axios.post(
         `http://${ipAdress}:3000/api/auth/login`,
