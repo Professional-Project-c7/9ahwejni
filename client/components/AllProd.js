@@ -4,6 +4,7 @@ import axios from 'axios'; // Import axios
 import { ipAdress } from '../config';
 import { useNavigation } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const AllProducts = () => {
 
@@ -98,6 +99,7 @@ const AllProducts = () => {
           </View>
         )}
       </ScrollView>
+      
     </SafeAreaView>
   );
 };

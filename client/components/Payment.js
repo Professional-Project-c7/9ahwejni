@@ -12,11 +12,15 @@ function PaymentScreen() {
     expiryYear: '',
     cvv: ''
   });
-  const [paymentConfirmed, setPaymentConfirmed] = useState(false);
 
+console.log('price',price);
+
+
+  const [paymentConfirmed, setPaymentConfirmed] = useState(false);
   useEffect(() => {
     const fetchData = async () => {
       try {
+
         const storedPrice = await AsyncStorage.getItem('PRICE');
         if (storedPrice) {
           const parsedPrice = JSON.parse(storedPrice);
@@ -44,21 +48,25 @@ function PaymentScreen() {
     }
   
     try {
+      // Get the user ID from AsyncStorage
       const paymentData = {
         cardNumber,
         expiryMonth,
         expiryYear,
         cvv,
-        amount: price * 100, // Convert to cents
+        amount: price * 100,
         currency: "EUR"
       };
+      await AsyncStorage.removeItem('favorites');
+  
       const response = await axios.post(`http://${ipAdress}:3000/api/payment/pay`, paymentData);
       console.log(response.data);
-      
-      // Store the payment confirmation date and price in AsyncStorage
+      const userId = await AsyncStorage.getItem('IdUser');
+console.log(userId);
+      // Store the payment confirmation date and price in AsyncStorage with user's ID as key
       const paymentConfirmationDate = new Date().toISOString();
-      await AsyncStorage.setItem('PAYMENT_CONFIRMATION_DATE', paymentConfirmationDate);
-      await AsyncStorage.setItem('PAYMENT_AMOUNT', JSON.stringify(price));
+      await AsyncStorage.setItem(`PAYMENT_CONFIRMATION_DATE_${userId}`, paymentConfirmationDate);
+      await AsyncStorage.setItem(`PAYMENT_AMOUNT_${userId}`, JSON.stringify(price));
   
       setPaymentConfirmed(true); // Set payment confirmation status
       setFormData({  // Clear the input fields
@@ -72,6 +80,8 @@ function PaymentScreen() {
       // Handle payment error here
     }
   };
+  
+  
   
 
   return (
