@@ -37,6 +37,7 @@ import Panier from '../components/Panier';
 import Allcoffeeshops from '../components/AllCoffeShops';
 import Onboarding from '../components/Onboarding';
 import AdvancedFilter from '../components/AdvancedFilter';
+import AllProducts from '../components/AllProd';
 // import { useNavigation } from '@react-navigation/native';
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -165,11 +166,9 @@ function NAVSTART() {
         <Stack.Screen name="Orders" component={Orders} options={{ headerShown: false }} />
         <Stack.Screen name="Edit" component={EditCoffee} />
         <Stack.Screen name="Info" component={InfoCoffee} />
-        <Stack.Screen
-          name="TransactionScreenCoffee"
-          component={TransactionScreenCoffee}
-         
-        />
+        <Stack.Screen name="TransactionScreenCoffee"component={TransactionScreenCoffee}/>
+        <Stack.Screen name="AllProducts" component={AllProducts} options={{ headerShown: false }} />
+
         <Stack.Screen name="ReviewsCoffee" component={ReviewsCoffee} options={{ headerShown: false }} />
         <Stack.Screen name="PaymentCardsDetails" component={PaymentCardsDetails} options={{ headerShown: false }} />
         <Stack.Screen name="User" component={UserProfile} />
@@ -185,6 +184,7 @@ function NAVSTART() {
         <Stack.Screen name="Tabs"  component={TabNavigator} options={{ headerShown: false }} />
         <Stack.Screen name="Onboarding" component={Onboarding} options={{ headerShown: false }} />
         <Stack.Screen name="AdvancedFilter" component={AdvancedFilter} options={{ headerShown: false }} />
+        <Stack.Screen name="Favorit" component={Favorit} />
 
         <Stack.Screen  name="SettingComponent" component={SettingComponent} />
       </Stack.Navigator>
