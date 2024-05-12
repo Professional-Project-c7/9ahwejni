@@ -6,35 +6,49 @@ import { LineChart } from 'react-native-chart-kit';
 const Transactions = () => {
   const [activeTab, setActiveTab] = useState('Week');
   const [somme, setSomme] = useState(0);
- console.log(somme);
+
+  const fetchData = async () => {
+    try {
+      const userId = await AsyncStorage.getItem('IdUser');
+      const storedBalance = await AsyncStorage.getItem(`PAYMENT_AMOUNT_${userId}`);
+      if (storedBalance !== null) {
+        const parsedBalance = parseFloat(storedBalance);
+        if (!isNaN(parsedBalance)) {
+          setSomme(parsedBalance); // Convert stored balance to float
+        }
+      }
+    } catch (error) {
+      console.log('Error fetching data:', error);
+    }
+  };
+  
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const storedPosts = await AsyncStorage.getItem('PAYMENT_CONFIRMATION_DATE');
-        const sommme = await AsyncStorage.getItem('PAYMENT_AMOUNT');
-        
-        if (storedPosts) {
-          const somme = JSON.parse(sommme);
-          setSomme(somme);
-          console.log(setSomme);
-
-
-        }
-      } catch (error) {
-        console.log('Error fetching data:', error); 
-      }
-    };
     fetchData();
   }, []);
 
+  const updateBalance = async (newTransactionAmount) => {
+    try {
+      const userId = await AsyncStorage.getItem('IdUser');
+      let storedBalance = await AsyncStorage.getItem(`PAYMENT_AMOUNT_${userId}`);
+      let oldBalance = parseFloat(storedBalance) || 0; // If storedBalance is null or NaN, default to 0
+      const updatedBalance = oldBalance + parseFloat(newTransactionAmount);
+      await AsyncStorage.setItem(`PAYMENT_AMOUNT_${userId}`, updatedBalance.toString());
+      setSomme(updatedBalance);
+    } catch (error) {
+      console.log('Error updating balance:', error);
+    }
+  };
+  
+  
 
-
-
-
-
-
-
+  const handleNewTransaction = async (transactionAmount) => {
+    // Assuming you have some logic to handle the transaction, 
+    // and you get the transaction amount as a parameter.
+    
+    // Here you call the updateBalance function with the transaction amount
+    updateBalance(transactionAmount);
+  };
 
   const handleTabPress = (tab) => {
     setActiveTab(tab);
@@ -48,6 +62,9 @@ const Transactions = () => {
     barPercentage: 0.5,
     useShadowColorFromDataset: false,
   };
+
+
+
 
   const chartData = {
     Day: {
