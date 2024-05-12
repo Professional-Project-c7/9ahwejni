@@ -16,7 +16,6 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 const HomePage = ({ navigation }) => {
   const [filterVisible, setFilterVisible] = useState(false);
   const [type, setType] = useState(true);
-
   const showFilterModal = () => {
     setFilterVisible(true);
   };
@@ -80,7 +79,8 @@ const HomePage = ({ navigation }) => {
       <View style={styles.top}>
         <Text style={[styles.Texttitlecoffee, { marginLeft: 0 }]}>Top Rated Coffee Shops of the Day!</Text>
       </View>
-      <TopShops />
+      <TopShops navigation={navigation} />
+
       <StatusBar style="auto" />
 
       {/* AdvancedFilter Modal */}

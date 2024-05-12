@@ -13,7 +13,7 @@ import {
   TouchableOpacity,
   Alert,
 } from 'react-native';
-import Sound from 'react-native-sound';
+// import Sound from 'react-native-sound';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import { useNavigation } from '@react-navigation/native';
@@ -37,7 +37,7 @@ const RandomProducts = () => {
       try {
         const response = await axios.get(`http://${ipAdress}:3000/api/product/`);
         const shuffledProducts = response.data.sort(() => 0.5 - Math.random());
-        setProducts(shuffledProducts.slice(0, 4));
+        setProducts(shuffledProducts.slice(0, 6));
       } catch (err) {
         setError(err.message);
       }
@@ -65,6 +65,7 @@ const RandomProducts = () => {
     try {
       const isFavorited = favorites[id]?.[feature];
       const product = products.find((product) => product.id === id);
+
       const storedFavorites = await AsyncStorage.getItem('favorites');
       let favoritesArray = storedFavorites ? JSON.parse(storedFavorites) : [];
       if (!isFavorited) {
@@ -77,7 +78,9 @@ const RandomProducts = () => {
         }));
   
         favoritesArray.push(product);
-        await AsyncStorage.setItem('favorites', JSON.stringify(favoritesArray));
+      const userId = await AsyncStorage.getItem('IdUser');
+
+        await AsyncStorage.setItem(`favorites`, JSON.stringify(favoritesArray));
   
         // Alert.alert('Item added to cart');
         // playAlertSound();
