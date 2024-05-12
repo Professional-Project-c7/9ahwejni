@@ -1,5 +1,5 @@
 import React, { useState,useEffect } from 'react';
-import { StyleSheet, Text, View, TextInput,SafeAreaView, TouchableOpacity, Image ,ScrollView  } from 'react-native';
+import { StyleSheet, Text, View, TextInput,SafeAreaView, TouchableOpacity, Image ,ScrollView ,Alert } from 'react-native';
 import { Button } from 'react-native-paper';
 import axios from 'axios';
 import { ipAdress } from '../config';
@@ -13,7 +13,7 @@ const SignUser = ({navigation}) => {
   const [error, setError] = useState('');
 
   const handleSignIn = async () => {
-    try {
+   
       const body = {
         UserType: "client",
         Email: email,
@@ -23,7 +23,15 @@ const SignUser = ({navigation}) => {
         PhoneNumber: PhoneNumber,
         ImageUrl: profilePicture,
       };
-      
+      if (email === '' || password === '',firstName === '' || lastName === '',PhoneNumber === '') {
+        Alert.alert('Incomplete Information', 'Please fill in all fields.');
+        return;
+      }
+      try {
+        if (password.length < 6) {
+          Alert.alert('Invalid Password', 'Password must be at least 6 characters long.');
+          return;
+        }
       console.log("Sending sign up request with body:", body);
      
       const response = await axios.post(

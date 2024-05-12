@@ -46,6 +46,11 @@ useEffect(() => {
     const handleIceSelection = (ice) => {
         setSelectedIce(ice);
     };
+
+    // const ProductDetailsPage = ({ route, navigation }) => {
+    //     const [product, setProduct] = useState(route.params.product);
+    // }
+
  const handleAddToCart = async (product) => {
         try {
             const existingCartItems = await AsyncStorage.getItem('favorites');
