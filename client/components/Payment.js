@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert , DatePickerIOS  } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, Image, KeyboardAvoidingView, ScrollView } from 'react-native';
+
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { ipAdress } from '../config';
@@ -13,14 +14,10 @@ function PaymentScreen() {
     cvv: ''
   });
 
-console.log('price',price);
-
-
   const [paymentConfirmed, setPaymentConfirmed] = useState(false);
   useEffect(() => {
     const fetchData = async () => {
       try {
-
         const storedPrice = await AsyncStorage.getItem('PRICE');
         if (storedPrice) {
           const parsedPrice = JSON.parse(storedPrice);
@@ -40,6 +37,14 @@ console.log('price',price);
     });
   };
 
+  const formatCardNumber = (value) => {
+    // Remove non-digit characters
+    let formattedValue = value.replace(/\D/g, '');
+    // Insert a space every four characters
+    formattedValue = formattedValue.replace(/(\d{4})(?=\d)/g, '$1 ');
+    return formattedValue;
+  };
+
   const handleSubmit = async () => {
     const { cardNumber, expiryMonth, expiryYear, cvv } = formData;
     if (cardNumber === '' || expiryMonth === '' || expiryYear === '' || cvv === '') {
@@ -48,7 +53,6 @@ console.log('price',price);
     }
   
     try {
-      // Get the user ID from AsyncStorage
       const paymentData = {
         cardNumber,
         expiryMonth,
@@ -62,14 +66,12 @@ console.log('price',price);
       const response = await axios.post(`http://${ipAdress}:3000/api/payment/pay`, paymentData);
       console.log(response.data);
       const userId = await AsyncStorage.getItem('IdUser');
-console.log(userId);
-      // Store the payment confirmation date and price in AsyncStorage with user's ID as key
       const paymentConfirmationDate = new Date().toISOString();
       await AsyncStorage.setItem(`PAYMENT_CONFIRMATION_DATE_${userId}`, paymentConfirmationDate);
       await AsyncStorage.setItem(`PAYMENT_AMOUNT_${userId}`, JSON.stringify(price));
   
-      setPaymentConfirmed(true); // Set payment confirmation status
-      setFormData({  // Clear the input fields
+      setPaymentConfirmed(true);
+      setFormData({
         cardNumber: '',
         expiryMonth: '',
         expiryYear: '',
@@ -77,15 +79,17 @@ console.log(userId);
       });
     } catch (error) {            
       console.log('Payment error:', error);  
-      // Handle payment error here
     }
   };
   
-  
-  
-
   return (
-    <View style={styles.container}>
+    <KeyboardAvoidingView style={{flex: 1}} behavior={Platform.OS === "ios" ? "padding" : null}>
+    <ScrollView contentContainerStyle={styles.container}>
+      <Image
+        source={require('../image/card.png')}
+        style={styles.paymentCartImage}
+        resizeMode="contain"
+      />
       <View style={styles.paymentOptions}>
         <Text style={styles.cardHeader}>Total Price:{price.toFixed(2)}$</Text>
       </View>
@@ -93,8 +97,10 @@ console.log(userId);
         <TextInput
           placeholder="Enter your Card Number"
           style={styles.input}
-          value={formData.cardNumber}
+          value={formatCardNumber(formData.cardNumber)}
           onChangeText={(text) => handleChange('cardNumber', text)}
+          keyboardType="numeric"
+          maxLength={19} // maximum 16 digits + 3 spaces
         />
         <View style={styles.inputContainer}>
           <TextInput
@@ -102,12 +108,16 @@ console.log(userId);
             style={[styles.input, styles.inputHalf]}
             value={formData.expiryMonth}
             onChangeText={(text) => handleChange('expiryMonth', text)}
+            keyboardType="numeric"
+            maxLength={4}
           />
           <TextInput
             placeholder="Expiry Year"
             style={[styles.input, styles.inputHalf]}
             value={formData.expiryYear}
             onChangeText={(text) => handleChange('expiryYear', text)}
+            keyboardType="numeric"
+            maxLength={4}
           />
         </View>
         <TextInput
@@ -115,19 +125,22 @@ console.log(userId);
           style={styles.input}
           value={formData.cvv}
           onChangeText={(text) => handleChange('cvv', text)}
+          keyboardType="numeric"
+          maxLength={3}
         />
       </View>
       <TouchableOpacity onPress={handleSubmit} style={styles.button}>
         <Text>Pay Now</Text>
       </TouchableOpacity>
       {paymentConfirmed && <Text style={styles.paymentConfirmation}>Payment is confirmed</Text>}
-    </View>
+    </ScrollView>
+  </KeyboardAvoidingView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    flexGrow: 1,
     padding: 20,
     backgroundColor: '#f8f8f8',
   },
@@ -144,6 +157,11 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     marginBottom: 20,
+  },
+  paymentCartImage: {
+    width: 450,
+    height: 250,
+    alignSelf: 'center',
   },
   creditCardDetails: {
     backgroundColor: '#fff',
@@ -165,8 +183,8 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#333',
     marginBottom: 20,
-    marginTop:50,
-    marginLeft:80
+    marginTop: 50,
+    marginLeft: 80,
   },
   input: {
     borderWidth: 1,
@@ -179,7 +197,6 @@ const styles = StyleSheet.create({
   inputContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    
   },
   inputHalf: {
     width: '48%',
@@ -190,7 +207,5 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
 });
-
-
 
 export default PaymentScreen;

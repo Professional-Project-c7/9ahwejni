@@ -65,7 +65,6 @@ const RandomProducts = () => {
     try {
       const isFavorited = favorites[id]?.[feature];
       const product = products.find((product) => product.id === id);
-
       const storedFavorites = await AsyncStorage.getItem('favorites');
       let favoritesArray = storedFavorites ? JSON.parse(storedFavorites) : [];
       if (!isFavorited) {
@@ -78,12 +77,10 @@ const RandomProducts = () => {
         }));
   
         favoritesArray.push(product);
-      const userId = await AsyncStorage.getItem('IdUser');
-
-        await AsyncStorage.setItem(`favorites`, JSON.stringify(favoritesArray));
+        await AsyncStorage.setItem('favorites', JSON.stringify(favoritesArray));
   
         // Alert.alert('Item added to cart');
-        // playAlertSound();
+        playAlertSound();
   
         // setTimeout(() => {
         //   Alert.alert('');

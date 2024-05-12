@@ -79,7 +79,7 @@ const HomePage = ({ navigation }) => {
       <View style={styles.top}>
         <Text style={[styles.Texttitlecoffee, { marginLeft: 0 }]}>Top Rated Coffee Shops of the Day!</Text>
       </View>
-      <TopShops navigation={navigation} />
+     <TopShops navigation={navigation} />
 
       <StatusBar style="auto" />
 

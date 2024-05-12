@@ -6,49 +6,42 @@ import { LineChart } from 'react-native-chart-kit';
 const Transactions = () => {
   const [activeTab, setActiveTab] = useState('Week');
   const [somme, setSomme] = useState(0);
-
+  const [nawsomme, setNawsomme] = useState(0);
+console.log(nawsomme);
   const fetchData = async () => {
     try {
       const userId = await AsyncStorage.getItem('IdUser');
       const storedBalance = await AsyncStorage.getItem(`PAYMENT_AMOUNT_${userId}`);
+
       if (storedBalance !== null) {
-        const parsedBalance = parseFloat(storedBalance);
-        if (!isNaN(parsedBalance)) {
-          setSomme(parsedBalance); // Convert stored balance to float
-        }
+        setSomme(parseFloat(storedBalance));
       }
     } catch (error) {
       console.log('Error fetching data:', error);
     }
   };
-  
 
   useEffect(() => {
     fetchData();
   }, []);
 
-  const updateBalance = async (newTransactionAmount) => {
-    try {
-      const userId = await AsyncStorage.getItem('IdUser');
-      let storedBalance = await AsyncStorage.getItem(`PAYMENT_AMOUNT_${userId}`);
-      let oldBalance = parseFloat(storedBalance) || 0; // If storedBalance is null or NaN, default to 0
-      const updatedBalance = oldBalance + parseFloat(newTransactionAmount);
-      await AsyncStorage.setItem(`PAYMENT_AMOUNT_${userId}`, updatedBalance.toString());
-      setSomme(updatedBalance);
-    } catch (error) {
-      console.log('Error updating balance:', error);
+  useEffect(() => {
+    // Update AsyncStorage with the new sum whenever nawsomme changes
+    async function updateAsyncStorage() {
+      try {
+        const userId = await AsyncStorage.getItem('IdUser');
+        const oldStoredBalance = await AsyncStorage.getItem(`PAYMENT_AMOUNT_${userId}`);
+        const oldSomme = parseFloat(oldStoredBalance) || 0;
+        const newSomme = oldSomme + nawsomme;
+        setSomme(newSomme); // Update the state
+        await AsyncStorage.setItem(`PAYMENT_AMOUNT_${userId}`, JSON.stringify(newSomme)); // Update AsyncStorage
+      } catch (error) {
+        console.log('Error updating AsyncStorage:', error);
+      }
     }
-  };
-  
-  
 
-  const handleNewTransaction = async (transactionAmount) => {
-    // Assuming you have some logic to handle the transaction, 
-    // and you get the transaction amount as a parameter.
-    
-    // Here you call the updateBalance function with the transaction amount
-    updateBalance(transactionAmount);
-  };
+    updateAsyncStorage();
+  }, [nawsomme]);
 
   const handleTabPress = (tab) => {
     setActiveTab(tab);
@@ -62,9 +55,6 @@ const Transactions = () => {
     barPercentage: 0.5,
     useShadowColorFromDataset: false,
   };
-
-
-
 
   const chartData = {
     Day: {
@@ -262,8 +252,7 @@ const styles = StyleSheet.create({
   summaryAmount: {
     fontSize: 18,
     fontWeight: 'bold',
-   color:'white'
-
+    color: 'white'
   },
   summaryLabel: {
     fontSize: 14,
@@ -318,7 +307,7 @@ const styles = StyleSheet.create({
   },
   transactionTime: {
     color: '#999',
-    marginBottom:19
+    marginBottom: 19
   },
   transactionAmount: {
     fontSize: 16,
