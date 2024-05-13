@@ -12,10 +12,17 @@ import Searchbar from '../components/searchbar';
 import AdvancedFilter from '../components/AdvancedFilter';
 import { useNavigation } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import MusicPlayer from './MusicPlayer';
+import Notification from './Notification';
 
 const HomePage = ({ navigation }) => {
   const [filterVisible, setFilterVisible] = useState(false);
   const [type, setType] = useState(true);
+  const [showNotification, setShowNotification] = useState(false);
+
+
+
+  
   const showFilterModal = () => {
     setFilterVisible(true);
   };
@@ -26,6 +33,9 @@ const HomePage = ({ navigation }) => {
 
   const seeAll = async (product) => {
       navigation.navigate('AllProducts');
+  };
+  const toggleNotification = () => {
+    setShowNotification(!showNotification);
   };
 
   useEffect(() => {
@@ -54,7 +64,7 @@ const HomePage = ({ navigation }) => {
         style={styles.topBackground}
       >
         <View style={styles.top}>
-          <IconButton icon="bell" iconColor='#FFF' />
+        <IconButton icon="bell" color="#FFF" onPress={toggleNotification} />
           {/* <View style={styles.logoContainer}>
             <Image source={logoImage} style={styles.logo} />
           </View> */}
@@ -62,10 +72,10 @@ const HomePage = ({ navigation }) => {
         </View>
       </LinearGradient>
       <View style={styles.searchContainer}>
+        {/* <MusicPlayer/> */}
         <Searchbar onFilterPress={showFilterModal} />
       </View>
       <View style={styles.categoryBarContainer}>
-        {/* <Text style={styles.categoryTitle}>Category</Text> */}
         <CategoryBar />
       </View>
       <Pub />
@@ -82,6 +92,22 @@ const HomePage = ({ navigation }) => {
      <TopShops navigation={navigation} />
 
       <StatusBar style="auto" />
+
+           <Modal
+        visible={showNotification}
+        animationType="slide"
+        transparent={true}
+        onRequestClose={toggleNotification}
+      >
+        <View style={styles.notificationModal}>
+         <Notification/>
+          <IconButton icon="close" color="#000" onPress={toggleNotification} />
+        </View>
+      </Modal>
+
+
+
+
 
       {/* AdvancedFilter Modal */}
       <Modal
@@ -107,6 +133,20 @@ const styles = StyleSheet.create({
   topBackground: {
     borderBottomRightRadius: 5,
     borderBottomLeftRadius: 5,
+  },
+    notificationModal: {
+    flex: 1,
+    backgroundColor: 'white',
+    justifyContent: 'center',
+    alignItems: 'center',
+    height:150
+  },
+    closeButton: {
+    position: 'absolute',
+    top: 20,
+    right: 20,
+    backgroundColor: 'white',
+    borderRadius: 20,
   },
   top: {
     flexDirection: 'row',

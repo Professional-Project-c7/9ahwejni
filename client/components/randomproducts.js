@@ -13,7 +13,7 @@ import {
   TouchableOpacity,
   Alert,
 } from 'react-native';
-// import Sound from 'react-native-sound';
+import Sound from 'react-native-sound';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import { useNavigation } from '@react-navigation/native';
@@ -37,7 +37,7 @@ const RandomProducts = () => {
       try {
         const response = await axios.get(`http://${ipAdress}:3000/api/product/`);
         const shuffledProducts = response.data.sort(() => 0.5 - Math.random());
-        setProducts(shuffledProducts.slice(0, 6));
+        setProducts(shuffledProducts.slice(0,4 ));
       } catch (err) {
         setError(err.message);
       }
@@ -78,8 +78,9 @@ const RandomProducts = () => {
   
         favoritesArray.push(product);
         await AsyncStorage.setItem('favorites', JSON.stringify(favoritesArray));
+          // Alert.alert('he add in panier');
   
-        // Alert.alert('Item added to cart');
+        Alert.alert('Item added to cart');
         playAlertSound();
   
         // setTimeout(() => {
