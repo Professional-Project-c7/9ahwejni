@@ -7,7 +7,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Panier = ({ navigation }) => {
 
-  const [posts, setPosts] = useState([]);
+  const [posts, setPosts] = useState(null);
   const [totalPrice, setTotalPrice] = useState(0);
 
   useEffect(() => {
