@@ -61,15 +61,31 @@ function PaymentScreen() {
         amount: price * 100,
         currency: "EUR"
       };
-      await AsyncStorage.removeItem('favorites');
   
+      // Send payment request
       const response = await axios.post(`http://${ipAdress}:3000/api/payment/pay`, paymentData);
       console.log(response.data);
+  
+      // Store payment confirmation locally
       const userId = await AsyncStorage.getItem('IdUser');
       const paymentConfirmationDate = new Date().toISOString();
-      await AsyncStorage.setItem(`PAYMENT_CONFIRMATION_DATE_${userId}`, paymentConfirmationDate);
-      await AsyncStorage.setItem(`PAYMENT_AMOUNT_${userId}`, JSON.stringify(price));
+      const paymentRecord = {
+        confirmationDate: paymentConfirmationDate,
+        amount: price.toFixed(2),
+        currency: "EUR"
+      };
   
+      // Retrieve existing payments
+      let existingPayments = await AsyncStorage.getItem(`ALL_PAYMENTS_${userId}`);
+      existingPayments = existingPayments ? JSON.parse(existingPayments) : [];
+  
+      // Append new payment record
+      existingPayments.push(paymentRecord);
+  
+      // Store updated payments in AsyncStorage
+      await AsyncStorage.setItem(`ALL_PAYMENTS_${userId}`, JSON.stringify(existingPayments));
+  
+      // Display payment confirmation
       setPaymentConfirmed(true);
       setFormData({
         cardNumber: '',
@@ -77,10 +93,12 @@ function PaymentScreen() {
         expiryYear: '',
         cvv: ''
       });
-    } catch (error) {            
-      console.log('Payment error:', error);  
+    } catch (error) {
+      console.log('Payment error:', error);
     }
   };
+  
+  
   
   return (
     <KeyboardAvoidingView style={{flex: 1}} behavior={Platform.OS === "ios" ? "padding" : null}>

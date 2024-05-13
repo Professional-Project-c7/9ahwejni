@@ -1,52 +1,54 @@
 import React, { useState, useEffect } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { View, Text, StyleSheet , ImageBackground } from 'react-native';
+import { View, Text, StyleSheet, ImageBackground } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 
-
-
-
-
-
-const Notification = ({navigation}) => {
-  const [date, setDate] = useState('');
-  const [somme, setSomme] = useState(0);
+const Notification = () => {
+  const [paymentData, setPaymentData] = useState([]);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-      const userId = await AsyncStorage.getItem('IdUser');
-        const storedPosts = await AsyncStorage.getItem(`PAYMENT_CONFIRMATION_DATE_${userId}`);
-        const sommme = await AsyncStorage.getItem(`PAYMENT_AMOUNT_${userId}`);
-          setSomme(sommme);
-          setDate(storedPosts)
+        const userId = await AsyncStorage.getItem('IdUser');
+        const storedPayments = await AsyncStorage.getItem(`ALL_PAYMENTS_${userId}`);
+        if (storedPayments) {
+          const parsedPayments = JSON.parse(storedPayments);
+          setPaymentData(parsedPayments);
+        }
       } catch (error) {
-        console.log('Error fetching data:', error); 
+        console.log('Error fetching data:', error);
       }
     };
     fetchData();
   }, []);
 
+  const savePaymentData = async (newPayment) => {
+    try {
+      const userId = await AsyncStorage.getItem('IdUser');
+      const updatedPayments = [...paymentData, newPayment];
+      await AsyncStorage.setItem(`ALL_PAYMENTS_${userId}`, JSON.stringify(updatedPayments));
+      setPaymentData(updatedPayments);
+    } catch (error) {
+      console.log('Error saving data:', error);
+    }
+  };
 
+  const displayPayments = () => {
+    if (paymentData && paymentData.length > 0) {
+      return paymentData.map((payment, index) => (
+        <View key={index} style={styles.container}>
+          <Text style={styles.title}>{payment.amount}$</Text>
+          <Text style={styles.message}>{payment.confirmationDate}</Text>
+        </View>
+      ));
+    } else {
+      return <Text>No payment notifications</Text>;
+    }
+  };
 
- 
   return (
-    <View  style={{ flex: 1 }} >
-<ImageBackground 
-       source={require('../image/logo.png')}
-        style={styles.backgroundImage}>
-        
-      </ImageBackground>
-      <View  style={styles.container}  > 
-
-      <Text style={styles.title}>{somme}$  </Text>
-      <Text style={styles.message}>{date}</Text>
-    </View>
-    <View  style={styles.container}  > 
-
-<Text style={styles.title}>{somme}$  </Text>
-<Text style={styles.message}>{date}</Text>
-</View>
+    <View style={{ flex: 1 }}>
+      {displayPayments()}
     </View>
   );
 };
@@ -57,6 +59,7 @@ const styles = StyleSheet.create({
     padding: 10,
     borderRadius: 5,
     marginBottom: 10,
+    marginTop:50
   },
   title: {
     fontSize: 18,
@@ -64,14 +67,7 @@ const styles = StyleSheet.create({
     marginBottom: 5,
   },
   message: {
-    fontSize: 16,
-  },
-  backgroundImage: {
-    flex: 1,
-    resizeMode: 'cover',
-    justifyContent: 'center',
-    alignItems: 'center',
-    
+    fontSize: 20,
   },
 });
 
