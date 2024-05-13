@@ -38,6 +38,7 @@ import Allcoffeeshops from '../components/AllCoffeShops';
 import Onboarding from '../components/Onboarding';
 import AdvancedFilter from '../components/AdvancedFilter';
 import AllProducts from '../components/AllProd';
+import Notification from '../components/Notification';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -165,6 +166,7 @@ function NAVSTART() {
         <Stack.Screen name="Info" component={InfoCoffee} />
         <Stack.Screen name="TransactionScreenCoffee" component={TransactionScreenCoffee}/>
         <Stack.Screen name="AllProducts" component={AllProducts} options={{ headerShown: false }} />
+        <Stack.Screen name="Notification" component={Notification} options={{ headerShown: false }} />
 
         <Stack.Screen name="ReviewsCoffee" component={ReviewsCoffee} options={{ headerShown: false }} />
         <Stack.Screen name="PaymentCardsDetails" component={PaymentCardsDetails} options={{ headerShown: false }} />
