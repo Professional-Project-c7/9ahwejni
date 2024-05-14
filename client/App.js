@@ -21,6 +21,8 @@ import CheckOutForm from './components/ss';
 import ShoppingCart from './components/ss';
 import AllProd from './components/AllProd';
 import AllCakes from './components/AllCakes';
+import AllCoffees from './components/AllCoffees';
+import AllDrinks from './components/AllDrinks';
 
 function App() {
 
