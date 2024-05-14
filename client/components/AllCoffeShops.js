@@ -5,6 +5,7 @@ import axios from 'axios';
 import LinearGradient from 'react-native-linear-gradient';
 import FlatListPopularShops from './FlatListPopularShops';
 import { ipAdress } from '../config';
+import { useNavigation } from '@react-navigation/native';
 
 const CoffeeShopsList = ({ navigation }) => {
   const [coffeeShopsData, setCoffeeShopsData] = useState([]);
