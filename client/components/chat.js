@@ -1,146 +1,106 @@
-// Import necessary modules
 import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, Button, ScrollView, StyleSheet } from 'react-native';
 import io from 'socket.io-client';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { ipAdress } from '../config';
 
-// Define the endpoint for the server
 const SERVER_ENDPOINT = `http://${ipAdress}:4001`;
 
-// Define the Chat component
 function Chat() {
   const [messages, setMessages] = useState([]);
   const [messageInput, setMessageInput] = useState('');
   const [userId, setUserId] = useState('');
-  const [socket, setSocket] = useState(null); // Store the socket instance
+  const [socket, setSocket] = useState(null);
 
   useEffect(() => {
+    const retrieveData = async () => {
+      try {
+        const value = await AsyncStorage.getItem('IdUser');
+        if (value !== null) {
+          const id = JSON.parse(value);
+          setUserId(id);
+          establishSocketConnection(id);
+        }
+      } catch (error) {
+        console.error('Error retrieving data:', error);
+      }
+    };
+
     retrieveData();
+
+    return () => {
+      if (socket) {
+        socket.disconnect();
+      }
+    };
   }, []);
 
-  const retrieveData = async () => {
-    try {
-      const value = await AsyncStorage.getItem('IdUser');
-      if (value !== null) {
-        const tokenObject = JSON.parse(value);
-        const id = tokenObject;
-        console.log("userId", id);
-        setUserId(id);
-        checkIfConnected(id); // Check if user is connected after getting userId
-        establishSocketConnection(id); // Establish socket connection after getting userId
-      }
-    } catch (error) {
-      console.error('Error retrieving data:', error);
-    }
-  };
-
-  const checkIfConnected = async (userId) => {
-    try {
-      const response = await fetch(`${SERVER_ENDPOINT}/isConnected`, {
-        method: 'GET',
-        headers: {
-          'userid': userId
-        }
-      });
-      if (!response.ok) {
-        throw new Error(`Failed to fetch: ${response.statusText}`);
-      }
-      const data = await response.json();
-      console.log("isConnected:", data.isConnected);
-    } catch (error) {
-      console.error('Error checking connection status:', error);
-    }
-  };
-
-  const establishSocketConnection = (userId) => {
+  const establishSocketConnection = (id) => {
     const newSocket = io(SERVER_ENDPOINT, {
       query: {
-        userId: userId
-      }
+        userId: id,
+      },
     });
-    setSocket(newSocket); // Store the socket instance
 
-    // Function to handle receiving messages
-    const receiveMessage = (message) => {
-      console.log("Received message:", message);
+    newSocket.on('receive_message', (message) => {
       setMessages((prevMessages) => [...prevMessages, message]);
-    };
-
-    // Register the receiveMessage function to listen for incoming messages
-    newSocket.on('receive_message', receiveMessage);
-
-    // Disconnect socket on component unmount
-    return () => {
-      newSocket.disconnect();
-    };
-  };
-
-  // Function to handle sending messages
-// Function to handle sending messages
-const sendMessage = () => {
-  console.log("Sending message...");
-  const newMessage = {
-    senderId: userId,
-    content: messageInput,
-    timestamp: new Date().toLocaleString(),
-  };
-
-  // Emit the message to the server
-  // Note: We're using the stored socket instance here
-  if (socket) {
-    socket.emit('send_message', newMessage, (acknowledgement) => {
-      // If the server acknowledges the message, do nothing
-      if (acknowledgement !== 'success') {
-        console.error('Failed to send message:', acknowledgement);
-      }
     });
-    console.log(newMessage);
-  }
 
-  // Clear the message input after sending
-  setMessageInput('');
-};
+    setSocket(newSocket);
+  };
 
+  const sendMessage = () => {
+    if (socket && messageInput.trim()) {
+      const newMessage = {
+        senderId: userId,
+        content: messageInput,
+        timestamp: new Date().toLocaleString(),
+      };
 
+      socket.emit('send_message', newMessage, (acknowledgement) => {
+        if (acknowledgement === 'success') {
+          setMessages((prevMessages) => [...prevMessages, newMessage]); // Add message locally after server acknowledgment
+        } else {
+          console.error('Failed to send message:', acknowledgement);
+        }
+      });
+
+      setMessageInput('');
+    }
+  };
 
   return (
     <View style={{ flex: 1 }}>
       <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
-      {messages.map((message, index) => (
-  <View
-    key={index}
-    style={{
-      flexDirection: 'row',
-      justifyContent: message.senderId === userId ? 'flex-end' : 'flex-start',
-      margin: 5,
-    }}> 
-    <View
-      style={{
-        backgroundColor: message.senderId === userId ? 'lightblue' : 'lightcoral',
-        borderRadius: 8,
-        padding: 8,
-        maxWidth: '70%',
-        alignSelf: message.senderId === userId ? 'flex-end' : 'flex-start',
-      }}>
-      <Text style={{ color: message.senderId === userId ? 'black' : 'white' }}>{message.content}</Text>
-      <Text>{message.timestamp}</Text>
-    </View>
-  </View>
-))}
-
-
-
+        {messages.map((message, index) => (
+          <View
+            key={index}
+            style={{
+              flexDirection: 'row',
+              justifyContent: message.senderId === userId ? 'flex-end' : 'flex-start',
+              margin: 5,
+            }}>
+            <View
+              style={{
+                backgroundColor: message.senderId === userId ? '#ADD8E6' : '#F08080',
+                borderRadius: 8,
+                padding: 10,
+                maxWidth: '70%',
+                elevation: 2,
+                shadowColor: '#000',
+                shadowOffset: { width: 0, height: 2 },
+                shadowOpacity: 0.3,
+                shadowRadius: 3,
+              }}>
+              <Text style={{ color: message.senderId === userId ? 'black' : 'white' }}>{message.content}</Text>
+              <Text style={{ color: message.senderId === userId ? 'black' : 'white', fontSize: 12 }}>{message.timestamp}</Text>
+            </View>
+          </View>
+        ))}
       </ScrollView>
       <View style={{ flexDirection: 'row', alignItems: 'center' }}>
         <TextInput
-          style={{
-            flex: 1,
-            borderWidth: 1,
-            borderRadius: 4,
-            paddingHorizontal: 8,
-            margin: 4,
-          }}
+          style={styles.input}
           placeholder="Type a message..."
           value={messageInput}
           onChangeText={setMessageInput}
@@ -150,7 +110,17 @@ const sendMessage = () => {
     </View>
   );
 }
-const styles = StyleSheet.create({
 
-})
+const styles = StyleSheet.create({
+  input: {
+    flex: 1,
+    borderWidth: 1,
+    borderColor: 'gray',
+    borderRadius: 4,
+    paddingHorizontal: 8,
+    margin: 4,
+    height: 40,
+  },
+});
+
 export default Chat;
