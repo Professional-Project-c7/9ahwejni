@@ -6,7 +6,7 @@ import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { ipAdress } from '../config';
 
-function PaymentScreen(navigation) {
+function PaymentScreen({navigation}) {
   // const navigation = useNavigation(); 
 
   const [price, setPrice] = useState(0);
@@ -103,7 +103,7 @@ function PaymentScreen(navigation) {
   
   // Navigation function to home page
   const goToHomePage = () => {
-    navigation.navigate('Home'); // Assuming 'Home' is the name of your home page screen
+    navigation.navigate('homePage'); // Assuming 'Home' is the name of your home page screen
   };
 
   return (
