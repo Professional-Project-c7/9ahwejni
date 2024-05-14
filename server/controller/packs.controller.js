@@ -7,7 +7,9 @@ module.exports = {
 selectAll :async function(req,res){
     try {
         const pack= await db.Pack.findAll({
-            include: [{ model: db.User}]
+            include:{
+                model:db.Products
+            }
         })
         res.status(200).send(pack)
         
@@ -31,6 +33,14 @@ addOne:async function(req,res){
     try {
         console.log("req" , req.body);
         const pack = await db.Pack.create(req.body)
+        req.body.checkedProductIDs.map(async(e)=>{
+            await db.Packproduct.create({
+                prodId:e,
+                packId:pack.id,
+                ...req.body
+
+            })
+        })
         
     res.status(201).send(pack)
     } catch (error) {
