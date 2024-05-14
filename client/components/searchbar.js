@@ -84,7 +84,7 @@ export default function CustomSearchBar({ onFilterPress }) {
     <TouchableOpacity onPress={() => handleNavigateToDetails(item)}>
       <List.Item
         title={item.name}
-        description={`(${item.totalReviews} ratings) ⭐: ${item.averageRating}, TND: $${item.price}`}
+        description={`${item.totalReviews} 👤  ⭐: ${item.averageRating}  💸: TND ${item.price}`}
         left={() => item.imgUrl ? (
           <Avatar.Image size={54} source={{ uri: item.imgUrl }} />
         ) : (

@@ -12,6 +12,7 @@ const AddReview = ({ productId, userId }) => {
     const [comment, setComment] = useState('');
 
     const submitReview = async () => {
+        
         try {
             const response = await axios.post(`http://${ipAdress}:3000/api/review`, {
                 userId: userId,
