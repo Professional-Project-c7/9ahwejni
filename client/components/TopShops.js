@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, Image, FlatList, TouchableOpacity, StyleSheet } from 'react-native';
 import axios from 'axios';
 import { ipAdress } from '../config';
+import { useNavigation } from '@react-navigation/native';
 
 const TopShops = ({ navigation }) => {
   const [coffeeShops, setCoffeeShops] = useState([]);

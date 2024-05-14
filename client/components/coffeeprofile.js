@@ -1,5 +1,5 @@
-import React from 'react';
-import { View, Text, TouchableOpacity, Image, StyleSheet, ScrollView,ImageBackground } from 'react-native';
+import React,{useState} from 'react';
+import { View, Text, Modal, TouchableOpacity, Image, StyleSheet, ScrollView,ImageBackground } from 'react-native';
 import { IconButton } from 'react-native-paper';
 import AddPacks from './addpacks';
 import addProducts from './addproducts';
@@ -22,12 +22,15 @@ const MyComponent = ({navigation}) => {
       console.error('Error removing token:', error);
     }
   };
+  const [isModalVisible, setIsModalVisible] = useState(false);
   
   const handleLogout = () => {
     removeTokenFromStorage();
     navigation.navigate('Login');
   };
-  
+  const toggleModal = () => {
+    setIsModalVisible(!isModalVisible);
+  };
 
   return (
     <ScrollView>
@@ -118,7 +121,7 @@ const MyComponent = ({navigation}) => {
         
         {/* Add more options here */}
         <View style={styles.logout}>
-        <TouchableOpacity style={styles.optionOne} onPress={handleLogout}>
+        <TouchableOpacity style={styles.optionOne} onPress={toggleModal}>
   <View style={styles.optionContent}>
     <Image source={require("../image/logout.png")} style={styles.optionImageE} />
     <Text style={styles.optionText}>LOG OUT  </Text>
@@ -126,6 +129,31 @@ const MyComponent = ({navigation}) => {
 </TouchableOpacity>
       </View>
       </View>
+      <View style={styles.container}>
+      {/* <TouchableOpacity style={styles.button} onPress={toggleModal}>
+        <Text style={styles.buttonText}>Show Popup</Text>
+      </TouchableOpacity> */}
+
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={isModalVisible}
+        onRequestClose={toggleModal}
+      >
+        <View style={styles.centeredView}>
+          <View style={styles.modalView}>
+            <Text style={styles.modalText}>do you want logout !</Text>
+            <TouchableOpacity style={styles.closeButton} onPress={handleLogout}>
+              <Text style={styles.closeButtonText}>log out</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.closeButton} onPress={toggleModal}>
+              <Text style={styles.closeButtonText}>Cancel</Text>
+            </TouchableOpacity>
+            
+          </View>
+        </View>
+      </Modal>
+    </View>
       
     </ScrollView>
     
@@ -143,6 +171,45 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: 'white',
+  },
+  closeButton: {
+    // marginTop: 10,
+    backgroundColor: 'goldenrod',
+    padding: 10,
+    borderRadius: 5,
+    // flexDirection: 'row',
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    width: '100%',
+    marginTop: 20,
+  },
+  centeredView: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    flexDirection: 'row',
+  },
+  modalView: {
+    backgroundColor: 'white',
+    borderRadius: 10,
+    padding: 20,
+    alignItems: 'center',
+    elevation: 5,
+  },
+  modalText: {
+    fontSize: 18,
+    marginBottom: 20,
+    flexDirection: 'row',
+  },
+  closeButtonText: {
+    color: 'white',
+    fontSize: 16,
+  },
+  modalText: {
+    fontSize: 18,
+    marginBottom: 20,
+    flexDirection: 'row',
   },
   header: {
     backgroundColor: '#dba617',
@@ -202,11 +269,13 @@ const styles = StyleSheet.create({
   },
   logout: {
    
-    marginLeft:40,
-    marginRight:40,
+      
+    marginLeft:80,
+    // marginRight:100,
     marginTop:30,
     marginBottom:30,
     padding: 16,
+    flexDirection: 'row',
     // backgroundColor: "rgba(219, 219, 219, 0.8)",
     borderRadius: 10,
     width:250
