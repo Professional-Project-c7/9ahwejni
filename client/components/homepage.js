@@ -87,7 +87,7 @@ const HomePage = ({ navigation }) => {
       </View>
       <RandomProducts />
       <View style={styles.top}>
-        <Text style={[styles.Texttitlecoffee, { marginLeft: 0 }]}>Top Rated Coffee Shops of the Day!</Text>
+        <Text style={[styles.Texttitlecoffee, { marginLeft: 0 }]}>Top Coffee Shops of the Day!</Text>
       </View>
      <TopShops navigation={navigation} />
 
