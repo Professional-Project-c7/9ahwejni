@@ -41,6 +41,7 @@ import Coffeelist from "../components/coffeeprodlist"
 import SeeAllProdsCoffee from "../components/seeAllprodscoffee"
 import SeeAllPacksCoffee from "../components/seeAllpackscoffee"
 
+import AllProducts from '../components/AllProd';
 // import { useNavigation } from '@react-navigation/native';
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -192,6 +193,7 @@ function NAVSTART() {
         <Stack.Screen name="Onboarding" component={Onboarding} options={{ headerShown: false }} />
         <Stack.Screen name="AdvancedFilter" component={AdvancedFilter} options={{ headerShown: false }} />
         <Stack.Screen  name="SeeAllProdsCoffee" component={SeeAllProdsCoffee} />
+        <Stack.Screen name="AllProducts" component={AllProducts} options={{ headerShown: false }} />
 
         <Stack.Screen  name="SettingComponent" component={SettingComponent} />
       </Stack.Navigator>
