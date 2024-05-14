@@ -1,5 +1,4 @@
-// HomePage.js
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { StyleSheet, Text, View, Image, TouchableOpacity, ScrollView, StatusBar, Modal } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import { IconButton } from 'react-native-paper';
@@ -11,10 +10,19 @@ import { ipAdress } from '../config';
 import CategoryBar from '../components/categorybar';
 import Searchbar from '../components/searchbar';
 import AdvancedFilter from '../components/AdvancedFilter';
+import { useNavigation } from '@react-navigation/native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import MusicPlayer from './MusicPlayer';
+import Notification from './Notification';
 
 const HomePage = ({ navigation }) => {
   const [filterVisible, setFilterVisible] = useState(false);
+  const [type, setType] = useState(true);
+  const [showNotification, setShowNotification] = useState(false);
 
+
+
+  
   const showFilterModal = () => {
     setFilterVisible(true);
   };
@@ -22,6 +30,30 @@ const HomePage = ({ navigation }) => {
   const hideFilterModal = () => {
     setFilterVisible(false);
   };
+
+  const seeAll = async (product) => {
+      navigation.navigate('AllProducts');
+  };
+  const toggleNotification = () => {
+    setShowNotification(!showNotification);
+  };
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const storedPrice = await AsyncStorage.getItem('userToken');
+        if (storedPrice) {
+          const parsedPrice = JSON.parse(storedPrice);
+          if (parsedPrice === 'coffee'){
+            setType(false);
+          }
+        }
+      } catch (error) {
+        console.log('Error fetching data:', error); 
+      }
+    };
+    fetchData();
+  }, []);
 
   return (
     <ScrollView style={styles.container}>
@@ -32,33 +64,50 @@ const HomePage = ({ navigation }) => {
         style={styles.topBackground}
       >
         <View style={styles.top}>
-          <IconButton icon="bell" iconColor='#FFF' />
-          <View style={styles.logoContainer}>
+        <IconButton icon="bell" color="#FFF" onPress={toggleNotification} />
+          {/* <View style={styles.logoContainer}>
             <Image source={logoImage} style={styles.logo} />
-          </View>
-          <IconButton icon="cart" iconColor='#FFF' onPress={() => navigation.navigate('panier')} />
+          </View> */}
+          {type && <IconButton icon="cart" iconColor='#FFF' onPress={() => navigation.navigate('panier')} />}
         </View>
       </LinearGradient>
       <View style={styles.searchContainer}>
+        {/* <MusicPlayer/> */}
         <Searchbar onFilterPress={showFilterModal} />
       </View>
       <View style={styles.categoryBarContainer}>
-        {/* <Text style={styles.categoryTitle}>Category</Text> */}
         <CategoryBar />
       </View>
       <Pub />
       <View style={styles.top}>
         <Text style={[styles.Texttitlecoffee, { marginLeft: 0 }]}>Products of the Day!</Text>
         <TouchableOpacity onPress={() => navigation.navigate("AllCoffees")}>
-          <Text style={styles.seeAllText}>See All</Text>
+          <Text style={styles.seeAllText} onPress={seeAll}>See All</Text>
         </TouchableOpacity>
       </View>
       <RandomProducts />
       <View style={styles.top}>
         <Text style={[styles.Texttitlecoffee, { marginLeft: 0 }]}>Top Rated Coffee Shops of the Day!</Text>
       </View>
-      <TopShops />
+     <TopShops navigation={navigation} />
+
       <StatusBar style="auto" />
+
+           <Modal
+        visible={showNotification}
+        animationType="slide"
+        transparent={true}
+        onRequestClose={toggleNotification}
+      >
+        <View style={styles.notificationModal}>
+         <Notification/>
+          <IconButton icon="close" color="#000" onPress={toggleNotification} />
+        </View>
+      </Modal>
+
+
+
+
 
       {/* AdvancedFilter Modal */}
       <Modal
@@ -85,6 +134,20 @@ const styles = StyleSheet.create({
     borderBottomRightRadius: 5,
     borderBottomLeftRadius: 5,
   },
+    notificationModal: {
+    flex: 1,
+    backgroundColor: 'white',
+    justifyContent: 'center',
+    alignItems: 'center',
+    height:150
+  },
+    closeButton: {
+    position: 'absolute',
+    top: 20,
+    right: 20,
+    backgroundColor: 'white',
+    borderRadius: 20,
+  },
   top: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -99,8 +162,8 @@ const styles = StyleSheet.create({
   },
   logoContainer: {
     width: 82,
-    height: 79,
-    borderRadius: 33,
+    height: 82,
+    borderRadius: 35,
     backgroundColor: 'white',
     justifyContent: 'center',
     alignItems: 'center',

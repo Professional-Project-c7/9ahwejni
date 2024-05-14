@@ -68,7 +68,7 @@ const ProductCard = ({ product }) => {
   );
 };
 
-const SeeAllProdsCoffee = () => {
+const SeeAllPacksCoffee = () => {
   const { colors } = useTheme();
   const [productName, setProductName] = useState('');
   const [productDescription, setProductDescription] = useState('');
@@ -99,7 +99,7 @@ const SeeAllProdsCoffee = () => {
   useEffect(() => {
     const getUserData = async (userId) => {
       try {
-        const response = await axios.get(`http://${ipAdress}:3000/api/product`);
+        const response = await axios.get(`http://${ipAdress}:3000/api/packs`);
         if (response.status === 200) {
           setUserData(response.data);
         }
@@ -342,4 +342,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default SeeAllProdsCoffee;
+export default SeeAllPacksCoffee;

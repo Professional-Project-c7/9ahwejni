@@ -1,4 +1,3 @@
-// AdvancedFilter.js
 import React, { useState, useEffect } from 'react';
 import {
   View,
@@ -8,10 +7,12 @@ import {
   FlatList,
   Modal,
 } from 'react-native';
-import { Text, Button, Divider, Card, List, Avatar, IconButton } from 'react-native-paper';
+import { Text, Button, Divider, Card, List, Avatar } from 'react-native-paper';
 import { Picker } from '@react-native-picker/picker';
-import { ipAdress } from '../config';
+import { useNavigation } from '@react-navigation/native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
+import { ipAdress } from '../config';
 
 const AdvancedFilter = () => {
   const [products, setProducts] = useState([]);
@@ -21,61 +22,55 @@ const AdvancedFilter = () => {
   const [filteredProducts, setFilteredProducts] = useState([]);
   const [selectedCategories, setSelectedCategories] = useState([]);
   const [resultsModalVisible, setResultsModalVisible] = useState(false);
+  const navigation = useNavigation();
+
+  const categories = [
+    { label: 'Coffee', value: 'coffee' },
+    { label: 'Drink', value: 'drink' },
+    { label: 'Cake', value: 'cake' },
+    { label: 'Packs', value: 'packs' },
+    { label: 'All', value: '' },
+  ];
 
   useEffect(() => {
-    const fetchProducts = async () => {
+    const fetchProductsAndReviews = async () => {
       try {
-        const response = await axios.get(`http://${ipAdress}:3000/api/product/`);
-        setProducts(response.data);
+        const productsResponse = await axios.get(`http://${ipAdress}:3000/api/product`);
+        const reviewsResponse = await axios.get(`http://${ipAdress}:3000/api/review`);
+
+        const productsWithReviews = productsResponse.data.map(product => {
+          const productReviews = reviewsResponse.data.filter(review => review.prodId === product.id);
+          const totalReviews = productReviews.length;
+          const averageRating = totalReviews
+            ? productReviews.reduce((acc, review) => acc + review.stars, 0) / totalReviews
+            : 0;
+          
+          return {
+            ...product,
+            totalReviews,
+            averageRating: averageRating.toFixed(1),
+          };
+        });
+
+        setProducts(productsWithReviews);
       } catch (error) {
         console.error('Error fetching products:', error);
       }
     };
 
-    fetchProducts();
+    fetchProductsAndReviews();
   }, []);
 
   const filterProducts = () => {
-    let filteredProductsList = products;
-
-    if (selectedCategories.length > 0 && !selectedCategories.includes('')) {
-      filteredProductsList = filteredProductsList.filter((product) =>
-        selectedCategories.includes(product.category)
-      );
-    }
-
-    if (minPrice) {
-      filteredProductsList = filteredProductsList.filter(
-        (product) => product.price >= parseFloat(minPrice)
-      );
-    }
-
-    if (maxPrice) {
-      filteredProductsList = filteredProductsList.filter(
-        (product) => product.price <= parseFloat(maxPrice)
-      );
-    }
-
-    if (rating) {
-      filteredProductsList = filteredProductsList.filter(
-        (product) => product.rating >= parseFloat(rating)
-      );
-    }
+    let filteredProductsList = products.filter(product => {
+      return (!selectedCategories.length || selectedCategories.includes(product.category)) &&
+             (!minPrice || product.price >= parseFloat(minPrice)) &&
+             (!maxPrice || product.price <= parseFloat(maxPrice)) &&
+             (!rating || product.averageRating >= parseFloat(rating));
+    });
 
     setFilteredProducts(filteredProductsList);
     setResultsModalVisible(true);
-  };
-
-  const handleMinPriceChange = (price) => {
-    setMinPrice(price);
-  };
-
-  const handleMaxPriceChange = (price) => {
-    setMaxPrice(price);
-  };
-
-  const handleRatingChange = (value) => {
-    setRating(value);
   };
 
   const handleCategorySelect = (value) => {
@@ -86,34 +81,20 @@ const AdvancedFilter = () => {
     );
   };
 
-  const renderCategoryItem = ({ item }) => {
-    const isSelected = selectedCategories.includes(item.value);
-    return (
-      <TouchableOpacity
-        style={[
-          styles.categoryItem,
-          isSelected ? styles.selectedCategoryItem : styles.unselectedCategoryItem,
-        ]}
-        onPress={() => handleCategorySelect(item.value)}
-      >
-        <Text style={styles.categoryText}>{item.label}</Text>
-      </TouchableOpacity>
-    );
+  const handleNavigateToDetails = async (product) => {
+    try {
+      await AsyncStorage.setItem('selectedProductId', product.id.toString());
+      navigation.navigate('ProductDetailsPage', { product });
+    } catch (error) {
+      console.error('Error navigating to product details:', error);
+    }
   };
 
-  const categories = [
-    { label: 'Coffee', value: 'coffee' },
-    { label: 'Juice', value: 'drinks' },
-    { label: 'Cake', value: 'cake' },
-    { label: 'Packs', value: 'packs' },
-    { label: 'All', value: '' },
-  ];
-
   const renderDropdownItem = ({ item }) => (
-    <TouchableOpacity onPress={() => console.log('Product selected', item)}>
+    <TouchableOpacity onPress={() => handleNavigateToDetails(item)}>
       <List.Item
         title={item.name}
-        description={`(${item.totalReviews || 0} ratings) Average: ${item.rating || 0}, Price: $${item.price}`}
+        description={`(${item.totalReviews} ratings) ⭐: ${item.averageRating}, Price: $${item.price}`}
         left={() =>
           item.imgUrl ? (
             <Avatar.Image size={54} source={{ uri: item.imgUrl }} />
@@ -134,7 +115,20 @@ const AdvancedFilter = () => {
         <Text style={styles.label}>Category</Text>
         <FlatList
           data={categories}
-          renderItem={renderCategoryItem}
+          renderItem={({ item }) => {
+            const isSelected = selectedCategories.includes(item.value);
+            return (
+              <TouchableOpacity
+                style={[
+                  styles.categoryItem,
+                  isSelected ? styles.selectedCategoryItem : styles.unselectedCategoryItem,
+                ]}
+                onPress={() => handleCategorySelect(item.value)}
+              >
+                <Text style={styles.categoryText}>{item.label}</Text>
+              </TouchableOpacity>
+            );
+          }}
           keyExtractor={(item) => item.value}
           numColumns={2}
           showsHorizontalScrollIndicator={false}
@@ -145,7 +139,7 @@ const AdvancedFilter = () => {
           keyboardType="numeric"
           placeholder="Enter minimum price"
           value={minPrice}
-          onChangeText={handleMinPriceChange}
+          onChangeText={setMinPrice}
           style={styles.filterInput}
         />
         <View style={styles.spaceBetweenInputs} />
@@ -154,7 +148,7 @@ const AdvancedFilter = () => {
           keyboardType="numeric"
           placeholder="Enter maximum price"
           value={maxPrice}
-          onChangeText={handleMaxPriceChange}
+          onChangeText={setMaxPrice}
           style={styles.filterInput}
         />
         <View style={styles.spaceBetweenInputs} />
@@ -162,7 +156,8 @@ const AdvancedFilter = () => {
         <Picker
           selectedValue={rating}
           style={styles.picker}
-          onValueChange={handleRatingChange}
+          onValueChange={setRating}
+          itemStyle={{ height: 44 }}
         >
           <Picker.Item label="Please select a rating" value="" />
           <Picker.Item label="1 Star" value="1" />
@@ -179,20 +174,11 @@ const AdvancedFilter = () => {
       <Modal
         visible={resultsModalVisible}
         animationType="slide"
-        transparent
+        transparent={true}
         onRequestClose={() => setResultsModalVisible(false)}
       >
         <View style={styles.resultsModalContainer}>
           <View style={styles.resultsModalContent}>
-            <View style={styles.resultsModalHeader}>
-              <Text style={styles.resultsModalTitle}>Filtered Results</Text>
-              <IconButton
-                icon="close"
-                onPress={() => setResultsModalVisible(false)}
-                size={24}
-                style={styles.resultsCloseButton}
-              />
-            </View>
             <FlatList
               data={filteredProducts}
               keyExtractor={(item, index) => index.toString()}
@@ -210,9 +196,9 @@ const AdvancedFilter = () => {
 const styles = StyleSheet.create({
   fullScreenCard: {
     flex: 1,
-    padding: 20,
+    padding: 2.5,
     backgroundColor: 'white',
-    borderRadius: 12, // Adjust the border radius
+    borderRadius: 12,
   },
   cardTitle: {
     fontSize: 26,
@@ -291,20 +277,6 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     borderRadius: 15,
     padding: 20,
-  },
-  resultsModalHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-  resultsModalTitle: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color:'#dba617'
-
-  },
-  resultsCloseButton: {
-    marginTop: -10,
   },
   resultsDropdownList: {
     marginTop: 10,

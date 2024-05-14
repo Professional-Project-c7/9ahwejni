@@ -1,8 +1,13 @@
 import React, { useState,useEffect } from 'react';
-import { StyleSheet, Text, View, TextInput,SafeAreaView, TouchableOpacity, Image ,ScrollView  } from 'react-native';
+import { StyleSheet, Text, View, TextInput,SafeAreaView, TouchableOpacity, Image ,ScrollView ,Alert } from 'react-native';
 import { Button } from 'react-native-paper';
 import axios from 'axios';
 import { ipAdress } from '../config';
+
+
+
+
+
 const SignUser = ({navigation}) => {
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
@@ -11,9 +16,18 @@ const SignUser = ({navigation}) => {
   const [PhoneNumber, setPhoneNumber] = useState('');
   const [profilePicture, setProfilePicture] = useState(null);
   const [error, setError] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+
+
+
+
+  const isEmailValid = (email) => {
+    return /\S+@\S+\.\S+/.test(email);
+  };
+
 
   const handleSignIn = async () => {
-    try {
+   
       const body = {
         UserType: "client",
         Email: email,
@@ -23,7 +37,19 @@ const SignUser = ({navigation}) => {
         PhoneNumber: PhoneNumber,
         ImageUrl: profilePicture,
       };
-      
+      if (email === '' || password === '',firstName === '' || lastName === '',PhoneNumber === '') {
+        Alert.alert('Incomplete Information', 'Please fill in all fields.');
+        return;
+      }
+      if (!isEmailValid(email)) {
+        Alert.alert('Invalid Email', 'Please enter a valid email address.');
+        return;
+      }
+      try {
+        if (password.length < 6) {
+          Alert.alert('Invalid Password', 'Password must be at least 6 characters long.');
+          return;
+        }
       console.log("Sending sign up request with body:", body);
      
       const response = await axios.post(
@@ -78,14 +104,18 @@ const SignUser = ({navigation}) => {
           value={lastName}
           onChangeText={setLastName}
         />
-        <TextInput
+ <TextInput
           style={styles.input}
           placeholder="Email"
+          keyboardType="email-address"
           value={email}
           onChangeText={setEmail}
-          autoCapitalize="none"
-          keyboardType="email-address"
         />
+
+
+
+
+
         <TextInput
           style={styles.input}
           placeholder="Password"

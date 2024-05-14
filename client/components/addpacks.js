@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, Text, View, Image, FlatList, TextInput, TouchableOpacity, ImageBackground, ScrollView, SafeAreaView } from 'react-native';
+import { StyleSheet, Text, View, Image, FlatList,Button, TextInput, TouchableOpacity, ImageBackground, ScrollView, SafeAreaView,Modal } from 'react-native';
 import { useTheme,IconButton } from 'react-native-paper';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
@@ -7,37 +7,55 @@ import { ipAdress } from '../config';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Feather from 'react-native-vector-icons/Feather';
+import imagee from "../image/expresso.png"
 
-const PackCard = ({ pack }) => {
+
+const PackCard = ({ pack, onPressProducts }) => {
   return (
-    <View style={styles.card}>
-    <Image source={pack.imagelink_square} style={styles.image} />
-    <View style={styles.details}>
-      <Text style={styles.name}>{pack.name}</Text>
-      <Text style={styles.description}>{pack.description}</Text>
-      <Text style={styles.price}>{pack.price} $</Text>
-        {/* Render products associated with the pack */}
-        {pack.prods.map((product, index) => (
-        <ScrollView key={index} contentContainerStyle={styles.productContainer}>
-        <Image source={{uri:product.imgUrl}} style={styles.productImage} />
-        <View style={styles.productDetails}>
-          <Text style={styles.productName}>{product.name}</Text>
-          <Text style={styles.productDescription}>{product.description}</Text>
-          <Text style={styles.productPrice}>{product.price} $</Text>
-        </View>
-      </ScrollView>
-      
-      
-        ))}
-        <View style={styles.bottomRow}>
-          {/* <Text style={styles.size}>Size: {product.prices[0].size}</Text> */}
-          {/* <Text style={styles.rating}>Rating: {product.average_rating}</Text> */}
-        </View>
+    <TouchableOpacity style={styles.card} onPress={onPressProducts}>
+      <Image source={require("../image/expresso.png")} style={styles.image} />
+      <View style={styles.details}>
+        <Text style={styles.name}>{pack.name}</Text>
+        <Text style={styles.description}>{pack.description}</Text>
+        <Text style={styles.price}>{pack.price} $</Text>
+        <TouchableOpacity onPress={onPressProducts}>
+          <Text style={styles.showProductsButton}>Show Products</Text>
+        </TouchableOpacity>
       </View>
-    </View>
+    </TouchableOpacity>
   );
 };
 
+const ProductModal = ({ isVisible, onHide, products }) => {
+  return (
+    <Modal
+      visible={isVisible}
+      onRequestClose={onHide}
+      animationType="slide"
+    >
+      <View style={styles.modalContent}>
+        <Text style={styles.modalTitle}>Products</Text>
+        <FlatList
+          data={products}
+          renderItem={({ item }) => (
+            <View style={styles.productContainer}>
+              <Image source={{ uri: item.imgUrl }} style={styles.productImage} />
+              <View style={styles.productDetails}>
+                <Text style={styles.productName}>{item.name}</Text>
+                <Text style={styles.productDescription}>{item.description}</Text>
+                <Text style={styles.productPrice}>{item.price} $</Text>
+              </View>
+            </View>
+          )}
+          keyExtractor={(item) => item.id.toString()}
+        />
+         <TouchableOpacity onPress={onHide} style={styles.closeButton}>
+            <Text style={styles.closeButtonText}>Close</Text>
+          </TouchableOpacity>
+      </View>
+    </Modal>
+  );
+};
 
 const AddPacks = ({navigation}) => {
   const { colors } = useTheme();
@@ -48,6 +66,12 @@ const AddPacks = ({navigation}) => {
   const [userID, setUserID] = useState(0);
   const [array, setarray] = useState([]);
   const [userpacks, setUserpacks] = useState(null);
+  const [selectedPack, setSelectedPack] = useState(null);
+  const [isProductModalVisible, setIsProductModalVisible] = useState(false);
+  const handleShowProducts = (pack) => {
+    setSelectedPack(pack);
+    setIsProductModalVisible(true);
+  };
   console.log(userID);
   useEffect(() => {
     retrieveData();
@@ -151,14 +175,28 @@ const firstTwoImages = filteredProducts.slice(0, 2)
   return (
     <ScrollView>
       <View>
-      <SafeAreaView style={{ flex: 1 }}>
+      <ScrollView>
+      <View style={styles.top}>
+          <Text style={styles.Texttitlepacks} >Packs's List</Text>
+          <Text style={styles.seeAllpacks} onPress={() => navigation.navigate('SeeAllPacksCoffee')}>See All</Text>
+        </View>
+      <View>
+        <SafeAreaView style={{ flex: 1 }}>
           <FlatList
-            data={filteredProducts}
-            renderItem={({ item }) => <PackCard pack={item} />}
-            keyExtractor={(item) => item.id}
+            data={firstTwoImages}
+            renderItem={({ item }) => <PackCard pack={item} onPressProducts={() => handleShowProducts(item)} />}
+            keyExtractor={(item) => item.id.toString()}
             contentContainerStyle={styles.container}
           />
         </SafeAreaView>
+        <ProductModal
+          isVisible={isProductModalVisible}
+          onHide={() => setIsProductModalVisible(false)}
+          products={selectedPack ? selectedPack.prods : []}
+        />
+      </View>
+    </ScrollView>
+
         <View style={styles.container}>
           <View style={{ alignItems: 'center', marginTop: 15 }}>
             <TouchableOpacity >
@@ -280,8 +318,72 @@ const firstTwoImages = filteredProducts.slice(0, 2)
 };
 
 const styles = StyleSheet.create({
- 
+  closeButton: {
+    marginTop: 340,
+    marginRight: 70,
+    backgroundColor: '#dba617',
+    padding: 10,
+    borderRadius: 30,
+    // flex: 1,
+    alignItems: 'center',
+    alignSelf: 'flex-end',
+    width:120,
+    height:50,
+    fontSize: 20,
   
+  },
+  closeButtonText: {
+    color: 'white',
+    fontWeight: 'bold',
+  },
+
+
+  productContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    borderBottomWidth: 1,
+    borderBottomColor: '#ccc',
+    paddingBottom: 10,
+    marginBottom: 10,
+  },
+  productImage: {
+    width: 100,
+    height: 100,
+    resizeMode: 'cover',
+    borderRadius: 10,
+    marginRight: 10,
+  },
+  productName: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    marginBottom: 5,
+    color: '#333',
+  },
+  productDescription: {
+    fontSize: 14,
+    color: '#666',
+    marginBottom: 5,
+  },
+  productPrice: {
+    fontSize: 14,
+    color: '#f85c24',
+  },
+
+  showProductsButton: {
+    color: 'black', // or any color you prefer
+    fontSize: 16,
+    // textDecorationLine: 'underline',
+  },
+  modalContent: {
+    flex: 1,
+    backgroundColor: '#fff',
+    padding: 20,
+  },
+  modalTitle: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    marginBottom: 10,
+  },
     productContainer: {
       flexDirection: 'row',
       alignItems: 'center',
