@@ -1,11 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, Modal,TouchableOpacity, Image, StyleSheet, ScrollView,ImageBackground } from 'react-native';
 import { IconButton } from 'react-native-paper';
-// import { ipAdress } from '../config';
-// import addProducts from './addproducts';
-// import { NavigationContainer } from '@react-navigation/native';
-// import { createNativeStackNavigator } from '@react-navigation/native-stack';
-// import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { ipAdress } from '../config';
 import addProducts from './addproducts';
 import { NavigationContainer } from '@react-navigation/native';
@@ -30,6 +25,8 @@ const [isModalVisible, setIsModalVisible] = useState(false);
 const removeTokenFromStorage = async () => {
   try {
     await AsyncStorage.removeItem('IdUser');
+    await AsyncStorage.removeItem('favorites');
+
     console.log('Token removed successfully');
   } catch (error) {
     console.error('Error removing token:', error);
@@ -80,9 +77,11 @@ useEffect(() => {
   }
 }, [userID]);
 const handleLogout = () => {
+  AsyncStorage.removeItem('favorites')
   removeTokenFromStorage();
   navigation.navigate('Login');
 };
+
 
   return (
     <ScrollView>
