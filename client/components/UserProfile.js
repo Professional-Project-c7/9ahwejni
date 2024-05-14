@@ -1,11 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, Modal,TouchableOpacity, Image, StyleSheet, ScrollView,ImageBackground } from 'react-native';
 import { IconButton } from 'react-native-paper';
-// import { ipAdress } from '../config';
-// import addProducts from './addproducts';
-// import { NavigationContainer } from '@react-navigation/native';
-// import { createNativeStackNavigator } from '@react-navigation/native-stack';
-// import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { ipAdress } from '../config';
 import addProducts from './addproducts';
 import { NavigationContainer } from '@react-navigation/native';
@@ -30,6 +25,8 @@ const [isModalVisible, setIsModalVisible] = useState(false);
 const removeTokenFromStorage = async () => {
   try {
     await AsyncStorage.removeItem('IdUser');
+    await AsyncStorage.removeItem('favorites');
+
     console.log('Token removed successfully');
   } catch (error) {
     console.error('Error removing token:', error);
@@ -80,9 +77,11 @@ useEffect(() => {
   }
 }, [userID]);
 const handleLogout = () => {
+  AsyncStorage.removeItem('favorites')
   removeTokenFromStorage();
   navigation.navigate('Login');
 };
+
 
   return (
     <ScrollView>
@@ -126,7 +125,8 @@ const handleLogout = () => {
               </ImageBackground>
             </View>
           </TouchableOpacity>
-          <Text style={{ marginTop: 10, fontSize: 18, fontWeight: 'bold' }}>{userData.FirstName}</Text>
+          <Text style={{ marginTop: 10, fontSize: 18, fontWeight: 'bold' }}>{userData.FirstName + ' ' + userData.LastName}</Text>
+
         </View>
        
     
@@ -151,44 +151,7 @@ const handleLogout = () => {
   </View>
 </TouchableOpacity>
         </View>
-    
-
-        {/* <View>
-  <Text>Bezier Line Chart</Text>
-  <LineChart
-    data={{
-      labels: ["January", "February", "March", "April", "May", "June"],
-      datasets: [
-        {
-          data: [
-            Math.random() * 100,
-            Math.random() * 100,
-            Math.random() * 100,
-            Math.random() * 100,
-            Math.random() * 100,
-            Math.random() * 100
-          ]
-        }
-      ]
-    }}
-    // width={Dimensions.get("window").width} // from react-native
-    height={220}
-    yAxisLabel="$"
-    yAxisSuffix="k"
-    yAxisInterval={1} // optional, defaults to 1
-    chartConfig={{
-      backgroundColor: "#e26a00",
-      backgroundGradientFrom: "#fb8c00",
-      backgroundGradientTo: "#ffa726",
-      decimalPlaces: 2, // optional, defaults to 2dp
-      color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
-      labelColor: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
-     
-    }}
-   
-  />
-</View> */}
-       
+           
         <View style={styles.optionsContainer}>
           <TouchableOpacity style={styles.option} onPress={() => navigation.navigate('panier')}>
           <View style={styles.test} >
@@ -234,11 +197,11 @@ const handleLogout = () => {
         <View style={styles.centeredView}>
           <View style={styles.modalView}>
             <Text style={styles.modalText}>do you want logout !</Text>
-            <TouchableOpacity style={styles.closeButton} onPress={toggleModal}>
-              <Text style={styles.closeButtonText}>Cancel</Text>
-            </TouchableOpacity>
             <TouchableOpacity style={styles.closeButton} onPress={handleLogout}>
               <Text style={styles.closeButtonText}>log out</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.closeButton} onPress={toggleModal}>
+              <Text style={styles.closeButtonText}>Cancel</Text>
             </TouchableOpacity>
             
           </View>
