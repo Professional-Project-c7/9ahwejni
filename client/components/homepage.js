@@ -81,7 +81,7 @@ const HomePage = ({ navigation }) => {
       <Pub />
       <View style={styles.top}>
         <Text style={[styles.Texttitlecoffee, { marginLeft: 0 }]}>Products of the Day!</Text>
-        <TouchableOpacity onPress={() => navigation.navigate("AllCoffees")}>
+        <TouchableOpacity onPress={() => navigation.navigate("Allcoffeeshops")}>
           <Text style={styles.seeAllText} onPress={seeAll}>See All</Text>
         </TouchableOpacity>
       </View>
