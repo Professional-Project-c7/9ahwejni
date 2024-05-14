@@ -13,17 +13,47 @@ import { Rating } from 'react-native-ratings';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { useProducts } from '../redux/products/productHooks';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import axios from 'axios';
+import { ipAdress } from '../config';
 
-const ProductList = ({ navigation ,route}) => {
+const ProductList = ({ navigation, route }) => {
   const { coffeeShopId } = route.params;
   const { products, getProducts, status, error } = useProducts();
   const [favorites, setFavorites] = useState({});
+  const [productsWithReviews, setProductsWithReviews] = useState([]);
 
   useEffect(() => {
     if (status === 'idle') {
       getProducts();
     }
   }, [status, getProducts]);
+
+  useEffect(() => {
+    const fetchReviews = async () => {
+      try {
+        const reviewsResponse = await axios.get(`http://${ipAdress}:3000/api/review`);
+
+        const productsWithReviews = products.map(product => {
+          const productReviews = reviewsResponse.data.filter(review => review.prodId === product.id);
+          const totalReviews = productReviews.length;
+          const averageRating = totalReviews ? productReviews.reduce((acc, review) => acc + review.stars, 0) / totalReviews : 0;
+          return {
+            ...product,
+            totalReviews,
+            averageRating: averageRating.toFixed(1),
+          };
+        });
+
+        setProductsWithReviews(productsWithReviews);
+      } catch (err) {
+        console.error('Error fetching product reviews:', err);
+      }
+    };
+
+    if (products.length > 0) {
+      fetchReviews();
+    }
+  }, [products]);
 
   const toggleFeature = (id, feature) => {
     setFavorites((prev) => ({
@@ -34,9 +64,9 @@ const ProductList = ({ navigation ,route}) => {
       },
     }));
   };
+
   const handleNavigateToDetails = async (product) => {
     try {
-     
       await AsyncStorage.setItem('selectedProductId', product.id.toString());
       navigation.navigate('prd', { product });
     } catch (error) {
@@ -44,60 +74,60 @@ const ProductList = ({ navigation ,route}) => {
     }
   };
 
-  // Filter products based on the selected Coffee Shop ID
-  const filteredProducts = products.filter((product) => product.userId === coffeeShopId);
+  const filteredProducts = productsWithReviews.filter((product) => product.userId === coffeeShopId);
 
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView>
-        {filteredProducts.length > 0 && (
+        {filteredProducts.length > 0 ? (
           <>
             <Title style={styles.shopTitle}>{filteredProducts[0].shopName}</Title>
             <Image
               style={styles.shopImage}
               source={{ uri: filteredProducts[0].imgUrl }}
             />
-          </>
-        )}
-
-        <Title style={styles.productListTitle}>My Products</Title>
-        <View style={styles.productsContainer}>
-          {filteredProducts.map((product) => (
-            <View style={styles.card} key={product.id}>
-              <TouchableOpacity onPress={() => handleNavigateToDetails(product)}>
-                <Image source={{ uri: product.imgUrl }} style={styles.image} />
-              </TouchableOpacity>
-              <Icon
-                name={favorites[product.id]?.favored ? 'heart' : 'heart-outline'}
-                color={favorites[product.id]?.favored ? 'red' : '#dba617'}
-                size={27}
-                onPress={() => toggleFeature(product.id, 'favored')}
-                style={styles.favIcon}
-              />
-              <View style={styles.infoContainer}>
-                <TouchableOpacity onPress={() => handleNavigateToDetails(product)}>
-                  <Text style={styles.name}>{product.name}</Text>
-                </TouchableOpacity>
-                <Text style={styles.price}>${product.price}</Text>
-                <Rating
-                  type="star"
-                  ratingCount={5}
-                  imageSize={20}
-                  startingValue={product.rating}
-                  onFinishRating={(rating) => console.log('New rating is: ', rating)}
-                  style={styles.starRating}
-                />
-                <Icon
-                  name={favorites[product.id]?.inCart ? 'cart' : 'cart-outline'}
-                  color={favorites[product.id]?.inCart ? 'red' : 'white'}
-                  size={24}
-                  onPress={() => toggleFeature(product.id, 'inCart')}
-                  style={styles.cartIcon}
-                />
-              </View>
+            <Title style={styles.productListTitle}>My Products</Title>
+            <View style={styles.productsContainer}>
+              {filteredProducts.map((product) => (
+                <View style={styles.card} key={product.id}>
+                  <TouchableOpacity onPress={() => handleNavigateToDetails(product)}>
+                    <Image source={{ uri: product.imgUrl }} style={styles.image} />
+                  </TouchableOpacity>
+                  <Icon
+                    name={favorites[product.id]?.favored ? 'heart' : 'heart-outline'}
+                    color={favorites[product.id]?.favored ? 'red' : '#dba617'}
+                    size={27}
+                    onPress={() => toggleFeature(product.id, 'favored')}
+                    style={styles.favIcon}
+                  />
+                  <View style={styles.infoContainer}>
+                    <TouchableOpacity onPress={() => handleNavigateToDetails(product)}>
+                      <Text style={styles.name}>{product.name}</Text>
+                    </TouchableOpacity>
+                    <Text style={styles.price}>${product.price}</Text>
+                    <Text style={styles.reviews}>{`${product.totalReviews} 👤 ⭐: ${product.averageRating}`}</Text>
+                    <Rating
+                      type="star"
+                      ratingCount={5}
+                      imageSize={20}
+                      startingValue={parseFloat(product.averageRating)}
+                      readonly
+                      style={styles.starRating}
+                    />
+                    <Icon
+                      name={favorites[product.id]?.inCart ? 'cart' : 'cart-outline'}
+                      size={24}
+                      onPress={() => toggleFeature(product.id, 'inCart')}
+                      style={styles.cartIcon}
+                    />
+                  </View>
+                </View>
+              ))}
             </View>
-          ))}
-        </View>
+          </>
+        ) : (
+          <Text style={styles.noProductsMessage}>This coffee shop has no products for the moment!</Text>
+        )}
       </ScrollView>
     </SafeAreaView>
   );
@@ -167,6 +197,7 @@ const styles = StyleSheet.create({
     alignItems: 'flex-start',
     justifyContent: 'flex-start',
     width: '100%',
+    position: 'relative',
   },
   name: {
     fontSize: 25,
@@ -179,6 +210,11 @@ const styles = StyleSheet.create({
     color: '#000',
     marginTop: 5,
   },
+  reviews: {
+    fontSize: 16,
+    color: '#646464',
+    marginTop: 5,
+  },
   starRating: {
     marginTop: 5,
   },
@@ -189,6 +225,12 @@ const styles = StyleSheet.create({
     backgroundColor: '#dba617',
     padding: 8,
     borderRadius: 15,
+  },
+  noProductsMessage: {
+    fontSize: 20,
+    color: '#3e3e3e',
+    textAlign: 'center',
+    marginTop: 50,
   },
 });
 
