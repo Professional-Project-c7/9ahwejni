@@ -1,9 +1,47 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { View, Text, ScrollView, TouchableOpacity, StyleSheet, Dimensions } from 'react-native';
 import { LineChart } from 'react-native-chart-kit';
 
 const Transactions = () => {
   const [activeTab, setActiveTab] = useState('Week');
+  const [somme, setSomme] = useState(0);
+  const [nawsomme, setNawsomme] = useState(0);
+console.log(nawsomme);
+  const fetchData = async () => {
+    try {
+      const userId = await AsyncStorage.getItem('IdUser');
+      const storedBalance = await AsyncStorage.getItem(`PAYMENT_AMOUNT_${userId}`);
+
+      if (storedBalance !== null) {
+        setSomme(parseFloat(storedBalance));
+      }
+    } catch (error) {
+      console.log('Error fetching data:', error);
+    }
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  useEffect(() => {
+    // Update AsyncStorage with the new sum whenever nawsomme changes
+    async function updateAsyncStorage() {
+      try {
+        const userId = await AsyncStorage.getItem('IdUser');
+        const oldStoredBalance = await AsyncStorage.getItem(`PAYMENT_AMOUNT_${userId}`);
+        const oldSomme = parseFloat(oldStoredBalance) || 0;
+        const newSomme = oldSomme + nawsomme;
+        setSomme(newSomme); // Update the state
+        await AsyncStorage.setItem(`PAYMENT_AMOUNT_${userId}`, JSON.stringify(newSomme)); // Update AsyncStorage
+      } catch (error) {
+        console.log('Error updating AsyncStorage:', error);
+      }
+    }
+
+    updateAsyncStorage();
+  }, [nawsomme]);
 
   const handleTabPress = (tab) => {
     setActiveTab(tab);
@@ -120,7 +158,7 @@ const Transactions = () => {
 
       <View style={styles.summarySection}>
         <View style={[styles.summaryBox, styles.balanceBox]}>
-          <Text style={styles.summaryAmount}>$12,635.00</Text>
+          <Text style={styles.summaryAmount}>${somme}</Text>
           <Text style={styles.summaryLabel}>Balance</Text>
         </View>
       </View>
@@ -214,8 +252,7 @@ const styles = StyleSheet.create({
   summaryAmount: {
     fontSize: 18,
     fontWeight: 'bold',
-   color:'white'
-
+    color: 'white'
   },
   summaryLabel: {
     fontSize: 14,
@@ -270,7 +307,7 @@ const styles = StyleSheet.create({
   },
   transactionTime: {
     color: '#999',
-    marginBottom:19
+    marginBottom: 19
   },
   transactionAmount: {
     fontSize: 16,
