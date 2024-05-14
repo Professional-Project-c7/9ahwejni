@@ -28,7 +28,7 @@ const SignCofee = ({ navigation }) => {
         Adress:Adress
       
       };
-      if (email === '' || password === '',firstName === '' || lastName === '',PhoneNumber === '') {
+      if (email === '' || password === '',firstName === '' || lastName === ''|| Adress === '') {
         Alert.alert('Incomplete Information', 'Please fill in all fields.');
         return;
       }
