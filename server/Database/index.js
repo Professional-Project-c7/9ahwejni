@@ -49,9 +49,11 @@ async function connectionTest (){
 
 
 
+  db.User.hasMany(db.Pack);
+  db.Pack.belongsTo(db.User);
+  
   db.User.hasMany(db.Products);
   db.Products.belongsTo(db.User);
-  
 
 db.User.hasMany(db.Review);
 db.Review.belongsTo(db.User);
