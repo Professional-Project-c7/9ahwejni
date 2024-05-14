@@ -3,9 +3,10 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, Button, ScrollView, StyleSheet } from 'react-native';
 import io from 'socket.io-client';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { ipAdress } from '../config';
 
 // Define the endpoint for the server
-const SERVER_ENDPOINT = 'http://192.168.103.8:4001';
+const SERVER_ENDPOINT = `http://${ipAdress}:4001`;
 
 // Define the Chat component
 function Chat() {
