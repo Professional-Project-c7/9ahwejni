@@ -7,7 +7,7 @@ export const fetchProducts = createAsyncThunk('products/fetchProducts', async ()
   return response.data.map(product => ({
     ...product,
     shopName: product.user?.FirstName + ' ' + product.user?.LastName,
-    shopImage: product.user?.imgUrl,
+    shopImage: product.user?.ImageUrl,
     shopTitle: product.user?.UserType === 'coffee' ? 'Coffee Shop' : 'Client',
 }));
 });
