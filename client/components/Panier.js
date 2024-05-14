@@ -33,7 +33,7 @@ const Panier = ({ navigation }) => {
   const handlepayment = () => {
     AsyncStorage.setItem('PRICE', JSON.stringify(totalPrice))
     navigation.navigate('Paye');
-    };
+  };
   const handleDeleteItem = async (itemId) => {
     const updatedPosts = posts.filter(item => item.id !== itemId);
     setPosts(updatedPosts);
@@ -56,47 +56,33 @@ const Panier = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
-      <View style={styles.icon}>
-        <Icon name="arrow-left" size={50} onPress={handleAddToCart} />
-      </View>
+      <Icon name="arrow-left" size={30} style={styles.backIcon} onPress={handleAddToCart} />
       <ScrollView>
         <FlatList
           data={posts}
           // keyExtractor={(item) => item.id.toString()} 
           renderItem={({ item }) => (
             <View style={styles.card}>
-              <View style={styles.cardHeader}>
-                <Image style={styles.cardImage} source={{ uri: item.imgUrl }} />
-                <View style={{ marginLeft: 18,marginRight:5 }}>
-                  <Text style={styles.time}>{item.createdAt}</Text>
-                  <Text style={styles.title}>{item.name}</Text>
-                  <Text style={styles.description}>{item.description}</Text>
-                  <Text style={styles.price}>${item.price}</Text>
-                  <TouchableOpacity  style={styles.delete} onPress={() => handleDeleteItem(item.id)}>
-                    <MaterialIcon name="delete" size={27} color="#dba617" />
-                  </TouchableOpacity>
-                </View>
+              <Image style={styles.cardImage} source={{ uri: item.imgUrl }} />
+              <View style={styles.cardContent}>
+                <Text style={styles.title}>{item.name}</Text>
+                <Text style={styles.description}>{item.description}</Text>
+                <Text style={styles.price}>${item.price}</Text>
+                <TouchableOpacity style={styles.deleteButton} onPress={() => handleDeleteItem(item.id)}>
+                  <MaterialIcon name="delete" size={24} color="#ff6347" />
+                </TouchableOpacity>
               </View>
             </View>
           )}
           ItemSeparatorComponent={() => <View style={styles.separator} />}
         />
       </ScrollView>
-      <View style={styles.cardd}>
-        {/* <Text style={styles.deliveryCharge}>Delivery charge: $1.5</Text>
-        <Text style={styles.discount}>Discount: 5%</Text> */}
-        <View >
-          <Text>Total Price: {totalPrice.toFixed(3)}$</Text>
-          
-          </View >
+      <View style={styles.footer}>
+        <Text style={styles.totalPrice}>Total: ${totalPrice.toFixed(2)}</Text>
+        <TouchableOpacity style={styles.paymentButton} onPress={handlepayment}>
+          <Text style={styles.paymentButtonText}>Go to Payment</Text>
+        </TouchableOpacity>
       </View>
-             <View>
-              <TouchableOpacity> 
-             <View style={styles.addToCartButton}    >
-                                    <Text onPress={handlepayment} >go to Payment</Text>
-               </View>                       
-              </TouchableOpacity>
-              </View>       
     </View>
   );
 };
@@ -104,112 +90,81 @@ const Panier = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    
+    backgroundColor: '#f4f3ef',
   },
-  addToCartButton: {
-    height: 45,
-    marginVertical: 20,
-    marginHorizontal: 10,
-    backgroundColor: 'white',
-    elevation: 13,
-    borderRadius: 10,
-    alignItems: 'center', 
-    justifyContent: 'center', 
-    fontSize:30
-  },
-  cardd: {
-    height: 45,
-  // marginVertical: 20,
-  marginHorizontal: 10,
-  backgroundColor: 'white',
-  elevation: 13,
-  borderRadius: 10,
-  alignItems: 'center', 
-  justifyContent: 'center', 
-  },
-
-
-
-
-
-
-
-
-  icon: {
-    marginRight: 150,
-    width:50
-  },
-
-
-  delete: {
-    marginLeft: 230,
+  backIcon: {
+    margin: 16,
+    color: 'rgba(253,190,29,1)',
   },
   card: {
-    marginVertical: 8,
-    backgroundColor: 'white',
-    elevation: 3,
-    borderRadius: 10,
-  },
- 
-  cardHeader: {
     flexDirection: 'row',
-    alignItems: 'center',
-    padding: 10,
-    
-    borderBottomWidth: 1,
-    borderBottomColor: '#ddd',
+    backgroundColor: '#fff',
+    borderRadius: 15,
+    margin: 10,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 6,
+    elevation: 6,
   },
   cardImage: {
-    width: 120,
-    height: 100,
-    borderRadius: 10,
+    width: 100,
+    height: '100%',
+    borderTopLeftRadius: 15,
+    borderBottomLeftRadius: 15,
   },
-  time: {
-    fontSize: 13,
-    color: 'black',
-    marginTop: 10,
+  cardContent: {
+    flex: 1,
+    padding: 15,
   },
   title: {
-    fontSize: 18,
-    flex: 1,
-    color: 'black',
-    marginTop: 5,
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#4b2e83',
   },
   description: {
-    color: 'gray',
-    marginTop: 5,
+    color: '#6e695b',
+    fontSize: 16,
+    flexWrap: 'wrap',
+    marginBottom: 10,
   },
   price: {
-    fontSize: 16,
+    fontSize: 19,
     fontWeight: 'bold',
-    color: 'black',
-    marginTop: 5,
+    color: '#38761d',
+  },
+  deleteButton: {
+    position: 'absolute',
+    right: 10,
+    top: 10,
   },
   separator: {
-    height: 1,
-    backgroundColor: '#ddd',
+    height: 2,
+    backgroundColor: '#ececec',
   },
   footer: {
-    paddingHorizontal: 20,
-    paddingTop: 20,
-    borderTopWidth: 1,
-    borderTopColor: '#ddd',
+    padding: 20,
+    borderTopWidth: 2,
+    borderColor: '#ddd',
+    backgroundColor: '#fff',
   },
-  subtotal: {
-    marginBottom: 10,
-    marginLeft:115
+  totalPrice: {
+    fontSize: 22,
+    fontWeight: 'bold',
+    color: '#444',
   },
-  deliveryCharge: {
-    marginBottom: 10,
-    marginLeft:115
+  paymentButton: {
+    marginTop: 12,
+    backgroundColor: 'rgba(253,190,29,1)',
+    padding: 14,
+    borderRadius: 10,
+    alignItems: 'center',
   },
-  discount: {
-    marginBottom: 10,
-    marginLeft:115
+  paymentButtonText: {
+    fontSize: 18,
+    color: '#fff',
+    fontWeight: 'bold',
   },
-
-
- 
 });
 
 export default Panier;
