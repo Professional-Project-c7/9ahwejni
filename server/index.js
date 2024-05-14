@@ -18,7 +18,7 @@ const Authentication = require('./Routers/login.routers.js');
 const messagesRouter = require('./Routers/messages.routers')
 const Payment=require('./Routers/Payment.js')
 const reviewRouter = require('./Routers/review.router.js');
-
+const packprodRouter=require('./Routers/packprod.routes.js')
 
 
 app.use(cors()) 
@@ -31,7 +31,7 @@ app.use("/api/product", ProductRoutes);
 app.use("/api/packs", packs);
 app.use('/api/payment', Payment);
 app.use('/api/review', reviewRouter);
-
+app.use('/api/packprod', packprodRouter);
 
 let port = 3000;
 app.listen(port, function () {
