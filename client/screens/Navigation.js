@@ -37,6 +37,7 @@ import Panier from '../components/Panier';
 import Allcoffeeshops from '../components/AllCoffeShops';
 import Onboarding from '../components/Onboarding';
 import AdvancedFilter from '../components/AdvancedFilter';
+import AllProducts from '../components/AllProd';
 // import { useNavigation } from '@react-navigation/native';
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -185,6 +186,7 @@ function NAVSTART() {
         <Stack.Screen name="Tabs"  component={TabNavigator} options={{ headerShown: false }} />
         <Stack.Screen name="Onboarding" component={Onboarding} options={{ headerShown: false }} />
         <Stack.Screen name="AdvancedFilter" component={AdvancedFilter} options={{ headerShown: false }} />
+        <Stack.Screen name="AllProducts" component={AllProducts} options={{ headerShown: false }} />
 
         <Stack.Screen  name="SettingComponent" component={SettingComponent} />
       </Stack.Navigator>
