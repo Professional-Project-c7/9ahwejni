@@ -24,11 +24,11 @@ import AllProd from './components/AllProd';
 function App() {
 
   return (
-  <Provider store={store}>
-    <SafeAreaView style={{ flex: 1 }}>
-        <NAVSTRAT  />
- </SafeAreaView>
- </Provider>
-  );
-}
-export default App;
+    <Provider store={store}>
+      <SafeAreaView style={{ flex: 1 }}>
+          <NAVSTRAT  />
+   </SafeAreaView>
+   </Provider>
+    );
+  }
+  export default App;

@@ -76,7 +76,7 @@ module.exports = async (sequelize) => {
   const pack = await Promise.all(
     Array.from({ length: packCount }).map(async () => {
         const category = getRandomElementFromArray(["food", "coffee"]); // Randomly select category
-        
+        const user = users[Math.floor(Math.random() * userCount)];
         let name, description;
         if (category === "food") {
             // If the category is food, generate food-related data
@@ -93,6 +93,7 @@ module.exports = async (sequelize) => {
             price: faker.commerce.price(),
             description: description,
             category: category,
+            userId: user.id,
         });
     })
 );
