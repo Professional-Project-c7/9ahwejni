@@ -68,11 +68,23 @@ const AllProducts = ({navigation}) => {
     }
   };
   
-
+  const goToHomePage = () => {
+    navigation.navigate('homePage'); // Assuming 'Home' is the name of your home page screen
+  };
 
 
   return (
     <SafeAreaView style={styles.container}>
+        
+        <View style={styles.topBar}>
+          <TouchableOpacity onPress={goToHomePage}>
+            <Image
+              source={require('../image/logo.png')} // Assuming 'logo.png' is your logo file
+              style={styles.logo}
+              resizeMode="contain"
+            />
+          </TouchableOpacity>
+        </View>
       <ScrollView>
         {error ? (
           <Text>Error: {error}</Text>
@@ -147,6 +159,20 @@ const styles = StyleSheet.create({
     fontSize: 20,
     color: '#000',
     marginTop: 5,
+  },
+  topBar: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#fff',
+    height: 80,
+    paddingHorizontal: 20,
+    borderBottomWidth: 1,
+    borderBottomColor: '#ccc',
+  },
+  logo: {
+    width: 120,
+    height: 60,
   },
 });
 

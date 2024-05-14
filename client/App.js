@@ -12,7 +12,7 @@ import AllCoffeShops from './components/AllCoffeShops';
 import   User from './components/UserProfile'
 import HomePage from './components/homepage';
 import SellerPage from './components/SellerPage';
-import PaymentScreen from './components/Payment';
+import Paye from './components/Payment';
 import PaymentCardsDetails from './components/paymentcardsdetailsCoffee';
 import ProductDetailsPage from './components/ProdDetails';
 import Onboarding from './components/Onboarding';
@@ -26,7 +26,7 @@ function App() {
   return (
     <Provider store={store}>
       <SafeAreaView style={{ flex: 1 }}>
-          <PaymentScreen  />
+          <NAVSTRAT  />
    </SafeAreaView>
    </Provider>
     );
