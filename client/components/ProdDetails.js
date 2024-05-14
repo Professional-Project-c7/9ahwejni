@@ -18,15 +18,14 @@ const ProductDetailsPage = ({ navigation }) => {
     const [reviews, setReviews] = useState([]);
 
 
-
     const retrieveData = async () => {
         try {
           const value = await AsyncStorage.getItem('IdUser');
           if (value !== null) {
             const tokenObject = JSON.parse(value);
             const userId = tokenObject; 
-            console.log('helllllo',userId);
-            setuserID(userId);
+            setSelectedUserId(userId)
+           
           }
         } catch (error) {
           console.error('Error retrieving data:', error);
@@ -38,6 +37,7 @@ const ProductDetailsPage = ({ navigation }) => {
                 const productId = await AsyncStorage.getItem('selectedProductId');
                 setSelectedProductId(productId);
                 const storedUserId = await AsyncStorage.getItem('userId');  
+                setSelectedUserId(userId)
 
                 if (storedUserId) {
                     const userResponse = await axios.get(`http://${ipAdress}:3000/api/user/${userId}`);
