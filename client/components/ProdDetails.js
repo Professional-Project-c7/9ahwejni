@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, Image, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
 import { Button } from 'react-native-paper';
 import axios from 'axios';
 import { ipAdress } from '../config'; 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Icon from 'react-native-vector-icons/FontAwesome'; 
+import { Rating } from 'react-native-ratings';
+import AddReview from './AddReview';
 
 const ProductDetailsPage = ({ navigation }) => {
     const [products, setProducts] = useState([]);
@@ -12,50 +14,62 @@ const ProductDetailsPage = ({ navigation }) => {
     const [selectedSugar, setSelectedSugar] = useState(null);
     const [selectedIce, setSelectedIce] = useState(null);
     const [selectedProductId, setSelectedProductId] = useState(null);
-console.log(products);
+    const [selectedUserId, setSelectedUserId] = useState(null);
+    const [reviews, setReviews] = useState([]);
 
 
-useEffect(() => {
-    const fetchProductDetails = async () => {
-      try {
-      
-        const productId = await AsyncStorage.getItem('selectedProductId');
-        setSelectedProductId(productId);
-        
-        const response = await axios.get(`http://${ipAdress}:3000/api/product/SearchById/${productId}`);
-        setProducts(response.data); // Remove [0] from here
-      } catch (error) {
-        console.error('Error fetching product details:', error);
-      }
+
+    const retrieveData = async () => {
+        try {
+          const value = await AsyncStorage.getItem('IdUser');
+          if (value !== null) {
+            const tokenObject = JSON.parse(value);
+            const userId = tokenObject; 
+            console.log('helllllo',userId);
+            setuserID(userId);
+          }
+        } catch (error) {
+          console.error('Error retrieving data:', error);
+        }
+      };
+        useEffect(() => {
+        const fetchProductDetails = async (userId) => {
+            try {
+                const productId = await AsyncStorage.getItem('selectedProductId');
+                setSelectedProductId(productId);
+                const storedUserId = await AsyncStorage.getItem('userId');  
+
+                if (storedUserId) {
+                    const userResponse = await axios.get(`http://${ipAdress}:3000/api/user/${userId}`);
+                    if (userResponse.data) {
+                        setSelectedUserId(userResponse.data); 
+                    }
+                }
+                
+                const response = await axios.get(`http://${ipAdress}:3000/api/product/SearchById/${productId}`);
+                setProducts(response.data);
+            } catch (error) {
+                console.error('Error fetching product details:', error);
+            }
+        };
+        fetchProductDetails();
+    }, []);
+    useEffect(() =>{
+        retrieveData();
+    })
+
+    const handleAddToHome = () => {
+        navigation.navigate('Tabs');
     };
 
-    fetchProductDetails();
-  }, []);
+    const handleSizeSelection = size => setSelectedSize(size);
+    const handleSugarSelection = sugar => setSelectedSugar(sugar);
+    const handleIceSelection = ice => setSelectedIce(ice);
 
-  const handleAddTohome = () => {
-    navigation.navigate('Tabs');
-  };
-    const handleSizeSelection = (size) => {
-        setSelectedSize(size);
-    };
-
-    const handleSugarSelection = (sugar) => {
-        setSelectedSugar(sugar);
-    };
-
-    const handleIceSelection = (ice) => {
-        setSelectedIce(ice);
-    };
-
-    // const ProductDetailsPage = ({ route, navigation }) => {
-    //     const [product, setProduct] = useState(route.params.product);
-    // }
-
- const handleAddToCart = async (product) => {
+    const handleAddToCart = async () => {
         try {
             const existingCartItems = await AsyncStorage.getItem('favorites');
             const cartItems = existingCartItems ? JSON.parse(existingCartItems) : [];
-            console.log("cartItems",cartItems);
             cartItems.push(products[0]);
             await AsyncStorage.setItem('favorites', JSON.stringify(cartItems));
         } catch (error) {
@@ -64,220 +78,176 @@ useEffect(() => {
     };
     
     return (
-        
-        <View style={styles.container}>
-             <Icon name="arrow-left" size={30}   onPress={handleAddTohome} />
+        <ScrollView style={styles.container}>
+            <Icon name="arrow-left" size={30} onPress={handleAddToHome} />
             {products.map((product, index) => (
                 <View key={index} style={styles.productContainer}>
-                    <Image
-                        source={{ uri: product.imgUrl }}
-                        style={styles.productImage}
-                    />
+                    <Image source={{ uri: product.imgUrl }} style={styles.productImage} />
                     <View style={styles.body}>
                         <Text style={styles.name}>{product.name}</Text>
                         <Text style={styles.description}>{product.description}</Text>
                         <View style={styles.bottomContainer}>
-                            
                             <Text style={styles.sectionTitle}>Customize</Text>
-                            
                             <View style={styles.optionContainer}>
                                 <View style={styles.optionButtonsContainer}>
                                     <Text style={styles.optionTitle}>Size</Text>
-
-                                    <TouchableOpacity
-                                        style={[styles.optionButton, selectedSize === 'Small' && styles.selectedOption]}
-                                        onPress={() => handleSizeSelection('Small')}
-                                    >
+                                    <TouchableOpacity style={[styles.optionButton, selectedSize === 'Small' && styles.selectedOption]} onPress={() => handleSizeSelection('Small')}>
                                         <Text style={styles.optionButtonText}>Small</Text>
                                     </TouchableOpacity>
-                                    <TouchableOpacity
-                                        style={[styles.optionButton, selectedSize === 'Regular' && styles.selectedOption]}
-                                        onPress={() => handleSizeSelection('Regular')}
-                                    >
+                                    <TouchableOpacity style={[styles.optionButton, selectedSize === 'Regular' && styles.selectedOption]} onPress={() => handleSizeSelection('Regular')}>
                                         <Text style={styles.optionButtonText}>Regular</Text>
                                     </TouchableOpacity>
-                                    <TouchableOpacity
-                                        style={[styles.optionButton, selectedSize === 'Large' && styles.selectedOption]}
-                                        onPress={() => handleSizeSelection('Large')}
-                                    >
+                                    <TouchableOpacity style={[styles.optionButton, selectedSize === 'Large' && styles.selectedOption]} onPress={() => handleSizeSelection('Large')}>
                                         <Text style={styles.optionButtonText}>Large</Text>
                                     </TouchableOpacity>
                                 </View>
                             </View>
                             <View style={styles.optionContainer}>
-                            <View style={styles.optionButtonsContainer}>
-    <Text style={styles.optionTitle}>Sugar:</Text>
-
-    <TouchableOpacity
-        style={[
-            styles.optionButton,
-            selectedSugar === 'Normal' && styles.selectedOption
-        ]}
-        onPress={() => handleSugarSelection('Normal')}
-    >
-        <Text style={styles.optionButtonText}>Normal</Text>
-    </TouchableOpacity>
-    <TouchableOpacity
-        style={[
-            styles.optionButton,
-            selectedSugar === 'Less' && styles.selectedOption
-        ]}
-        onPress={() => handleSugarSelection('Less')}
-    >
-        <Text style={styles.optionButtonText}>Less</Text>
-    </TouchableOpacity>
-    <TouchableOpacity
-        style={[
-            styles.optionButton,
-            selectedSugar === 'No' && styles.selectedOption
-        ]}
-        onPress={() => handleSugarSelection('No')}
-    >
-        <Text style={styles.optionButtonText}>No</Text>
-    </TouchableOpacity>
-                            </View>
+                                <View style={styles.optionButtonsContainer}>
+                                    <Text style={styles.optionTitle}>Sugar:</Text>
+                                    <TouchableOpacity style={[styles.optionButton, selectedSugar === 'Normal' && styles.selectedOption]} onPress={() => handleSugarSelection('Normal')}>
+                                        <Text style={styles.optionButtonText}>Normal</Text>
+                                    </TouchableOpacity>
+                                    <TouchableOpacity style={[styles.optionButton, selectedSugar === 'Less' && styles.selectedOption]} onPress={() => handleSugarSelection('Less')}>
+                                        <Text style={styles.optionButtonText}>Less</Text>
+                                    </TouchableOpacity>
+                                    <TouchableOpacity style={[styles.optionButton, selectedSugar === 'No' && styles.selectedOption]} onPress={() => handleSugarSelection('No')}>
+                                        <Text style={styles.optionButtonText}>No</Text>
+                                    </TouchableOpacity>
+                                </View>
                             </View>
                             <View style={styles.optionContainer}>
-                            <View style={styles.optionButtonsContainer}>
-                                <Text style={styles.optionTitle}>Ice:</Text>
-                                <TouchableOpacity
-                                    style={[
-                                        styles.optionButton,
-                                        selectedIce === 'Normal' && styles.selectedOption
-                                    ]}
-                                    onPress={() => handleIceSelection('Normal')}
-                                >
-                                    <Text style={styles.optionButtonText}>Normal</Text>
-                                </TouchableOpacity>
-                                <TouchableOpacity
-                                    style={[
-                                        styles.optionButton,
-                                        selectedIce === 'Less' && styles.selectedOption
-                                    ]}
-                                    onPress={() => handleIceSelection('Less')}
-                                >
-                                    <Text style={styles.optionButtonText}>Less</Text>
-                                </TouchableOpacity>
-                                <TouchableOpacity
-                                    style={[
-                                        styles.optionButton,
-                                        selectedIce === 'No' && styles.selectedOption
-                                    ]}
-                                    onPress={() => handleIceSelection('No')}
-                                >
-                                    <Text style={styles.optionButtonText}>No</Text>
-                                </TouchableOpacity>
-                            </View>
+                                <View style={styles.optionButtonsContainer}>
+                                    <Text style={styles.optionTitle}>Ice:</Text>
+                                    <TouchableOpacity style={[styles.optionButton, selectedIce === 'Normal' && styles.selectedOption]} onPress={() => handleIceSelection('Normal')}>
+                                        <Text style={styles.optionButtonText}>Normal</Text>
+                                    </TouchableOpacity>
+                                    <TouchableOpacity style={[styles.optionButton, selectedIce === 'Less' && styles.selectedOption]} onPress={() => handleIceSelection('Less')}>
+                                        <Text style={styles.optionButtonText}>Less</Text>
+                                                                       </TouchableOpacity>
+                                    <TouchableOpacity style={[styles.optionButton, selectedIce === 'No' && styles.selectedOption]} onPress={() => handleIceSelection('No')}>
+                                        <Text style={styles.optionButtonText}>No</Text>
+                                    </TouchableOpacity>
+                                </View>
                             </View>
                             <View style={styles.priceContainer}>
                                 <Text style={styles.productPrice}>${product.price}</Text>
-                                <TouchableOpacity>
-                                    <Text style={styles.add}
-                                     onPress={handleAddToCart } 
-                                      >Add to Cart</Text>
+                                <TouchableOpacity onPress={handleAddToCart}>
+                                    <Text style={styles.add}>Add to Cart</Text>
                                 </TouchableOpacity>
                             </View>
                         </View>
                     </View>
                 </View>
             ))}
-        </View>
+    <AddReview productId={selectedProductId} userId={selectedUserId} />
+
+        </ScrollView>
     );
 };
+
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-marginHorizontal:15       
+        backgroundColor: '#FFFFFF', 
+        padding: 10
     },
     productContainer: {
         marginBottom: 20,
+        backgroundColor: '#FFFFFF',
+        borderRadius: 15,
+        overflow: 'hidden' 
     },
     productImage: {
         width: '100%',
         height: 250,
-        borderRadius: 25,
+        resizeMode: 'cover'
     },
     body: {
-        padding: 10,
-        backgroundColor: '#F7F7F7',
-        borderRadius: 25,
+        padding: 20
     },
     name: {
-        fontSize: 24,
+        fontSize:27,
         fontWeight: 'bold',
         textAlign: 'center',
-        marginTop: 10,
-        color: '#FFBB70',
+        color: '#dba617' 
     },
     description: {
-        marginBottom: 20,
-        fontSize: 16,
+        fontSize: 18,
         textAlign: 'center',
+        color: 'black' 
     },
     bottomContainer: {
-        padding: 10,
+        marginTop: 10
     },
     add: {
-        borderWidth: 1,
-        borderColor: '#FFBB70',
-        width: '100%',
-        fontSize: 22,
-        borderRadius: 25,
-        color: '#FFBB70',
+        backgroundColor: '#FFBB70', 
+        color: 'white', 
+        padding: 10,
         textAlign: 'center',
-        marginTop: 10,
-        marginRight:140,
-        
+        borderRadius: 25,
+        fontSize: 18,
+        fontWeight: 'bold',
+        overflow: 'hidden'
     },
     sectionTitle: {
         fontSize: 20,
         fontWeight: 'bold',
-        marginBottom: 10,
         textAlign: 'center',
+        marginBottom: 10,
+        
     },
     priceContainer: {
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
-        textAlign: 'center',
-        marginTop: 11,
-        marginLeft:40
+        padding: 10
     },
     productPrice: {
-        fontSize: 22,
+        fontSize: 25,
         fontWeight: 'bold',
-        color: '#333333',
-
+        color: '#fff',
+        backgroundColor: '#FFBB70',
+        borderRadius: 15,
+        paddingHorizontal: 10,
+        paddingVertical: 5,
+        overflow: 'hidden' 
     },
     optionContainer: {
         marginBottom: 10,
+        backgroundColor: '#FFFFFF', 
+        borderRadius: 15,
+        paddingVertical: 10,
+        borderColor: '#000000',
     },
     optionButtonsContainer: {
         flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        paddingHorizontal: 20,
+        justifyContent: 'space-around'
     },
     optionTitle: {
-        fontSize: 18,
-        fontWeight: 'bold',
-        marginRight: 10,
+        fontSize: 22,
+        fontWeight: 'bold'
     },
     optionButton: {
+        backgroundColor: '#fff',
+        borderRadius: 15,
+        paddingHorizontal: 12,
+        paddingVertical: 8,
+        marginHorizontal: 5,
         borderWidth: 1,
         borderColor: '#FFBB70',
-        borderRadius: 15,
-        paddingVertical: 5,
-        paddingHorizontal: 10,
+        overflow: 'hidden' 
     },
     optionButtonText: {
-        fontSize: 16,
-        color: '#FFBB70',
+        fontSize: 17,
+        color: '#666' 
     },
     selectedOption: {
-        backgroundColor: 'white',
-        color: 'black',
-        borderColor: 'black', // Change text color to black
+        backgroundColor: '#FFBB70', 
+        color : '#FFFF'
+    },
+    selectedOptionText: {
+        color: 'white', 
     },
     
 });
