@@ -11,7 +11,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 // import axios from 'axios';
 // import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
-
+import Share from 'react-native-share';
 const ProfileScreen = ({ navigation }) => {
   const [userData, setUserData] = useState(null);
 const [userID,setuserID] = useState(null)
@@ -31,7 +31,22 @@ const retrieveData = async () => {
   }
 };
 
-  
+
+
+  const myCustomShare = async() => {
+    const shareOptions = {
+      message: 'Order your next meal from FoodFinder App.',
+      url: "https://parottaexpress.com/wp-content/uploads/2023/11/Coffee.png",
+      // urls: [files.image1, files.image2]
+    }
+
+    try {
+      const ShareResponse = await Share.open(shareOptions);
+      console.log(JSON.stringify(ShareResponse));
+    } catch(error) {
+      console.log('Error => ', error);
+    }
+  }
 
 const getUserData = async (userId) => {
   try {
@@ -98,7 +113,7 @@ useEffect(() => {
             <Text style={styles.menuItemText}>Edit Informations</Text>
           </View>
         </TouchableRipple>
-        <TouchableRipple >
+        <TouchableRipple onPress={myCustomShare}>
           <View style={styles.menuItem}>
             <Icon name="share-outline" color='#dba617' size={25}/>
             <Text style={styles.menuItemText}>Tell Your Friends</Text>
@@ -110,7 +125,7 @@ useEffect(() => {
             <Text style={styles.menuItemText}>Support</Text>
           </View>
         </TouchableRipple>
-        <TouchableRipple onPress={() => {}}>
+        <TouchableRipple onPress={() => navigation.navigate('SettingComponent')}>
           <View style={styles.menuItem}>
             <Icon name="account-check-outline" color='#dba617' size={25}/>
             <Text style={styles.menuItemText}>Settings</Text>
@@ -152,4 +167,4 @@ const styles = StyleSheet.create({
     fontSize: 16,
     lineHeight: 26,
   },
-});
+})
