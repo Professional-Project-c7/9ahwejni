@@ -9,7 +9,7 @@ const Panier = ({ navigation }) => {
 
   const [posts, setPosts] = useState(null);
   const [totalPrice, setTotalPrice] = useState(0);
-
+console.log("postspostsposts",posts);
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -60,7 +60,6 @@ const Panier = ({ navigation }) => {
       <ScrollView>
         <FlatList
           data={posts}
-          // keyExtractor={(item) => item.id.toString()} 
           renderItem={({ item }) => (
             <View style={styles.card}>
               <Image style={styles.cardImage} source={{ uri: item.imgUrl }} />

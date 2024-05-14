@@ -87,6 +87,7 @@ function PaymentScreen({navigation}) {
   
       // Store updated payments in AsyncStorage
       await AsyncStorage.setItem(`ALL_PAYMENTS_${userId}`, JSON.stringify(existingPayments));
+      AsyncStorage.removeItem('favorites')
   
       // Display payment confirmation
       setPaymentConfirmed(true);
