@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { StyleSheet, Text, TouchableOpacity, View, ScrollView, Image, FlatList } from 'react-native';
-import Icon from 'react-native-vector-icons/FontAwesome';
-import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
+import { useNavigation } from '@react-navigation/native';
+import Icon from 'react-native-vector-icons/FontAwesome'; // Import FontAwesome for close icon
+import MaterialIcon from 'react-native-vector-icons/MaterialIcons'; // Import MaterialIcons for delete icon
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Panier = ({ navigation }) => {
@@ -11,52 +12,74 @@ const Panier = ({ navigation }) => {
 
   useEffect(() => {
     const fetchData = async () => {
-      const storedPosts = await AsyncStorage.getItem('favorites');
-      if (storedPosts) {
-        const parsedPosts = JSON.parse(storedPosts);
-        setPosts(parsedPosts);
-        calculateTotalPrice(parsedPosts);
+      try {
+        const storedPosts = await AsyncStorage.getItem('favorites');
+        
+        if (storedPosts) {
+          const parsedPosts = JSON.parse(storedPosts);
+          setPosts(parsedPosts);
+          calculateTotalPrice(parsedPosts);
+        }
+      } catch (error) {
+        console.log('Error fetching data:', error); 
       }
     };
     fetchData();
   }, []);
 
-  const calculateTotalPrice = items => {
-    const total = items.reduce((acc, item) => acc + item.price, 0);
-    setTotalPrice(total);
+  const handleAddToCart = () => {
+    navigation.navigate('Tabs');
+  };
+  const handlepayment = () => {
+    AsyncStorage.setItem('PRICE', JSON.stringify(totalPrice))
+    navigation.navigate('Paye');
+  };
+  const handleDeleteItem = async (itemId) => {
+    const updatedPosts = posts.filter(item => item.id !== itemId);
+    setPosts(updatedPosts);
+    try {
+      await AsyncStorage.setItem('favorites', JSON.stringify(updatedPosts));
+      calculateTotalPrice(updatedPosts);
+    } catch (error) {
+      console.log('Error updating favorites:', error);
+    }
   };
 
-  const handleDeleteItem = async itemId => {
-    const updatedPosts = posts.filter(item => item.id !== itemId);
-    await AsyncStorage.setItem('favorites', JSON.stringify(updatedPosts));
-    setPosts(updatedPosts);
-    calculateTotalPrice(updatedPosts);
+  const calculateTotalPrice = (items) => {
+    let totalPrice = 0;
+    items.forEach(item => {
+      totalPrice += item.price;
+    });
+    setTotalPrice(totalPrice);
   };
+  console.log(totalPrice);
 
   return (
     <View style={styles.container}>
-      <Icon name="arrow-left" size={30} style={styles.backIcon} onPress={() => navigation.goBack()} />
-      <FlatList
-        data={posts}
-        keyExtractor={item => item.id.toString()}
-        renderItem={({ item }) => (
-          <View style={styles.card}>
-            <Image style={styles.cardImage} source={{ uri: item.imgUrl }} />
-            <View style={styles.cardContent}>
-              <Text style={styles.title}>{item.name}</Text>
-              <Text style={styles.description}>{item.description}</Text>
-              <Text style={styles.price}>${item.price}</Text>
-              <TouchableOpacity style={styles.deleteButton} onPress={() => handleDeleteItem(item.id)}>
-                <MaterialIcon name="delete" size={24} color="#ff6347" />
-              </TouchableOpacity>
+      <Icon name="arrow-left" size={30} style={styles.backIcon} onPress={handleAddToCart} />
+      <ScrollView>
+        <FlatList
+          data={posts}
+          // keyExtractor={(item) => item.id.toString()} 
+          renderItem={({ item }) => (
+            <View style={styles.card}>
+              <Image style={styles.cardImage} source={{ uri: item.imgUrl }} />
+              <View style={styles.cardContent}>
+                <Text style={styles.title}>{item.name}</Text>
+                <Text style={styles.description}>{item.description}</Text>
+                <Text style={styles.price}>${item.price}</Text>
+                <TouchableOpacity style={styles.deleteButton} onPress={() => handleDeleteItem(item.id)}>
+                  <MaterialIcon name="delete" size={24} color="#ff6347" />
+                </TouchableOpacity>
+              </View>
             </View>
-          </View>
-        )}
-        ItemSeparatorComponent={() => <View style={styles.separator} />}
-      />
+          )}
+          ItemSeparatorComponent={() => <View style={styles.separator} />}
+        />
+      </ScrollView>
       <View style={styles.footer}>
         <Text style={styles.totalPrice}>Total: ${totalPrice.toFixed(2)}</Text>
-        <TouchableOpacity style={styles.paymentButton} onPress={() => navigation.navigate('Pay')}>
+        <TouchableOpacity style={styles.paymentButton} onPress={handlepayment}>
           <Text style={styles.paymentButtonText}>Go to Payment</Text>
         </TouchableOpacity>
       </View>
