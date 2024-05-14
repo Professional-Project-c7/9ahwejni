@@ -5,9 +5,9 @@ import { ipAdress } from '../config';
 import { useNavigation } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
-const AllProducts = () => {
+const AllProducts = ({navigation}) => {
 
-  const navigation = useNavigation(); 
+  // const navigation = useNavigation(); 
 
   const [products, setProducts] = useState([]);
   const [error, setError] = useState(null); // Declare error state
