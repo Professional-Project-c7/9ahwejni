@@ -26,7 +26,7 @@ module.exports = {
   getReviewsByProduct: async (req, res) => {
     try {
       const reviews = await db.Review.findAll({
-        where: { productId: req.params.productId },
+        where: { prodId : req.params.prodId  },
         include: [db.User]
       });
       res.status(200).send(reviews);
