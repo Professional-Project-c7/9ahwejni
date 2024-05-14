@@ -1,44 +1,27 @@
 import React, { useState, useEffect } from 'react';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, Image, KeyboardAvoidingView, ScrollView } from 'react-native';
 
-import { View, Text, TextInput, Image, TouchableOpacity, StyleSheet , Linking  } from 'react-native';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
-
-
 import { ipAdress } from '../config';
 
-function Paye() {
-
-  const [PRIXX, setPRIXX] = useState(0);
-
-console.log("hhhh",PRIXX);
-
+function PaymentScreen() {
+  const [price, setPrice] = useState(0);
   const [formData, setFormData] = useState({
-    amount: '',
-    payment_method: '', // To store the selected payment method
-    card_number: '',
-    expiry_month: '',
-    expiry_year: '',
+    cardNumber: '',
+    expiryMonth: '',
+    expiryYear: '',
     cvv: ''
   });
- 
-  const handleChange = (name, value) => {
-    setFormData({
-      ...formData,
-      [name]: value
-    });
-  };
-  
+
+  const [paymentConfirmed, setPaymentConfirmed] = useState(false);
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const storedPosts = await AsyncStorage.getItem('PRICE');
-        
-        if (storedPosts) {
-          const parsedPosts = JSON.parse(storedPosts);
-          setPRIXX(parsedPosts);
-          calculateTotalPrice(parsedPosts);
+        const storedPrice = await AsyncStorage.getItem('PRICE');
+        if (storedPrice) {
+          const parsedPrice = JSON.parse(storedPrice);
+          setPrice(parsedPrice);
         }
       } catch (error) {
         console.log('Error fetching data:', error); 
@@ -47,55 +30,135 @@ console.log("hhhh",PRIXX);
     fetchData();
   }, []);
 
-  return (
-    <View style={styles.container}>
-      <View style={styles.paymentOptions}>
-    <Text>{PRIXX.toFixed(3)}$</Text>
-</View>
+  const handleChange = (name, value) => {
+    setFormData({
+      ...formData,
+      [name]: value
+    });
+  };
 
-        <View style={styles.creditCardDetails}>
-             <Text style={styles.tit}>Card Number</Text>
+  const formatCardNumber = (value) => {
+    // Remove non-digit characters
+    let formattedValue = value.replace(/\D/g, '');
+    // Insert a space every four characters
+    formattedValue = formattedValue.replace(/(\d{4})(?=\d)/g, '$1 ');
+    return formattedValue;
+  };
+
+  const handleSubmit = async () => {
+    const { cardNumber, expiryMonth, expiryYear, cvv } = formData;
+    if (cardNumber === '' || expiryMonth === '' || expiryYear === '' || cvv === '') {
+      Alert.alert('Incomplete Information', 'Please fill in all fields.');
+      return;
+    }
+  
+    try {
+      const paymentData = {
+        cardNumber,
+        expiryMonth,
+        expiryYear,
+        cvv,
+        amount: price * 100,
+        currency: "EUR"
+      };
+  
+      // Send payment request
+      const response = await axios.post(`http://${ipAdress}:3000/api/payment/pay`, paymentData);
+      console.log(response.data);
+  
+      // Store payment confirmation locally
+      const userId = await AsyncStorage.getItem('IdUser');
+      const paymentConfirmationDate = new Date().toISOString();
+      const paymentRecord = {
+        confirmationDate: paymentConfirmationDate,
+        amount: price.toFixed(2),
+        currency: "EUR"
+      };
+  
+      // Retrieve existing payments
+      let existingPayments = await AsyncStorage.getItem(`ALL_PAYMENTS_${userId}`);
+      existingPayments = existingPayments ? JSON.parse(existingPayments) : [];
+  
+      // Append new payment record
+      existingPayments.push(paymentRecord);
+  
+      // Store updated payments in AsyncStorage
+      await AsyncStorage.setItem(`ALL_PAYMENTS_${userId}`, JSON.stringify(existingPayments));
+  
+      // Display payment confirmation
+      setPaymentConfirmed(true);
+      setFormData({
+        cardNumber: '',
+        expiryMonth: '',
+        expiryYear: '',
+        cvv: ''
+      });
+    } catch (error) {
+      console.log('Payment error:', error);
+    }
+  };
+  
+  
+  
+  return (
+    <KeyboardAvoidingView style={{flex: 1}} behavior={Platform.OS === "ios" ? "padding" : null}>
+    <ScrollView contentContainerStyle={styles.container}>
+      <Image
+        source={require('../image/card.png')}
+        style={styles.paymentCartImage}
+        resizeMode="contain"
+      />
+      <View style={styles.paymentOptions}>
+        <Text style={styles.cardHeader}>Total Price:{price.toFixed(2)}$</Text>
+      </View>
+      <View style={styles.creditCardDetails}>
+        <TextInput
+          placeholder="Enter your Card Number"
+          style={styles.input}
+          value={formatCardNumber(formData.cardNumber)}
+          onChangeText={(text) => handleChange('cardNumber', text)}
+          keyboardType="numeric"
+          maxLength={19} // maximum 16 digits + 3 spaces
+        />
+        <View style={styles.inputContainer}>
           <TextInput
-            placeholder=" Entre your Card PAYPAL Number"
-            style={styles.input}
-            value={formData.card_number}
-            onChangeText={(text) => handleChange('card_number', text)}/>
-          <Text style={styles.tit}>Expiry	Dates</Text>
-          <View style={styles.inputContainer}>
-            <TextInput
-              placeholder="Expiry Month"
-              style={[styles.input, { width: '45%' }]}
-              value={formData.expiry_month}
-              onChangeText={(text) => handleChange('expiry_month', text)}/>
-            <TextInput
-              placeholder="Expiry Year"
-              style={[styles.input, { width: '45%' }]}
-              value={formData.expiry_year}
-              onChangeText={(text) => handleChange('expiry_year', text)}
-            />
-          </View>
-          <Text  style={styles.tit}>CVV</Text>
+            placeholder="Expiry Month / DAY"
+            style={[styles.input, styles.inputHalf]}
+            value={formData.expiryMonth}
+            onChangeText={(text) => handleChange('expiryMonth', text)}
+            keyboardType="numeric"
+            maxLength={4}
+          />
           <TextInput
-            placeholder="CVV code here"
-            style={styles.input}
-            value={formData.cvv}
-            onChangeText={(text) => handleChange('cvv', text)}
+            placeholder="Expiry Year"
+            style={[styles.input, styles.inputHalf]}
+            value={formData.expiryYear}
+            onChangeText={(text) => handleChange('expiryYear', text)}
+            keyboardType="numeric"
+            maxLength={4}
           />
         </View>
-     
-    
-   
-         <TouchableOpacity style={styles.button} mode="contained"    >
-         <Text> Pay Now</Text>
+        <TextInput
+          placeholder="CVV code here"
+          style={styles.input}
+          value={formData.cvv}
+          onChangeText={(text) => handleChange('cvv', text)}
+          keyboardType="numeric"
+          maxLength={3}
+        />
+      </View>
+      <TouchableOpacity onPress={handleSubmit} style={styles.button}>
+        <Text>Pay Now</Text>
       </TouchableOpacity>
-     
-    </View>
+      {paymentConfirmed && <Text style={styles.paymentConfirmation}>Payment is confirmed</Text>}
+    </ScrollView>
+  </KeyboardAvoidingView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    flexGrow: 1,
     padding: 20,
     backgroundColor: '#f8f8f8',
   },
@@ -108,29 +171,15 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     borderRadius: 25,
   },
-  buttonText: {
-    color: '#fff',
-    fontSize: 18,
-    fontWeight: 'bold',
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 20,
-    textAlign: 'center',
-    color: '#333',
-  },
   paymentOptions: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     marginBottom: 20,
-    marginLeft:150,
-    marginVertical:350
   },
-  logo: {
-    width: 120,
-    height: 60,
-    resizeMode: 'contain',
+  paymentCartImage: {
+    width: 450,
+    height: 250,
+    alignSelf: 'center',
   },
   creditCardDetails: {
     backgroundColor: '#fff',
@@ -145,6 +194,15 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
     elevation: 5,
+  },
+  cardHeader: {
+    textAlign: 'center',
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#333',
+    marginBottom: 20,
+    marginTop: 50,
+    marginLeft: 80,
   },
   input: {
     borderWidth: 1,
@@ -161,25 +219,11 @@ const styles = StyleSheet.create({
   inputHalf: {
     width: '48%',
   },
-  cvvContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-  },
-  cvvIcon: {
-    width: 30,
-    height: 20,
-    resizeMode: 'contain',
-  },
-  cvvInput: {
-    flex: 1,
-    borderWidth: 1,
-    borderColor: '#ccc',
-    borderRadius: 5,
-    padding: 10,
-    fontSize: 16,
+  paymentConfirmation: {
+    textAlign: 'center',
+    color: 'green',
+    marginTop: 10,
   },
 });
 
-
-export default Paye;
+export default PaymentScreen;

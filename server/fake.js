@@ -15,7 +15,7 @@ module.exports = async (sequelize) => {
     const userCount = 50;
     const productCount = 100;
     const packCount = 50;
-    const reviewCount = 50;
+    const reviewCount = 150;
         // Generate random users
     const users = await Promise.all(
       Array.from({ length: userCount }).map(async () => {
@@ -38,15 +38,15 @@ module.exports = async (sequelize) => {
     const Products = await Promise.all(
       Array.from({ length: productCount }).map(async () => {
           const user = users[Math.floor(Math.random() * userCount)];
-          const category = getRandomElementFromArray(["pack", "coffee"]); // Adjusted category options
+          const category = getRandomElementFromArray(["coffee", "cake", "drink"]); // Adjusted category options
           
           let imgUrl;
           if (category === "coffee") {
-              // Generate image URL specifically for coffee products
-              imgUrl = faker.image.imageUrl(400, 400, "food", true, true, "coffee");
+              imgUrl = faker.image.imageUrl(400, 400, "coffee", true, true);
+          } else if (category === "cake") {
+              imgUrl = faker.image.imageUrl(400, 400, "cake", true, true);
           } else {
-              // Generate a generic image URL for other categories
-              imgUrl = faker.image.imageUrl();
+              imgUrl = faker.image.imageUrl(400, 400, "drink", true, true);
           }
   
           return await db.Products.create({
@@ -60,7 +60,18 @@ module.exports = async (sequelize) => {
           });
       })
   );
-  
+  const reviews = await Promise.all(
+    Array.from({ length: reviewCount }).map(async () => {
+      const user = users[Math.floor(Math.random() * userCount)];
+      const product = Products[Math.floor(Math.random() * productCount)];
+      return await db.Review.create({
+        stars: getRandomElementFromArray([1, 2, 3, 4, 5]),
+        comment: faker.commerce.productDescription(),
+        userId: user.id,
+        prodId: product.id
+      });
+    })
+  );
 
   const pack = await Promise.all(
     Array.from({ length: packCount }).map(async () => {
@@ -103,18 +114,7 @@ module.exports = async (sequelize) => {
 
 
       // Create Reviews
-  const reviews = await Promise.all(
-    Array.from({ length: reviewCount }).map(async () => {
-      const user = users[Math.floor(Math.random() * userCount)];
-      const product = Products[Math.floor(Math.random() * productCount)];
-      return await db.Review.create({
-        stars: getRandomElementFromArray([1, 2, 3, 4, 5]),
-        comment: faker.commerce.productDescription(),
-        UserId: user.id,
-        ProductId: product.id
-      });
-    })
-  );
+  
 
   console.log('Reviews seeded successfully.');
 };

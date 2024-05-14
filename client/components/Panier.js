@@ -7,7 +7,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Panier = ({ navigation }) => {
 
-  const [posts, setPosts] = useState([]);
+  const [posts, setPosts] = useState(null);
   const [totalPrice, setTotalPrice] = useState(0);
 
   useEffect(() => {
@@ -86,7 +86,7 @@ const Panier = ({ navigation }) => {
         {/* <Text style={styles.deliveryCharge}>Delivery charge: $1.5</Text>
         <Text style={styles.discount}>Discount: 5%</Text> */}
         <View >
-          <Text>Total Price: ${totalPrice.toFixed(3)}</Text>
+          <Text>Total Price: {totalPrice.toFixed(3)}$</Text>
           
           </View >
       </View>
