@@ -46,9 +46,9 @@ const TopShops = ({ navigation }) => {
             <View style={styles.info}>
               <Text style={styles.name}>{item.FirstName} {item.LastName}</Text>
               <Text style={styles.address}>{item.Address}</Text>
-              <View style={styles.ratingSection}>
+              {/* <View style={styles.ratingSection}>
                 <Text style={styles.ratingText}>{`${item.rating || 0} (${item.reviews || 0} reviews)`}</Text>
-              </View>
+              </View> */}
             </View>
           </TouchableOpacity>
         )}
@@ -86,11 +86,11 @@ const styles = StyleSheet.create({
     padding: 10,
   },
   name: {
-    fontSize: 18,
+    fontSize: 20,
     fontWeight: 'bold',
   },
   address: {
-    fontSize: 16,
+    fontSize: 18,
     color: '#555',
   },
   ratingSection: {
