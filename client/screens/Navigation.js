@@ -192,6 +192,7 @@ function NAVSTART() {
         <Stack.Screen name="Tabs"  component={TabNavigator} options={{ headerShown: false }} />
         <Stack.Screen name="Onboarding" component={Onboarding} options={{ headerShown: false }} />
         <Stack.Screen name="AdvancedFilter" component={AdvancedFilter} options={{ headerShown: false }} />
+        <Stack.Screen name="Favorit" component={Favorit}  />
         <Stack.Screen  name="SeeAllProdsCoffee" component={SeeAllProdsCoffee} />
         <Stack.Screen name="AllProducts" component={AllProducts} options={{ headerShown: false }} />
 
