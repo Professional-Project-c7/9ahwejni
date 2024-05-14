@@ -68,7 +68,7 @@ const ProductCard = ({ product }) => {
   );
 };
 
-const ProductList = ({navigation}) => {
+const SeeAllProdsCoffee = () => {
   const { colors } = useTheme();
   const [productName, setProductName] = useState('');
   const [productDescription, setProductDescription] = useState('');
@@ -89,14 +89,13 @@ const ProductList = ({navigation}) => {
       if (value !== null) {
         const tokenObject = JSON.parse(value);
         const userId = tokenObject; 
-        console.log("userId",userId);
+        console.log("taww",userId);
         setUserID(userId);
       }
     } catch (error) {
       console.error('Error retrieving data:', error);
     }
   };
-  
   useEffect(() => {
     const getUserData = async (userId) => {
       try {
@@ -141,137 +140,28 @@ console.log("before" ,userID);
   } catch (error) {
     console.error('Error adding product:', error);
   }
- 
 };
 const filteredProducts = userData ? userData.filter(product => product.userId === userID) : [];
 
-const firstTwoImages = filteredProducts.slice(0, 2)
   return (
     <ScrollView>
       <View>
-        <View style={styles.top}>
-          <Text style={styles.Texttitlepacks} >Products's List</Text>
-          <Text style={styles.seeAllpacks} onPress={() => navigation.navigate('SeeAllProdsCoffee')}>See All</Text>
-        </View>
+        
         <SafeAreaView style={{ flex: 1 }}>
           <FlatList
-            data={firstTwoImages}
+            data={filteredProducts}
             renderItem={({ item }) => <ProductCard product={item} />}
             keyExtractor={(item) => item.id}
             contentContainerStyle={styles.container}
           />
         </SafeAreaView>
-        <View style={styles.container}>
-          <View style={{ alignItems: 'center', marginTop: 15 }}>
-            <TouchableOpacity >
-              <View
-                style={{
-                  height: 100,
-                  width: 100,
-                  borderRadius: 15,
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                }}>
-                <ImageBackground
-                  source={require("../image/square.png")}
-                  style={{ height: 120, width: 125 }}
-                  imageStyle={{ borderRadius: 15 }}>
-                  <View
-                    style={{
-                      flex: 1,
-                      justifyContent: 'center',
-                      alignItems: 'center',
-                    }}>
-                    <Icon
-                      name="camera"
-                      size={35}
-                      color='#dba617'
-                      style={{
-                        opacity: 0.7,
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                      }}
-                    />
-                  </View>
-                </ImageBackground>
-              </View>
-            </TouchableOpacity>
-            <Text style={{ marginTop: 10, fontSize: 18, fontWeight: 'bold' }}>
-              Add Product Photo
-            </Text>
-          </View>
-          <View style={styles.action}>
-            <FontAwesome name="user-o" color={'#dba617'} size={20} />
-            <TextInput
-            
-              placeholder="Name"
-              placeholderTextColor="#666666"
-              autoCorrect={false}
-              style={[
-                styles.textInput,
-                {
-                  color: colors.text,
-                },
-              ]}
-              value={productName}
-              onChangeText={setProductName}
-            />
-          </View>
-          <View style={styles.action}>
-            <FontAwesome name="file-text" color={'#dba617'} size={20} />
-            <TextInput
-              placeholder="Description"
-              placeholderTextColor="#666666"
-              keyboardType="number-pad"
-              autoCorrect={false}
-              style={[
-                styles.textInput,
-                {
-                  color: colors.text,
-                },
-              ]}
-              value={productDescription}
-              onChangeText={setProductDescription}
-            />
-          </View>
-          <View style={styles.action}>
-            <FontAwesome name="expand" color={'#dba617'} size={20} />
-            <TextInput
-              placeholder="Size"
-              placeholderTextColor="#666666"
-              keyboardType="email-address"
-              autoCorrect={false}
-              style={[
-                styles.textInput,
-                {
-                  color: colors.text,
-                },
-              ]}
-              value={productSize}
-              onChangeText={setProductSize}
-            />
-          </View>
-          <View style={styles.action}>
-            <FontAwesome name="dollar" color={'#dba617'} size={20} />
-            <TextInput
-              placeholder="Price"
-              placeholderTextColor="#666666"
-              autoCorrect={false}
-              style={[
-                styles.textInput,
-                {
-                  color: colors.text,
-                },
-              ]}
-              value={productPrice}
-              onChangeText={setProductPrice}
-            />
-          </View>
-          <TouchableOpacity style={styles.commandButton} onPress={handleAddProduct}>
-            <Text style={styles.panelButtonTitle}>Submit</Text>
-          </TouchableOpacity>
+       
+          
+         
+          
+         
         </View>
-      </View>
+      
     </ScrollView>
   );
 };
@@ -452,4 +342,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default ProductList;
+export default SeeAllProdsCoffee;

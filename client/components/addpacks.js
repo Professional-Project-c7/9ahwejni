@@ -8,6 +8,35 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Feather from 'react-native-vector-icons/Feather';
 
+const PackCard = ({ pack }) => {
+  return (
+    <View style={styles.card}>
+    <Image source={pack.imagelink_square} style={styles.image} />
+    <View style={styles.details}>
+      <Text style={styles.name}>{pack.name}</Text>
+      <Text style={styles.description}>{pack.description}</Text>
+      <Text style={styles.price}>{pack.price} $</Text>
+        {/* Render products associated with the pack */}
+        {pack.prods.map((product, index) => (
+        <ScrollView key={index} contentContainerStyle={styles.productContainer}>
+        <Image source={{uri:product.imgUrl}} style={styles.productImage} />
+        <View style={styles.productDetails}>
+          <Text style={styles.productName}>{product.name}</Text>
+          <Text style={styles.productDescription}>{product.description}</Text>
+          <Text style={styles.productPrice}>{product.price} $</Text>
+        </View>
+      </ScrollView>
+      
+      
+        ))}
+        <View style={styles.bottomRow}>
+          {/* <Text style={styles.size}>Size: {product.prices[0].size}</Text> */}
+          {/* <Text style={styles.rating}>Rating: {product.average_rating}</Text> */}
+        </View>
+      </View>
+    </View>
+  );
+};
 
 
 const AddPacks = ({navigation}) => {
@@ -17,12 +46,14 @@ const AddPacks = ({navigation}) => {
   const [packSize, setpackSize] = useState('');
   const [packPrice, setpackPrice] = useState('');
   const [userID, setUserID] = useState(0);
-
+  const [array, setarray] = useState([]);
+  const [userpacks, setUserpacks] = useState(null);
   console.log(userID);
   useEffect(() => {
     retrieveData();
+    getArrayOfProductsIds()
   }, []);
-
+  // console.log("userpacks",userpacks);
   const retrieveData = async () => {
     try {
       const value = await AsyncStorage.getItem('IdUser');
@@ -36,32 +67,57 @@ const AddPacks = ({navigation}) => {
       console.error('Error retrieving data:', error);
     }
   };
+
+  useEffect(() => {
+    const getUserpacks = async (userId) => {
+      try {
+        const response = await axios.get(`http://${ipAdress}:3000/api/packs`);
+        if (response.status === 200) {
+          setUserpacks(response.data);
+        }
+      } catch (error) {
+        console.error('Error fetching user data:', error.message);
+      }
+    };
+
+    if (userID) {
+      getUserpacks(userID);
+    }
+  }, [userID]);
+
   const getArrayOfProductsIds = async () => {
     try {
       const res = await  AsyncStorage.getItem('ArrayOfProductsIds');
       console.log("array getted",res);
+      console.log("array getted",JSON.parse(res));
+      setarray(JSON.parse(res))
+
     } catch (error) {
       console.error('Error getted array:', error);
     }
   };
-  getArrayOfProductsIds()
- 
+  
+
+
 const handleAddpack = async () => {
   try {
     if (!userID) {
       console.error('User ID not found.');
       return;
     }
+    getArrayOfProductsIds()
+    console.log("array" ,array);
 console.log("before" ,userID);
     const newpack = {
       name: packName,
       description: packDescription,
       price: packPrice,
       userId: userID,
+      checkedProductIDs:array
     };
 
     const response = await axios.post(`http://${ipAdress}:3000/api/packs`, newpack);
-    console.log('Product added successfully:', response.data);
+    console.log('pack added successfully:', response.data);
 
     
     setpackName('');
@@ -72,23 +128,37 @@ console.log("before" ,userID);
     console.error('Error adding pack:', error);
   }
 };
+const removeArrayFromStorage = async () => {
+  try {
+    await AsyncStorage.removeItem('ArrayOfProductsIds');
+    console.log('array removed successfully');
+  } catch (error) {
+    console.error('Error removing array:', error);
+  }
+};
 
+const handleremovearray = () => {
+  removeArrayFromStorage();
+  navigation.navigate('Coffeelist');
+};
+
+const filteredProducts = userpacks ? userpacks.filter(pack => pack.userId === userID) : [];
+// console.log("filteredProducts",filteredProducts);
+console.log("filteredProductst",filteredProducts);
+const firstTwoImages = filteredProducts.slice(0, 2)
+// console.log("firstTwoImages",firstTwoImages);
 
   return (
     <ScrollView>
       <View>
-        {/* <View style={styles.top}>
-          <Text style={styles.Texttitlepacks} >Products's List</Text>
-          <Text style={styles.seeAllpacks} >See All</Text>
-        </View> */}
-        {/* <SafeAreaView style={{ flex: 1 }}>
+      <SafeAreaView style={{ flex: 1 }}>
           <FlatList
-            data={data}
-            renderItem={({ item }) => <ProductCard product={item} />}
+            data={filteredProducts}
+            renderItem={({ item }) => <PackCard pack={item} />}
             keyExtractor={(item) => item.id}
             contentContainerStyle={styles.container}
           />
-        </SafeAreaView> */}
+        </SafeAreaView>
         <View style={styles.container}>
           <View style={{ alignItems: 'center', marginTop: 15 }}>
             <TouchableOpacity >
@@ -192,14 +262,16 @@ console.log("before" ,userID);
                 },
               ]}
               value={packPrice}
-              onChangeText={setpackPrice}
+              onChangeText={setpackPrice}h
             />
           </View>
-          <TouchableOpacity onPress={() => navigation.navigate('CoffeeProdList')}>
-          <Image source={require("../image/coffee-cup.png")} style={styles.optionImage} /></TouchableOpacity>
+          <TouchableOpacity onPress={handleremovearray}>
+          <Image source={require("../image/coffee-cup.png")} style={styles.optionImage} />
+          </TouchableOpacity>
           <TouchableOpacity style={styles.commandButton} onPress={handleAddpack}>
             <Text style={styles.panelButtonTitle}>Submit</Text>
           </TouchableOpacity>
+         
           
         </View>
       </View>
@@ -208,6 +280,81 @@ console.log("before" ,userID);
 };
 
 const styles = StyleSheet.create({
+ 
+  
+    productContainer: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      borderBottomWidth: 1,
+      borderBottomColor: '#ccc',
+      paddingBottom: 10,
+      marginBottom: 10,
+    },
+    productImage: {
+      width: 100,
+      height: 100,
+      resizeMode: 'cover',
+      borderRadius: 10,
+      marginRight: 10,
+    },
+    productTextContainer: {
+      flex: 1,
+      marginLeft: 10,
+    },
+    productName: {
+      fontSize: 16,
+      fontWeight: 'bold',
+      marginBottom: 5,
+      color: '#333',
+    },
+    productDescription: {
+      fontSize: 14,
+      color: '#666',
+      marginBottom: 5,
+    },
+    productPrice: {
+      fontSize: 14,
+      color: '#f85c24',
+    },
+  
+  
+  
+    card: {
+      flexDirection: 'row',
+      marginBottom: 20,
+      borderRadius: 10,
+      backgroundColor: '#EFECEC',
+      overflow: 'hidden',
+    },
+    image: {
+      width: '100%',
+      height: 200,
+      resizeMode: 'cover',
+    },
+    details: {
+      padding: 10,
+    },
+    name: {
+      fontSize: 18,
+      fontWeight: 'bold',
+      color: '#dba617',
+      marginBottom: 5,
+    },
+    description: {
+      fontSize: 14,
+      color: '#888',
+      marginBottom: 5,
+    },
+    price: {
+      fontSize: 16,
+      color: '#f85c24',
+      marginBottom: 5,
+    },
+  bottomRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
   backimage:{
     backgroundColor: 'white',
   },
