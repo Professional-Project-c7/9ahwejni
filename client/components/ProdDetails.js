@@ -16,6 +16,10 @@ const ProductDetailsPage = ({ navigation }) => {
     const [selectedProductId, setSelectedProductId] = useState(null);
     const [selectedUserId, setSelectedUserId] = useState(null);
     const [reviews, setReviews] = useState([]);
+    const [visible, setVisible] = useState(false);
+
+    const showModal = () => setVisible(true);
+    const hideModal = () => setVisible(false);
 
 
     const retrieveData = async () => {
@@ -141,6 +145,7 @@ const ProductDetailsPage = ({ navigation }) => {
                 </View>
             ))}
     <AddReview productId={selectedProductId} userId={selectedUserId} />
+    
 
         </ScrollView>
     );
@@ -248,6 +253,16 @@ const styles = StyleSheet.create({
     },
     selectedOptionText: {
         color: 'white', 
+    },
+    reviewButton: {
+        marginTop: 10,
+        backgroundColor: '#FFBB70',
+    },
+    modalContainer: {
+        backgroundColor: 'white',
+        padding: 20,
+        margin: 20,
+        borderRadius: 20,
     },
     
 });

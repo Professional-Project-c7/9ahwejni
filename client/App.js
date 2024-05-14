@@ -20,6 +20,7 @@ import AdvancedFilter from './components/AdvancedFilter';
 import CheckOutForm from './components/ss';
 import ShoppingCart from './components/ss';
 import AllProd from './components/AllProd';
+import AllCakes from './components/AllCakes';
 
 function App() {
 
