@@ -37,44 +37,41 @@ import Panier from '../components/Panier';
 import Allcoffeeshops from '../components/AllCoffeShops';
 import Onboarding from '../components/Onboarding';
 import AdvancedFilter from '../components/AdvancedFilter';
-import AllProducts from '../components/AllProd';
-import Notification from '../components/Notification';
-
+// import { useNavigation } from '@react-navigation/native';
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
-
 function TabNavigator() {
   const [userType, setUserType] = useState("");
-
-  useEffect(() => {
-    const fetchData = async () => {
+  // const [x,setx]=useState(false);
+  
+    useEffect(() => {
+      const fetchData = async () => {
+        try {
+          const storedUserType = await AsyncStorage.getItem('userToken');
+            setUserType(JSON.parse(storedUserType));
+            console.log("userType",userType);
+          
+        } catch (error) {
+          console.log('Error fetching user type:', error);
+        }
+      };
+      fetchData();
+      
+    }, []);
+  
+    const storeUserType = async (type) => {
       try {
-        const storedUserType = await AsyncStorage.getItem('userToken');
-        setUserType(JSON.parse(storedUserType));
-        console.log("userType", userType);
+        await AsyncStorage.setItem('UserType', type);
       } catch (error) {
-        console.log('Error fetching user type:', error);
+        console.log('Error storing user type:', error);
       }
     };
-    fetchData();
-  }, []);
-
-  const storeUserType = async (type) => {
-    try {
-      await AsyncStorage.setItem('UserType', type);
-    } catch (error) {
-      console.log('Error storing user type:', error);
-    }
-  };
-
+  console.log("hello",userType)
   return (
     <Tab.Navigator
-      screenOptions={{
-        tabBarActiveTintColor: '#dba617',
-        tabBarInactiveTintColor: 'gray',
-        tabBarStyle: {
-          display: 'flex',
-        },
+      tabBarOptions={{
+        activeTintColor: '#dba617',
+        inactiveTintColor: 'gray',
       }}
     >
       <Tab.Screen
@@ -148,12 +145,16 @@ function TabNavigator() {
     </Tab.Navigator>
   );
 }
-
 function NAVSTART() {
+
+
+
+  
+  
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="Tabs">
-        <Stack.Screen name="Tabs" component={TabNavigator} options={{ headerShown: false }} />
+      <Stack.Navigator initialRouteName="Onboarding">
+        {/* <Stack.Screen name="Start" component={Start} options={{ headerShown: false }} /> */}
         <Stack.Screen name="Login" component={Login} options={{ headerShown: false }} />
         <Stack.Screen name="UserSignUp" component={SignUser} options={{ headerShown: false }} />
         <Stack.Screen name="CoffeeShopSignUp" component={SignCofee} options={{ headerShown: false }} />
@@ -164,10 +165,11 @@ function NAVSTART() {
         <Stack.Screen name="Orders" component={Orders} options={{ headerShown: false }} />
         <Stack.Screen name="Edit" component={EditCoffee} />
         <Stack.Screen name="Info" component={InfoCoffee} />
-        <Stack.Screen name="TransactionScreenCoffee" component={TransactionScreenCoffee}/>
-        <Stack.Screen name="AllProducts" component={AllProducts} options={{ headerShown: false }} />
-        <Stack.Screen name="Notification" component={Notification} options={{ headerShown: false }} />
-
+        <Stack.Screen
+          name="TransactionScreenCoffee"
+          component={TransactionScreenCoffee}
+         
+        />
         <Stack.Screen name="ReviewsCoffee" component={ReviewsCoffee} options={{ headerShown: false }} />
         <Stack.Screen name="PaymentCardsDetails" component={PaymentCardsDetails} options={{ headerShown: false }} />
         <Stack.Screen name="User" component={UserProfile} />
@@ -180,13 +182,14 @@ function NAVSTART() {
         <Stack.Screen name="st2" component={Start2} options={{ headerShown: false }} />
         <Stack.Screen name="st3" component={Start3} options={{ headerShown: false }} />
         <Stack.Screen name="st4" component={Start4} options={{ headerShown: false }} />
+        <Stack.Screen name="Tabs"  component={TabNavigator} options={{ headerShown: false }} />
         <Stack.Screen name="Onboarding" component={Onboarding} options={{ headerShown: false }} />
         <Stack.Screen name="AdvancedFilter" component={AdvancedFilter} options={{ headerShown: false }} />
-        <Stack.Screen name="Favorit" component={Favorit} />
+
         <Stack.Screen  name="SettingComponent" component={SettingComponent} />
       </Stack.Navigator>
     </NavigationContainer>
   );
 }
 
-export default NAVSTART
+export default NAVSTART;
