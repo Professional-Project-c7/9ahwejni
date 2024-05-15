@@ -177,7 +177,30 @@ const ProductDetailsPage = ({ navigation }) => {
                 </View>
             </Modal>
             <View style={styles.reviewsContainer}>
-                {reviews.map((review, index) => (
+                {reviews.length > 0 && (
+                    <View style={styles.reviewCard}>
+                        {reviews[reviews.length - 1].User && reviews[reviews.length - 1].User.ImageUrl ? (
+                            <Image source={{ uri: reviews[reviews.length - 1].User.ImageUrl }} style={styles.userImage} />
+                        ) : (
+                            <Image source={{ uri: 'https://via.placeholder.com/150' }} style={styles.userImage} />
+                        )}
+                        <View style={styles.reviewContent}>
+                            <Text style={styles.userName}>
+                                {reviews[reviews.length - 1].User ? `${reviews[reviews.length - 1].User.FirstName} ${reviews[reviews.length - 1].User.LastName}` : 'Anonymous'}
+                            </Text>
+                            <Rating
+                                type="star"
+                                ratingCount={5}
+                                imageSize={20}
+                                startingValue={reviews[reviews.length - 1].stars}
+                                readonly
+                                style={styles.rating}
+                            />
+                            <Text style={styles.comment}>{reviews[reviews.length - 1].comment}</Text>
+                        </View>
+                    </View>
+                )}
+                {reviews.slice(0, -1).map((review, index) => (
                     <View key={index} style={styles.reviewCard}>
                         {review.User && review.User.ImageUrl ? (
                             <Image source={{ uri: review.User.ImageUrl }} style={styles.userImage} />
