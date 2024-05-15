@@ -274,6 +274,8 @@ const styles = StyleSheet.create({
     elevation: 5,
   },
   coffeeShopsContainer: {
+    paddingLeft : -10,
+
     padding: 10,
   },
   coffeeShopItem: {
