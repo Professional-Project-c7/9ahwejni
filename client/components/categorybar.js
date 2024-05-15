@@ -41,7 +41,7 @@ const styles = StyleSheet.create({
   },
   categoryItem: {
     alignItems: 'center',
-    marginRight: 45,
+    marginRight: 50,
   },
   categoryImage: {
     width: 52,

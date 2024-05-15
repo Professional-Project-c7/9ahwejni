@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { View, Text, StyleSheet, ImageBackground } from 'react-native';
+import { View, Text, StyleSheet, ScrollView } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 
 const Notification = () => {
@@ -36,38 +36,72 @@ const Notification = () => {
   const displayPayments = () => {
     if (paymentData && paymentData.length > 0) {
       return paymentData.map((payment, index) => (
-        <View key={index} style={styles.container}>
-          <Text style={styles.title}>{payment.amount}$</Text>
-          <Text style={styles.message}>{payment.confirmationDate}</Text>
+        <View key={index} style={styles.paymentContainer}>
+          <View style={styles.paymentHeader}>
+            <Text style={styles.amount}>{payment.amount}$</Text>
+          </View>
+          <Text style={styles.date}>{payment.confirmationDate}</Text>
         </View>
       ));
     } else {
-      return <Text>No payment notifications</Text>;
+      return <Text style={styles.noPaymentsText}>No payment notifications</Text>;
     }
   };
 
   return (
-    <View style={{ flex: 1 }}>
-      {displayPayments()}
-    </View>
+    <ScrollView contentContainerStyle={styles.scrollView}>
+      <View style={styles.container}>
+        {displayPayments()}
+      </View>
+    </ScrollView>
   );
 };
 
 const styles = StyleSheet.create({
+  scrollView: {
+    flexGrow: 1,
+    padding: 20,
+    backgroundColor: '#ffffff',
+  },
   container: {
-    backgroundColor: '#f0f0f0',
-    padding: 10,
-    borderRadius: 5,
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  paymentContainer: {
+    backgroundColor: '#ffffff',
+    padding: 20,
+    borderRadius: 15,
+    marginBottom: 15,
+    width: '95%',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.1,
+    shadowRadius: 8,
+    elevation: 5,
+    borderLeftWidth: 5,
+    borderLeftColor: '#4CAF50',
+  },
+  paymentHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
     marginBottom: 10,
-    marginTop:50
   },
-  title: {
-    fontSize: 18,
+  amount: {
+    fontSize: 22,
     fontWeight: 'bold',
-    marginBottom: 5,
+    color: '#333',
   },
-  message: {
-    fontSize: 20,
+  date: {
+    fontSize: 16,
+    color: '#777',
+  },
+  noPaymentsText: {
+    fontSize: 18,
+    color: '#999',
+    textAlign: 'center',
+    marginTop: 20,
   },
 });
 
