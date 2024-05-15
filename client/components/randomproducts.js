@@ -9,7 +9,7 @@ import {
   TouchableOpacity,
   Alert,
 } from 'react-native';
-import Sound from 'react-native-sound';
+// import Sound from 'react-native-sound';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
 import { Rating } from 'react-native-ratings';
@@ -87,7 +87,11 @@ const RandomProducts = () => {
         favoritesArray.push(product);
         await AsyncStorage.setItem('favorites', JSON.stringify(favoritesArray));
         Alert.alert('Item added to cart');
-        playAlertSound();
+        // playAlertSound();
+  
+        // setTimeout(() => {
+        //   Alert.alert('');
+        // }, 2000);
       }
     } catch (error) {
       console.log('Error toggling feature:', error);

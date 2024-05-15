@@ -18,12 +18,17 @@ const Authentication = require('./Routers/login.routers.js');
 const messagesRouter = require('./Routers/messages.routers')
 const Payment=require('./Routers/Payment.js')
 const reviewRouter = require('./Routers/review.router.js');
+<<<<<<< HEAD
 
+=======
+const packprodRouter=require('./Routers/packprod.routes.js')
+const Notification = require('./Routers/Notification.routes.js')
+>>>>>>> 6a1a75ff514df034762e3ff4c9f0392aa47a6fe7
 
 
 app.use(cors()) 
 
-
+app.use("/api/not", Notification);
 app.use("/api/auth", Authentication);
 app.use('/api/messages', messagesRouter);
 app.use('/api/user', User);
