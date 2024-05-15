@@ -8,44 +8,7 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Feather from 'react-native-vector-icons/Feather';
 
-const data = [
-  {
-    id: '1',
-    name: 'Product 1',
-    description: 'Description for Product 1',
-    imagelink_square: require("../image/breakfast.webp"),
-    prices: [
-      { size: 'S', price: '10', currency: '$' },
-      { size: 'M', price: '15', currency: '$' },
-      { size: 'L', price: '20', currency: '$' },
-    ],
-    average_rating: 4,
-  },
-  {
-    id: '2',
-    name: 'Product 2',
-    description: 'Description for Product 2',
-    imagelink_square: require("../image/breakfast.webp"),
-    prices: [
-      { size: 'S', price: '12', currency: '$' },
-      { size: 'M', price: '18', currency: '$' },
-      { size: 'L', price: '24', currency: '$' },
-    ],
-    average_rating: 3,
-  },
-  {
-    id: '3',
-    name: 'Product 3',
-    description: 'Description for Product 3',
-    imagelink_square: require("../image/breakfast.webp"),
-    prices: [
-      { size: 'S', price: '8', currency: '$' },
-      { size: 'M', price: '12', currency: '$' },
-      { size: 'L', price: '16', currency: '$' },
-    ],
-    average_rating: 5,
-  },
-];
+
 
 const ProductCard = ({ product }) => {
   return (
@@ -77,6 +40,10 @@ const ProductList = ({navigation}) => {
   const [imgUrl, setimgUrl] = useState('https://cdn.vox-cdn.com/thumbor/6kLvmWfhU4h64EhC0S6tsn714fI=/0x0:4032x3024/1200x900/filters:focal(1694x1190:2338x1834)/cdn.vox-cdn.com/uploads/chorus_image/image/59740845/IMG_1503.42.jpg');
   const [userData, setUserData] = useState(null);
   const [userID, setUserID] = useState(0);
+  const [selectedSize, setSelectedSize] = useState(null);
+
+  const handleSizeSelection = size => setSelectedSize(size);
+
 
   console.log(productName);
   useEffect(() => {
@@ -222,7 +189,7 @@ const firstTwoImages = filteredProducts.slice(0, 2)
             <TextInput
               placeholder="Description"
               placeholderTextColor="#666666"
-              keyboardType="number-pad"
+              
               autoCorrect={false}
               style={[
                 styles.textInput,
@@ -236,20 +203,19 @@ const firstTwoImages = filteredProducts.slice(0, 2)
           </View>
           <View style={styles.action}>
             <FontAwesome name="expand" color={'#dba617'} size={20} />
-            <TextInput
-              placeholder="Size"
-              placeholderTextColor="#666666"
-              keyboardType="email-address"
-              autoCorrect={false}
-              style={[
-                styles.textInput,
-                {
-                  color: colors.text,
-                },
-              ]}
-              value={productSize}
-              onChangeText={setProductSize}
-            />
+            <View style={styles.optionButtonsContainer}>
+                                    <Text style={styles.optionTitle}>Size</Text>
+                                    <TouchableOpacity style={[styles.optionButton, selectedSize === 'Small' && styles.selectedOption]} onPress={() => handleSizeSelection('Small')}>
+  <Text style={styles.optionButtonText}>Small</Text>
+</TouchableOpacity>
+<TouchableOpacity style={[styles.optionButton, selectedSize === 'Regular' && styles.selectedOption]} onPress={() => handleSizeSelection('Regular')}>
+  <Text style={styles.optionButtonText}>Regular</Text>
+</TouchableOpacity>
+<TouchableOpacity style={[styles.optionButton, selectedSize === 'Large' && styles.selectedOption]} onPress={() => handleSizeSelection('Large')}>
+  <Text style={styles.optionButtonText}>Large</Text>
+</TouchableOpacity>
+
+                                </View>
           </View>
           <View style={styles.action}>
             <FontAwesome name="dollar" color={'#dba617'} size={20} />
@@ -257,6 +223,7 @@ const firstTwoImages = filteredProducts.slice(0, 2)
               placeholder="Price"
               placeholderTextColor="#666666"
               autoCorrect={false}
+              keyboardType="number-pad"
               style={[
                 styles.textInput,
                 {
@@ -277,7 +244,35 @@ const firstTwoImages = filteredProducts.slice(0, 2)
 };
 
 const styles = StyleSheet.create({
-  
+  optionButtonsContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    marginLeft:12,
+},
+optionTitle: {
+    fontSize: 16,
+    // marginLeft:4,
+    marginBottom:8,
+
+    // fontWeight: 'bold'
+},
+optionButton: {
+  backgroundColor: '#fff',
+  borderRadius: 15,
+  paddingHorizontal: 12,
+  paddingVertical: 8,
+  marginHorizontal: 5,
+  borderWidth: 1,
+  borderColor: '#FFBB70',
+  overflow: 'hidden',
+},
+optionButtonText: {
+    fontSize: 17,
+    color: '#666' 
+},
+selectedOption: {
+  backgroundColor: '#dba617',  // Change border color for selected option
+},
   top: {
     flexDirection: 'row',
     justifyContent: 'space-between',
