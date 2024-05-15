@@ -6,6 +6,7 @@ import {
   ImageBackground,
   TextInput,
   StyleSheet,
+  ScrollView,
   Alert,
 } from 'react-native';
 import {useTheme} from 'react-native-paper';
@@ -86,6 +87,8 @@ const getUserData = async (userId) => {
     console.log(response.data); // Check response data
     if (response.status === 200) {
       setUserData(response.data);
+      setFirstName(response.data.firstName); // Assuming the response data has a firstName field
+      setLastName(response.data.lastName);
     } else {
       console.error('Failed to fetch user data');
     }
@@ -126,7 +129,7 @@ useEffect(() => {
 
 
   return (
-    <View style={styles.container}>
+    <ScrollView style={styles.container}>
      {userData && (
         <>
         <View style={{alignItems: 'center', marginTop:15}}>
@@ -176,7 +179,7 @@ useEffect(() => {
         <View style={styles.action}>
           <FontAwesome name="user-o" color={'#dba617'} size={20} />
           <TextInput
-            placeholder="First Name"
+            placeholder= {userData.FirstName }
             value={firstName}
         onChangeText={text => setFirstName(text)}
             placeholderTextColor="#666666"
@@ -192,7 +195,7 @@ useEffect(() => {
         <View style={styles.action}>
           <FontAwesome name="user-o" color={'#dba617'} size={20} />
           <TextInput
-            placeholder="Last Name"
+            placeholder= {userData.LastName }
             placeholderTextColor="#666666"
             value={lastName}
         onChangeText={text => setLastName(text)}
@@ -225,7 +228,7 @@ useEffect(() => {
         <View style={styles.action}>
           <FontAwesome name="envelope-o" color={'#dba617'} size={20} />
           <TextInput
-            placeholder="Email"
+            placeholder= {userData.Email }
             placeholderTextColor="#666666"
             value={email}
             onChangeText={text => setEmail(text)}
@@ -271,7 +274,7 @@ useEffect(() => {
           <Text style={styles.panelButtonTitle}>Submit</Text>
         </TouchableOpacity>
       
-    </View>
+    </ScrollView>
   );
 };
 
