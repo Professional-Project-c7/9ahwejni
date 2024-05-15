@@ -67,7 +67,7 @@ function PaymentScreen({navigation}) {
   
       // Send payment request
       const response = await axios.post(`http://${ipAdress}:3000/api/payment/pay`, paymentData);
-      console.log(response.data);
+      
   
       // Store payment confirmation locally
       const userId = await AsyncStorage.getItem('IdUser');
@@ -88,9 +88,9 @@ function PaymentScreen({navigation}) {
       // Store updated payments in AsyncStorage
       await AsyncStorage.setItem(`ALL_PAYMENTS_${userId}`, JSON.stringify(existingPayments));
       AsyncStorage.removeItem('favorites')
-  
+      navigation.navigate('paymentSucces');
       // Display payment confirmation
-      setPaymentConfirmed(true);
+      
       setFormData({
         cardNumber: '',
         expiryMonth: '',
@@ -167,7 +167,7 @@ function PaymentScreen({navigation}) {
           <TouchableOpacity onPress={handleSubmit} style={styles.button}>
             <Text>Pay Now</Text>
           </TouchableOpacity>
-          {paymentConfirmed && <Text style={styles.paymentConfirmation}>Payment is confirmed</Text>}
+          
         </ScrollView>
       </View>
     </KeyboardAvoidingView>
@@ -184,7 +184,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#fff',
-    height: 80,
+    height: 40,
     paddingHorizontal: 20,
     borderBottomWidth: 1,
     borderBottomColor: '#ccc',
@@ -193,25 +193,24 @@ const styles = StyleSheet.create({
     width: 120,
     height: 60,
   },
-  contentContainer: {
-    padding: 20,
-  },
+  // contentContainer: {
+  //   padding: 20,
+  // },
   paymentCartImage: {
     width: '100%',
     height: 250,
     alignSelf: 'center',
-    marginBottom: 20,
+   
   },
   paymentOptions: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginBottom: 20,
+   
   },
   creditCardDetails: {
     backgroundColor: '#fff',
     borderRadius: 10,
-    padding: 20,
-    marginBottom: 20,
+   
     shadowColor: '#000',
     shadowOffset: {
       width: 0,

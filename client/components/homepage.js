@@ -55,6 +55,7 @@ const HomePage = ({ navigation }) => {
 
   return (
     <ScrollView style={styles.container}>
+      
       <LinearGradient 
         colors={['rgba(253,190,29,1)', 'rgba(252,145,69,1)']} 
         start={{x: 0, y: 0}} 
@@ -63,15 +64,15 @@ const HomePage = ({ navigation }) => {
       >
         <View style={styles.top}>
           <IconButton icon="bell" color="#FFF" onPress={toggleNotification} />
-          {type && <IconButton icon="cart" iconColor='#FFF' onPress={() => navigation.navigate('panier')} />}
+          {type && <IconButton icon="chat" iconColor='#FFF' onPress={() => navigation.navigate('chat')} />}
         </View>
       </LinearGradient>
       <View style={styles.searchContainer}>
         <Searchbar onFilterPress={showFilterModal} />
       </View>
-      <View style={styles.categoryTitleContainer}>
+      {/* <View style={styles.categoryTitleContainer}>
         <Text style={styles.categoryTitle}>Category</Text>
-      </View>
+      </View> */}
       <View style={styles.categoryBarContainer}>
         <CategoryBar />
       </View>

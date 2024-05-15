@@ -9,25 +9,25 @@ const dummyData = [
   {
     "id": 1,
     "title": "Lorem Ipsum",
-    "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+    "description": "The customer is very important, the customer will be followed by the customer. But at the same time they happened with great labor and pain.",
     image: require("../image/ob1.png")
   },
   {
     "id": 2,
     "title": "Dolor Sit Amet",
-    "description": "Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.",
+    "description": "Do not be angry with the pain in the rebuke, in the pleasure he wants to be a hair from the pain, let him run away from the pain.",
     image: require("../image/ob2.png")
   },
   {
     "id": 3,
-    "title": "Consectetur Adipiscing",
-    "description": "Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+    "title": "Adipiscing will follow",
+    "description": "Unless they are blinded by lust, they do not come out, they are in fault who abandon their duties, the soul softens, that is toils.",
     image: require("../image/ob3.png")
   }, 
   {
     "id": 5,
-    "title": "Consectetur Adipiscing",
-    "description": "Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+    "title": "Adipiscing will follow",
+    "description": "Unless they are blinded by lust, they do not come forth; they are in fault who abandon their duties and soften their hearts, that is, their labors.",
     image: require("../image/logo.png")
   }
 ]
