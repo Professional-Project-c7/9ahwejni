@@ -195,7 +195,7 @@ const firstTwoImages = filteredProducts.slice(0, 2)
       <View>
         <SafeAreaView style={{ flex: 1 }}>
         <FlatList
-        data={filteredProducts}
+        data={firstTwoImages}
         renderItem={({ item }) => (
           <PackCard 
           

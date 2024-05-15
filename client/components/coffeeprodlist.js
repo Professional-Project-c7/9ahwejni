@@ -20,12 +20,12 @@ const NumberInput = ({ value, onIncrement, onDecrement }) => {
   );
 };
 
-const CoffeeProductList = ({navigation}) => {
+const CoffeeProductList = ({ navigation }) => {
   const [userData, setUserData] = useState(null);
   const [userID, setUserID] = useState(null);
-  const [checkedItems, setCheckedItems] = useState({}); 
-  const [productQuantities, setProductQuantities] = useState({}); 
-  const [checkedProductIDs, setCheckedProductIDs] = useState([]); 
+  const [checkedItems, setCheckedItems] = useState({});
+  const [productQuantities, setProductQuantities] = useState({});
+  const [checkedProductIDs, setCheckedProductIDs] = useState([]);
 
   useEffect(() => {
     const retrieveData = async () => {
@@ -33,8 +33,8 @@ const CoffeeProductList = ({navigation}) => {
         const value = await AsyncStorage.getItem('IdUser');
         if (value !== null) {
           const tokenObject = JSON.parse(value);
-          const userId = tokenObject; 
-          console.log("taww",userId);
+          const userId = tokenObject;
+          console.log("taww", userId);
           setUserID(userId);
         }
       } catch (error) {
@@ -77,6 +77,11 @@ const CoffeeProductList = ({navigation}) => {
   }, [userID]);
 
   const handleCheckboxToggle = (productId, selectedQuantity) => {
+    setCheckedItems((prevState) => ({
+      ...prevState,
+      [productId]: !prevState[productId], // toggle the value
+    }));
+
     setCheckedProductIDs((prevState) => {
       const index = prevState.findIndex((item) => item.productId === productId);
       if (index !== -1) {
@@ -90,44 +95,42 @@ const CoffeeProductList = ({navigation}) => {
       }
     });
   };
-  
-  
 
   const handleQuantityIncrement = (productId) => {
     const newValue = parseInt(productQuantities[productId] || 0) + 1;
-    setProductQuantities(prevState => ({
+    setProductQuantities((prevState) => ({
       ...prevState,
-      [productId]: newValue.toString()
+      [productId]: newValue.toString(),
     }));
   };
 
   const handleQuantityDecrement = (productId) => {
     const newValue = parseInt(productQuantities[productId] || 0) - 1;
     if (newValue >= 0) {
-      setProductQuantities(prevState => ({
+      setProductQuantities((prevState) => ({
         ...prevState,
-        [productId]: newValue.toString()
+        [productId]: newValue.toString(),
       }));
     }
   };
 
   const setArrayOfProductsIds = async () => {
     try {
-      await  AsyncStorage.setItem('ArrayOfProductsIds', JSON.stringify(checkedProductIDs));
+      await AsyncStorage.setItem('ArrayOfProductsIds', JSON.stringify(checkedProductIDs));
       console.log('Array Stored successfully');
     } catch (error) {
       console.error('Error Stored array:', error);
     }
   };
-  
+
   const handlesetArray = () => {
     setArrayOfProductsIds();
     navigation.navigate('AddPacks');
   };
 
   const filteredProducts = userData ? userData.filter(product => product.userId === userID) : [];
-  console.log('filtered',filteredProducts);
-  console.log("checkedProductIDs",checkedProductIDs);
+  console.log('filtered', filteredProducts);
+  console.log("checkedProductIDs", checkedProductIDs);
   return (
     <View style={styles.container}>
       <Text style={styles.header}>Product List</Text>
@@ -137,39 +140,36 @@ const CoffeeProductList = ({navigation}) => {
           keyExtractor={(item) => item.id.toString()}
           renderItem={({ item }) => (
             <View>
-            <View style={styles.product}>
-              <Image source={{ uri: item.imgUrl }} style={styles.productImage} />
-              <View style={styles.productDetails}>
-                <Text style={styles.productName}>{item.name}</Text>
-                <Text style={styles.productDescription}>{item.description}</Text>
-                <Text style={styles.productPrice}>{item.price} $</Text>
+              <View style={styles.product}>
+                <Image source={{ uri: item.imgUrl }} style={styles.productImage} />
+                <View style={styles.productDetails}>
+                  <Text style={styles.productName}>{item.name}</Text>
+                  <Text style={styles.productDescription}>{item.description}</Text>
+                  <Text style={styles.productPrice}>{item.price} $</Text>
+                </View>
+                <NumberInput
+                  value={parseInt(productQuantities[item.id]) || 0}
+                  onIncrement={() => handleQuantityIncrement(item.id)}
+                  onDecrement={() => handleQuantityDecrement(item.id)}
+                />
+                <Checkbox
+                  status={checkedItems[item.id] ? 'checked' : 'unchecked'}
+                  onPress={() => handleCheckboxToggle(item.id, productQuantities[item.id] || 0)}
+                  style={styles.checkbox}
+                />
               </View>
-              <NumberInput
-                value={parseInt(productQuantities[item.id])|| 0}
-                onIncrement={() => handleQuantityIncrement(item.id)}
-                onDecrement={() => handleQuantityDecrement(item.id)}
-              />
-              <Checkbox
-  status={checkedItems[item.id] ? 'checked' : 'unchecked'}
-  onPress={() => handleCheckboxToggle(item.id, productQuantities[item.id] || 0)}
-  style={styles.checkbox}
-/>
-             
             </View>
-            
-             </View>
           )}
         />
       ) : (
         <Text>No products found</Text>
       )}
       <TouchableOpacity style={styles.centered} onPress={handlesetArray}>
-  <View style={styles.saveButton}>
-    <IconButton icon="content-save" iconColor="white"  />
-    <Text style={styles.saveButtonText}>Save</Text>
-  </View>
-</TouchableOpacity>
-
+        <View style={styles.saveButton}>
+          <IconButton icon="content-save" iconColor="white" />
+          <Text style={styles.saveButtonText}>Save</Text>
+        </View>
+      </TouchableOpacity>
     </View>
   );
 };
@@ -197,9 +197,6 @@ const styles = StyleSheet.create({
     color: 'white',
     marginLeft: -5,
   },
-  
-  
-  
   container: {
     flex: 1,
     backgroundColor: '#fff',
