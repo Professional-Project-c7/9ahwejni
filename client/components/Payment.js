@@ -10,6 +10,8 @@ function PaymentScreen({navigation}) {
   // const navigation = useNavigation(); 
 
   const [price, setPrice] = useState(0);
+
+  console.log("pricepriceprice   in paymenet ",price);
   const [formData, setFormData] = useState({
     cardNumber: '',
     expiryMonth: '',
@@ -17,7 +19,6 @@ function PaymentScreen({navigation}) {
     cvv: ''
   });
 
-  const [paymentConfirmed, setPaymentConfirmed] = useState(false);
   useEffect(() => {
     const fetchData = async () => {
       try {

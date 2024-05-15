@@ -1,55 +1,15 @@
 const express = require('express');
 const http = require('http');
 const socketIo = require('socket.io');
-const bodyParser = require('body-parser');
-const { Sequelize, DataTypes } = require('sequelize');
 
 const PORT = 4001;
+
 const app = express();
 const server = http.createServer(app);
 const io = socketIo(server, {
   cors: {
     origin: '*',
   },
-});
-
-app.use(bodyParser.json());
-
-const sequelize = new Sequelize('sqlite::memory:'); // or use a persistent file storage
-
-const Message = sequelize.define('Message', {
-  senderId: {
-    type: DataTypes.STRING,
-    allowNull: false,
-  },
-  content: {
-    type: DataTypes.STRING,
-    allowNull: false,
-  },
-  timestamp: {
-    type: DataTypes.STRING,
-    allowNull: false,
-  },
-});
-
-sequelize.sync(); // This will create the table if it doesn't exist
-
-app.get('/api/messages', async (req, res) => {
-  try {
-    const messages = await Message.findAll();
-    res.json(messages);
-  } catch (error) {
-    res.status(500).json({ error: 'Error fetching messages' });
-  }
-});
-
-app.post('/api/messages', async (req, res) => {
-  try {
-    const message = await Message.create(req.body);
-    res.status(201).json(message);
-  } catch (error) {
-    res.status(500).json({ error: 'Error saving message' });
-  }
 });
 
 const userSockets = {};
@@ -67,23 +27,19 @@ io.on('connection', (socket) => {
     socket.join('global');
   }
 
-  socket.on('send_message', async (data, callback) => {
-    const { content, timestamp } = data;
+  socket.on('send_message', (data, callback) => {
+    const { recipientId, content, timestamp } = data;
     const message = {
       senderId: userId,
       content,
       timestamp: timestamp || new Date().toLocaleString(),
     };
 
-    try {
-      await Message.create(message);
-    } catch (error) {
-      console.error('Error saving message:', error);
-    }
-
-    if (data.recipientId && userSockets[data.recipientId]) {
-      io.to(userSockets[data.recipientId]).emit('receive_message', message);
+    if (recipientId && userSockets[recipientId]) {
+      // Send the message only to the recipient
+      io.to(userSockets[recipientId]).emit('receive_message', message);
     } else {
+      // If recipientId is not provided, broadcast to all except the sender
       socket.broadcast.to('global').emit('receive_message', message);
     }
 
@@ -100,6 +56,12 @@ io.on('connection', (socket) => {
       }
     }
   });
+});
+
+app.get('/isConnected', (req, res) => {
+  const userId = req.headers.userid;
+  const isConnected = !!connectedUsers[userId];
+  res.json({ isConnected });
 });
 
 server.listen(PORT, () => {
