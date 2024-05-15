@@ -8,7 +8,7 @@ import {
   Text,
   TouchableOpacity,
   TextInput,
-  Alert,
+  ToastAndroid,
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Rating } from 'react-native-ratings';
@@ -64,7 +64,9 @@ const AllDrinks = ({ navigation }) => {
         }));
         favoritesArray.push(drink);
         await AsyncStorage.setItem('favorites', JSON.stringify(favoritesArray));
-        Alert.alert('Item added to cart');
+
+        // Displaying a toast message at the top
+        ToastAndroid.showWithGravity('Item added to cart', ToastAndroid.SHORT, ToastAndroid.TOP);
       }
     } catch (error) {
       console.log('Error toggling feature:', error);
@@ -119,17 +121,9 @@ const AllDrinks = ({ navigation }) => {
                   style={styles.favIcon}
                 />
                 <View style={styles.infoContainer}>
+                  <Text style={styles.reviews}>{`${drink.totalReviews} 👤 ⭐: ${drink.averageRating}`}</Text>
                   <Text style={styles.name}>{drink.name}</Text>
                   <Text style={styles.price}>${drink.price}</Text>
-                  <Text style={styles.reviews}>{`${drink.totalReviews} 👤 ⭐: ${drink.averageRating}`}</Text>
-                  <Rating
-                    type="star"
-                    ratingCount={5}
-                    imageSize={20}
-                    startingValue={parseFloat(drink.averageRating)}
-                    readonly
-                    style={styles.starRating}
-                  />
                   <Icon
                     name={favorites[drink.id]?.inCart ? 'cart' : 'cart-outline'}
                     size={24}
@@ -150,6 +144,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'space-between',
+    backgroundColor: '#fff',
   },
   gradientBackground: {
     borderBottomRightRadius: 5,
@@ -184,25 +179,25 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     flexWrap: 'wrap',
     justifyContent: 'space-evenly',
+    paddingHorizontal: 10,
   },
   card: {
-    width: 189,
-    margin: 1,
+    width: '48%',
+    marginVertical: 10,
     borderRadius: 10,
     backgroundColor: '#fff',
     overflow: 'hidden',
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.3,
+    shadowOpacity: 0.1,
     shadowRadius: 6,
-    borderColor: '#ccc',
-    borderWidth: 1.5,
-    marginTop: 12,
+    elevation: 5,
   },
   image: {
-    height: 210,
+    height: 150,
     width: '100%',
-    alignSelf: 'center',
+    borderTopLeftRadius: 10,
+    borderTopRightRadius: 10,
   },
   favIcon: {
     position: 'absolute',
@@ -210,37 +205,34 @@ const styles = StyleSheet.create({
     top: 10,
   },
   infoContainer: {
-    padding: 10,
-    alignItems: 'flex-start',
-    justifyContent: 'flex-start',
+    padding: 12,
     width: '100%',
     position: 'relative',
   },
   name: {
-    fontSize: 25,
+    fontSize: 18,
     fontWeight: 'bold',
-    color: '#000',
-    flexWrap: 'wrap',
+    color: '#333',
+    marginBottom: 5,
   },
   price: {
-    fontSize: 21,
+    fontSize: 16,
+    fontWeight: 'bold',
     color: '#000',
-    marginTop: 5,
   },
   reviews: {
-    fontSize: 16,
-    color: '#646464',
-    marginTop: 5,
-  },
-  starRating: {
-    marginTop: 5,
+    fontSize: 14,
+    color: '#999',
+    position: 'absolute',
+    top: 10,
+    right: 10,
   },
   cartIcon: {
     position: 'absolute',
-    right: 5,
-    bottom: 1,
+    right: 10,
+    bottom: 10,
     backgroundColor: '#dba617',
-    padding: 8,
+    padding: 5,
     borderRadius: 15,
   },
 });

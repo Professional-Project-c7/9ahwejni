@@ -15,7 +15,7 @@ module.exports = async (sequelize) => {
     const userCount = 50;
     const productCount = 50;
     const packCount = 50;
-    const reviewCount = 50;
+    const reviewCount = 90;
         // Generate random users
     const users = await Promise.all(
       Array.from({ length: userCount }).map(async () => {

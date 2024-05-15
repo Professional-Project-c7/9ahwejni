@@ -4,8 +4,9 @@ module.exports = {
   createReview: async (req, res) => {
     try {
       
-      const { userId, stars ,comment,prodId} = req.body;
-      const review = await db.Review.create({ userId, stars ,comment,prodId});
+      const { userId, stars ,comment,prodId,coffeeShopId } = req.body;
+      const review = await db.Review.create({ userId, stars ,comment,prodId });
+      // ({ userId, stars ,comment,prodId,coffeeShopId })
       res.status(201).send(review);
     } catch (error) {
       res.status(500).send(error.message);
@@ -22,6 +23,17 @@ module.exports = {
       res.status(500).send(error.message);
     }
   },
+//   getReviewsByCoffeeShop: async (req, res) => {
+//     try {
+//         const reviews = await db.Review.findAll({
+//             where: { coffeeShopId: req.params.coffeeShopId },
+//             include: [db.User]
+//         });
+//         res.status(200).send(reviews);
+//     } catch (error) {
+//         res.status(500).send(error.message);
+//     }
+// }
 
   getReviewsByProduct: async (req, res) => {
     try {
