@@ -84,7 +84,7 @@ const AdvancedFilter = () => {
   const handleNavigateToDetails = async (product) => {
     try {
       await AsyncStorage.setItem('selectedProductId', product.id.toString());
-      navigation.navigate('prd', { product });
+      navigation.navigate('ProductDetailsPage', { product });
     } catch (error) {
       console.error('Error navigating to product details:', error);
     }

@@ -67,7 +67,7 @@ function PaymentScreen({navigation}) {
   
       // Send payment request
       const response = await axios.post(`http://${ipAdress}:3000/api/payment/pay`, paymentData);
-      console.log(response.data);
+      
   
       // Store payment confirmation locally
       const userId = await AsyncStorage.getItem('IdUser');
@@ -88,9 +88,9 @@ function PaymentScreen({navigation}) {
       // Store updated payments in AsyncStorage
       await AsyncStorage.setItem(`ALL_PAYMENTS_${userId}`, JSON.stringify(existingPayments));
       AsyncStorage.removeItem('favorites')
-  
+      navigation.navigate('paymentSucces');
       // Display payment confirmation
-      setPaymentConfirmed(true);
+      
       setFormData({
         cardNumber: '',
         expiryMonth: '',
@@ -167,7 +167,7 @@ function PaymentScreen({navigation}) {
           <TouchableOpacity onPress={handleSubmit} style={styles.button}>
             <Text>Pay Now</Text>
           </TouchableOpacity>
-          {paymentConfirmed && <Text style={styles.paymentConfirmation}>Payment is confirmed</Text>}
+          
         </ScrollView>
       </View>
     </KeyboardAvoidingView>
