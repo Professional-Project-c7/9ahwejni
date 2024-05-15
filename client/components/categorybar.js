@@ -1,17 +1,20 @@
 import React, { useState } from 'react';
 import { View, Image, Text, ScrollView, TouchableOpacity, StyleSheet } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 
 const CategoryBar = () => {
-  const [selectedCategory, setSelectedCategory] = useState(null);
+  const navigation = useNavigation();
   const categories = [
-    { key: 'coffee', image: require('../image/coffee-nice.png'), label: 'Coffees' },
-    { key: 'drink', image: require('../image/orange-juice.png'), label: 'Drinks' },
-    { key: 'cake', image: require('../image/cakes.png'), label: 'Cakes' },
+    { key: 'coffee', image: require('../image/coffee-nice.png'), label: 'Coffees', screen: 'AllCoffees' },
+    { key: 'drink', image: require('../image/orange-juice.png'), label: 'Drinks', screen: 'AllDrinks' },
+    { key: 'cake', image: require('../image/cakes.png'), label: 'Cakes', screen: 'AllCakes' },
     { key: 'pack', image: require('../image/packos.png'), label: 'Packs' }
   ];
 
-  const handlePress = (key) => {
-    setSelectedCategory(key);
+  const handlePress = (screen) => {
+    if (screen) {
+      navigation.navigate(screen);
+    }
   };
 
   return (
@@ -20,7 +23,7 @@ const CategoryBar = () => {
         <TouchableOpacity
           key={category.key}
           style={styles.categoryItem}
-          onPress={() => handlePress(category.key)}
+          onPress={() => handlePress(category.screen)}
         >
           <Image source={category.image} style={styles.categoryImage} />
           <Text style={styles.categoryText}>{category.label}</Text>

@@ -29,6 +29,7 @@ async function connectionTest (){
   db.Packproduct=require('./packproduct')(connection,DataTypes)
   db.Review = require('./review.model')(connection, DataTypes);
   db.Options = require('./options.model')(connection, DataTypes);
+  db.Notification = require('./notification')(connection, DataTypes);
 
 
 
@@ -71,12 +72,12 @@ db.Review.belongsTo(db.Products, { foreignKey: 'prodId' });
 
 // Sync the models with the database
 
-//  connection.sync()
-//     .then(() => {
-//         console.log('Models synced with the database.')
-//     })
-//     .catch((error) => {
-//         console.error('Unable to sync models with the database: ', error)
-//     })
+ connection.sync()
+    .then(() => {
+        console.log('Models synced with the database.')
+    })
+    .catch((error) => {
+        console.error('Unable to sync models with the database: ', error)
+    })
 
 module.exports =db 

@@ -21,10 +21,10 @@ module.exports=(sequelize,DataTypes)=>{
         allowNull :false
       },
       
-      // category: {
-      //   type: DataTypes.ENUM('coffee', 'cake', 'drink'),
-      //   allowNull: false
-      // }
+      category: {
+        type: DataTypes.ENUM('coffee', 'cake', 'drink'),
+        allowNull: false
+      }
       
   
   });
