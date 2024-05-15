@@ -13,7 +13,7 @@ import Feather from 'react-native-vector-icons/Feather';
 const ProductCard = ({ product }) => {
   return (
     <View style={styles.card}>
-      <Image source={product.imagelink_square} style={styles.image} />
+      <Image source={{uri:product.imgUrl}} style={styles.image} />
       <View style={styles.details}>
         <Text style={styles.name}>{product.name}</Text>
         <Text style={styles.description}>{product.description}</Text>
