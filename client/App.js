@@ -9,7 +9,7 @@ import NAVSTRAT from './screens/Navigation';
 import ProductPacksList from './components/ProductPacksList';
 import ProductList from './components/ProductList';
 import AllCoffeShops from './components/AllCoffeShops';
-import   User from './components/UserProfile'
+import User from './components/UserProfile'
 import HomePage from './components/homepage';
 import SellerPage from './components/SellerPage';
 import Paye from './components/Payment';
