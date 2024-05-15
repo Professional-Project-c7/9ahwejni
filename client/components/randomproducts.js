@@ -9,13 +9,17 @@ import {
   TouchableOpacity,
   ToastAndroid,
 } from 'react-native';
-// import Sound from 'react-native-sound';
+
+
+
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
 import { Rating } from 'react-native-ratings';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import axios from 'axios';
 import { ipAdress } from '../config';
+
+
 
 const RandomProducts = () => {
   const navigation = useNavigation();
@@ -53,22 +57,8 @@ const RandomProducts = () => {
     fetchProducts();
   }, []);
 
-  const playAlertSound = () => {
-    const alertSound = new Sound('alert.mp3', Sound.MAIN_BUNDLE, (error) => {
-      if (error) {
-        console.log('Failed to load the sound', error);
-        return;
-      }
-      // Play the alert sound
-      alertSound.play((success) => {
-        if (success) {
-          console.log('Alert sound played successfully');
-        } else {
-          console.log('Failed to play the alert sound');
-        }
-      });
-    });
-  };
+  
+
 
   const toggleFeature = async (id, feature) => {
     try {
@@ -86,9 +76,9 @@ const RandomProducts = () => {
         }));
         favoritesArray.push(product);
         await AsyncStorage.setItem('favorites', JSON.stringify(favoritesArray));
-
+  
         // Displaying a toast message at the top
-        ToastAndroid.showWithGravity('Item added to cart', ToastAndroid.SHORT, ToastAndroid.TOP);
+        ToastAndroid.showWithGravity('Item added to cart', ToastAndroid.TOP, ToastAndroid.TOP);
       }
     } catch (error) {
       console.log('Error toggling feature:', error);
@@ -128,7 +118,7 @@ const RandomProducts = () => {
                   {/* <Text style={styles.description}>With Milk</Text> */}
                   <Text style={styles.price}>${product.price}</Text>
                   <Icon
-                    name={favorites[product.id]?.inCart ? 'cart' : 'cart-outline'}
+                    name={favorites[product.id]?.inCart ? 'cart' : 'cart'}
                     size={24}
                     onPress={() => toggleFeature(product.id, 'inCart')}
                     style={styles.cartIcon}

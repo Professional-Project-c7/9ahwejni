@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, Image, StyleSheet, TouchableOpacity, ScrollView, Modal } from 'react-native';
-import { Button } from 'react-native-paper';
+import { View, Text, Image, StyleSheet, TouchableOpacity, ScrollView, Modal, Button } from 'react-native';
 import axios from 'axios';
 import { ipAdress } from '../config';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import Icon from 'react-native-vector-icons/FontAwesome';
 import { Rating } from 'react-native-ratings';
 import AddReview from './AddReview';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 const ProductDetailsPage = ({ navigation }) => {
     const [products, setProducts] = useState([]);
@@ -69,6 +68,12 @@ const ProductDetailsPage = ({ navigation }) => {
 
     const handleAddToHome = () => {
         navigation.navigate('Tabs');
+        AsyncStorage.removeItem('selectedProductId');
+    };
+
+    const goToHomePage = () => {
+        AsyncStorage.removeItem('selectedProductId');
+        navigation.navigate('homePage'); // Assuming 'Home' is the name of your home page screen
     };
 
     const handleSizeSelection = size => setSelectedSize(size);
@@ -145,13 +150,17 @@ const ProductDetailsPage = ({ navigation }) => {
                             </View>
                             <View style={styles.priceContainer}>
                                 <Text style={styles.productPrice}>${product.price}</Text>
-                                <TouchableOpacity onPress={handleAddToCart}>
-                                    <Text style={styles.add}>Add to Cart 🛒</Text>
+                                <TouchableOpacity onPress={toggleModalVisibility}>
+                                    <Text style={styles.addReviewButton}>Add Review ⭐</Text>
                                 </TouchableOpacity>
+                                <Icon name="cart" onPress={handleAddToCart} style={styles.add} />
                             </View>
-                            <TouchableOpacity onPress={toggleModalVisibility}>
-                                <Text style={styles.addReviewButton}>Add Review ⭐</Text>
-                            </TouchableOpacity>
+                            <Button
+                                title="Go to Home"
+                                onPress={() => navigation.navigate('homePage')}
+                                color="#FFBB70"
+                                style={styles.adad}
+                            />
                         </View>
                     </View>
                 </View>
@@ -163,7 +172,7 @@ const ProductDetailsPage = ({ navigation }) => {
                 <View style={styles.modalOverlay}>
                     <View style={styles.modalContainer}>
                         <AddReview productId={selectedProductId} userId={selectedUserId} />
-                        <Button onPress={toggleModalVisibility} style={styles.closeButton}>Close</Button>
+                        <Button title="Close" onPress={toggleModalVisibility} style={styles.closeButton} />
                     </View>
                 </View>
             </Modal>
@@ -202,16 +211,19 @@ const styles = StyleSheet.create({
         backgroundColor: '#FFFFFF',
         padding: 10
     },
+    adad: {
+        marginTop: 20
+    },
     productContainer: {
-        marginBottom: 20,
+        marginBottom: 30,
         backgroundColor: '#FFFFFF',
         borderRadius: 15,
         overflow: 'hidden'
     },
     productImage: {
+        marginTop: 35,
         width: '100%',
         height: 250,
-        resizeMode: 'cover'
     },
     body: {
         padding: 20
@@ -220,7 +232,7 @@ const styles = StyleSheet.create({
         fontSize: 27,
         fontWeight: 'bold',
         textAlign: 'center',
-        color: '#dba617'
+        color: '#FFBB70'
     },
     description: {
         fontSize: 18,
@@ -228,34 +240,27 @@ const styles = StyleSheet.create({
         color: 'black'
     },
     bottomContainer: {
-        marginTop: 10
+        marginTop: 30
     },
     add: {
-        backgroundColor: '#FFBB70',
-        color: 'white',
-        padding: 10,
+        color: '#FFBB70',
         textAlign: 'center',
-        borderRadius: 25,
-        fontSize: 18,
-        fontWeight: 'bold',
-        overflow: 'hidden'
+        marginTop: 30,
+        fontSize: 35,
     },
     addReviewButton: {
-        marginTop: 10,
+        marginTop: 30,
         backgroundColor: '#FFBB70',
         color: 'white',
         padding: 10,
         textAlign: 'center',
         borderRadius: 25,
-        fontSize: 18,
+        fontSize: 22,
         fontWeight: 'bold',
         overflow: 'hidden'
     },
     sectionTitle: {
-        fontSize: 20,
-        fontWeight: 'bold',
-        textAlign: 'center',
-        marginBottom: 10,
+        fontSize: 18,
     },
     priceContainer: {
         flexDirection: 'row',
@@ -271,10 +276,9 @@ const styles = StyleSheet.create({
         borderRadius: 15,
         paddingHorizontal: 10,
         paddingVertical: 5,
-        overflow: 'hidden'
+        marginTop: 30
     },
     optionContainer: {
-        marginBottom: 10,
         backgroundColor: '#FFFFFF',
         borderRadius: 15,
         paddingVertical: 10,
@@ -292,8 +296,6 @@ const styles = StyleSheet.create({
         backgroundColor: '#fff',
         borderRadius: 15,
         paddingHorizontal: 12,
-        paddingVertical: 8,
-        marginHorizontal: 5,
         borderWidth: 1,
         borderColor: '#FFBB70',
         overflow: 'hidden'

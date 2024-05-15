@@ -41,7 +41,7 @@ module.exports = {
                 res.status(200).json(user);
         
         } catch (error) {
-            throw (error)
+           console.log(error);
         }
     
         },

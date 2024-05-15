@@ -20,6 +20,7 @@ import UserProfile from '../components/UserProfile';
 import MenuItems from '../components/menuitems';
 import HomePage from '../components/homepage';
 import Map from '../components/MapCoffe';
+import chat from '../components/chat';
 import AddPacks from '../components/addpacks';
 import AddProducts from '../components/addproducts';
 import coffeeprofile from '../components/coffeeprofile';
@@ -44,6 +45,9 @@ import AllCakes from '../components/AllCakes';
 import AllCoffees from '../components/AllCoffees';
 import AllDrinks from '../components/AllDrinks';
 import AllProducts from '../components/AllProd';
+import PaymentSuccessPage from '../components/paymentSucces';
+import PaymentSuccess from '../components/paymentSucces';
+
 // import { useNavigation } from '@react-navigation/native';
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -158,6 +162,7 @@ function TabNavigator() {
       <Tab.Screen name="  SeeAllPacksCoffee" component={  SeeAllPacksCoffee}  options={{
           tabBarButton: () => null, // This hides the tab from the tab bar
         }} />
+        
     
       <Tab.Screen name="  Coffeelist" component={  Coffeelist}  options={{
           tabBarButton: () => null, // This hides the tab from the tab bar
@@ -182,9 +187,20 @@ function TabNavigator() {
           <Tab.Screen name="Orders" component={Orders}  options={{
           tabBarButton: () => null, // This hides the tab from the tab bar
         }} />
+        <Tab.Screen name="SettingComponent" component={SettingComponent}  options={{
+          tabBarButton: () => null, // This hides the tab from the tab bar
+        }} />
           <Tab.Screen name="PaymentCardsDetails" component={PaymentCardsDetails}  options={{
           tabBarButton: () => null, // This hides the tab from the tab bar
         }} />
+          <Tab.Screen name="paymentSucces" component={PaymentSuccess}  options={{
+          tabBarButton: () => null, // This hides the tab from the tab bar
+        }} />
+        
+         <Tab.Screen name="  prd" component={  ProductDetailsPage}  options={{
+          tabBarButton: () => null, // This hides the tab from the tab bar
+        }} />
+    
     </Tab.Navigator>
   );
 }
@@ -219,7 +235,7 @@ function NAVSTART() {
         <Stack.Screen name="PaymentCardsDetails" component={PaymentCardsDetails}  />
         <Stack.Screen name="User" component={UserProfile} />
         <Stack.Screen name="prd" component={ProductDetailsPage} options={{ headerShown: false }} />
-        <Stack.Screen name="panier" component={Panier}  />
+        <Stack.Screen name="panier" component={Panier} options={{ headerShown: false }} />
         <Stack.Screen name="Allcoffeeshops" component={Allcoffeeshops} options={{ headerShown: false }} />
         <Stack.Screen name="Paye" component={Paye} options={{ headerShown: false }} />
         <Stack.Screen name="menu" component={MenuItems} options={{ headerShown: false }} />
@@ -236,7 +252,8 @@ function NAVSTART() {
         <Stack.Screen name="AllCakes" component={AllCakes} options={{ headerShown: false }} />
         <Stack.Screen name="AllCoffees" component={AllCoffees} options={{ headerShown: false }} />
         <Stack.Screen name="AllDrinks" component={AllDrinks} options={{ headerShown: false }} />
-
+        <Stack.Screen name="chat" component={chat} />
+        <Stack.Screen name="paymentSucces" component={PaymentSuccessPage}  />
         <Stack.Screen  name="SettingComponent" component={SettingComponent} />
       </Stack.Navigator>
     </NavigationContainer>
