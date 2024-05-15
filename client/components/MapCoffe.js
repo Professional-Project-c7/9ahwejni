@@ -221,7 +221,7 @@ export default function MapCoffee() {
                 </View>
                 <View style={styles.distanceContainer}>
                   <Text style={styles.distanceText}>
-                    Distance: <Text style={styles.distanceValue}>{coffeeShop.distance} km</Text>
+                    <Text style={styles.distanceValue}>{coffeeShop.distance} km</Text>
                   </Text>
                 </View>
               </View>
@@ -274,6 +274,8 @@ const styles = StyleSheet.create({
     elevation: 5,
   },
   coffeeShopsContainer: {
+    paddingLeft : -10,
+
     padding: 10,
   },
   coffeeShopItem: {
