@@ -1,30 +1,34 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, Button, ScrollView } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, ScrollView, StyleSheet, ImageBackground } from 'react-native';
 import io from 'socket.io-client';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import { ipAdress } from '../config';
-const ENDPOINT = 
-`http://${ipAdress}:4000`
+
+const SERVER_ENDPOINT = `http://${ipAdress}:4001`;
 
 function Chat() {
   const [messages, setMessages] = useState([]);
   const [messageInput, setMessageInput] = useState('');
+  const [userId, setUserId] = useState('');
   const [socket, setSocket] = useState(null);
 
   useEffect(() => {
-    const socket = io(ENDPOINT);
-    setSocket(socket);
+    const retrieveData = async () => {
+      try {
+        const value = await AsyncStorage.getItem('IdUser');
+        if (value !== null) {
+          const id = JSON.parse(value);
+          setUserId(id);
+          establishSocketConnection(id);
+          fetchMessages();
+        }
+      } catch (error) {
+        console.error('Error retrieving data:', error);
+      }
+    };
 
-    axios.get(`http://${ipAdress}:3000/api/messages`
-      )
-      .then(response => {
-        setMessages(response.data);
-      })
-      .catch(error => {
-        console.error('Error fetching messages:', error);
-      });
-
-    socket.on('new_message', receiveMessage);
+    retrieveData();
 
     return () => {
       if (socket) {
@@ -33,69 +37,151 @@ function Chat() {
     };
   }, []);
 
-  const receiveMessage = (data) => {
-    setMessages(prevMessages => [...prevMessages, data]);
+  const establishSocketConnection = (id) => {
+    const newSocket = io(SERVER_ENDPOINT, {
+      query: { userId: id },
+    });
+
+    newSocket.on('receive_message', (message) => {
+      setMessages((prevMessages) => [...prevMessages, message]);
+    });
+
+    setSocket(newSocket);
   };
 
-  const handleMessageChange = (text) => {
-    setMessageInput(text);
+  const fetchMessages = async () => {
+    try {
+      const response = await axios.get(`http://${ipAdress}:4001/api/messages`);
+      setMessages(response.data);
+    } catch (error) {
+      console.error('Error fetching messages:', error);
+    }
+  };
+
+  const saveMessage = async (message) => {
+    try {
+      await axios.post(`http://${ipAdress}:4001/api/messages`, message);
+    } catch (error) {
+      console.error('Error saving message:', error);
+    }
   };
 
   const sendMessage = () => {
-    const newMessage = {
-      id: messages.length + 1,
-      sender: 'You',
-      content: messageInput,
-      timestamp: new Date().toLocaleString(),
-    };
+    if (socket && messageInput.trim()) {
+      const newMessage = {
+        senderId: userId,
+        content: messageInput,
+        timestamp: new Date().toLocaleString(),
+      };
 
-    setMessages(prevMessages => [...prevMessages, newMessage]);
-    setMessageInput('');
-    
-    axios.post(`http://${ipAdress}:3000/api/messages`, newMessage)
-      .then(response => {
-        console.log('Message saved successfully:', response.data);
-      })
-      .catch(error => {
-        console.error('Error saving message:', error);
+      socket.emit('send_message', newMessage, (acknowledgement) => {
+        if (acknowledgement === 'success') {
+          setMessages((prevMessages) => [...prevMessages, newMessage]);
+          saveMessage(newMessage);
+        } else {
+          console.error('Failed to send message:', acknowledgement);
+        }
       });
 
-    if (socket) {
-      socket.emit('send_message', newMessage);
+      setMessageInput('');
     }
   };
 
   return (
-    <View style={{ flex: 1 }}>
-      {/* <DefaultSidebar /> */}
-      <View style={{ flex: 1, flexDirection: 'row' }}>
-        <View style={{ flex: 1 }}>
-          {/* Sidebar content */}
-        </View>
-        <View style={{ flex: 3 }}>
-          <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
-            {messages.map((message, index) => (
-              <View key={index} style={{ flexDirection: 'row', justifyContent: message.sender === 'You' ? 'flex-end' : 'flex-start' }}>
-                <View style={{ backgroundColor: message.sender === 'You' ? 'lightblue' : 'lightgreen', borderRadius: 8, padding: 8, margin: 4 }}>
-                  <Text>{message.content}</Text>
-                  <Text>{message.timestamp}</Text>
-                </View>
-              </View>
-            ))}
-          </ScrollView>
-          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-            <TextInput
-              style={{ flex: 1, borderWidth: 1, borderRadius: 4, paddingHorizontal: 8, margin: 4 }}
-              placeholder="Type a message..."
-              value={messageInput}
-              onChangeText={handleMessageChange}
-            />
-            <Button title="Send" onPress={sendMessage} />
-          </View>
+    <ImageBackground source={require('../image/bgg.jpeg')} style={styles.background}>
+      <View style={styles.container}>
+        <ScrollView contentContainerStyle={styles.messagesContainer}>
+          {messages.map((message, index) => (
+            <View
+              key={index}
+              style={[
+                styles.messageBubble,
+                message.senderId === userId ? styles.sender : styles.receiver,
+              ]}
+            >
+              <Text style={styles.messageText}>{message.content}</Text>
+              <Text style={styles.timestamp}>{message.timestamp}</Text>
+            </View>
+          ))}
+        </ScrollView>
+        <View style={styles.inputContainer}>
+          <TextInput
+            style={styles.input}
+            placeholder="Type a message..."
+            value={messageInput}
+            onChangeText={setMessageInput}
+          />
+          <TouchableOpacity onPress={sendMessage} style={styles.sendButton}>
+            <Text style={styles.sendButtonText}>Send</Text>
+          </TouchableOpacity>
         </View>
       </View>
-    </View>
+    </ImageBackground>
   );
 }
+
+const styles = StyleSheet.create({
+  background: {
+    flex: 1,
+  },
+  container: {
+    flex: 1,
+    backgroundColor: 'transparent',
+  },
+  messagesContainer: {
+    flexGrow: 1,
+    padding: 10,
+  },
+  messageBubble: {
+    padding: 10,
+    borderRadius: 20,
+    marginVertical: 4,
+    maxWidth: '70%',
+    elevation: 1,
+  },
+  sender: {
+    backgroundColor: '#dba617',
+    alignSelf: 'flex-end',
+  },
+  receiver: {
+    backgroundColor: '#fff',
+    alignSelf: 'flex-start',
+  },
+  messageText: {
+    fontSize: 16,
+    color: '#333',
+  },
+  timestamp: {
+    fontSize: 10,
+    color: '#666',
+    marginTop: 4,
+  },
+  inputContainer: {
+    flexDirection: 'row',
+    padding: 8,
+    backgroundColor: 'white',
+  },
+  input: {
+    flex: 1,
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 20,
+    paddingHorizontal: 12,
+    height: 40,
+    backgroundColor: '#fff',
+    borderColor :  '#dba617' , 
+  },
+  sendButton: {
+    backgroundColor: '#dba617',
+    borderRadius: 20,
+    padding: 10,
+    justifyContent: 'center',
+    marginLeft: 4,
+  },
+  sendButtonText: {
+    color: '#fff',
+    fontSize: 16,
+  },
+});
 
 export default Chat;

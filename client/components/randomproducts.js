@@ -7,15 +7,19 @@ import {
   Image,
   Text,
   TouchableOpacity,
-  Alert,
+  ToastAndroid
 } from 'react-native';
-// import Sound from 'react-native-sound';
+
+
+
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
 import { Rating } from 'react-native-ratings';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import axios from 'axios';
 import { ipAdress } from '../config';
+
+
 
 const RandomProducts = () => {
   const navigation = useNavigation();
@@ -53,22 +57,8 @@ const RandomProducts = () => {
     fetchProducts();
   }, []);
 
-  const playAlertSound = () => {
-    const alertSound = new Sound('alert.mp3', Sound.MAIN_BUNDLE, (error) => {
-      if (error) {
-        console.log('Failed to load the sound', error);
-        return;
-      }
-      // Play the alert sound
-      alertSound.play((success) => {
-        if (success) {
-          console.log('Alert sound played successfully');
-        } else {
-          console.log('Failed to play the alert sound');
-        }
-      });
-    });
-  };
+  
+
 
   const toggleFeature = async (id, feature) => {
     try {
@@ -86,12 +76,9 @@ const RandomProducts = () => {
         }));
         favoritesArray.push(product);
         await AsyncStorage.setItem('favorites', JSON.stringify(favoritesArray));
-        Alert.alert('Item added to cart');
-        // playAlertSound();
   
-        // setTimeout(() => {
-        //   Alert.alert('');
-        // }, 2000);
+        // Displaying a toast message at the top
+        ToastAndroid.showWithGravity('Item added to cart', ToastAndroid.TOP, ToastAndroid.TOP);
       }
     } catch (error) {
       console.log('Error toggling feature:', error);
