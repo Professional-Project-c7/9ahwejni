@@ -60,11 +60,11 @@ db.Review.belongsTo(db.User);
 // db.Products.hasMany(db.Review);
 // db.Review.belongsTo(db.Products);
 
-// db.User.hasMany(db.Review, { foreignKey: 'UserId' });
-// db.Review.belongsTo(db.User, { foreignKey: 'UserId' });
 db.Products.hasMany(db.Review, { foreignKey: 'prodId' });
 db.Review.belongsTo(db.Products, { foreignKey: 'prodId' });
 
+// db.User.hasMany(db.Review, { foreignKey: 'coffeeShopId' })
+// db.Review.belongsTo(db.User, { foreignKey: 'coffeeShopId' })
 
 
 

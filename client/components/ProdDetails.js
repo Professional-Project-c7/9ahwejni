@@ -16,27 +16,7 @@ const ProductDetailsPage = ({ navigation }) => {
     const [selectedProductId, setSelectedProductId] = useState(null);
     const [selectedUserId, setSelectedUserId] = useState(null);
     const [isModalVisible, setIsModalVisible] = useState(false);
-
-    const dummyReviews = [
-        {
-            id: 1,
-            User: { FirstName: 'John', LastName: 'Doe', ImageUrl: 'https://via.placeholder.com/150' },
-            stars: 4,
-            comment: 'Great product, really enjoyed it!',
-        },
-        {
-            id: 2,
-            User: { FirstName: 'Jane', LastName: 'Smith', ImageUrl: 'https://via.placeholder.com/150' },
-            stars: 5,
-            comment: 'Absolutely fantastic! Will buy again.',
-        },
-        {
-            id: 3,
-            User: { FirstName: 'Alice', LastName: 'Johnson', ImageUrl: 'https://via.placeholder.com/150' },
-            stars: 3,
-            comment: 'It was okay, not the best I have tried.',
-        },
-    ];
+    const [reviews, setReviews] = useState([]);
 
     const retrieveData = async () => {
         try {
@@ -48,6 +28,15 @@ const ProductDetailsPage = ({ navigation }) => {
             }
         } catch (error) {
             console.error('Error retrieving data:', error);
+        }
+    };
+
+    const fetchReviews = async (productId) => {
+        try {
+            const response = await axios.get(`http://${ipAdress}:3000/api/review/product/${productId}`);
+            setReviews(response.data);
+        } catch (error) {
+            console.error('Error fetching reviews:', error);
         }
     };
 
@@ -66,6 +55,7 @@ const ProductDetailsPage = ({ navigation }) => {
 
                 const response = await axios.get(`http://${ipAdress}:3000/api/product/SearchById/${productId}`);
                 setProducts(response.data);
+                fetchReviews(productId);  // Fetch reviews for the current product
             } catch (error) {
                 console.error('Error fetching product details:', error);
             }
@@ -178,11 +168,17 @@ const ProductDetailsPage = ({ navigation }) => {
                 </View>
             </Modal>
             <View style={styles.reviewsContainer}>
-                {dummyReviews.map((review, index) => (
+                {reviews.map((review, index) => (
                     <View key={index} style={styles.reviewCard}>
-                        <Image source={{ uri: review.User.ImageUrl }} style={styles.userImage} />
+                        {review.User && review.User.ImageUrl ? (
+                            <Image source={{ uri: review.User.ImageUrl }} style={styles.userImage} />
+                        ) : (
+                            <Image source={{ uri: 'https://via.placeholder.com/150' }} style={styles.userImage} />
+                        )}
                         <View style={styles.reviewContent}>
-                            <Text style={styles.userName}>{`${review.User.FirstName} ${review.User.LastName}`}</Text>
+                            <Text style={styles.userName}>
+                                {review.User ? `${review.User.FirstName} ${review.User.LastName}` : 'Anonymous'}
+                            </Text>
                             <Rating
                                 type="star"
                                 ratingCount={5}
