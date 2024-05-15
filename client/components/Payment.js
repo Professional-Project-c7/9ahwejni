@@ -184,7 +184,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#fff',
-    height: 80,
+    height: 40,
     paddingHorizontal: 20,
     borderBottomWidth: 1,
     borderBottomColor: '#ccc',
@@ -193,25 +193,24 @@ const styles = StyleSheet.create({
     width: 120,
     height: 60,
   },
-  contentContainer: {
-    padding: 20,
-  },
+  // contentContainer: {
+  //   padding: 20,
+  // },
   paymentCartImage: {
     width: '100%',
     height: 250,
     alignSelf: 'center',
-    marginBottom: 20,
+   
   },
   paymentOptions: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginBottom: 20,
+   
   },
   creditCardDetails: {
     backgroundColor: '#fff',
     borderRadius: 10,
-    padding: 20,
-    marginBottom: 20,
+   
     shadowColor: '#000',
     shadowOffset: {
       width: 0,

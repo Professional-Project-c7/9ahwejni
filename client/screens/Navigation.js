@@ -219,7 +219,7 @@ function NAVSTART() {
         <Stack.Screen name="PaymentCardsDetails" component={PaymentCardsDetails}  />
         <Stack.Screen name="User" component={UserProfile} />
         <Stack.Screen name="prd" component={ProductDetailsPage} options={{ headerShown: false }} />
-        <Stack.Screen name="panier" component={Panier}  />
+        <Stack.Screen name="panier" component={Panier} options={{ headerShown: false }} />
         <Stack.Screen name="Allcoffeeshops" component={Allcoffeeshops} options={{ headerShown: false }} />
         <Stack.Screen name="Paye" component={Paye} options={{ headerShown: false }} />
         <Stack.Screen name="menu" component={MenuItems} options={{ headerShown: false }} />

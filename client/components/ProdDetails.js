@@ -79,8 +79,15 @@ const ProductDetailsPage = ({ navigation }) => {
 
     const handleAddToHome = () => {
         navigation.navigate('Tabs');
-    };
+  AsyncStorage.removeItem('selectedProductId')
 
+    };
+    const goToHomePage = () => {
+  AsyncStorage.removeItem('selectedProductId')
+
+        navigation.navigate('homePage'); // Assuming 'Home' is the name of your home page screen
+      };
+    
     const handleSizeSelection = size => setSelectedSize(size);
     const handleSugarSelection = sugar => setSelectedSugar(sugar);
     const handleIceSelection = ice => setSelectedIce(ice);
@@ -102,6 +109,15 @@ const ProductDetailsPage = ({ navigation }) => {
 
     return (
         <ScrollView style={styles.container}>
+            <View style={styles.topBar}>
+          <TouchableOpacity onPress={goToHomePage}>
+            <Image
+              source={require('../image/logo.png')} // Assuming 'logo.png' is your logo file
+              style={styles.logo}
+              resizeMode="contain"
+            />
+          </TouchableOpacity>
+        </View>
             <Icon name="arrow-left" size={30} onPress={handleAddToHome} />
             {products.map((product, index) => (
                 <View key={index} style={styles.productContainer}>
@@ -217,6 +233,20 @@ const styles = StyleSheet.create({
         height: 250,
         resizeMode: 'cover'
     },
+    topBar: {
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: '#fff',
+        height: 80,
+        paddingHorizontal: 20,
+        borderBottomWidth: 1,
+        borderBottomColor: '#ccc',
+      },
+      logo: {
+        width: 120,
+        height: 60,
+      },
     body: {
         padding: 20
     },
