@@ -40,7 +40,9 @@ import AdvancedFilter from '../components/AdvancedFilter';
 import Coffeelist from "../components/coffeeprodlist"
 import SeeAllProdsCoffee from "../components/seeAllprodscoffee"
 import SeeAllPacksCoffee from "../components/seeAllpackscoffee"
-
+import AllCakes from '../components/AllCakes';
+import AllCoffees from '../components/AllCoffees';
+import AllDrinks from '../components/AllDrinks';
 import AllProducts from '../components/AllProd';
 // import { useNavigation } from '@react-navigation/native';
 const Stack = createNativeStackNavigator();
@@ -231,6 +233,9 @@ function NAVSTART() {
         <Stack.Screen name="Favorit" component={Favorit }  />
         <Stack.Screen  name="SeeAllProdsCoffee" component={SeeAllProdsCoffee} />
         <Stack.Screen name="AllProducts" component={AllProducts} options={{ headerShown: false }} />
+        <Stack.Screen name="AllCakes" component={AllCakes} options={{ headerShown: false }} />
+        <Stack.Screen name="AllCoffees" component={AllCoffees} options={{ headerShown: false }} />
+        <Stack.Screen name="AllDrinks" component={AllDrinks} options={{ headerShown: false }} />
 
         <Stack.Screen  name="SettingComponent" component={SettingComponent} />
       </Stack.Navigator>

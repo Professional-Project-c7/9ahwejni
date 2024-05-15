@@ -9,7 +9,7 @@ const Panier = ({ navigation }) => {
 
   const [posts, setPosts] = useState(null);
   const [totalPrice, setTotalPrice] = useState(0);
-
+console.log("postspostsposts",posts);
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -26,6 +26,34 @@ const Panier = ({ navigation }) => {
     };
     fetchData();
   }, []);
+
+
+//   const fetchData = async () => {
+//     try {
+//       // Retrieve posts from AsyncStorage
+//       const storedPosts = await AsyncStorage.getItem('favorites');
+      
+//       if (storedPosts) {
+//         const parsedPosts = JSON.parse(storedPosts);
+//         setPosts(parsedPosts);
+        
+//         // Extract userId from the first post and store it in AsyncStorage
+//         if (parsedPosts.length > 0) {
+//           const userId = parsedPosts[0].userId;
+//           await AsyncStorage.setItem('IdUser', userId.toString());
+//           console.log(userId,userId);
+//         }
+
+//         calculateTotalPrice(parsedPosts);
+//       }
+//     } catch (error) {
+//       console.log('Error fetching data:', error); 
+//     }
+//   };
+//   fetchData();
+// }, []);
+
+
 
   const handleAddToCart = () => {
     navigation.navigate('Tabs');
@@ -60,7 +88,6 @@ const Panier = ({ navigation }) => {
       <ScrollView>
         <FlatList
           data={posts}
-          // keyExtractor={(item) => item.id.toString()} 
           renderItem={({ item }) => (
             <View style={styles.card}>
               <Image style={styles.cardImage} source={{ uri: item.imgUrl }} />

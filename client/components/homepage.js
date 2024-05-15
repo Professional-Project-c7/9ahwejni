@@ -20,9 +20,6 @@ const HomePage = ({ navigation }) => {
   const [type, setType] = useState(true);
   const [showNotification, setShowNotification] = useState(false);
 
-
-
-  
   const showFilterModal = () => {
     setFilterVisible(true);
   };
@@ -31,9 +28,10 @@ const HomePage = ({ navigation }) => {
     setFilterVisible(false);
   };
 
-  const seeAll = async (product) => {
-      navigation.navigate('AllProducts');
+  const seeAll = async () => {
+    navigation.navigate('AllProducts');
   };
+
   const toggleNotification = () => {
     setShowNotification(!showNotification);
   };
@@ -64,16 +62,15 @@ const HomePage = ({ navigation }) => {
         style={styles.topBackground}
       >
         <View style={styles.top}>
-        <IconButton icon="bell" color="#FFF" onPress={toggleNotification} />
-          {/* <View style={styles.logoContainer}>
-            <Image source={logoImage} style={styles.logo} />
-          </View> */}
+          <IconButton icon="bell" color="#FFF" onPress={toggleNotification} />
           {type && <IconButton icon="cart" iconColor='#FFF' onPress={() => navigation.navigate('panier')} />}
         </View>
       </LinearGradient>
       <View style={styles.searchContainer}>
-        {/* <MusicPlayer/> */}
         <Searchbar onFilterPress={showFilterModal} />
+      </View>
+      <View style={styles.categoryTitleContainer}>
+        <Text style={styles.categoryTitle}>Category</Text>
       </View>
       <View style={styles.categoryBarContainer}>
         <CategoryBar />
@@ -81,39 +78,34 @@ const HomePage = ({ navigation }) => {
       <Pub />
       <View style={styles.top}>
         <Text style={[styles.Texttitlecoffee, { marginLeft: 0 }]}>Products of the Day!</Text>
-        <TouchableOpacity onPress={() => navigation.navigate("Allcoffeeshops")}>
-          <Text style={styles.seeAllText} onPress={seeAll}>See All</Text>
+        <TouchableOpacity onPress={seeAll}>
+          <Text style={styles.seeAllText}>See All</Text>
         </TouchableOpacity>
       </View>
       <RandomProducts />
       <View style={styles.top}>
         <Text style={[styles.Texttitlecoffee, { marginLeft: 0 }]}>Top Coffee Shops of the Day!</Text>
       </View>
-     <TopShops navigation={navigation} />
+      <TopShops navigation={navigation} />
 
       <StatusBar style="auto" />
 
-           <Modal
+      <Modal
         visible={showNotification}
         animationType="slide"
         transparent={true}
         onRequestClose={toggleNotification}
       >
         <View style={styles.notificationModal}>
-         <Notification/>
+          <Notification />
           <IconButton icon="close" color="#000" onPress={toggleNotification} />
         </View>
       </Modal>
 
-
-
-
-
-      {/* AdvancedFilter Modal */}
       <Modal
         visible={filterVisible}
         animationType="slide"
-        transparent={false} // Ensure full screen
+        transparent={false}
         onRequestClose={hideFilterModal}
       >
         <View style={styles.fullScreenModal}>
@@ -134,14 +126,14 @@ const styles = StyleSheet.create({
     borderBottomRightRadius: 5,
     borderBottomLeftRadius: 5,
   },
-    notificationModal: {
+  notificationModal: {
     flex: 1,
     backgroundColor: 'white',
     justifyContent: 'center',
     alignItems: 'center',
-    height:150
+    height: 150,
   },
-    closeButton: {
+  closeButton: {
     position: 'absolute',
     top: 20,
     right: 20,
@@ -160,17 +152,15 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
     paddingVertical: 5,
   },
-  logoContainer: {
-    width: 82,
-    height: 82,
-    borderRadius: 35,
-    backgroundColor: 'white',
-    justifyContent: 'center',
+  categoryTitleContainer: {
     alignItems: 'center',
+    marginTop: 20,
   },
-  logo: {
-    width: 66,
-    height: 66,
+  categoryTitle: {
+    fontSize: 23,
+    fontWeight: 'bold',
+    color: '#000',
+    marginBottom: 10,
   },
   categoryBarContainer: {
     flexDirection: 'column',
@@ -178,16 +168,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     width: '100%',
     marginTop: 20,
-    marginRight: 30,
-    left: 14
-  },
-  categoryTitle: {
-    fontSize: 23,
-    fontWeight: 'bold',
-    color: '#000',
-    marginBottom: 10,
-    justifyContent: 'center',
-    right : 15
   },
   Texttitlecoffee: {
     fontSize: 20,
@@ -209,13 +189,6 @@ const styles = StyleSheet.create({
   fullScreenModal: {
     flex: 1,
     backgroundColor: 'white',
-  },
-  closeButton: {
-    position: 'absolute',
-    top: 20,
-    right: 20,
-    backgroundColor: 'white',
-    borderRadius: 20,
   },
 });
 
