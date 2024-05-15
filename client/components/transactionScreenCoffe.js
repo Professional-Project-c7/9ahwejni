@@ -15,7 +15,7 @@ console.log(nawsomme);
 
       if (storedBalance !== null) {
         setSomme(parseFloat(storedBalance));
-      }
+      } 
     } catch (error) {
       console.log('Error fetching data:', error);
     }
