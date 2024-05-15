@@ -321,9 +321,9 @@ backgroundColor:'black'
   optionsContainer: {
     flexDirection: 'row',
     justifyContent: 'space-around',
-    backgroundColor: "rgba(219, 219, 219, 0.8)",
+    // backgroundColor: "white",
     padding: 16,
-    margin:20,
+    marginBottom:-30,
     borderRadius: 10,
   },
   optionsContainerOne: {
