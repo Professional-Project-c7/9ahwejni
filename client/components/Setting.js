@@ -67,7 +67,7 @@ const SettingComponent = ({ onClose }) => {
       <View style={styles.profileInfo}>
         <ScrollView>
         <View >
-        {userData && (
+        {/* {userData && ( */}
         <>
            <Text style={[styles.label, { marginTop: 100 }]}>FirstName:</Text>
               <TextInput
@@ -109,7 +109,7 @@ const SettingComponent = ({ onClose }) => {
                   <Icon name="save" style={{color:'black'}}  size={30} onPress={handleSave} />
             
                   </>
-      )}
+      {/* )} */}
                  </View>
              </ScrollView>
 
