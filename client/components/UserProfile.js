@@ -125,7 +125,7 @@ const handleLogout = () => {
               </ImageBackground>
             </View>
           </TouchableOpacity>
-          <Text style={{ marginTop: 10, fontSize: 18, fontWeight: 'bold' }}>{userData.FirstName + ' ' + userData.LastName}</Text>
+          <Text style={{ marginTop: 10, fontSize: 18, fontWeight: 'bold',color:'black' }}>{userData.FirstName + ' ' + userData.LastName}</Text>
 
         </View>
        
@@ -260,6 +260,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
     marginBottom: 20,
     flexDirection: 'row',
+    color:'black'
   },
   closeButton: {
     // marginTop: 10,
@@ -354,14 +355,13 @@ backgroundColor:'black'
     margin: 8,
     backgroundColor: '#dba617',
     borderRadius: 10,
-    elevation: 5,
-    shadowColor: '#000000',
+    elevation: 50,
+    shadowColor: 'black',
     shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
+      width: 20,
+      height: 20,
+  }
+   
   },
   optionOne: {
     
@@ -376,8 +376,8 @@ backgroundColor:'black'
       height: 2,
     },
     shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-  },
+    shadowRadius: 3.84,},
+
   optionImage: {
     width: 80, // Adjust the width of the image
     height: 60, // Adjust the height of the image

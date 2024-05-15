@@ -87,8 +87,6 @@ const getUserData = async (userId) => {
     console.log(response.data); // Check response data
     if (response.status === 200) {
       setUserData(response.data);
-      setFirstName(response.data.firstName); // Assuming the response data has a firstName field
-      setLastName(response.data.lastName);
     } else {
       console.error('Failed to fetch user data');
     }
@@ -130,6 +128,7 @@ useEffect(() => {
 
   return (
     <ScrollView style={styles.container}>
+      <View>
      {userData && (
         <>
         <View style={{alignItems: 'center', marginTop:15}}>
@@ -179,7 +178,7 @@ useEffect(() => {
         <View style={styles.action}>
           <FontAwesome name="user-o" color={'#dba617'} size={20} />
           <TextInput
-            placeholder= {userData.FirstName }
+            placeholder={userData.FirstName}
             value={firstName}
         onChangeText={text => setFirstName(text)}
             placeholderTextColor="#666666"
@@ -195,7 +194,7 @@ useEffect(() => {
         <View style={styles.action}>
           <FontAwesome name="user-o" color={'#dba617'} size={20} />
           <TextInput
-            placeholder= {userData.LastName }
+            placeholder={userData.LastName}
             placeholderTextColor="#666666"
             value={lastName}
         onChangeText={text => setLastName(text)}
@@ -228,7 +227,7 @@ useEffect(() => {
         <View style={styles.action}>
           <FontAwesome name="envelope-o" color={'#dba617'} size={20} />
           <TextInput
-            placeholder= {userData.Email }
+            placeholder={userData.Email}
             placeholderTextColor="#666666"
             value={email}
             onChangeText={text => setEmail(text)}
@@ -273,7 +272,7 @@ useEffect(() => {
         <TouchableOpacity style={styles.commandButton} onPress={handleUpdateProfile}>
           <Text style={styles.panelButtonTitle}>Submit</Text>
         </TouchableOpacity>
-      
+        </View>
     </ScrollView>
   );
 };
@@ -378,4 +377,3 @@ const styles = StyleSheet.create({
       marginBottom: 10,
     },
   });
-  
