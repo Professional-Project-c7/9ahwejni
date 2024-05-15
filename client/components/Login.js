@@ -45,6 +45,7 @@ const Login = ({ navigation }) => {
         <TextInput
           style={styles.input}
           placeholder="Email"
+          placeholderTextColor="#666666"
           keyboardType="email-address"
           value={email}
           onChangeText={setEmail}
@@ -53,6 +54,7 @@ const Login = ({ navigation }) => {
           <TextInput
             style={styles.passwordTextInput}
             placeholder="Password"
+            placeholderTextColor="#666666"
             secureTextEntry={!showPassword}
             value={password}
             onChangeText={setPassword}
@@ -88,6 +90,7 @@ const styles = StyleSheet.create({
   inputContainer: {
     marginBottom: 20,
     width: '80%',
+    color:'black'
   },
   input: {
     height: 50,
@@ -97,10 +100,12 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     borderRadius: 25,
     backgroundColor: '#FFF',
+    color:'black'
   },
   passwordInput: {
     flexDirection: 'row',
     alignItems: 'center',
+    color:'black'
   },
   passwordTextInput: {
     flex: 1,
@@ -111,14 +116,17 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     borderRadius: 25,
     backgroundColor: '#FFF',
+    color:'black'
   },
   eyeIcon: {
     position: 'absolute',
     right: 10,
+    color:'black'
   },
   eyeImage: {
     width: 25,
     height: 25,
+    color:'black'
   },
   button: {
     backgroundColor: '#dba617',
@@ -136,6 +144,7 @@ const styles = StyleSheet.create({
   errorText: {
     color: 'red',
     marginBottom: 10,
+    color:'black'
   },
 });
 
