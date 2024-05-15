@@ -3,12 +3,13 @@ import { StyleSheet, View, TextInput, Text, Image, ScrollView, TouchableOpacity,
 import MapView, { Marker, Polyline } from 'react-native-maps';
 import Geolocation from '@react-native-community/geolocation';
 import Geocoder from 'react-native-geocoding';
-import { Button, List, IconButton } from 'react-native-paper';
+import { Button, List } from 'react-native-paper';
+import coffeeIcon from '../image/coffee-shop-logo.png';
 
 const GOOGLE_MAPS_API_KEY = 'AIzaSyDYm4cfAj3Lrk6HqMJZHGeB1JevFbEC55o'; // Replace with your Google Maps API Key
 Geocoder.init('AIzaSyDYm4cfAj3Lrk6HqMJZHGeB1JevFbEC55o');
 
-export default function MapCoffe() {
+export default function MapCoffee() {
   const [region, setRegion] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [coffeeShops, setCoffeeShops] = useState([]);
@@ -29,7 +30,7 @@ export default function MapCoffe() {
         searchCoffeeShops(latitude, longitude);
       },
       error => {
-        console.log(error.message);
+        console.error(error.message);
         Alert.alert(
           'Location Permission Required',
           'Please enable location services to use this feature.',
@@ -46,7 +47,6 @@ export default function MapCoffe() {
         `https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${latitude},${longitude}&radius=5000&type=cafe&keyword=coffee&key=${'AIzaSyDYm4cfAj3Lrk6HqMJZHGeB1JevFbEC55o'}`
       );
       const data = await response.json();
-
       const coffeeShopsData = data.results.map(result => ({
         name: result.name,
         latitude: result.geometry.location.lat,
@@ -54,7 +54,6 @@ export default function MapCoffe() {
         photoReference: result.photos ? result.photos[0].photo_reference : null,
         distance: calculateDistance(latitude, longitude, result.geometry.location.lat, result.geometry.location.lng)
       }));
-
       setCoffeeShops(coffeeShopsData);
     } catch (error) {
       console.error(error);
@@ -62,18 +61,17 @@ export default function MapCoffe() {
   };
 
   const calculateDistance = (lat1, lon1, lat2, lon2) => {
-    const R = 6371;
+    const R = 6371; // Radius of the Earth in km
     const dLat = deg2rad(lat2 - lat1);
     const dLon = deg2rad(lon2 - lon1);
-    const a =
-      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-      Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) *
-      Math.sin(dLon / 2) * Math.sin(dLon / 2);
+    const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+              Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) *
+              Math.sin(dLon / 2) * Math.sin(dLon / 2);
     const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
     const d = R * c;
     return d.toFixed(2);
   };
-  
+
   const deg2rad = (deg) => {
     return deg * (Math.PI / 180);
   };
@@ -89,7 +87,6 @@ export default function MapCoffe() {
         );
         return;
       }
-      
       const { lat, lng } = response.results[0].geometry.location;
       setRegion({
         latitude: lat,
@@ -97,14 +94,7 @@ export default function MapCoffe() {
         latitudeDelta: 0.0922,
         longitudeDelta: 0.0421,
       });
-      
-      const searchedCoffeeShop = {
-        name: searchQuery, // Assuming the search query is the name of the coffee shop
-        latitude: lat,
-        longitude: lng,
-        distance: 0, 
-      };
-      setCoffeeShops([searchedCoffeeShop, ...coffeeShops]); // Add searched coffee shop to the array
+      searchCoffeeShops(lat, lng);
     } catch (error) {
       console.error(error);
       Alert.alert(
@@ -181,18 +171,27 @@ export default function MapCoffe() {
           Search
         </Button>
       </View>
-      
+
       {region ? (
         <MapView style={styles.map} initialRegion={region}>
           <Marker coordinate={{ latitude: region.latitude, longitude: region.longitude }} />
           {coffeeShops.map((marker, index) => (
-            <Marker key={index} coordinate={{ latitude: marker.latitude, longitude: marker.longitude }} pinColor="blue" onPress={() => handleGetDirections(marker)} />
+            <Marker
+              key={index}
+              coordinate={{ latitude: marker.latitude, longitude: marker.longitude }}
+              onPress={() => handleGetDirections(marker)}
+            >
+              <Image
+                source={coffeeIcon}
+                style={{ width: 20, height: 35 }}
+              />
+            </Marker>
           ))}
           {directions && directions.routes && directions.routes.length > 0 && directions.routes[0].overview_polyline && (
             <Polyline
               coordinates={decodePolyline(directions.routes[0].overview_polyline.points)}
               strokeWidth={5}
-              strokeColor="red"
+              strokeColor="blue"
             />
           )}
         </MapView>
@@ -222,7 +221,7 @@ export default function MapCoffe() {
                 </View>
                 <View style={styles.distanceContainer}>
                   <Text style={styles.distanceText}>
-                    Distance: <Text style={styles.distanceValue}>{coffeeShop.distance} km</Text>
+                    <Text style={styles.distanceValue}>{coffeeShop.distance} km</Text>
                   </Text>
                 </View>
               </View>
