@@ -8,44 +8,44 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Feather from 'react-native-vector-icons/Feather';
 
-const data = [
-  {
-    id: '1',
-    name: 'Product 1',
-    description: 'Description for Product 1',
-    imagelink_square: require("../image/breakfast.webp"),
-    prices: [
-      { size: 'S', price: '10', currency: '$' },
-      { size: 'M', price: '15', currency: '$' },
-      { size: 'L', price: '20', currency: '$' },
-    ],
-    average_rating: 4,
-  },
-  {
-    id: '2',
-    name: 'Product 2',
-    description: 'Description for Product 2',
-    imagelink_square: require("../image/breakfast.webp"),
-    prices: [
-      { size: 'S', price: '12', currency: '$' },
-      { size: 'M', price: '18', currency: '$' },
-      { size: 'L', price: '24', currency: '$' },
-    ],
-    average_rating: 3,
-  },
-  {
-    id: '3',
-    name: 'Product 3',
-    description: 'Description for Product 3',
-    imagelink_square: require("../image/breakfast.webp"),
-    prices: [
-      { size: 'S', price: '8', currency: '$' },
-      { size: 'M', price: '12', currency: '$' },
-      { size: 'L', price: '16', currency: '$' },
-    ],
-    average_rating: 5,
-  },
-];
+// const data = [
+//   {
+//     id: '1',
+//     name: 'Product 1',
+//     description: 'Description for Product 1',
+//     imagelink_square: require("../image/breakfast.webp"),
+//     prices: [
+//       { size: 'S', price: '10', currency: '$' },
+//       { size: 'M', price: '15', currency: '$' },
+//       { size: 'L', price: '20', currency: '$' },
+//     ],
+//     average_rating: 4,
+//   },
+//   {
+//     id: '2',
+//     name: 'Product 2',
+//     description: 'Description for Product 2',
+//     imagelink_square: require("../image/breakfast.webp"),
+//     prices: [
+//       { size: 'S', price: '12', currency: '$' },
+//       { size: 'M', price: '18', currency: '$' },
+//       { size: 'L', price: '24', currency: '$' },
+//     ],
+//     average_rating: 3,
+//   },
+//   {
+//     id: '3',
+//     name: 'Product 3',
+//     description: 'Description for Product 3',
+//     imagelink_square: require("../image/breakfast.webp"),
+//     prices: [
+//       { size: 'S', price: '8', currency: '$' },
+//       { size: 'M', price: '12', currency: '$' },
+//       { size: 'L', price: '16', currency: '$' },
+//     ],
+//     average_rating: 5,
+//   },
+// ];
 
 const ProductCard = ({ product }) => {
   return (
@@ -68,7 +68,7 @@ const ProductCard = ({ product }) => {
   );
 };
 
-const ProductList = ({navigation}) => {
+const SeeAllPacksCoffee = () => {
   const { colors } = useTheme();
   const [productName, setProductName] = useState('');
   const [productDescription, setProductDescription] = useState('');
@@ -89,18 +89,17 @@ const ProductList = ({navigation}) => {
       if (value !== null) {
         const tokenObject = JSON.parse(value);
         const userId = tokenObject; 
-        console.log("userId",userId);
+        console.log("taww",userId);
         setUserID(userId);
       }
     } catch (error) {
       console.error('Error retrieving data:', error);
     }
   };
-  
   useEffect(() => {
     const getUserData = async (userId) => {
       try {
-        const response = await axios.get(`http://${ipAdress}:3000/api/product`);
+        const response = await axios.get(`http://${ipAdress}:3000/api/packs`);
         if (response.status === 200) {
           setUserData(response.data);
         }
@@ -141,137 +140,28 @@ console.log("before" ,userID);
   } catch (error) {
     console.error('Error adding product:', error);
   }
- 
 };
 const filteredProducts = userData ? userData.filter(product => product.userId === userID) : [];
 
-const firstTwoImages = filteredProducts.slice(0, 2)
   return (
     <ScrollView>
       <View>
-        <View style={styles.top}>
-          <Text style={styles.Texttitlepacks} >Products's List</Text>
-          <Text style={styles.seeAllpacks} onPress={() => navigation.navigate('SeeAllProdsCoffee')}>See All</Text>
-        </View>
+        
         <SafeAreaView style={{ flex: 1 }}>
           <FlatList
-            data={firstTwoImages}
+            data={filteredProducts}
             renderItem={({ item }) => <ProductCard product={item} />}
             keyExtractor={(item) => item.id}
             contentContainerStyle={styles.container}
           />
         </SafeAreaView>
-        <View style={styles.container}>
-          <View style={{ alignItems: 'center', marginTop: 15 }}>
-            <TouchableOpacity >
-              <View
-                style={{
-                  height: 100,
-                  width: 100,
-                  borderRadius: 15,
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                }}>
-                <ImageBackground
-                  source={require("../image/square.png")}
-                  style={{ height: 120, width: 125 }}
-                  imageStyle={{ borderRadius: 15 }}>
-                  <View
-                    style={{
-                      flex: 1,
-                      justifyContent: 'center',
-                      alignItems: 'center',
-                    }}>
-                    <Icon
-                      name="camera"
-                      size={35}
-                      color='#dba617'
-                      style={{
-                        opacity: 0.7,
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                      }}
-                    />
-                  </View>
-                </ImageBackground>
-              </View>
-            </TouchableOpacity>
-            <Text style={{ marginTop: 10, fontSize: 18, fontWeight: 'bold' }}>
-              Add Product Photo
-            </Text>
-          </View>
-          <View style={styles.action}>
-            <FontAwesome name="user-o" color={'#dba617'} size={20} />
-            <TextInput
-            
-              placeholder="Name"
-              placeholderTextColor="#666666"
-              autoCorrect={false}
-              style={[
-                styles.textInput,
-                {
-                  color: colors.text,
-                },
-              ]}
-              value={productName}
-              onChangeText={setProductName}
-            />
-          </View>
-          <View style={styles.action}>
-            <FontAwesome name="file-text" color={'#dba617'} size={20} />
-            <TextInput
-              placeholder="Description"
-              placeholderTextColor="#666666"
-              keyboardType="number-pad"
-              autoCorrect={false}
-              style={[
-                styles.textInput,
-                {
-                  color: colors.text,
-                },
-              ]}
-              value={productDescription}
-              onChangeText={setProductDescription}
-            />
-          </View>
-          <View style={styles.action}>
-            <FontAwesome name="expand" color={'#dba617'} size={20} />
-            <TextInput
-              placeholder="Size"
-              placeholderTextColor="#666666"
-              keyboardType="email-address"
-              autoCorrect={false}
-              style={[
-                styles.textInput,
-                {
-                  color: colors.text,
-                },
-              ]}
-              value={productSize}
-              onChangeText={setProductSize}
-            />
-          </View>
-          <View style={styles.action}>
-            <FontAwesome name="dollar" color={'#dba617'} size={20} />
-            <TextInput
-              placeholder="Price"
-              placeholderTextColor="#666666"
-              autoCorrect={false}
-              style={[
-                styles.textInput,
-                {
-                  color: colors.text,
-                },
-              ]}
-              value={productPrice}
-              onChangeText={setProductPrice}
-            />
-          </View>
-          <TouchableOpacity style={styles.commandButton} onPress={handleAddProduct}>
-            <Text style={styles.panelButtonTitle}>Submit</Text>
-          </TouchableOpacity>
+       
+          
+         
+          
+         
         </View>
-      </View>
+      
     </ScrollView>
   );
 };
@@ -452,4 +342,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default ProductList;
+export default SeeAllPacksCoffee;

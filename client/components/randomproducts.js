@@ -87,7 +87,11 @@ const RandomProducts = () => {
         favoritesArray.push(product);
         await AsyncStorage.setItem('favorites', JSON.stringify(favoritesArray));
         Alert.alert('Item added to cart');
-        playAlertSound();
+        // playAlertSound();
+  
+        // setTimeout(() => {
+        //   Alert.alert('');
+        // }, 2000);
       }
     } catch (error) {
       console.log('Error toggling feature:', error);

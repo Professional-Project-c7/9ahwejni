@@ -38,6 +38,13 @@ import Panier from '../components/Panier';
 import Allcoffeeshops from '../components/AllCoffeShops';
 import Onboarding from '../components/Onboarding';
 import AdvancedFilter from '../components/AdvancedFilter';
+import Coffeelist from "../components/coffeeprodlist"
+import SeeAllProdsCoffee from "../components/seeAllprodscoffee"
+import SeeAllPacksCoffee from "../components/seeAllpackscoffee"
+import AllCakes from '../components/AllCakes';
+import AllCoffees from '../components/AllCoffees';
+import AllDrinks from '../components/AllDrinks';
+import AllProducts from '../components/AllProd';
 // import { useNavigation } from '@react-navigation/native';
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -75,6 +82,8 @@ function TabNavigator() {
         inactiveTintColor: 'gray',
       }}
     >
+      
+     
       <Tab.Screen
         name="homePage"
         component={HomePage}
@@ -143,6 +152,40 @@ function TabNavigator() {
           }}
         />
       ) : null}
+       <Tab.Screen name="  Panier" component={  Panier}  options={{
+          tabBarButton: () => null, // This hides the tab from the tab bar
+        }} />
+      
+      <Tab.Screen name="  SeeAllPacksCoffee" component={  SeeAllPacksCoffee}  options={{
+          tabBarButton: () => null, // This hides the tab from the tab bar
+        }} />
+    
+      <Tab.Screen name="  Coffeelist" component={  Coffeelist}  options={{
+          tabBarButton: () => null, // This hides the tab from the tab bar
+        }} />
+          <Tab.Screen name="  InfoCoffee" component={  InfoCoffee}  options={{
+          tabBarButton: () => null, // This hides the tab from the tab bar
+        }} />
+      
+       <Tab.Screen name="Favorit" component={Favorit}  options={{
+          tabBarButton: () => null, // This hides the tab from the tab bar
+        }} />
+        <Tab.Screen name="Edit" component={EditCoffee}  options={{
+          tabBarButton: () => null, // This hides the tab from the tab bar
+        }} />
+         <Tab.Screen name="TransactionScreenCoffee" component={TransactionScreenCoffee}  options={{
+          tabBarButton: () => null, // This hides the tab from the tab bar
+        }} />
+         <Tab.Screen name="AllProducts" component={AllProducts}  options={{
+          tabBarButton: () => null, // This hides the tab from the tab bar
+        }} />
+        
+          <Tab.Screen name="Orders" component={Orders}  options={{
+          tabBarButton: () => null, // This hides the tab from the tab bar
+        }} />
+          <Tab.Screen name="PaymentCardsDetails" component={PaymentCardsDetails}  options={{
+          tabBarButton: () => null, // This hides the tab from the tab bar
+        }} />
     </Tab.Navigator>
   );
 }
@@ -163,19 +206,21 @@ function NAVSTART() {
         <Stack.Screen name="ProductList" component={ProductList} options={{ headerShown: false }} />
         <Stack.Screen name="AddPacks" component={AddPacks} options={{ headerShown: false }} />
         <Stack.Screen name="AddProducts" component={AddProducts} options={{ headerShown: false }} />
-        <Stack.Screen name="Orders" component={Orders} options={{ headerShown: false }} />
+        <Stack.Screen name="Orders" component={Orders}  />
         <Stack.Screen name="Edit" component={EditCoffee} />
         <Stack.Screen name="Info" component={InfoCoffee} />
+        <Stack.Screen name="Coffeelist" component={Coffeelist} />
         <Stack.Screen
           name="TransactionScreenCoffee"
           component={TransactionScreenCoffee}
          
         />
+         <Stack.Screen name="SeeAllPacksCoffee" component={SeeAllPacksCoffee} options={{ headerShown: false }} />
         <Stack.Screen name="ReviewsCoffee" component={ReviewsCoffee} options={{ headerShown: false }} />
-        <Stack.Screen name="PaymentCardsDetails" component={PaymentCardsDetails} options={{ headerShown: false }} />
+        <Stack.Screen name="PaymentCardsDetails" component={PaymentCardsDetails}  />
         <Stack.Screen name="User" component={UserProfile} />
         <Stack.Screen name="prd" component={ProductDetailsPage} options={{ headerShown: false }} />
-        <Stack.Screen name="panier" component={Panier} options={{ headerShown: false }} />
+        <Stack.Screen name="panier" component={Panier}  />
         <Stack.Screen name="Allcoffeeshops" component={Allcoffeeshops} options={{ headerShown: false }} />
         <Stack.Screen name="Paye" component={Paye} options={{ headerShown: false }} />
         <Stack.Screen name="menu" component={MenuItems} options={{ headerShown: false }} />
@@ -186,7 +231,12 @@ function NAVSTART() {
         <Stack.Screen name="Tabs"  component={TabNavigator} options={{ headerShown: false }} />
         <Stack.Screen name="Onboarding" component={Onboarding} options={{ headerShown: false }} />
         <Stack.Screen name="AdvancedFilter" component={AdvancedFilter} options={{ headerShown: false }} />
-        <Stack.Screen name="chat" component={chat} />
+        <Stack.Screen name="Favorit" component={Favorit }  />
+        <Stack.Screen  name="SeeAllProdsCoffee" component={SeeAllProdsCoffee} />
+        <Stack.Screen name="AllProducts" component={AllProducts} options={{ headerShown: false }} />
+        <Stack.Screen name="AllCakes" component={AllCakes} options={{ headerShown: false }} />
+        <Stack.Screen name="AllCoffees" component={AllCoffees} options={{ headerShown: false }} />
+        <Stack.Screen name="AllDrinks" component={AllDrinks} options={{ headerShown: false }} />
 
         <Stack.Screen  name="SettingComponent" component={SettingComponent} />
       </Stack.Navigator>

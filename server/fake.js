@@ -13,9 +13,9 @@ function getRandomElementFromArray(arr) {
 module.exports = async (sequelize) => {
     // Adjust the number of seeds you want for each model
     const userCount = 50;
-    const productCount = 100;
+    const productCount = 50;
     const packCount = 50;
-    const reviewCount = 150;
+    const reviewCount = 50;
         // Generate random users
     const users = await Promise.all(
       Array.from({ length: userCount }).map(async () => {
@@ -76,7 +76,7 @@ module.exports = async (sequelize) => {
   const pack = await Promise.all(
     Array.from({ length: packCount }).map(async () => {
         const category = getRandomElementFromArray(["food", "coffee"]); // Randomly select category
-        
+        const user = users[Math.floor(Math.random() * userCount)];
         let name, description;
         if (category === "food") {
             // If the category is food, generate food-related data
@@ -93,6 +93,7 @@ module.exports = async (sequelize) => {
             price: faker.commerce.price(),
             description: description,
             category: category,
+            userId: user.id,
         });
     })
 );
