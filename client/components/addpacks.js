@@ -11,12 +11,15 @@ import imagee from "../image/expresso.png"
 
 
 const PackCard = ({ pack, onPressProducts }) => {
+  
   return (
     <TouchableOpacity style={styles.card} onPress={onPressProducts}>
       <Image source={require("../image/expresso.png")} style={styles.image} />
       <View style={styles.details}>
         <Text style={styles.name}>{pack.name}</Text>
         <Text style={styles.description}>{pack.description}</Text>
+        
+
         <Text style={styles.price}>{pack.price} $</Text>
         <TouchableOpacity onPress={onPressProducts}>
           <Text style={styles.showProductsButton}>Show Products</Text>
@@ -26,7 +29,7 @@ const PackCard = ({ pack, onPressProducts }) => {
   );
 };
 
-const ProductModal = ({ isVisible, onHide, products }) => {
+const ProductModal = ({ array, isVisible, onHide, products }) => {
   return (
     <Modal
       visible={isVisible}
@@ -37,12 +40,13 @@ const ProductModal = ({ isVisible, onHide, products }) => {
         <Text style={styles.modalTitle}>Products</Text>
         <FlatList
           data={products}
-          renderItem={({ item }) => (
+          renderItem={({ item, index }) => (
             <View style={styles.productContainer}>
               <Image source={{ uri: item.imgUrl }} style={styles.productImage} />
               <View style={styles.productDetails}>
                 <Text style={styles.productName}>{item.name}</Text>
                 <Text style={styles.productDescription}>{item.description}</Text>
+                <Text style={styles.productDescription}>{array[index]?.quantity}</Text>
                 <Text style={styles.productPrice}>{item.price} $</Text>
               </View>
             </View>
@@ -57,6 +61,7 @@ const ProductModal = ({ isVisible, onHide, products }) => {
   );
 };
 
+
 const AddPacks = ({navigation}) => {
   const { colors } = useTheme();
   const [packName, setpackName] = useState('');
@@ -68,6 +73,7 @@ const AddPacks = ({navigation}) => {
   const [userpacks, setUserpacks] = useState(null);
   const [selectedPack, setSelectedPack] = useState(null);
   const [isProductModalVisible, setIsProductModalVisible] = useState(false);
+  const [productQuantities, setProductQuantities] = useState({});
   const handleShowProducts = (pack) => {
     setSelectedPack(pack);
     setIsProductModalVisible(true);
@@ -165,6 +171,12 @@ const handleremovearray = () => {
   removeArrayFromStorage();
   navigation.navigate('Coffeelist');
 };
+const handleQuantityChange = (productId, value) => {
+  setProductQuantities(prevState => ({
+    ...prevState,
+    [productId]: value.toString()
+  }));
+};
 
 const filteredProducts = userpacks ? userpacks.filter(pack => pack.userId === userID) : [];
 // console.log("filteredProducts",filteredProducts);
@@ -182,14 +194,23 @@ const firstTwoImages = filteredProducts.slice(0, 2)
         </View>
       <View>
         <SafeAreaView style={{ flex: 1 }}>
-          <FlatList
-            data={firstTwoImages}
-            renderItem={({ item }) => <PackCard pack={item} onPressProducts={() => handleShowProducts(item)} />}
-            keyExtractor={(item) => item.id.toString()}
-            contentContainerStyle={styles.container}
+        <FlatList
+        data={firstTwoImages}
+        renderItem={({ item }) => (
+          <PackCard 
+          
+            pack={item} 
+            onPressProducts={() => handleShowProducts(item)} 
+            quantity={productQuantities[item.id]} 
+            onQuantityChange={(value) => handleQuantityChange(item.id, value)} 
           />
+        )}
+        keyExtractor={(item) => item.id.toString()}
+        contentContainerStyle={styles.container}
+      />
         </SafeAreaView>
         <ProductModal
+        array={array}
           isVisible={isProductModalVisible}
           onHide={() => setIsProductModalVisible(false)}
           products={selectedPack ? selectedPack.prods : []}
@@ -270,7 +291,7 @@ const firstTwoImages = filteredProducts.slice(0, 2)
               onChangeText={setpackDescription}
             />
           </View>
-          <View style={styles.action}>
+          {/* <View style={styles.action}>
             <FontAwesome name="expand" color={'#dba617'} size={20} />
             <TextInput
               placeholder="Size"
@@ -286,7 +307,7 @@ const firstTwoImages = filteredProducts.slice(0, 2)
               value={packSize}
               onChangeText={setpackSize}
             />
-          </View>
+          </View> */}
           <View style={styles.action}>
             <FontAwesome name="dollar" color={'#dba617'} size={20} />
             <TextInput
