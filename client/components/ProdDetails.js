@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, Image, StyleSheet, TouchableOpacity, ScrollView, Modal , Button } from 'react-native';
+import { View, Text, Image, StyleSheet, TouchableOpacity, ScrollView, Modal, Button } from 'react-native';
 import axios from 'axios';
 import { ipAdress } from '../config';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -15,27 +15,7 @@ const ProductDetailsPage = ({ navigation }) => {
     const [selectedProductId, setSelectedProductId] = useState(null);
     const [selectedUserId, setSelectedUserId] = useState(null);
     const [isModalVisible, setIsModalVisible] = useState(false);
-
-    const dummyReviews = [
-        {
-            id: 1,
-            User: { FirstName: 'John', LastName: 'Doe', ImageUrl: 'https://via.placeholder.com/150' },
-            stars: 4,
-            comment: 'Great product, really enjoyed it!',
-        },
-        {
-            id: 2,
-            User: { FirstName: 'Jane', LastName: 'Smith', ImageUrl: 'https://via.placeholder.com/150' },
-            stars: 5,
-            comment: 'Absolutely fantastic! Will buy again.',
-        },
-        {
-            id: 3,
-            User: { FirstName: 'Alice', LastName: 'Johnson', ImageUrl: 'https://via.placeholder.com/150' },
-            stars: 3,
-            comment: 'It was okay, not the best I have tried.',
-        },
-    ];
+    const [reviews, setReviews] = useState([]);
 
     const retrieveData = async () => {
         try {
@@ -47,6 +27,15 @@ const ProductDetailsPage = ({ navigation }) => {
             }
         } catch (error) {
             console.error('Error retrieving data:', error);
+        }
+    };
+
+    const fetchReviews = async (productId) => {
+        try {
+            const response = await axios.get(`http://${ipAdress}:3000/api/review/product/${productId}`);
+            setReviews(response.data);
+        } catch (error) {
+            console.error('Error fetching reviews:', error);
         }
     };
 
@@ -65,6 +54,7 @@ const ProductDetailsPage = ({ navigation }) => {
 
                 const response = await axios.get(`http://${ipAdress}:3000/api/product/SearchById/${productId}`);
                 setProducts(response.data);
+                fetchReviews(productId);  // Fetch reviews for the current product
             } catch (error) {
                 console.error('Error fetching product details:', error);
             }
@@ -78,15 +68,14 @@ const ProductDetailsPage = ({ navigation }) => {
 
     const handleAddToHome = () => {
         navigation.navigate('Tabs');
-  AsyncStorage.removeItem('selectedProductId')
-
+        AsyncStorage.removeItem('selectedProductId');
     };
-    const goToHomePage = () => {
-  AsyncStorage.removeItem('selectedProductId')
 
+    const goToHomePage = () => {
+        AsyncStorage.removeItem('selectedProductId');
         navigation.navigate('homePage'); // Assuming 'Home' is the name of your home page screen
-      };
-    
+    };
+
     const handleSizeSelection = size => setSelectedSize(size);
     const handleSugarSelection = sugar => setSelectedSugar(sugar);
     const handleIceSelection = ice => setSelectedIce(ice);
@@ -108,16 +97,7 @@ const ProductDetailsPage = ({ navigation }) => {
 
     return (
         <ScrollView style={styles.container}>
-            {/* <View style={styles.topBar}>
-          <TouchableOpacity onPress={goToHomePage}>
-            <Image
-              source={require('../image/logo.png')} // Assuming 'logo.png' is your logo file
-              style={styles.logo}
-              resizeMode="contain"
-            />
-          </TouchableOpacity>
-        </View> */}
-            {/* <Icon name="arrow-left" size={30} onPress={handleAddToHome} /> */}
+            <Icon name="arrow-left" size={30} onPress={handleAddToHome} />
             {products.map((product, index) => (
                 <View key={index} style={styles.productContainer}>
                     <Image source={{ uri: product.imgUrl }} style={styles.productImage} />
@@ -171,19 +151,16 @@ const ProductDetailsPage = ({ navigation }) => {
                             <View style={styles.priceContainer}>
                                 <Text style={styles.productPrice}>${product.price}</Text>
                                 <TouchableOpacity onPress={toggleModalVisibility}>
-                                <Text style={styles.addReviewButton}>Add Review ⭐</Text>
-                            </TouchableOpacity>
-                                <Icon
-                    name={'cart'}    onPress={handleAddToCart} style={styles.add} />
-                         
-                           
-                        </View>
-                        <Button
-        title="Go to Home"
-        onPress={() => navigation.navigate('homePage')}
-        color="#FFBB70" 
-        style={styles.adad}
-      />
+                                    <Text style={styles.addReviewButton}>Add Review ⭐</Text>
+                                </TouchableOpacity>
+                                <Icon name="cart" onPress={handleAddToCart} style={styles.add} />
+                            </View>
+                            <Button
+                                title="Go to Home"
+                                onPress={() => navigation.navigate('homePage')}
+                                color="#FFBB70"
+                                style={styles.adad}
+                            />
                         </View>
                     </View>
                 </View>
@@ -195,16 +172,22 @@ const ProductDetailsPage = ({ navigation }) => {
                 <View style={styles.modalOverlay}>
                     <View style={styles.modalContainer}>
                         <AddReview productId={selectedProductId} userId={selectedUserId} />
-                        <Button onPress={toggleModalVisibility} style={styles.closeButton}>Close</Button>
+                        <Button title="Close" onPress={toggleModalVisibility} style={styles.closeButton} />
                     </View>
                 </View>
             </Modal>
             <View style={styles.reviewsContainer}>
-                {dummyReviews.map((review, index) => (
+                {reviews.map((review, index) => (
                     <View key={index} style={styles.reviewCard}>
-                        <Image source={{ uri: review.User.ImageUrl }} style={styles.userImage} />
+                        {review.User && review.User.ImageUrl ? (
+                            <Image source={{ uri: review.User.ImageUrl }} style={styles.userImage} />
+                        ) : (
+                            <Image source={{ uri: 'https://via.placeholder.com/150' }} style={styles.userImage} />
+                        )}
                         <View style={styles.reviewContent}>
-                            <Text style={styles.userName}>{`${review.User.FirstName} ${review.User.LastName}`}</Text>
+                            <Text style={styles.userName}>
+                                {review.User ? `${review.User.FirstName} ${review.User.LastName}` : 'Anonymous'}
+                            </Text>
                             <Rating
                                 type="star"
                                 ratingCount={5}
@@ -229,7 +212,7 @@ const styles = StyleSheet.create({
         padding: 10
     },
     adad: {
-       marginTop:20
+        marginTop: 20
     },
     productContainer: {
         marginBottom: 30,
@@ -238,25 +221,10 @@ const styles = StyleSheet.create({
         overflow: 'hidden'
     },
     productImage: {
-        marginTop:35,
+        marginTop: 35,
         width: '100%',
         height: 250,
-        // resizeMode: 'cover'
     },
-    topBar: {
-        flexDirection: 'row',
-        justifyContent: 'center',
-        alignItems: 'center',
-        backgroundColor: '#fff',
-        height: 80,
-        paddingHorizontal: 20,
-        borderBottomWidth: 1,
-        borderBottomColor: '#ccc',
-      },
-      logo: {
-        width: 120,
-        height: 60,
-      },
     body: {
         padding: 20
     },
@@ -275,12 +243,10 @@ const styles = StyleSheet.create({
         marginTop: 30
     },
     add: {
-   
         color: '#FFBB70',
         textAlign: 'center',
-        marginTop:30,
+        marginTop: 30,
         fontSize: 35,
-      
     },
     addReviewButton: {
         marginTop: 30,
@@ -295,7 +261,6 @@ const styles = StyleSheet.create({
     },
     sectionTitle: {
         fontSize: 18,
-       
     },
     priceContainer: {
         flexDirection: 'row',
@@ -311,10 +276,9 @@ const styles = StyleSheet.create({
         borderRadius: 15,
         paddingHorizontal: 10,
         paddingVertical: 5,
-        marginTop:30
+        marginTop: 30
     },
     optionContainer: {
-        // marginBottom: 10,
         backgroundColor: '#FFFFFF',
         borderRadius: 15,
         paddingVertical: 10,
@@ -332,8 +296,6 @@ const styles = StyleSheet.create({
         backgroundColor: '#fff',
         borderRadius: 15,
         paddingHorizontal: 12,
-        // paddingVertical: 8,
-        // marginHorizontal: 5,
         borderWidth: 1,
         borderColor: '#FFBB70',
         overflow: 'hidden'
