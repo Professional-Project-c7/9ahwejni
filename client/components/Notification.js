@@ -52,7 +52,7 @@ const Notification = () => {
         </View>
       ));
     } else {
-      return <Text>No payment notifications</Text>;
+      return <Text style={styles.noPaymentsText}>No payment notifications</Text>;
     }
   };
   
@@ -65,20 +65,51 @@ const Notification = () => {
 };
 
 const styles = StyleSheet.create({
+  scrollView: {
+    flexGrow: 1,
+    padding: 20,
+    backgroundColor: '#ffffff',
+  },
   container: {
-    backgroundColor: '#f0f0f0',
-    padding: 10,
-    borderRadius: 5,
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  paymentContainer: {
+    backgroundColor: '#ffffff',
+    padding: 20,
+    borderRadius: 15,
+    marginBottom: 15,
+    width: '95%',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.1,
+    shadowRadius: 8,
+    elevation: 5,
+    borderLeftWidth: 5,
+    borderLeftColor: '#4CAF50',
+  },
+  paymentHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
     marginBottom: 10,
     marginTop: 50
   },
-  title: {
-    fontSize: 18,
+  amount: {
+    fontSize: 22,
     fontWeight: 'bold',
-    marginBottom: 5,
+    color: '#333',
   },
-  message: {
-    fontSize: 20,
+  date: {
+    fontSize: 16,
+    color: '#777',
+  },
+  noPaymentsText: {
+    fontSize: 18,
+    color: '#999',
+    textAlign: 'center',
+    marginTop: 20,
   },
   total: {
     fontSize: 20,
