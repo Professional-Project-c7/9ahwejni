@@ -40,8 +40,8 @@ const AddReview = ({ productId, userId }) => {
                 position: 'bottom',
                 visibilityTime: 3000,
                 autoHide: true,
-                bottomOffset: 1,
-                style: { height: 100, justifyContent: 'center', alignItems: 'center', padding: 30 },
+                bottomOffset: 30,
+                style: { height: 100, justifyContent: 'center', alignItems: 'center', padding: 20 },
                 text1Style: { fontSize: 20 },
                 text2Style: { fontSize: 16 }
             });

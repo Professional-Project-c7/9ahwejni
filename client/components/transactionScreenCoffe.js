@@ -7,15 +7,17 @@ const Transactions = () => {
   const [activeTab, setActiveTab] = useState('Week');
   const [somme, setSomme] = useState(0);
   const [nawsomme, setNawsomme] = useState(0);
-console.log(nawsomme);
+console.log(somme);
   const fetchData = async () => {
     try {
       const userId = await AsyncStorage.getItem('IdUser');
       const storedBalance = await AsyncStorage.getItem(`PAYMENT_AMOUNT_${userId}`);
+      console.log("storedBalance",storedBalance);
+      console.log("userId",userId);
 
       if (storedBalance !== null) {
         setSomme(parseFloat(storedBalance));
-      }
+      } 
     } catch (error) {
       console.log('Error fetching data:', error);
     }
