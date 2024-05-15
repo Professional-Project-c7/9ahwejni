@@ -162,6 +162,7 @@ function TabNavigator() {
       <Tab.Screen name="  SeeAllPacksCoffee" component={  SeeAllPacksCoffee}  options={{
           tabBarButton: () => null, // This hides the tab from the tab bar
         }} />
+        
     
       <Tab.Screen name="  Coffeelist" component={  Coffeelist}  options={{
           tabBarButton: () => null, // This hides the tab from the tab bar
@@ -196,6 +197,10 @@ function TabNavigator() {
           tabBarButton: () => null, // This hides the tab from the tab bar
         }} />
         
+         <Tab.Screen name="  prd" component={  ProductDetailsPage}  options={{
+          tabBarButton: () => null, // This hides the tab from the tab bar
+        }} />
+    
     </Tab.Navigator>
   );
 }

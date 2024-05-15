@@ -106,7 +106,7 @@ export default function CustomSearchBar({ onFilterPress }) {
         />
         <TouchableOpacity style={styles.searchButtonContainer} onPress={() => debouncedSearch(searchQuery)}>
           <LinearGradient
-            colors={['rgba(253,190,29,1)', 'rgba(252,145,69,1)']}
+            colors={['rgba(219, 166, 23, 1)', 'rgba(219, 166, 23, 1)']} 
             start={{ x: 0, y: 0 }}
             end={{ x: 1, y: 0 }}
             style={styles.searchButton}
@@ -116,7 +116,7 @@ export default function CustomSearchBar({ onFilterPress }) {
         </TouchableOpacity>
         <TouchableOpacity style={styles.filterButtonContainer} onPress={onFilterPress}>
           <LinearGradient
-            colors={['rgba(253,190,29,1)', 'rgba(252,145,69,1)']}
+            colors={['rgba(219, 166, 23, 1)', 'rgba(219, 166, 23, 1)']} 
             start={{ x: 0, y: 0 }}
             end={{ x: 1, y: 0 }}
             style={styles.filterButton}
