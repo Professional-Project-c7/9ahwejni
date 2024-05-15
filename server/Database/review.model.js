@@ -10,7 +10,11 @@ module.exports = (sequelize, DataTypes) => {
      comment :{
       type : DataTypes.TEXT,
       allowNull: true,
-     }
+     },
+  //    coffeeShopId: {
+  //     type: DataTypes.INTEGER,
+  //     allowNull: true,
+  // },
     });
     
     return Review;
