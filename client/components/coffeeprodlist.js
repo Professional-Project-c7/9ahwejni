@@ -23,9 +23,9 @@ const NumberInput = ({ value, onIncrement, onDecrement }) => {
 const CoffeeProductList = ({navigation}) => {
   const [userData, setUserData] = useState(null);
   const [userID, setUserID] = useState(null);
-  const [checkedItems, setCheckedItems] = useState({}); // Store checked state for each product
-  const [productQuantities, setProductQuantities] = useState({}); // Store selected quantities for each product
-  const [checkedProductIDs, setCheckedProductIDs] = useState([]); // Array to store checked product IDs
+  const [checkedItems, setCheckedItems] = useState({}); 
+  const [productQuantities, setProductQuantities] = useState({}); 
+  const [checkedProductIDs, setCheckedProductIDs] = useState([]); 
 
   useEffect(() => {
     const retrieveData = async () => {
@@ -76,25 +76,25 @@ const CoffeeProductList = ({navigation}) => {
     }
   }, [userID]);
 
-  const handleCheckboxToggle = (productId) => {
-    setCheckedItems((prevState) => ({
-      ...prevState,
-      [productId]: !prevState[productId], // Toggle the checked state for the specific product
-    }));
-  
-    // Update the array of checked product IDs
+  const handleCheckboxToggle = (productId, selectedQuantity) => {
     setCheckedProductIDs((prevState) => {
-      if (prevState.includes(productId)) {
-        return prevState.filter((id) => id !== productId); // Remove ID if already exists
+      const index = prevState.findIndex((item) => item.productId === productId);
+      if (index !== -1) {
+        // If the product is already in the array, update its quantity
+        return prevState.map((item, idx) =>
+          idx === index ? { ...item, quantity: selectedQuantity } : item
+        );
       } else {
-        return [...prevState, productId]; // Add ID if not already present
+        // If the product is not in the array, add it with the selected quantity
+        return [...prevState, { productId: productId, quantity: selectedQuantity }];
       }
     });
   };
   
+  
 
   const handleQuantityIncrement = (productId) => {
-    const newValue = parseInt(productQuantities[productId]) + 1;
+    const newValue = parseInt(productQuantities[productId] || 0) + 1;
     setProductQuantities(prevState => ({
       ...prevState,
       [productId]: newValue.toString()
@@ -102,7 +102,7 @@ const CoffeeProductList = ({navigation}) => {
   };
 
   const handleQuantityDecrement = (productId) => {
-    const newValue = parseInt(productQuantities[productId]) - 1;
+    const newValue = parseInt(productQuantities[productId] || 0) - 1;
     if (newValue >= 0) {
       setProductQuantities(prevState => ({
         ...prevState,
@@ -145,15 +145,15 @@ const CoffeeProductList = ({navigation}) => {
                 <Text style={styles.productPrice}>{item.price} $</Text>
               </View>
               <NumberInput
-                value={parseInt(productQuantities[item.id])}
+                value={parseInt(productQuantities[item.id])|| 0}
                 onIncrement={() => handleQuantityIncrement(item.id)}
                 onDecrement={() => handleQuantityDecrement(item.id)}
               />
               <Checkbox
-                status={checkedItems[item.id] ? 'checked' : 'unchecked'}
-                onPress={() => handleCheckboxToggle(item.id)}
-                style={styles.checkbox}
-              />
+  status={checkedItems[item.id] ? 'checked' : 'unchecked'}
+  onPress={() => handleCheckboxToggle(item.id, productQuantities[item.id] || 0)}
+  style={styles.checkbox}
+/>
              
             </View>
             

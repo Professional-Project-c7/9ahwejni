@@ -35,8 +35,9 @@ addOne:async function(req,res){
         const pack = await db.Pack.create(req.body)
         req.body.checkedProductIDs.map(async(e)=>{
             await db.Packproduct.create({
-                prodId:e,
+                prodId:e.productId,
                 packId:pack.id,
+                quantity: e.quantity,
                 ...req.body
 
             })
