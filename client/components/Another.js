@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import { View, Text, FlatList, Image, TouchableOpacity, StyleSheet } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 
+
 const initialFavorites = [
   {
     id: '1',
@@ -46,7 +47,9 @@ const Favorit = () => {
   const [favorites, setFavorites] = useState(initialFavorites);
 
   const toggleFavorite = (id) => {
-    const updatedFavorites = favorites.filter(item => item.id !== id);
+    const updatedFavorites = favorites.map(item =>
+      item.id === id ? { ...item, isFavorite: !item.isFavorite } : item
+    );
     setFavorites(updatedFavorites);
   };
 
@@ -56,10 +59,6 @@ const Favorit = () => {
       <View style={styles.details}>
         <Text style={styles.title}>{item.title}</Text>
         <Text style={styles.subtitle}>{item.category}</Text>
-        <View style={styles.row}>
-          {/* <Icon name="location-outline" size={16} color="#9e9e9e" /> */}
-          {/* <Text style={styles.location}>{item.location}</Text> */}
-        </View>
         <View style={styles.row}>
           {Array.from({ length: 5 }).map((_, index) => (
             <Icon
@@ -82,7 +81,6 @@ const Favorit = () => {
           color={item.isFavorite ? '#FF0000' : '#9e9e9e'}
         />
       </TouchableOpacity>
-     
     </View>
   );
 
@@ -113,13 +111,13 @@ const styles = StyleSheet.create({
     elevation: 2,
   },
   logo: {
-    width: 80,
-    height: 80,
-    borderRadius: 8,
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+    marginRight: 10,
   },
   details: {
     flex: 1,
-    marginHorizontal: 10,
   },
   title: {
     fontSize: 16,
@@ -127,30 +125,20 @@ const styles = StyleSheet.create({
   },
   subtitle: {
     fontSize: 14,
-    color: '#9e9e9e',
+    color: '#666',
   },
   row: {
     flexDirection: 'row',
     alignItems: 'center',
     marginTop: 5,
   },
-
   rating: {
-    fontSize: 14,
     marginLeft: 5,
+    fontSize: 14,
+    color: '#666',
   },
   favoriteButton: {
-    marginRight: 10,
-  },
-  openButton: {
-    backgroundColor: '#00C853',
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-    borderRadius: 4,
-  },
-  openText: {
-    color: '#fff',
-    fontWeight: 'bold',
+    padding: 5,
   },
 });
 
