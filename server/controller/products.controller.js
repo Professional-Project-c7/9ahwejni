@@ -23,7 +23,7 @@ selectOne: async function(req, res) {
             res.status(200).json(product);
     
     } catch (error) {
-        throw (error)
+       console.log(error);
     }
 
     },
