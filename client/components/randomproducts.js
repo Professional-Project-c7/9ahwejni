@@ -138,7 +138,7 @@ const RandomProducts = () => {
                     style={styles.starRating}
                   />
                   <Icon
-                    name={favorites[product.id]?.inCart ? 'cart' : 'cart-outline'}
+                    name={favorites[product.id]?.inCart ? 'cart' : 'cart'}
                     size={24}
                     onPress={() => toggleFeature(product.id, 'inCart')}
                     style={styles.cartIcon}
