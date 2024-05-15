@@ -19,28 +19,29 @@ io.on('connection', (socket) => {
   console.log(`User connected: ${socket.id}`);
 
   const userId = socket.handshake.query.userId;
+  const room = socket.handshake.query.room || 'global';
+  
   if (userId) {
-    console.log(`User ID: ${userId}`);
+    console.log(`User ID: ${userId}, Room: ${room}`);
     userSockets[userId] = socket.id;
     connectedUsers[userId] = true;
 
-    socket.join('global');
+    socket.join(room);
   }
 
   socket.on('send_message', (data, callback) => {
-    const { recipientId, content, timestamp } = data;
+    const { recipientId, content, room, timestamp } = data;
     const message = {
       senderId: userId,
       content,
+      room: room || 'global',
       timestamp: timestamp || new Date().toLocaleString(),
     };
 
     if (recipientId && userSockets[recipientId]) {
-      // Send the message only to the recipient
       io.to(userSockets[recipientId]).emit('receive_message', message);
     } else {
-      // If recipientId is not provided, broadcast to all except the sender
-      socket.broadcast.to('global').emit('receive_message', message);
+      socket.broadcast.to(room).emit('receive_message', message);
     }
 
     callback('success');

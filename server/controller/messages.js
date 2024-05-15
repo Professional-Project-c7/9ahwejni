@@ -2,7 +2,8 @@ const { Message } = require('../Database/index');
 
 const getMessages = async (req, res) => {
     try {
-        const messages = await Message.findAll();
+        const room = req.query.room || 'global';
+        const messages = await Message.findAll({ where: { room } });
         res.status(200).json(messages);
     } catch (error) {
         console.error('Error fetching messages:', error);
@@ -12,8 +13,8 @@ const getMessages = async (req, res) => {
 
 const postMessage = async (req, res) => {
     try {
-        const { content ,senderId , timestamp } = req.body;
-        const message = await Message.create({ content ,senderId , timestamp });
+        const { content, senderId, room, timestamp } = req.body;
+        const message = await Message.create({ content, senderId, room, timestamp });
         res.status(201).json(message);
     } catch (error) {
         console.error('Error sending message:', error);

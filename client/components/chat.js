@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, TouchableOpacity, ScrollView, StyleSheet, ImageBackground } from 'react-native';
+import { Picker } from '@react-native-picker/picker'; // Updated import
 import io from 'socket.io-client';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
@@ -12,6 +13,8 @@ function Chat() {
   const [messageInput, setMessageInput] = useState('');
   const [userId, setUserId] = useState('');
   const [socket, setSocket] = useState(null);
+  const [room, setRoom] = useState('global');
+  const [availableRooms, setAvailableRooms] = useState(['global', 'room1', 'room2']); // Example rooms
 
   useEffect(() => {
     const retrieveData = async () => {
@@ -21,7 +24,7 @@ function Chat() {
           const id = JSON.parse(value);
           setUserId(id);
           establishSocketConnection(id);
-          fetchMessages();
+          fetchMessages(room);
         }
       } catch (error) {
         console.error('Error retrieving data:', error);
@@ -35,11 +38,11 @@ function Chat() {
         socket.disconnect();
       }
     };
-  }, []);
+  }, [room]);
 
   const establishSocketConnection = (id) => {
     const newSocket = io(SERVER_ENDPOINT, {
-      query: { userId: id },
+      query: { userId: id, room },
     });
 
     newSocket.on('receive_message', (message) => {
@@ -49,9 +52,9 @@ function Chat() {
     setSocket(newSocket);
   };
 
-  const fetchMessages = async () => {
+  const fetchMessages = async (room) => {
     try {
-      const response = await axios.get(`http://${ipAdress}:3000/api/messages`);
+      const response = await axios.get(`http://${ipAdress}:3000/api/messages?room=${room}`);
       setMessages(response.data);
     } catch (error) {
       console.error('Error fetching messages:', error);
@@ -71,6 +74,7 @@ function Chat() {
       const newMessage = {
         senderId: userId,
         content: messageInput,
+        room,
         timestamp: new Date().toLocaleString(),
       };
 
@@ -90,6 +94,11 @@ function Chat() {
   return (
     <ImageBackground source={require('../image/bgg.jpeg')} style={styles.background}>
       <View style={styles.container}>
+        <Picker selectedValue={room} onValueChange={(value) => setRoom(value)} style={styles.roomPicker}>
+          {availableRooms.map((room, index) => (
+            <Picker.Item key={index} label={room} value={room} />
+          ))}
+        </Picker>
         <ScrollView contentContainerStyle={styles.messagesContainer}>
           {messages.map((message, index) => (
             <View
@@ -127,6 +136,15 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: 'transparent',
+  },
+  roomPicker: {
+    backgroundColor : '#dba617',
+    height: 50,
+    width: 150,
+    alignSelf: 'center',
+    marginVertical: 10,
+    marginLeft: 260,
+    // marginTop: -10,
   },
   messagesContainer: {
     flexGrow: 1,
