@@ -7,7 +7,7 @@ import {
   Image,
   Text,
   TouchableOpacity,
-  ToastAndroid
+  ToastAndroid,
 } from 'react-native';
 
 
@@ -113,17 +113,10 @@ const RandomProducts = () => {
                   style={styles.favIcon}
                 />
                 <View style={styles.infoContainer}>
-                  <Text style={styles.name}>{product.name}</Text>
-                  <Text style={styles.price}>${product.price}</Text>
                   <Text style={styles.reviews}>{`${product.totalReviews} 👤 ⭐: ${product.averageRating}`}</Text>
-                  <Rating
-                    type="star"
-                    ratingCount={5}
-                    imageSize={20}
-                    startingValue={parseFloat(product.averageRating)}
-                    onFinishRating={(rating) => console.log('New rating is: ', rating)}
-                    style={styles.starRating}
-                  />
+                  <Text style={styles.name}>{product.name}</Text>
+                  {/* <Text style={styles.description}>With Milk</Text> */}
+                  <Text style={styles.price}>${product.price}</Text>
                   <Icon
                     name={favorites[product.id]?.inCart ? 'cart' : 'cart'}
                     size={24}
@@ -143,31 +136,31 @@ const RandomProducts = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'space-between',
+    backgroundColor: '#fff',
   },
   productsContainer: {
     flexDirection: 'row',
     flexWrap: 'wrap',
     justifyContent: 'space-evenly',
+    paddingHorizontal: 10,
   },
   card: {
-    width: 189,
-    margin: 1,
+    width: '48%',
+    marginVertical: 10,
     borderRadius: 10,
     backgroundColor: '#fff',
     overflow: 'hidden',
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.3,
+    shadowOpacity: 0.1,
     shadowRadius: 6,
-    borderColor: '#ccc',
-    borderWidth: 1.5,
-    marginTop: 12,
+    elevation: 5,
   },
   image: {
-    height: 210,
+    height: 150,
     width: '100%',
-    alignSelf: 'center',
+    borderTopLeftRadius: 10,
+    borderTopRightRadius: 10,
   },
   favIcon: {
     position: 'absolute',
@@ -175,37 +168,39 @@ const styles = StyleSheet.create({
     top: 10,
   },
   infoContainer: {
-    padding: 10,
-    alignItems: 'flex-start',
-    justifyContent: 'flex-start',
+    padding: 12,
     width: '100%',
     position: 'relative',
   },
   name: {
-    fontSize: 25,
+    fontSize: 18,
     fontWeight: 'bold',
-    color: '#000',
-    flexWrap: 'wrap',
+    color: '#333',
+    marginBottom: 5,
+  },
+  description: {
+    fontSize: 14,
+    color: '#666',
+    marginBottom: 5,
   },
   price: {
-    fontSize: 21,
+    fontSize: 16,
+    fontWeight: 'bold',
     color: '#000',
-    marginTop: 5,
   },
   reviews: {
-    fontSize: 16,
-    color: '#646464',
-    marginTop: 5,
-  },
-  starRating: {
-    marginTop: 5,
+    fontSize: 14,
+    color: '#999',
+    position: 'absolute',
+    top: 10,
+    right: 10,
   },
   cartIcon: {
     position: 'absolute',
-    right: 5,
-    bottom: 1,
+    right: 10,
+    bottom: 10,
     backgroundColor: '#dba617',
-    padding: 8,
+    padding: 5,
     borderRadius: 15,
   },
 });
