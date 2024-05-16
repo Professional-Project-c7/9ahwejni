@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import {
   View,
-  TextInput,
   TouchableOpacity,
   StyleSheet,
   FlatList,
@@ -13,11 +12,11 @@ import { useNavigation } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import { ipAdress } from '../config';
+import Slider from '@react-native-community/slider';
 
 const AdvancedFilter = () => {
   const [products, setProducts] = useState([]);
-  const [minPrice, setMinPrice] = useState('');
-  const [maxPrice, setMaxPrice] = useState('');
+  const [priceRange, setPriceRange] = useState([0, 1000]);
   const [rating, setRating] = useState('');
   const [filteredProducts, setFilteredProducts] = useState([]);
   const [selectedCategories, setSelectedCategories] = useState([]);
@@ -62,10 +61,11 @@ const AdvancedFilter = () => {
   }, []);
 
   const filterProducts = () => {
+    const [minPrice, maxPrice] = priceRange;
     let filteredProductsList = products.filter(product => {
       return (!selectedCategories.length || selectedCategories.includes(product.category)) &&
-             (!minPrice || product.price >= parseFloat(minPrice)) &&
-             (!maxPrice || product.price <= parseFloat(maxPrice)) &&
+             (product.price >= minPrice) &&
+             (product.price <= maxPrice) &&
              (!rating || product.averageRating >= parseFloat(rating));
     });
 
@@ -134,22 +134,29 @@ const AdvancedFilter = () => {
           showsHorizontalScrollIndicator={false}
           contentContainerStyle={{ marginBottom: 20 }}
         />
-        <Text style={styles.label}>Minimum Price</Text>
-        <TextInput
-          keyboardType="numeric"
-          placeholder="Enter minimum price"
-          value={minPrice}
-          onChangeText={setMinPrice}
-          style={styles.filterInput}
+        <Text style={styles.label}>Price Range</Text>
+        <Text style={styles.sliderLabel}>{`$${priceRange[0]} - $${priceRange[1]}`}</Text>
+        <Slider
+          style={styles.slider}
+          minimumValue={0}
+          maximumValue={1000}
+          step={1}
+          value={priceRange[0]}
+          onValueChange={(value) => setPriceRange([value, priceRange[1]])}
+          minimumTrackTintColor="#dba617"
+          maximumTrackTintColor="#dba617"
+          thumbTintColor="#dba617"
         />
-        <View style={styles.spaceBetweenInputs} />
-        <Text style={styles.label}>Maximum Price</Text>
-        <TextInput
-          keyboardType="numeric"
-          placeholder="Enter maximum price"
-          value={maxPrice}
-          onChangeText={setMaxPrice}
-          style={styles.filterInput}
+        <Slider
+          style={styles.slider}
+          minimumValue={-10}
+          maximumValue={100}
+          step={1}
+          value={priceRange[1]}
+          onValueChange={(value) => setPriceRange([priceRange[0], value])}
+          minimumTrackTintColor="#dba617"
+          maximumTrackTintColor="#dba617"
+          thumbTintColor="#dba617"
         />
         <View style={styles.spaceBetweenInputs} />
         <Text style={styles.label}>Rating</Text>
@@ -280,6 +287,15 @@ const styles = StyleSheet.create({
   },
   resultsDropdownList: {
     marginTop: 10,
+  },
+  slider: {
+    width: '100%',
+    height: 40,
+  },
+  sliderLabel: {
+    fontSize: 16,
+    textAlign: 'center',
+    marginBottom: 10,
   },
 });
 
