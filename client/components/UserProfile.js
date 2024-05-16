@@ -76,11 +76,15 @@ useEffect(() => {
     getUserData(userID);
   }
 }, [userID]);
+// useEffect(() => {
+//   registerForPushNotificationsAsync();
+// }, []);
 const handleLogout = () => {
   AsyncStorage.removeItem('favorites')
   removeTokenFromStorage();
   navigation.navigate('Login');
 };
+
 
 
   return (
