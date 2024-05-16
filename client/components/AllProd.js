@@ -63,7 +63,6 @@ const AllProducts = ({ navigation }) => {
         favoritesArray.push(product);
         await AsyncStorage.setItem('favorites', JSON.stringify(favoritesArray));
         ToastAndroid.showWithGravity('Item added to cart', ToastAndroid.TOP, ToastAndroid.TOP);
-
       }
     } catch (error) {
       console.log('Error toggling feature:', error);
