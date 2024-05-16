@@ -12,9 +12,9 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false,
     },
     room: {
-      type: DataTypes.STRING,
+      type: DataTypes.INTEGER,
       allowNull: false,
-      defaultValue: 'global'
+      defaultValue: 1 // Assume '1' corresponds to the 'global' room
     },
     timestamp: {
       type: DataTypes.STRING,

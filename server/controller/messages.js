@@ -2,7 +2,7 @@ const { Message } = require('../Database/index');
 
 const getMessages = async (req, res) => {
     try {
-        const room = req.query.room || 'global';
+        const room = parseInt(req.query.room, 10) || 1; // Default to 'global' room with ID 1
         const messages = await Message.findAll({ where: { room } });
         res.status(200).json(messages);
     } catch (error) {
@@ -14,7 +14,7 @@ const getMessages = async (req, res) => {
 const postMessage = async (req, res) => {
     try {
         const { content, senderId, room, timestamp } = req.body;
-        const message = await Message.create({ content, senderId, room, timestamp });
+        const message = await Message.create({ content, senderId, room: parseInt(room, 10), timestamp });
         res.status(201).json(message);
     } catch (error) {
         console.error('Error sending message:', error);

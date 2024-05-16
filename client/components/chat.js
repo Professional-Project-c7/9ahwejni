@@ -13,8 +13,8 @@ function Chat() {
   const [messageInput, setMessageInput] = useState('');
   const [userId, setUserId] = useState('');
   const [socket, setSocket] = useState(null);
-  const [room, setRoom] = useState('global');
-  const [availableRooms, setAvailableRooms] = useState(['global', 'room1', 'room2']); // Example rooms
+  const [room, setRoom] = useState(1); // Default to room ID 1
+  const [availableRooms, setAvailableRooms] = useState([1, 2, 3]); // Example room IDs
 
   useEffect(() => {
     const retrieveData = async () => {
@@ -94,9 +94,9 @@ function Chat() {
   return (
     <ImageBackground source={require('../image/bgg.jpeg')} style={styles.background}>
       <View style={styles.container}>
-        <Picker selectedValue={room} onValueChange={(value) => setRoom(value)} style={styles.roomPicker}>
-          {availableRooms.map((room, index) => (
-            <Picker.Item key={index} label={room} value={room} />
+        <Picker selectedValue={room} onValueChange={(value) => setRoom(parseInt(value, 10))} style={styles.roomPicker}>
+          {availableRooms.map((roomId) => (
+            <Picker.Item key={roomId} label={`Room ${roomId}`} value={roomId} />
           ))}
         </Picker>
         <ScrollView contentContainerStyle={styles.messagesContainer}>
@@ -144,7 +144,6 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     marginVertical: 10,
     marginLeft: 260,
-    // marginTop: -10,
   },
   messagesContainer: {
     flexGrow: 1,

@@ -19,7 +19,7 @@ io.on('connection', (socket) => {
   console.log(`User connected: ${socket.id}`);
 
   const userId = socket.handshake.query.userId;
-  const room = socket.handshake.query.room || 'global';
+  const room = parseInt(socket.handshake.query.room, 10) || 1; // Default to room ID 1
   
   if (userId) {
     console.log(`User ID: ${userId}, Room: ${room}`);
@@ -34,14 +34,14 @@ io.on('connection', (socket) => {
     const message = {
       senderId: userId,
       content,
-      room: room || 'global',
+      room: parseInt(room, 10) || 1,
       timestamp: timestamp || new Date().toLocaleString(),
     };
 
     if (recipientId && userSockets[recipientId]) {
       io.to(userSockets[recipientId]).emit('receive_message', message);
     } else {
-      socket.broadcast.to(room).emit('receive_message', message);
+      socket.broadcast.to(message.room).emit('receive_message', message);
     }
 
     callback('success');
