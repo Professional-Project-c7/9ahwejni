@@ -51,7 +51,7 @@ function Chat() {
 
   const fetchMessages = async () => {
     try {
-      const response = await axios.get(`http://${ipAdress}:4001/api/messages`);
+      const response = await axios.get(`http://${ipAdress}:3000/api/messages`);
       setMessages(response.data);
     } catch (error) {
       console.error('Error fetching messages:', error);
@@ -60,7 +60,7 @@ function Chat() {
 
   const saveMessage = async (message) => {
     try {
-      await axios.post(`http://${ipAdress}:4001/api/messages`, message);
+      await axios.post(`http://${ipAdress}:3000/api/messages`, message);
     } catch (error) {
       console.error('Error saving message:', error);
     }

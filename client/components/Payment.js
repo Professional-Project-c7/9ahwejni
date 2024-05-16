@@ -11,15 +11,20 @@ function PaymentScreen({navigation}) {
 
   const [price, setPrice] = useState(0);
 
-  console.log("pricepriceprice   in paymenet ",price);
-  const [formData, setFormData] = useState({
-    cardNumber: '',
-    expiryMonth: '',
-    expiryYear: '',
-    cvv: ''
-  });
-
   useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const storedPrice = await AsyncStorage.getItem('PRICE');
+        if (storedPrice) {
+          const parsedPrice = JSON.parse(storedPrice);
+          setPrice(parsedPrice);
+        }
+      } catch (error) {
+        console.log('Error fetching data:', error); 
+      }
+    };
+
+  }, []);  useEffect(() => {
     const fetchData = async () => {
       try {
         const storedPrice = await AsyncStorage.getItem('PRICE');
@@ -33,6 +38,38 @@ function PaymentScreen({navigation}) {
     };
     fetchData();
   }, []);
+
+
+  const HandleSubmit = async () => {
+    try {
+      const body = {
+        userId:userId , 
+        amount: price, 
+       
+      };
+      const userId = await AsyncStorage.getItem('IdUser');
+  console.log("hhhhhhhhhh");
+      const response = await axios.post(
+        `http://${ipAdress}:3000/api/not/`, // Assuming ipAddress is a variable holding the IP address
+        body
+      );
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  
+
+
+
+  console.log("pricepriceprice   in paymenet ",price);
+  const [formData, setFormData] = useState({
+    cardNumber: '',
+    expiryMonth: '',
+    expiryYear: '',
+    cvv: ''
+  });
+
+
 
   const handleChange = (name, value) => {
     setFormData({
@@ -57,6 +94,8 @@ function PaymentScreen({navigation}) {
     }
   
     try {
+      HandleSubmit()
+
       const paymentData = {
         cardNumber,
         expiryMonth,
@@ -69,7 +108,6 @@ function PaymentScreen({navigation}) {
       // Send payment request
       const response = await axios.post(`http://${ipAdress}:3000/api/payment/pay`, paymentData);
       
-  
       // Store payment confirmation locally
       const userId = await AsyncStorage.getItem('IdUser');
       const paymentConfirmationDate = new Date().toISOString();

@@ -35,6 +35,12 @@ const EditProfileScreen = ({navigation}) => {
   useEffect(() => {
     retrieveData();
   }, []);
+  useEffect(() => {
+    if (userID) {
+      getUserData(userID);
+    }
+  }, [userID]);
+
 
   const retrieveData = async () => {
     try {
@@ -50,27 +56,7 @@ const EditProfileScreen = ({navigation}) => {
     }
   };
 
-  const handleUpdateProfile = async () => {
-    try {
-      const userData = {
-        firstName: firstName,
-        lastName: lastName,
-        phone: phone,
-        email: email,
-        country: country,
-        city: city
-      };
-      console.log(userData); // Check if userData is correct before sending the request
-      const response = await axios.put(`http://${ipAdress}:3000/api/user/${userID}`, userData);
-      
-      console.log('Update successful:', response.data);
-     
-      console.log(userID);
-      navigation.navigate('User');
-    } catch (error) {
-      console.error('Update failed:', error);
-    }
-  };
+
 
   // const handleUpdateProfile = async () => {
   //   try {
@@ -94,11 +80,27 @@ const getUserData = async (userId) => {
     console.error('Error fetching user data:', error.message);
   }
 };
-useEffect(() => {
-  if (userID) {
-    getUserData(userID);
+const handleUpdateProfile = async () => {
+  try {
+    const userData = {
+      FirstName: firstName,
+      lastName: lastName,
+      phone: phone,
+      email: email,
+      country: country,
+      city: city
+    };
+    console.log(userData); // Check if userData is correct before sending the request
+    const response = await axios.put(`http://${ipAdress}:3000/api/user/${userID}`, userData);
+    
+    console.log('Update successful:', response.data);
+   
+    console.log(userID);
+    navigation.navigate('User');
+  } catch (error) {
+    console.error('Update failed:', error);
   }
-}, [userID]);
+};
 
   
 
@@ -143,7 +145,7 @@ useEffect(() => {
                 
               }}>
               <ImageBackground
-                source={{uri:image}} 
+                source={require("../image/image.png")} 
                 style={{height: 100, width: 100}}
                 imageStyle={{borderRadius: 15}}>
                 <View
@@ -194,7 +196,7 @@ useEffect(() => {
         <View style={styles.action}>
           <FontAwesome name="user-o" color={'#dba617'} size={20} />
           <TextInput
-            placeholder={userData.lastName}
+            placeholder="lastName"
             placeholderTextColor="#666666"
             value={lastName}
         onChangeText={text => setLastName(text)}
