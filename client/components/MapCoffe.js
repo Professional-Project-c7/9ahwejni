@@ -202,7 +202,7 @@ export default function MapCoffee() {
       <List.Accordion
         title="Coffee Shops"
         style={styles.coffeeShopsList}
-        left={props => <List.Icon {...props} icon="coffee" />}
+        left={props => <List.Icon {...props} icon="coffee" color='white' />}
       >
         <ScrollView style={styles.coffeeShopsContainer}>
           {coffeeShops.map((coffeeShop, index) => (
@@ -249,6 +249,7 @@ const styles = StyleSheet.create({
   },
   button: {
     backgroundColor: '#dba617',
+    padding :4,
   },
   input: {
     flex: 1,
@@ -256,13 +257,13 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
     paddingHorizontal: 12,
     borderWidth: 1,
-    borderColor: '#ccc',
+    borderColor: '#dba617',
     borderRadius: 15,
     fontSize: 16,
   },
   coffeeShopsList: {
     marginBottom: 10,
-    backgroundColor: '#fff',
+    backgroundColor: '#dba617',
     borderRadius: 10,
     shadowColor: '#000',
     shadowOffset: {

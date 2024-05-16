@@ -4,12 +4,12 @@ import { Picker } from '@react-native-picker/picker'; // Updated import
 import io from 'socket.io-client';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
-import { ipAdress } from '../config';
+import { ipAdress } from '../config'; 
 
 const SERVER_ENDPOINT = `http://${ipAdress}:4001`;
 
 function Chat() {
-  const [messages, setMessages] = useState([]);
+  const [messages, setMessages] = useState([]); 
   const [messageInput, setMessageInput] = useState('');
   const [userId, setUserId] = useState('');
   const [socket, setSocket] = useState(null);
