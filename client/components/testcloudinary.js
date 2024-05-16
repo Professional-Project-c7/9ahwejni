@@ -6,7 +6,7 @@ import axios from 'axios';
 const YourComponent = () => {
   const [selectedImage, setSelectedImage] = useState(null);
 
-  const imageHandler = async (image) => {
+ const imageHandler = async (image) => {
     try {
       const data = new FormData();
       data.append('file', {

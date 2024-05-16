@@ -30,7 +30,7 @@ async function connectionTest (){
   db.Review = require('./review.model')(connection, DataTypes);
   db.Options = require('./options.model')(connection, DataTypes);
   db.Notification = require('./notification')(connection, DataTypes);
-
+  db.productoptions=require('./productoptions')(connection,DataTypes)
 
 
 
@@ -45,8 +45,8 @@ async function connectionTest (){
   db.Products.hasMany(db.Size);
   db.Size.belongsTo(db.Products);
 
-  db.Products.hasMany(db.Options);
-  db.Options.belongsTo(db.Products);
+  db.Products.belongsToMany(db.Options,{ through: db.productoptions });
+  db.Options.belongsToMany(db.Products,{ through: db.productoptions });
 
 
 
