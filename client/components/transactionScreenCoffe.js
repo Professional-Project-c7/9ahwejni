@@ -16,8 +16,8 @@ console.log(somme);
       console.log("userId",userId);
 
       if (storedBalance !== null) {
-        setSomme(storedBalance);
-      }
+        setSomme(parseFloat(storedBalance));
+      } 
     } catch (error) {
       console.log('Error fetching data:', error);
     }

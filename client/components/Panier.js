@@ -1,20 +1,20 @@
 import React, { useState, useEffect } from 'react';
 import { StyleSheet, Text, TouchableOpacity, View, ScrollView, Image, FlatList } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import Icon from 'react-native-vector-icons/FontAwesome'; // Import FontAwesome for close icon
-import MaterialIcon from 'react-native-vector-icons/MaterialIcons'; // Import MaterialIcons for delete icon
+import Icon from 'react-native-vector-icons/FontAwesome';
+import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Panier = ({ navigation }) => {
-
-  const [posts, setPosts] = useState(null);
+  const [posts, setPosts] = useState([]);
   const [totalPrice, setTotalPrice] = useState(0);
-console.log("postspostsposts",posts);
+  // console.log("posts   in panier  ",posts[1].userId);
+  console.log("posts   in panier  ",posts);
+
   useEffect(() => {
     const fetchData = async () => {
       try {
         const storedPosts = await AsyncStorage.getItem('favorites');
-        
         if (storedPosts) {
           const parsedPosts = JSON.parse(storedPosts);
           setPosts(parsedPosts);
@@ -27,41 +27,15 @@ console.log("postspostsposts",posts);
     fetchData();
   }, []);
 
-
-//   const fetchData = async () => {
-//     try {
-//       // Retrieve posts from AsyncStorage
-//       const storedPosts = await AsyncStorage.getItem('favorites');
-      
-//       if (storedPosts) {
-//         const parsedPosts = JSON.parse(storedPosts);
-//         setPosts(parsedPosts);
-        
-//         // Extract userId from the first post and store it in AsyncStorage
-//         if (parsedPosts.length > 0) {
-//           const userId = parsedPosts[0].userId;
-//           await AsyncStorage.setItem('IdUser', userId.toString());
-//           console.log(userId,userId);
-//         }
-
-//         calculateTotalPrice(parsedPosts);
-//       }
-//     } catch (error) {
-//       console.log('Error fetching data:', error); 
-//     }
-//   };
-//   fetchData();
-// }, []);
-
-
-
   const handleAddToCart = () => {
     navigation.navigate('Tabs');
   };
+
   const handlepayment = () => {
     AsyncStorage.setItem('PRICE', JSON.stringify(totalPrice))
     navigation.navigate('Paye');
   };
+
   const handleDeleteItem = async (itemId) => {
     const updatedPosts = posts.filter(item => item.id !== itemId);
     setPosts(updatedPosts);
@@ -80,7 +54,21 @@ console.log("postspostsposts",posts);
     });
     setTotalPrice(totalPrice);
   };
-  console.log(totalPrice);
+
+  const addToCart = (item) => {
+    // Check if the item is already in the cart
+    const exists = posts.some(cartItem => cartItem.id === item.id);
+    if (!exists) {
+      const updatedPosts = [...posts, item];
+      setPosts(updatedPosts);
+      try {
+        AsyncStorage.setItem('favorites', JSON.stringify(updatedPosts));
+        calculateTotalPrice(updatedPosts);
+      } catch (error) {
+        console.log('Error updating favorites:', error);
+      }
+    }
+  };
 
   return (
     <View style={styles.container}>
@@ -147,7 +135,6 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 20,
     fontWeight: 'bold',
-    color: '#4b2e83',
   },
   description: {
     color: '#6e695b',

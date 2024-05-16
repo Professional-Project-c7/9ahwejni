@@ -41,7 +41,7 @@ module.exports = {
                 res.status(200).json(user);
         
         } catch (error) {
-            throw (error)
+           console.log(error);
         }
     
         },
@@ -57,34 +57,68 @@ module.exports = {
         }
         },
 
-     updateOne:async function(req,res){
-
-        try {
-            console.log(req.params);
-
-            const user= await db.User.update({
-                FirstName:req.body.firstName,
-                LastName:req.body.lastName,
-                            
-               
-                Email:req.body.email,
-                password:req.body.password,
-                Address:req.body.Address,
-                
-                
-            },{
-                where:{
-                    id:req.params.id
+        // updateOne: async (req, res) => {
+        //     const { id } = req.params;
+        //     const { FirstName, LastName, email, password, Address } = req.body;
+          
+        //     try {
+        //       // Find the user by ID
+        //       let user = await db.User.findByPk(id);
+          
+        //       if (!user) {
+        //         return res.status(404).json({ message: 'User not found' });
+        //       }
+          
+        //       // Update the user
+        //       user.FirstName = FirstName || user.FirstName;
+        //       user.LastName = LastName || user.LastName;
+        //       user.Email = email || user.Email;
+        //       user.password = password || user.password;
+        //       user.Address = Address || user.Address;
+          
+        //       // Save the updated user
+        //       await user.save();
+          
+        //       return res.status(200).json({ user });
+        //     } catch (error) {
+        //       console.error(error);
+        //       return res.status(500).json({ message: 'Server Error' });
+        //     }
+        //   },
+        updateOne: async (req, res)  => {
+            const { id } = req.params;
+            const { FirstName, LastName, email, password, Address } = req.body;
+        
+            try {
+                // Find the user by ID
+                let user = await db.User.findByPk(id);
+        
+                if (!user) {
+                    return res.status(404).json({ message: 'User not found' });
                 }
-            })
-            res.status(200).send(user)
-    
-            
-        } catch (error) {
-           console.log(error)
-            
-        }
-     },
+        
+                // Update the user
+                user.FirstName = FirstName || user.FirstName;
+                user.LastName = LastName || user.LastName;
+                user.Email = email || user.Email;
+                user.Address = Address || user.Address;
+        
+                // Hash the password if it is being updated
+                if (password) {
+                    const salt = await bcrypt.genSalt(10);
+                    user.password = await bcrypt.hash(password, salt);
+                }
+        
+                // Save the updated user
+                await user.save();
+        
+                return res.status(200).json({ user });
+            } catch (error) {
+                console.error(error);
+                return res.status(500).json({ message: 'Server Error' });
+            }
+        },
+          
     
     
 

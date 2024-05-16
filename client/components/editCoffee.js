@@ -6,6 +6,7 @@ import {
   ImageBackground,
   TextInput,
   StyleSheet,
+  ScrollView,
   Alert,
 } from 'react-native';
 import {useTheme} from 'react-native-paper';
@@ -126,7 +127,8 @@ useEffect(() => {
 
 
   return (
-    <View style={styles.container}>
+    <ScrollView style={styles.container}>
+      <View>
      {userData && (
         <>
         <View style={{alignItems: 'center', marginTop:15}}>
@@ -176,7 +178,7 @@ useEffect(() => {
         <View style={styles.action}>
           <FontAwesome name="user-o" color={'#dba617'} size={20} />
           <TextInput
-            placeholder="First Name"
+            placeholder="FirstName"
             value={firstName}
         onChangeText={text => setFirstName(text)}
             placeholderTextColor="#666666"
@@ -192,7 +194,7 @@ useEffect(() => {
         <View style={styles.action}>
           <FontAwesome name="user-o" color={'#dba617'} size={20} />
           <TextInput
-            placeholder="Last Name"
+            placeholder={userData.lastName}
             placeholderTextColor="#666666"
             value={lastName}
         onChangeText={text => setLastName(text)}
@@ -270,8 +272,8 @@ useEffect(() => {
         <TouchableOpacity style={styles.commandButton} onPress={handleUpdateProfile}>
           <Text style={styles.panelButtonTitle}>Submit</Text>
         </TouchableOpacity>
-      
-    </View>
+        </View>
+    </ScrollView>
   );
 };
 
@@ -375,4 +377,3 @@ const styles = StyleSheet.create({
       marginBottom: 10,
     },
   });
-  
