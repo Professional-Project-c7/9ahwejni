@@ -143,7 +143,7 @@ useEffect(() => {
                 
               }}>
               <ImageBackground
-                source={require("../image/image.png")} 
+                source={{uri:image}} 
                 style={{height: 100, width: 100}}
                 imageStyle={{borderRadius: 15}}>
                 <View
