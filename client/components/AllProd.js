@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { TouchableOpacity, StyleSheet, Text, View, Image, ScrollView, SafeAreaView, TextInput, Alert } from 'react-native';
+import { TouchableOpacity, StyleSheet, Text, View, Image, ScrollView, SafeAreaView, TextInput, ToastAndroid } from 'react-native';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Rating } from 'react-native-ratings';
@@ -62,7 +62,8 @@ const AllProducts = ({ navigation }) => {
         }));
         favoritesArray.push(product);
         await AsyncStorage.setItem('favorites', JSON.stringify(favoritesArray));
-        Alert.alert('Item added to cart');
+        ToastAndroid.showWithGravity('Item added to cart', ToastAndroid.TOP, ToastAndroid.TOP);
+
       }
     } catch (error) {
       console.log('Error toggling feature:', error);
