@@ -44,6 +44,7 @@ import AllCakes from '../components/AllCakes';
 import AllCoffees from '../components/AllCoffees';
 import AllDrinks from '../components/AllDrinks';
 import AllProducts from '../components/AllProd';
+import TestCloud from "../components/testcloudinary"
 // import { useNavigation } from '@react-navigation/native';
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -209,6 +210,8 @@ function NAVSTART() {
         <Stack.Screen name="Edit" component={EditCoffee} />
         <Stack.Screen name="Info" component={InfoCoffee} />
         <Stack.Screen name="Coffeelist" component={Coffeelist} />
+        <Stack.Screen name="TestCloud" component={TestCloud} />
+
         <Stack.Screen
           name="TransactionScreenCoffee"
           component={TransactionScreenCoffee}

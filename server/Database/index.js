@@ -30,7 +30,7 @@ async function connectionTest (){
   db.Review = require('./review.model')(connection, DataTypes);
   db.Options = require('./options.model')(connection, DataTypes);
   db.Notification = require('./notification')(connection, DataTypes);
-
+  db.productoptions=require('./productoptions')(connection,DataTypes)
 
 
 
@@ -45,8 +45,8 @@ async function connectionTest (){
   db.Products.hasMany(db.Size);
   db.Size.belongsTo(db.Products);
 
-  db.Products.hasMany(db.Options);
-  db.Options.belongsTo(db.Products);
+  db.Products.belongsToMany(db.Options,{ through: db.productoptions });
+  db.Options.belongsToMany(db.Products,{ through: db.productoptions });
 
 
 
@@ -72,12 +72,12 @@ db.Review.belongsTo(db.Products, { foreignKey: 'prodId' });
 
 // Sync the models with the database
 
- connection.sync()
-    .then(() => {
-        console.log('Models synced with the database.')
-    })
-    .catch((error) => {
-        console.error('Unable to sync models with the database: ', error)
-    })
+//  connection.sync()
+//     .then(() => {
+//         console.log('Models synced with the database.')
+//     })
+//     .catch((error) => {
+//         console.error('Unable to sync models with the database: ', error)
+//     })
 
 module.exports =db 

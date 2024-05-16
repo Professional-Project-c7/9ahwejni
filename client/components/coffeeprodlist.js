@@ -20,12 +20,12 @@ const NumberInput = ({ value, onIncrement, onDecrement }) => {
   );
 };
 
-const CoffeeProductList = ({ navigation }) => {
+const CoffeeProductList = ({navigation}) => {
   const [userData, setUserData] = useState(null);
   const [userID, setUserID] = useState(null);
-  const [checkedItems, setCheckedItems] = useState({});
-  const [productQuantities, setProductQuantities] = useState({});
-  const [checkedProductIDs, setCheckedProductIDs] = useState([]);
+  const [checkedItems, setCheckedItems] = useState({}); // Store checked state for each product
+  const [productQuantities, setProductQuantities] = useState({}); // Store selected quantities for each product
+  const [checkedProductIDs, setCheckedProductIDs] = useState([]); // Array to store checked product IDs
 
   useEffect(() => {
     const retrieveData = async () => {
@@ -34,7 +34,7 @@ const CoffeeProductList = ({ navigation }) => {
         if (value !== null) {
           const tokenObject = JSON.parse(value);
           const userId = tokenObject;
-          console.log("taww", userId);
+          console.log("taww",userId);
           setUserID(userId);
         }
       } catch (error) {
@@ -76,47 +76,44 @@ const CoffeeProductList = ({ navigation }) => {
     }
   }, [userID]);
 
-  const handleCheckboxToggle = (productId, selectedQuantity) => {
+  const handleCheckboxToggle = (productId) => {
     setCheckedItems((prevState) => ({
       ...prevState,
-      [productId]: !prevState[productId], // toggle the value
+      [productId]: !prevState[productId], // Toggle the checked state for the specific product
     }));
-
+  
+    // Update the array of checked product IDs
     setCheckedProductIDs((prevState) => {
-      const index = prevState.findIndex((item) => item.productId === productId);
-      if (index !== -1) {
-        // If the product is already in the array, update its quantity
-        return prevState.map((item, idx) =>
-          idx === index ? { ...item, quantity: selectedQuantity } : item
-        );
+      if (prevState.includes(productId)) {
+        return prevState.filter((id) => id !== productId); // Remove ID if already exists
       } else {
-        // If the product is not in the array, add it with the selected quantity
-        return [...prevState, { productId: productId, quantity: selectedQuantity }];
+        return [...prevState, productId]; // Add ID if not already present
       }
     });
   };
-
+  
+  
   const handleQuantityIncrement = (productId) => {
-    const newValue = parseInt(productQuantities[productId] || 0) + 1;
-    setProductQuantities((prevState) => ({
+    const newValue = parseInt(productQuantities[productId]) + 1;
+    setProductQuantities(prevState => ({
       ...prevState,
-      [productId]: newValue.toString(),
+      [productId]: newValue.toString()
     }));
   };
 
   const handleQuantityDecrement = (productId) => {
-    const newValue = parseInt(productQuantities[productId] || 0) - 1;
+    const newValue = parseInt(productQuantities[productId]) - 1;
     if (newValue >= 0) {
-      setProductQuantities((prevState) => ({
+      setProductQuantities(prevState => ({
         ...prevState,
-        [productId]: newValue.toString(),
+        [productId]: newValue.toString()
       }));
     }
   };
 
   const setArrayOfProductsIds = async () => {
     try {
-      await AsyncStorage.setItem('ArrayOfProductsIds', JSON.stringify(checkedProductIDs));
+      await  AsyncStorage.setItem('ArrayOfProductsIds', JSON.stringify(checkedProductIDs));
       console.log('Array Stored successfully');
     } catch (error) {
       console.error('Error Stored array:', error);
@@ -124,13 +121,27 @@ const CoffeeProductList = ({ navigation }) => {
   };
 
   const handlesetArray = () => {
-    setArrayOfProductsIds();
+    const productsToAdd = [];
+    // Iterate over productQuantities object
+    for (const productId in productQuantities) {
+      // Convert quantity to a number
+      const quantity = parseInt(productQuantities[productId]);
+      // If quantity is greater than 0, add the product ID the corresponding number of times
+      if (quantity > 0) {
+        for (let i = 0; i < quantity; i++) {
+          productsToAdd.push(productId);
+        }
+      }
+    }
+    // Set the array of product IDs in AsyncStorage
+    setArrayOfProductsIds(productsToAdd);
     navigation.navigate('AddPacks');
   };
 
+
   const filteredProducts = userData ? userData.filter(product => product.userId === userID) : [];
-  console.log('filtered', filteredProducts);
-  console.log("checkedProductIDs", checkedProductIDs);
+  console.log('filtered',filteredProducts);
+  console.log("checkedProductIDs",checkedProductIDs);
   return (
     <View style={styles.container}>
       <Text style={styles.header}>Product List</Text>
@@ -148,16 +159,18 @@ const CoffeeProductList = ({ navigation }) => {
                   <Text style={styles.productPrice}>{item.price} $</Text>
                 </View>
                 <NumberInput
-                  value={parseInt(productQuantities[item.id]) || 0}
+                value={parseInt(productQuantities[item.id])}
                   onIncrement={() => handleQuantityIncrement(item.id)}
                   onDecrement={() => handleQuantityDecrement(item.id)}
                 />
                 <Checkbox
                   status={checkedItems[item.id] ? 'checked' : 'unchecked'}
-                  onPress={() => handleCheckboxToggle(item.id, productQuantities[item.id] || 0)}
+                onPress={() => handleCheckboxToggle(item.id)}
                   style={styles.checkbox}
                 />
-              </View>
+             
+            </View>
+            
             </View>
           )}
         />
@@ -166,10 +179,11 @@ const CoffeeProductList = ({ navigation }) => {
       )}
       <TouchableOpacity style={styles.centered} onPress={handlesetArray}>
         <View style={styles.saveButton}>
-          <IconButton icon="content-save" iconColor="white" />
+    <IconButton icon="content-save" iconColor="white"  />
           <Text style={styles.saveButtonText}>Save</Text>
         </View>
       </TouchableOpacity>
+
     </View>
   );
 };
