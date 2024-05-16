@@ -178,7 +178,7 @@ useEffect(() => {
         <View style={styles.action}>
           <FontAwesome name="user-o" color={'#dba617'} size={20} />
           <TextInput
-            placeholder={userData.FirstName}
+            placeholder="FirstName"
             value={firstName}
         onChangeText={text => setFirstName(text)}
             placeholderTextColor="#666666"
@@ -227,7 +227,7 @@ useEffect(() => {
         <View style={styles.action}>
           <FontAwesome name="envelope-o" color={'#dba617'} size={20} />
           <TextInput
-            placeholder={userData.Email}
+            placeholder="Email"
             placeholderTextColor="#666666"
             value={email}
             onChangeText={text => setEmail(text)}
