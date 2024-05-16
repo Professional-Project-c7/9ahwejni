@@ -12,9 +12,9 @@ function getRandomElementFromArray(arr) {
   }
 module.exports = async (sequelize) => {
     // Adjust the number of seeds you want for each model
-    const userCount = 2;
+    const userCount = 5;
     const productCount = 5;
-    const packCount = 5;
+    // const packCount = 5;
     const reviewCount = 5;
         // Generate random users
     const users = await Promise.all(
@@ -73,44 +73,44 @@ module.exports = async (sequelize) => {
     })
   );
 
-  const pack = await Promise.all(
-    Array.from({ length: packCount }).map(async () => {
-        const category = getRandomElementFromArray(["food", "coffee"]); // Randomly select category
-        const user = users[Math.floor(Math.random() * userCount)];
-        let name, description;
-        if (category === "food") {
-            // If the category is food, generate food-related data
-            name = faker.commerce.productName();
-            description = faker.commerce.productDescription();
-        } else {
-            // If the category is coffee, generate coffee-related data
-            name = faker.random.word() + " Coffee Pack";
-            description = faker.lorem.sentence();
-        }
+//   const pack = await Promise.all(
+//     Array.from({ length: packCount }).map(async () => {
+//         const category = getRandomElementFromArray(["food", "coffee"]); // Randomly select category
+//         const user = users[Math.floor(Math.random() * userCount)];
+//         let name, description;
+//         if (category === "food") {
+//             // If the category is food, generate food-related data
+//             name = faker.commerce.productName();
+//             description = faker.commerce.productDescription();
+//         } else {
+//             // If the category is coffee, generate coffee-related data
+//             name = faker.random.word() + " Coffee Pack";
+//             description = faker.lorem.sentence();
+//         }
 
-        return await db.Pack.create({
-            name: name,
-            price: faker.commerce.price(),
-            description: description,
-            category: category,
-            userId: user.id,
-        });
-    })
-);
+//         return await db.Pack.create({
+//             name: name,
+//             price: faker.commerce.price(),
+//             description: description,
+//             category: category,
+//             userId: user.id,
+//         });
+//     })
+// );
 
 
-      const packproduct =await Promise.all(
-        Array.from({ length: packCount }).map(async () => {
-            const onepack = pack[Math.floor(Math.random() * packCount)];
+      // const packproduct =await Promise.all(
+      //   Array.from({ length: packCount }).map(async () => {
+      //       const onepack = pack[Math.floor(Math.random() * packCount)];
 
-          const oneproduct = Products[Math.floor(Math.random() * packCount)];
+      //     const oneproduct = Products[Math.floor(Math.random() * packCount)];
 
-          return await db.Packproduct.create({
-            packId:onepack.id,
-            prodId:oneproduct.id
-          });
-        })
-      )
+      //     return await db.Packproduct.create({
+      //       packId:onepack.id,
+      //       prodId:oneproduct.id
+      //     });
+      //   })
+      // )
 
 
 

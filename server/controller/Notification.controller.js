@@ -26,7 +26,7 @@ module.exports = {
     // Function to get a specific notification by ID
     selectOne: async function(req, res) {
         try {
-            const notification = await db.Notification.findOne({ where: { id: req.params.id } });
+            const notification = await db.Notification.findAll({ where: { coffeId: req.params.id } });
             if (!notification) {
                 return res.status(404).json({ error: 'Notification not found' });
             }
