@@ -101,7 +101,7 @@ const ProductList = ({ navigation, route }) => {
               style={styles.shopImage}
               source={{ uri: filteredProducts[0].shopImage }}
             />
-            <Text style={styles.shopAddress}>{filteredProducts[0].shopAddress}</Text>
+            <Text  style={styles.shopAddress}>{filteredProducts[0].shopAddress} 📍</Text>
             <Title style={styles.productListTitle}>Products:</Title>
             <View style={styles.productsContainer}>
               {filteredProducts.map((product) => (

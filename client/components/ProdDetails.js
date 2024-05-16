@@ -97,7 +97,7 @@ const ProductDetailsPage = ({ navigation }) => {
 
     return (
         <ScrollView style={styles.container}>
-            <Icon name="arrow-left" size={30} onPress={handleAddToHome} />
+            {/* <Icon name="arrow-left" size={30} onPress={handleAddToHome} /> */}
             {products.map((product, index) => (
                 <View key={index} style={styles.productContainer}>
                     <Image source={{ uri: product.imgUrl }} style={styles.productImage} />
@@ -148,12 +148,18 @@ const ProductDetailsPage = ({ navigation }) => {
                                     </TouchableOpacity>
                                 </View>
                             </View>
+                            <Text style={styles.productPrice}>${product.price}</Text>
+
                             <View style={styles.priceContainer}>
-                                <Text style={styles.productPrice}>${product.price}</Text>
-                                <TouchableOpacity onPress={toggleModalVisibility}>
-                                    <Text style={styles.addReviewButton}>Add Review ⭐</Text>
+                                
+                            <TouchableOpacity onPress={handleAddToCart}>
+                                    <Text style={styles.addReviewButton}>Add to card </Text>
                                 </TouchableOpacity>
-                                <Icon name="cart" onPress={handleAddToCart} style={styles.add} />
+                            {/* <Icon name="cart" onPress={handleAddToCart} style={styles.add} /> */}
+                                <TouchableOpacity onPress={toggleModalVisibility}>
+                                    <Text style={styles.addReviewButton}>Add Review </Text>
+                                </TouchableOpacity>
+                               
                             </View>
                             <Button
                                 title="Go to Home"
@@ -177,7 +183,30 @@ const ProductDetailsPage = ({ navigation }) => {
                 </View>
             </Modal>
             <View style={styles.reviewsContainer}>
-                {reviews.map((review, index) => (
+                {reviews.length > 0 && (
+                    <View style={styles.reviewCard}>
+                        {reviews[reviews.length - 1].User && reviews[reviews.length - 1].User.ImageUrl ? (
+                            <Image source={{ uri: reviews[reviews.length - 1].User.ImageUrl }} style={styles.userImage} />
+                        ) : (
+                            <Image source={{ uri: 'https://via.placeholder.com/150' }} style={styles.userImage} />
+                        )}
+                        <View style={styles.reviewContent}>
+                            <Text style={styles.userName}>
+                                {reviews[reviews.length - 1].User ? `${reviews[reviews.length - 1].User.FirstName} ${reviews[reviews.length - 1].User.LastName}` : 'Anonymous'}
+                            </Text>
+                            <Rating
+                                type="star"
+                                ratingCount={5}
+                                imageSize={20}
+                                startingValue={reviews[reviews.length - 1].stars}
+                                readonly
+                                style={styles.rating}
+                            />
+                            <Text style={styles.comment}>{reviews[reviews.length - 1].comment}</Text>
+                        </View>
+                    </View>
+                )}
+                {reviews.slice(0, -1).map((review, index) => (
                     <View key={index} style={styles.reviewCard}>
                         {review.User && (
                             <Icon name="account-circle" size={50} style={styles.userIcon} />
@@ -212,7 +241,7 @@ const styles = StyleSheet.create({
         padding: 10
     },
     adad: {
-        marginTop: 20
+        marginTop: 50,
     },
     productContainer: {
         marginBottom: 30,
@@ -221,7 +250,7 @@ const styles = StyleSheet.create({
         overflow: 'hidden'
     },
     productImage: {
-        marginTop: 35,
+        // marginTop: 35,
         width: '100%',
         height: 250,
     },
@@ -232,7 +261,8 @@ const styles = StyleSheet.create({
         fontSize: 27,
         fontWeight: 'bold',
         textAlign: 'center',
-        color: '#FFBB70'
+        color: '#FFBB70',
+        marginBottom:15
     },
     description: {
         fontSize: 18,
@@ -240,7 +270,7 @@ const styles = StyleSheet.create({
         color: 'black'
     },
     bottomContainer: {
-        marginTop: 30
+        marginTop: 60
     },
     add: {
         color: '#FFBB70',
@@ -249,7 +279,7 @@ const styles = StyleSheet.create({
         fontSize: 35,
     },
     addReviewButton: {
-        marginTop: 30,
+        // marginTop: 30,
         backgroundColor: '#FFBB70',
         color: 'white',
         padding: 10,
@@ -266,7 +296,8 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
-        padding: 10
+        padding: 10,
+        // marginTop:50
     },
     productPrice: {
         fontSize: 25,
@@ -276,7 +307,9 @@ const styles = StyleSheet.create({
         borderRadius: 15,
         paddingHorizontal: 10,
         paddingVertical: 5,
-        marginTop: 30
+        marginTop: 30,
+        marginLeft:120,
+        width:100
     },
     optionContainer: {
         backgroundColor: '#FFFFFF',
@@ -335,6 +368,7 @@ const styles = StyleSheet.create({
     },
     reviewsContainer: {
         padding: 10,
+        marginTop:50
     },
     reviewCard: {
         flexDirection: 'row',

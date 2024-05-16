@@ -5,17 +5,19 @@ const sequelize = new Sequelize('sqlite::memory:');
 module.exports=(sequelize,DataTypes)=>{
   const Notification = sequelize.define('Notification', {
 
-  message: {
-    type: DataTypes.TEXT,
-    allowNull: false
-  },
+ 
   amount:{
     type: DataTypes.INTEGER,
+    allowNull: false
   },
-
-  recipient_id: {
+  userId:{
     type: DataTypes.INTEGER,
     allowNull: false
+  },
+
+  coffeId: {
+    type: DataTypes.INTEGER,
+   
   }
  
     
