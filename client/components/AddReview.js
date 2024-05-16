@@ -1,35 +1,56 @@
 import React, { useState } from 'react';
-import { View, StyleSheet , Text} from 'react-native';
+import { View, StyleSheet, Text } from 'react-native';
 import { TextInput, Button } from 'react-native-paper';
 import { Rating } from 'react-native-ratings';
 import axios from 'axios';
 import { ipAdress } from '../config';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
+import Toast from 'react-native-toast-message';
 
 const AddReview = ({ productId, userId }) => {
     const [rating, setRating] = useState(3); 
     const [comment, setComment] = useState('');
 
     const submitReview = async () => {
-        
         try {
-            const response = await axios.post(`http://${ipAdress}:3000/api/review`, {
+            await axios.post(`http://${ipAdress}:3000/api/review`, {
                 userId: userId,
                 prodId: productId,
                 stars: rating,
                 comment: comment
             });
-            alert('Review submitted successfully!');
+            Toast.show({
+                type: 'success',
+                text1: 'Review Submitted',
+                text2: 'Your review has been submitted successfully!',
+                position: 'bottom',
+                visibilityTime: 3000,
+                autoHide: true,
+                bottomOffset: 30,
+                style: { height: 100, justifyContent: 'center', alignItems: 'center', padding: 20 },
+                text1Style: { fontSize: 20 },
+                text2Style: { fontSize: 16 }
+            });
         } catch (error) {
             console.error('Error submitting review:', error);
-            alert('Failed to submit review!');
+            Toast.show({
+                type: 'error',
+                text1: 'Submission Failed',
+                text2: 'Failed to submit your review. Please try again.',
+                position: 'bottom',
+                visibilityTime: 3000,
+                autoHide: true,
+                bottomOffset: 30,
+                style: { height: 100, justifyContent: 'center', alignItems: 'center', padding: 20 },
+                text1Style: { fontSize: 20 },
+                text2Style: { fontSize: 16 }
+            });
         }
     };
 
     return (
         <View style={styles.container}>
-            <Text style={styles.header}>Leave a Review </Text>
+            <Text style={styles.header}>Leave a Review</Text>
             <Rating
                 type="star"
                 ratingCount={5}
@@ -55,38 +76,40 @@ const AddReview = ({ productId, userId }) => {
                 color="#dba617">
                 Submit Review
             </Button>
+            <Toast ref={(ref) => Toast.setRef(ref)} />
         </View>
     );
 };
 
 const styles = StyleSheet.create({
     container: {
-        padding: 20,
+        padding: 30,
         backgroundColor: '#fff',
-        borderRadius: 10,
+        borderRadius: 20,
         shadowColor: '#000',
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.25,
-        shadowRadius: 3.84,
-        elevation: 5,
+        shadowOffset: { width: 0, height: 5 },
+        shadowOpacity: 0.3,
+        shadowRadius: 10,
+        elevation: 10,
+        width: '90%',
+        alignSelf: 'center',
     },
     header: {
-        fontSize: 20,
+        fontSize: 24,
         fontWeight: 'bold',
-        marginBottom: 10,
+        marginBottom: 20,
         textAlign: 'center',
         color: '#333',
     },
     rating: {
-        marginBottom: 20,
+        marginBottom: 30,
         alignSelf: 'center',
     },
     input: {
-        marginBottom: 20,
+        marginBottom: 30,
     },
     button: {
-        marginTop: 10,
-        color:'red'
+        marginTop: 20,
     },
 });
 
