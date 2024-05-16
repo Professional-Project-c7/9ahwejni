@@ -179,15 +179,15 @@ const ProductDetailsPage = ({ navigation }) => {
             <View style={styles.reviewsContainer}>
                 {reviews.map((review, index) => (
                     <View key={index} style={styles.reviewCard}>
-                        {review.User && review.User.ImageUrl ? (
-                            <Image source={{ uri: review.User.ImageUrl }} style={styles.userImage} />
-                        ) : (
-                            <Image source={{ uri: 'https://via.placeholder.com/150' }} style={styles.userImage} />
+                        {review.User && (
+                            <Icon name="account-circle" size={50} style={styles.userIcon} />
                         )}
                         <View style={styles.reviewContent}>
-                            <Text style={styles.userName}>
-                                {review.User ? `${review.User.FirstName} ${review.User.LastName}` : 'Anonymous'}
-                            </Text>
+                            {review.User && (
+                                <Text style={styles.userName}>
+                                    {`${review.User.FirstName} ${review.User.LastName}`}
+                                </Text>
+                            )}
                             <Rating
                                 type="star"
                                 ratingCount={5}
@@ -348,17 +348,15 @@ const styles = StyleSheet.create({
         shadowRadius: 3,
         elevation: 3,
     },
-    userImage: {
-        width: 50,
-        height: 50,
-        borderRadius: 25,
+    userIcon: {
         marginRight: 15,
+        color: '#999'
     },
     reviewContent: {
         flex: 1,
     },
     userName: {
-        fontSize: 17,
+        fontSize: 18,
         fontWeight: 'bold',
         marginBottom: 5,
     },
@@ -366,7 +364,7 @@ const styles = StyleSheet.create({
         marginVertical: 5,
     },
     comment: {
-        fontSize: 14,
+        fontSize: 15,
         color: 'black',
     },
 });

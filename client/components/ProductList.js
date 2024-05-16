@@ -10,7 +10,6 @@ import {
   ToastAndroid,
 } from 'react-native';
 import { Title } from 'react-native-paper';
-import { Rating } from 'react-native-ratings';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { useProducts } from '../redux/products/productHooks';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -100,8 +99,9 @@ const ProductList = ({ navigation, route }) => {
             <Title style={styles.shopTitle}>{filteredProducts[0].shopName}</Title>
             <Image
               style={styles.shopImage}
-              source={{ uri: filteredProducts[0].imgUrl }}
+              source={{ uri: filteredProducts[0].shopImage }}
             />
+            <Text style={styles.shopAddress}>{filteredProducts[0].shopAddress}</Text>
             <Title style={styles.productListTitle}>Products:</Title>
             <View style={styles.productsContainer}>
               {filteredProducts.map((product) => (
@@ -147,11 +147,11 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
   },
   shopTitle: {
-    fontSize: 30,
+    fontSize: 31,
     fontWeight: '700',
     textAlign: 'center',
     marginTop: 16,
-    color: '#3e3e3e',
+    color: '#dba617',
   },
   shopImage: {
     width: '100%',
@@ -159,10 +159,16 @@ const styles = StyleSheet.create({
     resizeMode: 'cover',
     borderRadius: 8,
     borderWidth: 0.7,
-    borderColor: '#3e3e3e',
-    marginBottom: 16,
+    borderColor: '#fff',
+    marginBottom: 8,
     overflow: 'hidden',
     elevation: 2,
+  },
+  shopAddress: {
+    fontSize: 21,
+    textAlign: 'center',
+    marginBottom: 5,
+    color: '#333',
   },
   productListTitle: {
     fontSize: 20,
