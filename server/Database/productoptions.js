@@ -2,7 +2,7 @@ const { Sequelize, DataTypes } = require('sequelize');
 const sequelize = new Sequelize('sqlite::memory:');
 
 module.exports=(sequelize,DataTypes)=>{
-  const Products = sequelize.define('prods', {
+  const Productoptions = sequelize.define('Productoptions', {
    
     name: {
       type: DataTypes.STRING,
@@ -21,12 +21,9 @@ module.exports=(sequelize,DataTypes)=>{
         allowNull :false
       },
       
-      // category: {
-      //   type: DataTypes.ENUM('coffee', 'cake', 'drink'),
-      //   allowNull: false
-      // }
+     
       
   
   });
-  return Products
+  return Productoptions
 }

@@ -95,7 +95,7 @@ function PaymentScreen({navigation}) {
   
     try {
       HandleSubmit()
-console.log(HandleSubmit());
+
       const paymentData = {
         cardNumber,
         expiryMonth,
@@ -104,7 +104,7 @@ console.log(HandleSubmit());
         amount: price * 100,
         currency: "EUR"
       };
-      HandleSubmit()
+  
       // Send payment request
       const response = await axios.post(`http://${ipAdress}:3000/api/payment/pay`, paymentData);
       
@@ -136,10 +136,6 @@ console.log(HandleSubmit());
         expiryYear: '',
         cvv: ''
       });
-
-
-
-
     } catch (error) {
       console.log('Payment error:', error);
     }

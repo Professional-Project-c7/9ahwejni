@@ -8,45 +8,6 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Feather from 'react-native-vector-icons/Feather';
 
-// const data = [
-//   {
-//     id: '1',
-//     name: 'Product 1',
-//     description: 'Description for Product 1',
-//     imagelink_square: require("../image/breakfast.webp"),
-//     prices: [
-//       { size: 'S', price: '10', currency: '$' },
-//       { size: 'M', price: '15', currency: '$' },
-//       { size: 'L', price: '20', currency: '$' },
-//     ],
-//     average_rating: 4,
-//   },
-//   {
-//     id: '2',
-//     name: 'Product 2',
-//     description: 'Description for Product 2',
-//     imagelink_square: require("../image/breakfast.webp"),
-//     prices: [
-//       { size: 'S', price: '12', currency: '$' },
-//       { size: 'M', price: '18', currency: '$' },
-//       { size: 'L', price: '24', currency: '$' },
-//     ],
-//     average_rating: 3,
-//   },
-//   {
-//     id: '3',
-//     name: 'Product 3',
-//     description: 'Description for Product 3',
-//     imagelink_square: require("../image/breakfast.webp"),
-//     prices: [
-//       { size: 'S', price: '8', currency: '$' },
-//       { size: 'M', price: '12', currency: '$' },
-//       { size: 'L', price: '16', currency: '$' },
-//     ],
-//     average_rating: 5,
-//   },
-// ];
-
 const ProductCard = ({ product }) => {
   return (
     <View style={styles.card}>
@@ -153,6 +114,7 @@ const filteredProducts = userData ? userData.filter(product => product.userId ==
             renderItem={({ item }) => <ProductCard product={item} />}
             keyExtractor={(item) => item.id}
             contentContainerStyle={styles.container}
+            numColumns={2}
           />
         </SafeAreaView>
        
@@ -195,27 +157,28 @@ const styles = StyleSheet.create({
     marginRight: 20
   },
   card: {
-    flexDirection: 'row',
-    marginBottom: 20,
+    flex: 1,
+    margin: 10,
     borderRadius: 10,
     backgroundColor: '#EFECEC',
     overflow: 'hidden',
+    elevation: 4, // Add shadow
   },
   image: {
-    width: 100,
-    height: 100,
-    borderRadius: 10,
-    marginTop:7,
-    marginLeft:7
+    width: '100%',
+    height: 150,
+    resizeMode: 'cover',
+    borderTopLeftRadius: 10, // Add border radius to top-left and top-right corners
+    borderTopRightRadius: 10,
   },
   details: {
-    flex: 1,
     padding: 10,
   },
   name: {
     fontSize: 18,
     fontWeight: 'bold',
-   color:'#dba617'
+    color: '#dba617',
+    marginBottom: 5,
   },
   description: {
     fontSize: 14,
@@ -226,6 +189,11 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: '#f85c24',
     marginBottom: 5,
+  },
+  container: {
+    backgroundColor: 'white',
+    paddingHorizontal: 10,
+    paddingVertical: 10,
   },
   bottomRow: {
     flexDirection: 'row',

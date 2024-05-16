@@ -8,18 +8,15 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Feather from 'react-native-vector-icons/Feather';
 import imagee from "../image/expresso.png"
-
+import { imageHandler } from '../components/imagehandlercloud';
 
 const PackCard = ({ pack, onPressProducts }) => {
-  
   return (
     <TouchableOpacity style={styles.card} onPress={onPressProducts}>
       <Image source={require("../image/expresso.png")} style={styles.image} />
       <View style={styles.details}>
         <Text style={styles.name}>{pack.name}</Text>
         <Text style={styles.description}>{pack.description}</Text>
-        
-
         <Text style={styles.price}>{pack.price} $</Text>
         <TouchableOpacity onPress={onPressProducts}>
           <Text style={styles.showProductsButton}>Show Products</Text>
@@ -29,34 +26,33 @@ const PackCard = ({ pack, onPressProducts }) => {
   );
 };
 
-const ProductModal = ({ array, isVisible, onHide, products }) => {
+const ProductModal = ({ isVisible, onHide, products }) => {
   return (
     <Modal
       visible={isVisible}
       onRequestClose={onHide}
       animationType="slide"
     >
-      <View style={styles.modalContent}>
+      <ScrollView style={styles.modalContent}>
         <Text style={styles.modalTitle}>Products</Text>
-        <FlatList
-          data={products}
-          renderItem={({ item, index }) => (
-            <View style={styles.productContainer}>
-              <Image source={{ uri: item.imgUrl }} style={styles.productImage} />
+        <View style={styles.productContainer}>
+          {products.map((product, index) => (
+            <View key={product.id} style={styles.productItem}>
+              <Image source={{ uri: product.imgUrl }} style={styles.productImage} />
               <View style={styles.productDetails}>
-                <Text style={styles.productName}>{item.name}</Text>
-                <Text style={styles.productDescription}>{item.description}</Text>
-                <Text style={styles.productDescription}>{array[index]?.quantity}</Text>
-                <Text style={styles.productPrice}>{item.price} $</Text>
+                <Text style={styles.productName}>{product.name}</Text>
+                <Text style={styles.productDescription}>{product.description}</Text>
+                <Text style={styles.productPrice}>{product.price} $</Text>
               </View>
             </View>
-          )}
-          keyExtractor={(item) => item.id.toString()}
-        />
-         <TouchableOpacity onPress={onHide} style={styles.closeButton}>
-            <Text style={styles.closeButtonText}>Close</Text>
-          </TouchableOpacity>
-      </View>
+          ))}
+        </View>
+        
+      </ScrollView>
+      <TouchableOpacity onPress={onHide} style={styles.closeButton}>
+      <Image source={require("../image/logout.png")} style={styles.optionImageE} />
+
+        </TouchableOpacity>
     </Modal>
   );
 };
@@ -73,7 +69,6 @@ const AddPacks = ({navigation}) => {
   const [userpacks, setUserpacks] = useState(null);
   const [selectedPack, setSelectedPack] = useState(null);
   const [isProductModalVisible, setIsProductModalVisible] = useState(false);
-  const [productQuantities, setProductQuantities] = useState({});
   const handleShowProducts = (pack) => {
     setSelectedPack(pack);
     setIsProductModalVisible(true);
@@ -171,15 +166,10 @@ const handleremovearray = () => {
   removeArrayFromStorage();
   navigation.navigate('Coffeelist');
 };
-const handleQuantityChange = (productId, value) => {
-  setProductQuantities(prevState => ({
-    ...prevState,
-    [productId]: value.toString()
-  }));
-};
 
 const filteredProducts = userpacks ? userpacks.filter(pack => pack.userId === userID) : [];
 // console.log("filteredProducts",filteredProducts);
+
 console.log("filteredProductst",filteredProducts);
 const firstTwoImages = filteredProducts.slice(0, 2)
 // console.log("firstTwoImages",firstTwoImages);
@@ -195,22 +185,15 @@ const firstTwoImages = filteredProducts.slice(0, 2)
       <View>
         <SafeAreaView style={{ flex: 1 }}>
         <FlatList
-        data={firstTwoImages}
-        renderItem={({ item }) => (
-          <PackCard 
-          
-            pack={item} 
-            onPressProducts={() => handleShowProducts(item)} 
-            quantity={productQuantities[item.id]} 
-            onQuantityChange={(value) => handleQuantityChange(item.id, value)} 
-          />
-        )}
-        keyExtractor={(item) => item.id.toString()}
-        contentContainerStyle={styles.container}
-      />
+  data={filteredProducts}
+  renderItem={({ item }) => <PackCard pack={item} onPressProducts={() => handleShowProducts(item)} />}
+  keyExtractor={(item) => item.id.toString()}
+  contentContainerStyle={styles.container}
+  numColumns={2} // Display two columns
+/>
+
         </SafeAreaView>
         <ProductModal
-        array={array}
           isVisible={isProductModalVisible}
           onHide={() => setIsProductModalVisible(false)}
           products={selectedPack ? selectedPack.prods : []}
@@ -330,6 +313,9 @@ const firstTwoImages = filteredProducts.slice(0, 2)
           <TouchableOpacity style={styles.commandButton} onPress={handleAddpack}>
             <Text style={styles.panelButtonTitle}>Submit</Text>
           </TouchableOpacity>
+          <TouchableOpacity style={styles.commandButton} onPress={()=> navigation.navigate('TestCloud')}>
+            <Text style={styles.panelButtonTitle}>Submit</Text>
+          </TouchableOpacity>
          
           
         </View>
@@ -339,26 +325,34 @@ const firstTwoImages = filteredProducts.slice(0, 2)
 };
 
 const styles = StyleSheet.create({
-  closeButton: {
-    marginTop: 340,
-    marginRight: 70,
-    backgroundColor: '#dba617',
-    padding: 10,
-    borderRadius: 30,
-    // flex: 1,
-    alignItems: 'center',
-    alignSelf: 'flex-end',
-    width:120,
-    height:50,
-    fontSize: 20,
+  // closeButton: {
+  //   marginTop: 340,
+  //   marginRight: 70,
+  //   backgroundColor: '#dba617',
+  //   padding: 10,
+  //   borderRadius: 30,
+  //   // flex: 1,
+  //   alignItems: 'center',
+  //   alignSelf: 'flex-end',
+  //   width:120,
+  //   height:50,
+  //   fontSize: 20,
   
-  },
-  closeButtonText: {
-    color: 'white',
-    fontWeight: 'bold',
-  },
+  // },
+  // closeButtonText: {
+  //   color: 'white',
+  //   fontWeight: 'bold',
+  // },
 
-
+  optionImageE: {
+    width: 53, // Adjust the width of the image
+    height: 20, // Adjust the height of the image
+    alignSelf: 'center', // Center the image horizontally
+    marginBottom: 10, // Add margin to separate image from text
+    resizeMode: 'contain', // Ensure the image fits within its container
+    marginTop:10,
+    
+  },
   productContainer: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -403,76 +397,64 @@ const styles = StyleSheet.create({
   modalTitle: {
     fontSize: 24,
     fontWeight: 'bold',
-    marginBottom: 10,
+    marginBottom: 20,
+    textAlign: 'center',
+    color: '#333',
   },
-    productContainer: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      borderBottomWidth: 1,
-      borderBottomColor: '#ccc',
-      paddingBottom: 10,
-      marginBottom: 10,
-    },
-    productImage: {
-      width: 100,
-      height: 100,
-      resizeMode: 'cover',
-      borderRadius: 10,
-      marginRight: 10,
-    },
-    productTextContainer: {
-      flex: 1,
-      marginLeft: 10,
-    },
-    productName: {
-      fontSize: 16,
-      fontWeight: 'bold',
-      marginBottom: 5,
-      color: '#333',
-    },
-    productDescription: {
-      fontSize: 14,
-      color: '#666',
-      marginBottom: 5,
-    },
-    productPrice: {
-      fontSize: 14,
-      color: '#f85c24',
-    },
+  productContainer: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'space-between',
+  },
+  productItem: {
+    width: '48%', // Adjust the width to fit two items per line with a small gap
+    marginBottom: 20,
+    borderRadius: 10,
+    backgroundColor: '#EFECEC',
+    overflow: 'hidden',
+  },
+  productImage: {
+    width: '100%',
+    height: 150,
+    resizeMode: 'cover',
+  },
+  productDetails: {
+    padding: 10,
+  },
+  productName: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    marginBottom: 5,
+    color: '#333',
+  },
+  productDescription: {
+    fontSize: 14,
+    color: '#666',
+    marginBottom: 5,
+  },
+  productPrice: {
+    fontSize: 14,
+    color: '#f85c24',
+  },
+  closeButton: {
+    position: 'absolute',
+    bottom: 20,
+    left: '50%',
+    transform: [{ translateX: -50 }],
+    backgroundColor:" rgba(0, 0, 0, 0.5)",
+    // padding: 10,
+    borderRadius: 10,
+    marginLeft:22
+  },
+  closeButtonText: {
+    color: 'white',
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
   
   
   
-    card: {
-      flexDirection: 'row',
-      marginBottom: 20,
-      borderRadius: 10,
-      backgroundColor: '#EFECEC',
-      overflow: 'hidden',
-    },
-    image: {
-      width: '100%',
-      height: 200,
-      resizeMode: 'cover',
-    },
-    details: {
-      padding: 10,
-    },
-    name: {
-      fontSize: 18,
-      fontWeight: 'bold',
-      color: '#dba617',
-      marginBottom: 5,
-    },
-    description: {
-      fontSize: 14,
-      color: '#888',
-      marginBottom: 5,
-    },
-    price: {
-      fontSize: 16,
-      color: '#f85c24',
-      marginBottom: 5,
-    },
+   
   bottomRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -517,27 +499,28 @@ const styles = StyleSheet.create({
     marginRight: 20
   },
   card: {
-    flexDirection: 'row',
-    marginBottom: 20,
+    flex: 1,
+    margin: 10,
     borderRadius: 10,
     backgroundColor: '#EFECEC',
     overflow: 'hidden',
+    elevation: 4, // Add shadow
   },
   image: {
-    width: 100,
-    height: 100,
-    borderRadius: 10,
-    marginTop:7,
-    marginLeft:7
+    width: '100%',
+    height: 150,
+    resizeMode: 'cover',
+    borderTopLeftRadius: 10, // Add border radius to top-left and top-right corners
+    borderTopRightRadius: 10,
   },
   details: {
-    flex: 1,
     padding: 10,
   },
   name: {
     fontSize: 18,
     fontWeight: 'bold',
-   color:'#dba617'
+    color: '#dba617',
+    marginBottom: 5,
   },
   description: {
     fontSize: 14,
@@ -549,6 +532,12 @@ const styles = StyleSheet.create({
     color: '#f85c24',
     marginBottom: 5,
   },
+  container: {
+    backgroundColor: 'white',
+    paddingHorizontal: 10,
+    paddingVertical: 10,
+  },
+  
   bottomRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',

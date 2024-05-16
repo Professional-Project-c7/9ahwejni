@@ -153,6 +153,7 @@ const filteredProducts = userData ? userData.filter(product => product.userId ==
             renderItem={({ item }) => <ProductCard product={item} />}
             keyExtractor={(item) => item.id}
             contentContainerStyle={styles.container}
+            numColumns={2}
           />
         </SafeAreaView>
        
@@ -195,27 +196,28 @@ const styles = StyleSheet.create({
     marginRight: 20
   },
   card: {
-    flexDirection: 'row',
-    marginBottom: 20,
+    flex: 1,
+    margin: 10,
     borderRadius: 10,
     backgroundColor: '#EFECEC',
     overflow: 'hidden',
+    elevation: 4, // Add shadow
   },
   image: {
-    width: 100,
-    height: 100,
-    borderRadius: 10,
-    marginTop:7,
-    marginLeft:7
+    width: '100%',
+    height: 150,
+    resizeMode: 'cover',
+    borderTopLeftRadius: 10, // Add border radius to top-left and top-right corners
+    borderTopRightRadius: 10,
   },
   details: {
-    flex: 1,
     padding: 10,
   },
   name: {
     fontSize: 18,
     fontWeight: 'bold',
-   color:'#dba617'
+    color: '#dba617',
+    marginBottom: 5,
   },
   description: {
     fontSize: 14,
@@ -227,6 +229,12 @@ const styles = StyleSheet.create({
     color: '#f85c24',
     marginBottom: 5,
   },
+  container: {
+    backgroundColor: 'white',
+    paddingHorizontal: 10,
+    paddingVertical: 10,
+  },
+  
   bottomRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
