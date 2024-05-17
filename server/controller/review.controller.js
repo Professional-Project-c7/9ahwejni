@@ -39,7 +39,10 @@ module.exports = {
     try {
       const reviews = await db.Review.findAll({
         where: { prodId : req.params.prodId  },
-        include: [db.User]
+        include: {
+          model: db.User,
+          attributes: ['FirstName', 'LastName', 'ImageUrl']
+      }
       });
       res.status(200).send(reviews);
     } catch (error) {

@@ -8,7 +8,8 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 const Panier = ({ navigation }) => {
   const [posts, setPosts] = useState([]);
   const [totalPrice, setTotalPrice] = useState(0);
-console.log(posts);
+  // console.log("posts   in panier  ",posts[1].userId);
+  console.log("posts   in panier  ",posts);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -54,20 +55,20 @@ console.log(posts);
     setTotalPrice(totalPrice);
   };
 
-  const addToCart = (item) => {
-    // Check if the item is already in the cart
-    const exists = posts.some(cartItem => cartItem.id === item.id);
-    if (!exists) {
-      const updatedPosts = [...posts, item];
-      setPosts(updatedPosts);
-      try {
-        AsyncStorage.setItem('favorites', JSON.stringify(updatedPosts));
-        calculateTotalPrice(updatedPosts);
-      } catch (error) {
-        console.log('Error updating favorites:', error);
-      }
-    }
-  };
+  // const addToCart = (item) => {
+  //   // Check if the item is already in the cart
+  //   const exists = posts.some(cartItem => cartItem.id === item.id);
+  //   if (!exists) {
+  //     const updatedPosts = [...posts, item];
+  //     setPosts(updatedPosts);
+  //     try {
+  //       AsyncStorage.setItem('favorites', JSON.stringify(updatedPosts));
+  //       calculateTotalPrice(updatedPosts);
+  //     } catch (error) {
+  //       console.log('Error updating favorites:', error);
+  //     }
+  //   }
+  // };
 
   return (
     <View style={styles.container}>
