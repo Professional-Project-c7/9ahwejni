@@ -45,9 +45,10 @@ import AllCakes from '../components/AllCakes';
 import AllCoffees from '../components/AllCoffees';
 import AllDrinks from '../components/AllDrinks';
 import AllProducts from '../components/AllProd';
-import PaymentSuccessPage from '../components/paymentSucces';
+import TestCloud from "../components/testcloudinary"
+import PaymentSuccessPage from "../components/paymentSucces"
 import PaymentSuccess from '../components/paymentSucces';
-
+import Allpack from '../components/allpack';
 // import { useNavigation } from '@react-navigation/native';
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -158,10 +159,13 @@ function TabNavigator() {
        <Tab.Screen name="  Panier" component={  Panier}  options={{
           tabBarButton: () => null, // This hides the tab from the tab bar
         }} />
-      
+      <Tab.Screen name="  Allpack" component={  Allpack}  options={{
+          tabBarButton: () => null, // This hides the tab from the tab bar
+        }} />
       <Tab.Screen name="  SeeAllPacksCoffee" component={  SeeAllPacksCoffee}  options={{
           tabBarButton: () => null, // This hides the tab from the tab bar
         }} />
+        
     
       <Tab.Screen name="  Coffeelist" component={  Coffeelist}  options={{
           tabBarButton: () => null, // This hides the tab from the tab bar
@@ -196,6 +200,10 @@ function TabNavigator() {
           tabBarButton: () => null, // This hides the tab from the tab bar
         }} />
         
+         <Tab.Screen name="  prd" component={  ProductDetailsPage}  options={{
+          tabBarButton: () => null, // This hides the tab from the tab bar
+        }} />
+    
     </Tab.Navigator>
   );
 }
@@ -210,6 +218,7 @@ function NAVSTART() {
       <Stack.Navigator initialRouteName="Onboarding">
         {/* <Stack.Screen name="Start" component={Start} options={{ headerShown: false }} /> */}
         <Stack.Screen name="Login" component={Login} options={{ headerShown: false }} />
+        <Stack.Screen name="Allpack" component={Allpack} options={{ headerShown: false }} />
         <Stack.Screen name="UserSignUp" component={SignUser} options={{ headerShown: false }} />
         <Stack.Screen name="CoffeeShopSignUp" component={SignCofee} options={{ headerShown: false }} />
         <Stack.Screen name="UserAccount" component={SignACC} options={{ headerShown: false }} />
@@ -220,6 +229,8 @@ function NAVSTART() {
         <Stack.Screen name="Edit" component={EditCoffee} />
         <Stack.Screen name="Info" component={InfoCoffee} />
         <Stack.Screen name="Coffeelist" component={Coffeelist} />
+        <Stack.Screen name="TestCloud" component={TestCloud} />
+
         <Stack.Screen
           name="TransactionScreenCoffee"
           component={TransactionScreenCoffee}

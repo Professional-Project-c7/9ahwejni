@@ -64,6 +64,7 @@ function Chat() {
   const saveMessage = async (message) => {
     try {
       await axios.post(`http://${ipAdress}:3000/api/messages`, message);
+      await axios.post(`http://${ipAdress}:3000/api/messages`, message);
     } catch (error) {
       console.error('Error saving message:', error);
     }

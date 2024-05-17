@@ -160,7 +160,7 @@ console.log(somme);
 
       <View style={styles.summarySection}>
         <View style={[styles.summaryBox, styles.balanceBox]}>
-          <Text style={styles.summaryAmount}>${somme}</Text>
+          <Text style={styles.summaryAmount}>${nawsomme}</Text>
           <Text style={styles.summaryLabel}>Balance</Text>
         </View>
       </View>

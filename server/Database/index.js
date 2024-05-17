@@ -31,6 +31,7 @@ async function connectionTest (){
   db.Options = require('./options.model')(connection, DataTypes);
   db.Notification = require('./notification')(connection, DataTypes);
   // db.Room = require('./Room.model')(connection, DataTypes);
+  db.productoptions=require('./productoptions')(connection,DataTypes)
 
 
 
@@ -45,8 +46,8 @@ async function connectionTest (){
   db.Products.hasMany(db.Size);
   db.Size.belongsTo(db.Products);
 
-  db.Products.hasMany(db.Options);
-  db.Options.belongsTo(db.Products);
+  db.Products.belongsToMany(db.Options,{ through: db.productoptions });
+  db.Options.belongsToMany(db.Products,{ through: db.productoptions });
 
 
 
@@ -61,11 +62,11 @@ db.Review.belongsTo(db.User);
 // db.Products.hasMany(db.Review);
 // db.Review.belongsTo(db.Products);
 
-// db.User.hasMany(db.Review, { foreignKey: 'UserId' });
-// db.Review.belongsTo(db.User, { foreignKey: 'UserId' });
 db.Products.hasMany(db.Review, { foreignKey: 'prodId' });
 db.Review.belongsTo(db.Products, { foreignKey: 'prodId' });
 
+// db.User.hasMany(db.Review, { foreignKey: 'coffeeShopId' })
+// db.Review.belongsTo(db.User, { foreignKey: 'coffeeShopId' })
 
 //  relationships for messages and rooms
 // db.User.hasMany(db.Message, { foreignKey: 'senderId' });

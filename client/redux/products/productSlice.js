@@ -8,6 +8,7 @@ export const fetchProducts = createAsyncThunk('products/fetchProducts', async ()
     ...product,
     shopName: product.user?.FirstName + ' ' + product.user?.LastName,
     shopImage: product.user?.ImageUrl,
+    shopAddress: product.user?.Address,
     shopTitle: product.user?.UserType === 'coffee' ? 'Coffee Shop' : 'Client',
 }));
 });

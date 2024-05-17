@@ -8,7 +8,7 @@ const CategoryBar = () => {
     { key: 'coffee', image: require('../image/coffee-nice.png'), label: 'Coffees', screen: 'AllCoffees' },
     { key: 'drink', image: require('../image/orange-juice.png'), label: 'Drinks', screen: 'AllDrinks' },
     { key: 'cake', image: require('../image/cakes.png'), label: 'Cakes', screen: 'AllCakes' },
-    { key: 'pack', image: require('../image/packos.png'), label: 'Packs' }
+    { key: 'pack', image: require('../image/packos.png'), label: 'Packs', screen: 'Allpack' }
   ];
 
   const handlePress = (screen) => {
@@ -41,7 +41,7 @@ const styles = StyleSheet.create({
   },
   categoryItem: {
     alignItems: 'center',
-    marginRight: 45,
+    marginRight: 50,
   },
   categoryImage: {
     width: 52,

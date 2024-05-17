@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, Image, StyleSheet, TouchableOpacity, ScrollView, Modal , Button } from 'react-native';
+import { View, Text, Image, StyleSheet, TouchableOpacity, ScrollView, Modal, Button } from 'react-native';
 import axios from 'axios';
 import { ipAdress } from '../config';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -15,27 +15,7 @@ const ProductDetailsPage = ({ navigation }) => {
     const [selectedProductId, setSelectedProductId] = useState(null);
     const [selectedUserId, setSelectedUserId] = useState(null);
     const [isModalVisible, setIsModalVisible] = useState(false);
-
-    const dummyReviews = [
-        {
-            id: 1,
-            User: { FirstName: 'John', LastName: 'Doe', ImageUrl: 'https://via.placeholder.com/150' },
-            stars: 4,
-            comment: 'Great product, really enjoyed it!',
-        },
-        {
-            id: 2,
-            User: { FirstName: 'Jane', LastName: 'Smith', ImageUrl: 'https://via.placeholder.com/150' },
-            stars: 5,
-            comment: 'Absolutely fantastic! Will buy again.',
-        },
-        {
-            id: 3,
-            User: { FirstName: 'Alice', LastName: 'Johnson', ImageUrl: 'https://via.placeholder.com/150' },
-            stars: 3,
-            comment: 'It was okay, not the best I have tried.',
-        },
-    ];
+    const [reviews, setReviews] = useState([]);
 
     const retrieveData = async () => {
         try {
@@ -47,6 +27,15 @@ const ProductDetailsPage = ({ navigation }) => {
             }
         } catch (error) {
             console.error('Error retrieving data:', error);
+        }
+    };
+
+    const fetchReviews = async (productId) => {
+        try {
+            const response = await axios.get(`http://${ipAdress}:3000/api/review/product/${productId}`);
+            setReviews(response.data);
+        } catch (error) {
+            console.error('Error fetching reviews:', error);
         }
     };
 
@@ -65,6 +54,7 @@ const ProductDetailsPage = ({ navigation }) => {
 
                 const response = await axios.get(`http://${ipAdress}:3000/api/product/SearchById/${productId}`);
                 setProducts(response.data);
+                fetchReviews(productId);  // Fetch reviews for the current product
             } catch (error) {
                 console.error('Error fetching product details:', error);
             }
@@ -78,15 +68,14 @@ const ProductDetailsPage = ({ navigation }) => {
 
     const handleAddToHome = () => {
         navigation.navigate('Tabs');
-  AsyncStorage.removeItem('selectedProductId')
-
+        AsyncStorage.removeItem('selectedProductId');
     };
-    const goToHomePage = () => {
-  AsyncStorage.removeItem('selectedProductId')
 
+    const goToHomePage = () => {
+        AsyncStorage.removeItem('selectedProductId');
         navigation.navigate('homePage'); // Assuming 'Home' is the name of your home page screen
-      };
-    
+    };
+
     const handleSizeSelection = size => setSelectedSize(size);
     const handleSugarSelection = sugar => setSelectedSugar(sugar);
     const handleIceSelection = ice => setSelectedIce(ice);
@@ -108,15 +97,6 @@ const ProductDetailsPage = ({ navigation }) => {
 
     return (
         <ScrollView style={styles.container}>
-            {/* <View style={styles.topBar}>
-          <TouchableOpacity onPress={goToHomePage}>
-            <Image
-              source={require('../image/logo.png')} // Assuming 'logo.png' is your logo file
-              style={styles.logo}
-              resizeMode="contain"
-            />
-          </TouchableOpacity>
-        </View> */}
             {/* <Icon name="arrow-left" size={30} onPress={handleAddToHome} /> */}
             {products.map((product, index) => (
                 <View key={index} style={styles.productContainer}>
@@ -168,22 +148,25 @@ const ProductDetailsPage = ({ navigation }) => {
                                     </TouchableOpacity>
                                 </View>
                             </View>
+                            <Text style={styles.productPrice}>${product.price}</Text>
+
                             <View style={styles.priceContainer}>
-                                <Text style={styles.productPrice}>${product.price}</Text>
+                                
+                            <TouchableOpacity onPress={handleAddToCart}>
+                                    <Text style={styles.addReviewButton}>Add to card </Text>
+                                </TouchableOpacity>
+                            {/* <Icon name="cart" onPress={handleAddToCart} style={styles.add} /> */}
                                 <TouchableOpacity onPress={toggleModalVisibility}>
-                                <Text style={styles.addReviewButton}>Add Review ⭐</Text>
-                            </TouchableOpacity>
-                                <Icon
-                    name={'cart'}    onPress={handleAddToCart} style={styles.add} />
-                         
-                           
-                        </View>
-                        <Button
-        title="Go to Home"
-        onPress={() => navigation.navigate('homePage')}
-        color="#FFBB70" 
-        style={styles.adad}
-      />
+                                    <Text style={styles.addReviewButton}>Add Review </Text>
+                                </TouchableOpacity>
+                               
+                            </View>
+                            <Button
+                                title="Go to Home"
+                                onPress={() => navigation.navigate('homePage')}
+                                color="#FFBB70"
+                                style={styles.adad}
+                            />
                         </View>
                     </View>
                 </View>
@@ -195,16 +178,45 @@ const ProductDetailsPage = ({ navigation }) => {
                 <View style={styles.modalOverlay}>
                     <View style={styles.modalContainer}>
                         <AddReview productId={selectedProductId} userId={selectedUserId} />
-                        <Button onPress={toggleModalVisibility} style={styles.closeButton}>Close</Button>
+                        <Button title="Close" onPress={toggleModalVisibility} style={styles.closeButton} />
                     </View>
                 </View>
             </Modal>
             <View style={styles.reviewsContainer}>
-                {dummyReviews.map((review, index) => (
-                    <View key={index} style={styles.reviewCard}>
-                        <Image source={{ uri: review.User.ImageUrl }} style={styles.userImage} />
+                {reviews.length > 0 && (
+                    <View style={styles.reviewCard}>
+                        {reviews[reviews.length - 1].User && reviews[reviews.length - 1].User.ImageUrl ? (
+                            <Image source={{ uri: reviews[reviews.length - 1].User.ImageUrl }} style={styles.userImage} />
+                        ) : (
+                            <Image source={{ uri: 'https://via.placeholder.com/150' }} style={styles.userImage} />
+                        )}
                         <View style={styles.reviewContent}>
-                            <Text style={styles.userName}>{`${review.User.FirstName} ${review.User.LastName}`}</Text>
+                            <Text style={styles.userName}>
+                                {reviews[reviews.length - 1].User ? `${reviews[reviews.length - 1].User.FirstName} ${reviews[reviews.length - 1].User.LastName}` : 'Anonymous'}
+                            </Text>
+                            <Rating
+                                type="star"
+                                ratingCount={5}
+                                imageSize={20}
+                                startingValue={reviews[reviews.length - 1].stars}
+                                readonly
+                                style={styles.rating}
+                            />
+                            <Text style={styles.comment}>{reviews[reviews.length - 1].comment}</Text>
+                        </View>
+                    </View>
+                )}
+                {reviews.slice(0, -1).map((review, index) => (
+                    <View key={index} style={styles.reviewCard}>
+                        {review.User && (
+                            <Icon name="account-circle" size={50} style={styles.userIcon} />
+                        )}
+                        <View style={styles.reviewContent}>
+                            {review.User && (
+                                <Text style={styles.userName}>
+                                    {`${review.User.FirstName} ${review.User.LastName}`}
+                                </Text>
+                            )}
                             <Rating
                                 type="star"
                                 ratingCount={5}
@@ -229,7 +241,7 @@ const styles = StyleSheet.create({
         padding: 10
     },
     adad: {
-       marginTop:20
+        marginTop: 50,
     },
     productContainer: {
         marginBottom: 30,
@@ -238,25 +250,10 @@ const styles = StyleSheet.create({
         overflow: 'hidden'
     },
     productImage: {
-        marginTop:35,
+        // marginTop: 35,
         width: '100%',
         height: 250,
-        // resizeMode: 'cover'
     },
-    topBar: {
-        flexDirection: 'row',
-        justifyContent: 'center',
-        alignItems: 'center',
-        backgroundColor: '#fff',
-        height: 80,
-        paddingHorizontal: 20,
-        borderBottomWidth: 1,
-        borderBottomColor: '#ccc',
-      },
-      logo: {
-        width: 120,
-        height: 60,
-      },
     body: {
         padding: 20
     },
@@ -264,7 +261,8 @@ const styles = StyleSheet.create({
         fontSize: 27,
         fontWeight: 'bold',
         textAlign: 'center',
-        color: '#FFBB70'
+        color: '#FFBB70',
+        marginBottom:15
     },
     description: {
         fontSize: 18,
@@ -272,18 +270,16 @@ const styles = StyleSheet.create({
         color: 'black'
     },
     bottomContainer: {
-        marginTop: 30
+        marginTop: 60
     },
     add: {
-   
         color: '#FFBB70',
         textAlign: 'center',
-        marginTop:30,
+        marginTop: 30,
         fontSize: 35,
-      
     },
     addReviewButton: {
-        marginTop: 30,
+        // marginTop: 30,
         backgroundColor: '#FFBB70',
         color: 'white',
         padding: 10,
@@ -295,13 +291,13 @@ const styles = StyleSheet.create({
     },
     sectionTitle: {
         fontSize: 18,
-       
     },
     priceContainer: {
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
-        padding: 10
+        padding: 10,
+        // marginTop:50
     },
     productPrice: {
         fontSize: 25,
@@ -311,10 +307,11 @@ const styles = StyleSheet.create({
         borderRadius: 15,
         paddingHorizontal: 10,
         paddingVertical: 5,
-        marginTop:30
+        marginTop: 30,
+        marginLeft:120,
+        width:100
     },
     optionContainer: {
-        // marginBottom: 10,
         backgroundColor: '#FFFFFF',
         borderRadius: 15,
         paddingVertical: 10,
@@ -332,8 +329,6 @@ const styles = StyleSheet.create({
         backgroundColor: '#fff',
         borderRadius: 15,
         paddingHorizontal: 12,
-        // paddingVertical: 8,
-        // marginHorizontal: 5,
         borderWidth: 1,
         borderColor: '#FFBB70',
         overflow: 'hidden'
@@ -373,6 +368,7 @@ const styles = StyleSheet.create({
     },
     reviewsContainer: {
         padding: 10,
+        marginTop:50
     },
     reviewCard: {
         flexDirection: 'row',
@@ -386,17 +382,15 @@ const styles = StyleSheet.create({
         shadowRadius: 3,
         elevation: 3,
     },
-    userImage: {
-        width: 50,
-        height: 50,
-        borderRadius: 25,
+    userIcon: {
         marginRight: 15,
+        color: '#999'
     },
     reviewContent: {
         flex: 1,
     },
     userName: {
-        fontSize: 17,
+        fontSize: 18,
         fontWeight: 'bold',
         marginBottom: 5,
     },
@@ -404,7 +398,7 @@ const styles = StyleSheet.create({
         marginVertical: 5,
     },
     comment: {
-        fontSize: 14,
+        fontSize: 15,
         color: 'black',
     },
 });

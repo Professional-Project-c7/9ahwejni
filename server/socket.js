@@ -4,6 +4,7 @@ const socketIo = require('socket.io');
 
 const PORT = 4001;
 
+
 const app = express();
 const server = http.createServer(app);
 const io = socketIo(server, {
@@ -57,6 +58,12 @@ io.on('connection', (socket) => {
       }
     }
   });
+});
+
+app.get('/isConnected', (req, res) => {
+  const userId = req.headers.userid;
+  const isConnected = !!connectedUsers[userId];
+  res.json({ isConnected });
 });
 
 app.get('/isConnected', (req, res) => {

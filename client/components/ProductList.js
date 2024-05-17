@@ -7,9 +7,9 @@ import {
   Image,
   Text,
   TouchableOpacity,
+  ToastAndroid,
 } from 'react-native';
 import { Title } from 'react-native-paper';
-import { Rating } from 'react-native-ratings';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { useProducts } from '../redux/products/productHooks';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -55,14 +55,29 @@ const ProductList = ({ navigation, route }) => {
     }
   }, [products]);
 
-  const toggleFeature = (id, feature) => {
-    setFavorites((prev) => ({
-      ...prev,
-      [id]: {
-        ...prev[id],
-        [feature]: !prev[id]?.[feature],
-      },
-    }));
+  const toggleFeature = async (id, feature) => {
+    try {
+      const isFavorited = favorites[id]?.[feature];
+      const product = productsWithReviews.find((product) => product.id === id);
+      const storedFavorites = await AsyncStorage.getItem('favorites');
+      let favoritesArray = storedFavorites ? JSON.parse(storedFavorites) : [];
+      if (!isFavorited) {
+        setFavorites((prevFavorites) => ({
+          ...prevFavorites,
+          [id]: {
+            ...prevFavorites[id],
+            [feature]: true,
+          },
+        }));
+        favoritesArray.push(product);
+        await AsyncStorage.setItem('favorites', JSON.stringify(favoritesArray));
+
+        // Displaying a toast message at the top
+        ToastAndroid.showWithGravity('Item added to cart', ToastAndroid.SHORT, ToastAndroid.TOP);
+      }
+    } catch (error) {
+      console.log('Error toggling feature:', error);
+    }
   };
 
   const handleNavigateToDetails = async (product) => {
@@ -84,9 +99,10 @@ const ProductList = ({ navigation, route }) => {
             <Title style={styles.shopTitle}>{filteredProducts[0].shopName}</Title>
             <Image
               style={styles.shopImage}
-              source={{ uri: filteredProducts[0].imgUrl }}
+              source={{ uri: filteredProducts[0].shopImage }}
             />
-            <Title style={styles.productListTitle}>My Products</Title>
+            <Text  style={styles.shopAddress}>{filteredProducts[0].shopAddress} 📍</Text>
+            <Title style={styles.productListTitle}>Products:</Title>
             <View style={styles.productsContainer}>
               {filteredProducts.map((product) => (
                 <View style={styles.card} key={product.id}>
@@ -106,14 +122,6 @@ const ProductList = ({ navigation, route }) => {
                     </TouchableOpacity>
                     <Text style={styles.price}>${product.price}</Text>
                     <Text style={styles.reviews}>{`${product.totalReviews} 👤 ⭐: ${product.averageRating}`}</Text>
-                    <Rating
-                      type="star"
-                      ratingCount={5}
-                      imageSize={20}
-                      startingValue={parseFloat(product.averageRating)}
-                      readonly
-                      style={styles.starRating}
-                    />
                     <Icon
                       name={favorites[product.id]?.inCart ? 'cart' : 'cart-outline'}
                       size={24}
@@ -126,7 +134,7 @@ const ProductList = ({ navigation, route }) => {
             </View>
           </>
         ) : (
-          <Text style={styles.noProductsMessage}>This coffee shop has no products for the moment!</Text>
+          <Text style={styles.noProductsMessage}>This coffee shop has no products for the moment! 😔</Text>
         )}
       </ScrollView>
     </SafeAreaView>
@@ -135,16 +143,15 @@ const ProductList = ({ navigation, route }) => {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 5,
+    flex: 1,
     backgroundColor: '#fff',
-    justifyContent: 'space-between',
   },
   shopTitle: {
-    fontSize: 30,
+    fontSize: 31,
     fontWeight: '700',
     textAlign: 'center',
     marginTop: 16,
-    color: '#3e3e3e',
+    color: '#dba617',
   },
   shopImage: {
     width: '100%',
@@ -152,40 +159,47 @@ const styles = StyleSheet.create({
     resizeMode: 'cover',
     borderRadius: 8,
     borderWidth: 0.7,
-    borderColor: '#3e3e3e',
-    marginBottom: 16,
+    borderColor: '#fff',
+    marginBottom: 8,
     overflow: 'hidden',
     elevation: 2,
+  },
+  shopAddress: {
+    fontSize: 21,
+    textAlign: 'center',
+    marginBottom: 5,
+    color: '#333',
   },
   productListTitle: {
     fontSize: 20,
     fontWeight: 'bold',
     marginLeft: 16,
     marginBottom: 8,
+    color: '#dba617',
   },
   productsContainer: {
     flexDirection: 'row',
     flexWrap: 'wrap',
     justifyContent: 'space-evenly',
+    paddingHorizontal: 10,
   },
   card: {
-    width: 189,
-    margin: 1,
+    width: '48%',
+    marginVertical: 10,
     borderRadius: 10,
     backgroundColor: '#fff',
     overflow: 'hidden',
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.3,
+    shadowOpacity: 0.1,
     shadowRadius: 6,
-    borderColor: '#ccc',
-    borderWidth: 1.5,
-    marginTop: 12,
+    elevation: 5,
   },
   image: {
-    height: 210,
+    height: 150,
     width: '100%',
-    alignSelf: 'center',
+    borderTopLeftRadius: 10,
+    borderTopRightRadius: 10,
   },
   favIcon: {
     position: 'absolute',
@@ -193,44 +207,51 @@ const styles = StyleSheet.create({
     top: 10,
   },
   infoContainer: {
-    padding: 10,
-    alignItems: 'flex-start',
-    justifyContent: 'flex-start',
+    padding: 12,
     width: '100%',
     position: 'relative',
   },
   name: {
-    fontSize: 25,
+    fontSize: 18,
     fontWeight: 'bold',
-    color: '#000',
-    flexWrap: 'wrap',
+    color: '#333',
+    marginBottom: 5,
+  },
+  description: {
+    fontSize: 14,
+    color: '#666',
+    marginBottom: 5,
   },
   price: {
-    fontSize: 20,
+    fontSize: 16,
+    fontWeight: 'bold',
     color: '#000',
-    marginTop: 5,
   },
   reviews: {
-    fontSize: 16,
-    color: '#646464',
-    marginTop: 5,
-  },
-  starRating: {
-    marginTop: 5,
+    fontSize: 14,
+    color: '#999',
+    position: 'absolute',
+    top: 10,
+    right: 10,
   },
   cartIcon: {
     position: 'absolute',
-    right: 5,
-    bottom: 1,
+    right: 10,
+    bottom: 10,
     backgroundColor: '#dba617',
-    padding: 8,
+    padding: 5,
     borderRadius: 15,
   },
   noProductsMessage: {
-    fontSize: 20,
-    color: '#3e3e3e',
+    fontSize: 28,
+    fontWeight: 'bold',
+    color: '#fff',
+    backgroundColor: '#dba617',
+    borderRadius: 20,
     textAlign: 'center',
-    marginTop: 50,
+    padding: 20,
+    marginTop: 280,
+    width: '100%',
   },
 });
 

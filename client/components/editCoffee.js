@@ -6,6 +6,7 @@ import {
   ImageBackground,
   TextInput,
   StyleSheet,
+  ScrollView,
   Alert,
 } from 'react-native';
 import {useTheme} from 'react-native-paper';
@@ -34,6 +35,12 @@ const EditProfileScreen = ({navigation}) => {
   useEffect(() => {
     retrieveData();
   }, []);
+  useEffect(() => {
+    if (userID) {
+      getUserData(userID);
+    }
+  }, [userID]);
+
 
   const retrieveData = async () => {
     try {
@@ -49,27 +56,7 @@ const EditProfileScreen = ({navigation}) => {
     }
   };
 
-  const handleUpdateProfile = async () => {
-    try {
-      const userData = {
-        firstName: firstName,
-        lastName: lastName,
-        phone: phone,
-        email: email,
-        country: country,
-        city: city
-      };
-      console.log(userData); // Check if userData is correct before sending the request
-      const response = await axios.put(`http://${ipAdress}:3000/api/user/${userID}`, userData);
-      
-      console.log('Update successful:', response.data);
-     
-      console.log(userID);
-      navigation.navigate('User');
-    } catch (error) {
-      console.error('Update failed:', error);
-    }
-  };
+
 
   // const handleUpdateProfile = async () => {
   //   try {
@@ -93,11 +80,27 @@ const getUserData = async (userId) => {
     console.error('Error fetching user data:', error.message);
   }
 };
-useEffect(() => {
-  if (userID) {
-    getUserData(userID);
+const handleUpdateProfile = async () => {
+  try {
+    const userData = {
+      FirstName: firstName,
+      lastName: lastName,
+      phone: phone,
+      email: email,
+      country: country,
+      city: city
+    };
+    console.log(userData); // Check if userData is correct before sending the request
+    const response = await axios.put(`http://${ipAdress}:3000/api/user/${userID}`, userData);
+    
+    console.log('Update successful:', response.data);
+   
+    console.log(userID);
+    navigation.navigate('User');
+  } catch (error) {
+    console.error('Update failed:', error);
   }
-}, [userID]);
+};
 
   
 
@@ -126,7 +129,8 @@ useEffect(() => {
 
 
   return (
-    <View style={styles.container}>
+    <ScrollView style={styles.container}>
+      <View>
      {userData && (
         <>
         <View style={{alignItems: 'center', marginTop:15}}>
@@ -176,7 +180,7 @@ useEffect(() => {
         <View style={styles.action}>
           <FontAwesome name="user-o" color={'#dba617'} size={20} />
           <TextInput
-            placeholder="First Name"
+            placeholder="FirstName"
             value={firstName}
         onChangeText={text => setFirstName(text)}
             placeholderTextColor="#666666"
@@ -192,7 +196,7 @@ useEffect(() => {
         <View style={styles.action}>
           <FontAwesome name="user-o" color={'#dba617'} size={20} />
           <TextInput
-            placeholder="Last Name"
+            placeholder="lastName"
             placeholderTextColor="#666666"
             value={lastName}
         onChangeText={text => setLastName(text)}
@@ -270,8 +274,8 @@ useEffect(() => {
         <TouchableOpacity style={styles.commandButton} onPress={handleUpdateProfile}>
           <Text style={styles.panelButtonTitle}>Submit</Text>
         </TouchableOpacity>
-      
-    </View>
+        </View>
+    </ScrollView>
   );
 };
 
@@ -375,4 +379,3 @@ const styles = StyleSheet.create({
       marginBottom: 10,
     },
   });
-  
