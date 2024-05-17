@@ -2,13 +2,13 @@
 // const fetch = require('node-fetch');
 const db = require('../Database/index'); // Assuming db exports the Sequelize connection and Token model
 
-db.connect(err => {
-    if (err) {
-      console.error('Error connecting to MySQL:', err);
-      return;
-    }
-    console.log('Connected to MySQL');
-  });
+// db.connect(err => {
+//     if (err) {
+//       console.error('Error connecting to MySQL:', err);
+//       return;
+//     }
+//     console.log('Connected to MySQL');
+//   });
 module.exports = {
    
     Posting : async function(req, res)   {
