@@ -97,7 +97,7 @@ function Onboarding({ navigation }) {
         )}
         {!showGetStarted && (
           <TouchableOpacity onPress={scrollTo} style={styles.NextButton} activeOpacity={0.6}>
-            <Icon name="arrow-circle-right" size={60} color="#dba617" />
+            <Icon name="arrow-circle-right" size={60}  />
           </TouchableOpacity>
         )}
         {showGetStarted && (
@@ -133,7 +133,7 @@ const styles = StyleSheet.create({
   },
   getStartedText: {
     fontSize: 30,
-    color: '#dba617',
+    color: 'black',
   },
   skipButton: {
     marginLeft: -10,

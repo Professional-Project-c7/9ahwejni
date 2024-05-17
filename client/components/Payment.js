@@ -7,25 +7,24 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { ipAdress } from '../config';
 
 function PaymentScreen({navigation}) {
+  // const navigation = useNavigation(); 
 
   const [price, setPrice] = useState(0);
 
-  // useEffect(() => {
-  //   const fetchData = async () => {
-  //     try {
-  //       const storedPrice = await AsyncStorage.getItem('PRICE');
-  //       if (storedPrice) {
-  //         const parsedPrice = JSON.parse(storedPrice);
-  //         setPrice(parsedPrice);
-  //       }
-  //     } catch (error) {
-  //       console.log('Error fetching data:', error); 
-  //     }
-  //   };
-  // }, []); 
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const storedPrice = await AsyncStorage.getItem('PRICE');
+        if (storedPrice) {
+          const parsedPrice = JSON.parse(storedPrice);
+          setPrice(parsedPrice);
+        }
+      } catch (error) {
+        console.log('Error fetching data:', error); 
+      }
+    };
 
-  
-   useEffect(() => {
+  }, []);  useEffect(() => {
     const fetchData = async () => {
       try {
         const storedPrice = await AsyncStorage.getItem('PRICE');
@@ -62,7 +61,7 @@ function PaymentScreen({navigation}) {
 
 
 
-
+  console.log("pricepriceprice   in paymenet ",price);
   const [formData, setFormData] = useState({
     cardNumber: '',
     expiryMonth: '',
