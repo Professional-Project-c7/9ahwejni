@@ -1,55 +1,57 @@
-import React, { useState, useEffect } from 'react';
-import { TouchableOpacity, StyleSheet, Text, View, Image, ScrollView, SafeAreaView, TextInput, ToastAndroid } from 'react-native';
-import axios from 'axios';
+import React, { useEffect, useState } from 'react';
+import {
+  SafeAreaView,
+  ScrollView,
+  StyleSheet,
+  View,
+  Image,
+  Text,
+  TouchableOpacity,
+  TextInput,
+  ToastAndroid,
+} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Rating } from 'react-native-ratings';
-import { ipAdress } from '../config';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import LinearGradient from 'react-native-linear-gradient';
+import axios from 'axios';
+import { ipAdress } from '../config';
 
-const AllProducts = ({ navigation }) => {
-  const [products, setProducts] = useState([]);
-  const [error, setError] = useState(null);
+const Allpack = ({ navigation }) => {
+  const [drinks, setDrinks] = useState([]);
   const [favorites, setFavorites] = useState({});
   const [searchQuery, setSearchQuery] = useState('');
-
-  const handleNavigateToDetails = async (product) => {
-    try {
-      await AsyncStorage.setItem('selectedProductId', product.id.toString());
-      navigation.navigate('prd', { product });
-    } catch (error) {
-      console.log('Error storing selected product ID:', error);
-    }
-  };
+  const [error, setError] = useState(null);
 
   useEffect(() => {
-    const fetchProducts = async () => {
+    const fetchDrinks = async () => {
       try {
-        const productsResponse = await axios.get(`http://${ipAdress}:3000/api/product/`);
+        const productsResponse = await axios.get(`http://${ipAdress}:3000/api/packs`);
         const reviewsResponse = await axios.get(`http://${ipAdress}:3000/api/review`);
 
-        const productsWithReviews = productsResponse.data.map(product => {
-          const productReviews = reviewsResponse.data.filter(review => review.prodId === product.id);
-          const totalReviews = productReviews.length;
-          const averageRating = totalReviews ? productReviews.reduce((acc, review) => acc + review.stars, 0) / totalReviews : 0;
+        const drinksWithReviews = productsResponse.data.map(drink => {
+          const drinkReviews = reviewsResponse.data.filter(review => review.prodId === drink.id);
+          const totalReviews = drinkReviews.length;
+          const averageRating = totalReviews ? drinkReviews.reduce((acc, review) => acc + review.stars, 0) / totalReviews : 0;
           return {
-            ...product,
+            ...drink,
             totalReviews,
             averageRating: averageRating.toFixed(1),
           };
         });
 
-        setProducts(productsWithReviews);
+        setDrinks(drinksWithReviews);
       } catch (err) {
         setError(err.message);
       }
     };
-    fetchProducts();
+    fetchDrinks();
   }, []);
 
   const toggleFeature = async (id, feature) => {
     try {
       const isFavorited = favorites[id]?.[feature];
-      const product = products.find((product) => product.id === id);
+      const drink = drinks.find((drink) => drink.id === id);
       const storedFavorites = await AsyncStorage.getItem('favorites');
       let favoritesArray = storedFavorites ? JSON.parse(storedFavorites) : [];
       if (!isFavorited) {
@@ -60,39 +62,44 @@ const AllProducts = ({ navigation }) => {
             [feature]: true,
           },
         }));
-        favoritesArray.push(product);
+        favoritesArray.push(drink);
         await AsyncStorage.setItem('favorites', JSON.stringify(favoritesArray));
-        ToastAndroid.showWithGravity('Item added to cart', ToastAndroid.TOP, ToastAndroid.TOP);
 
+        // Displaying a toast message at the top
+        ToastAndroid.showWithGravity('Item added to cart', ToastAndroid.SHORT, ToastAndroid.TOP);
       }
     } catch (error) {
       console.log('Error toggling feature:', error);
     }
   };
 
-  const goToHomePage = () => {
-    navigation.navigate('homePage');
+  const handleNavigateToDetails = async (drink) => {
+    try {
+      await AsyncStorage.setItem('selectedProductId', drink.id.toString());
+      navigation.navigate('prd', { product: drink });
+    } catch (error) {
+      console.log('Error storing selected product ID:', error);
+    }
   };
 
-  const filteredProducts = products.filter(product =>
-    product.name.toLowerCase().includes(searchQuery.toLowerCase())
+  const filteredDrinks = drinks.filter(drink =>
+    drink.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   return (
     <SafeAreaView style={styles.container}>
-      <View style={styles.topBar}>
-        <TouchableOpacity onPress={goToHomePage}>
-          <Image
-            source={require('../image/logo.png')}
-            style={styles.logo}
-            resizeMode="contain"
-          />
-        </TouchableOpacity>
-      </View>
+      <LinearGradient
+        colors={['rgba(253,190,29,1)', 'rgba(252,145,69,1)']}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 0 }}
+        style={styles.gradientBackground}
+      >
+        <Text style={styles.title}>pack 🥤</Text>
+      </LinearGradient>
       <View style={styles.searchSection}>
         <TextInput
           style={styles.input}
-          placeholder="Search products..."
+          placeholder="Search drinks..."
           onChangeText={text => setSearchQuery(text)}
           value={searchQuery}
         />
@@ -102,25 +109,25 @@ const AllProducts = ({ navigation }) => {
           <Text>Error: {error}</Text>
         ) : (
           <View style={styles.productsContainer}>
-            {filteredProducts.map((product) => (
-              <View style={styles.card} key={product.id}>
-                <TouchableOpacity onPress={() => handleNavigateToDetails(product)}>
-                  <Image source={{ uri: product.imgUrl }} style={styles.image} />
+            {filteredDrinks.map((drink) => (
+              <View style={styles.card} key={drink.id}>
+                <TouchableOpacity onPress={() => handleNavigateToDetails(drink)}>
+                  <Image source={{ uri: drink.imgUrl }} style={styles.image} />
                 </TouchableOpacity>
                 <Icon
-                  name={favorites[product.id]?.favored ? 'heart' : 'heart-outline'}
-                  color={favorites[product.id]?.favored ? 'red' : '#dba617'}
+                  name={favorites[drink.id]?.favored ? 'heart' : 'heart-outline'}
+                  color={favorites[drink.id]?.favored ? 'red' : '#dba617'}
                   size={27}
                   style={styles.favIcon}
                 />
                 <View style={styles.infoContainer}>
-                  <Text style={styles.reviews}>{`${product.totalReviews} 👤 ⭐: ${product.averageRating}`}</Text>
-                  <Text style={styles.name}>{product.name}</Text>
-                  <Text style={styles.price}>${product.price}</Text>
+                  <Text style={styles.reviews}>{`${drink.totalReviews} 👤 ⭐: ${drink.averageRating}`}</Text>
+                  <Text style={styles.name}>{drink.name}</Text>
+                  <Text style={styles.price}>${drink.price}</Text>
                   <Icon
-                    name={favorites[product.id]?.inCart ? 'cart' : 'cart-outline'}
+                    name={favorites[drink.id]?.inCart ? 'cart' : 'cart-outline'}
                     size={24}
-                    onPress={() => toggleFeature(product.id, 'inCart')}
+                    onPress={() => toggleFeature(drink.id, 'inCart')}
                     style={styles.cartIcon}
                   />
                 </View>
@@ -137,20 +144,20 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'space-between',
-  },
-  topBar: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
     backgroundColor: '#fff',
-    height: 80,
-    paddingHorizontal: 20,
-    borderBottomWidth: 1,
-    borderBottomColor: '#ccc',
   },
-  logo: {
-    width: 120,
-    height: 60,
+  gradientBackground: {
+    borderBottomRightRadius: 5,
+    borderBottomLeftRadius: 5,
+    marginHorizontal: 0,
+    marginBottom: 10,
+  },
+  title: {
+    fontSize: 30,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    paddingVertical: 10,
+    color: '#fff',
   },
   searchSection: {
     flexDirection: 'row',
@@ -181,6 +188,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     overflow: 'hidden',
     shadowColor: '#000',
+    
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.1,
     shadowRadius: 6,
@@ -230,4 +238,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default AllProducts;
+export default Allpack;
