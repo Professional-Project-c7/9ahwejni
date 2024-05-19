@@ -47,7 +47,7 @@ const RandomProducts = () => {
         });
 
         // Sorting products by averageRating in descending order and taking top 4
-        const topRatedProducts = productsWithReviews.sort((a, b) => b.averageRating - a.averageRating).slice(0, 4);
+        const topRatedProducts = productsWithReviews.sort((a, b) => b.averageRating - a.averageRating).slice(0, 10);
 
         setProducts(topRatedProducts);
       } catch (err) {
@@ -106,16 +106,15 @@ const RandomProducts = () => {
                 <TouchableOpacity onPress={() => handleNavigateToDetails(product)}>
                   <Image source={{ uri: product.imgUrl }} style={styles.image} />
                 </TouchableOpacity>
-                <Icon
+                {/* <Icon
                   name={hearttt[product.id]?.favored ? 'heart' : 'heart-outline'}
                   color={hearttt[product.id]?.favored ? 'red' : '#dba617'}
                   size={27}
                   style={styles.favIcon}
-                />
+                /> */}
                 <View style={styles.infoContainer}>
                   <Text style={styles.reviews}>{`${product.totalReviews} 👤 ⭐: ${product.averageRating}`}</Text>
                   <Text style={styles.name}>{product.name}</Text>
-                  {/* <Text style={styles.description}>With Milk</Text> */}
                   <Text style={styles.price}>${product.price}</Text>
                   <Icon
                     name={favorites[product.id]?.inCart ? 'cart' : 'cart'}
