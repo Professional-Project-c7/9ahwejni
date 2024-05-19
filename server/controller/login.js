@@ -22,6 +22,7 @@ exports.register = async (req, res) => {
                 Address,
                 FirstName,
                 LastName,
+                // ImageUrl
                
             
         });

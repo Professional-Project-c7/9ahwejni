@@ -46,6 +46,11 @@ io.on('connection', (socket) => {
     callback('success');
   });
 
+  // socket.on('new_review', (review) => {
+    // Broadcast the new review to all connected clients
+    // io.emit('new_review', review);
+  // });
+
   socket.on('disconnect', () => {
     console.log(`User disconnected: ${socket.id}`);
     for (const [key, value] of Object.entries(userSockets)) {

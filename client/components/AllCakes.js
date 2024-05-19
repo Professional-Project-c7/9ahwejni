@@ -11,7 +11,6 @@ import {
   ToastAndroid,
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { Rating } from 'react-native-ratings';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import LinearGradient from 'react-native-linear-gradient';
 import axios from 'axios';
@@ -109,30 +108,33 @@ const AllCakes = ({ navigation }) => {
           <Text>Error: {error}</Text>
         ) : (
           <View style={styles.productsContainer}>
-            {filteredCakes.map((cake) => (
-              <View style={styles.card} key={cake.id}>
-                <TouchableOpacity onPress={() => handleNavigateToDetails(cake)}>
-                  <Image source={{ uri: cake.imgUrl }} style={styles.image} />
-                </TouchableOpacity>
-                <Icon
-                  name={favorites[cake.id]?.favored ? 'heart' : 'heart-outline'}
-                  color={favorites[cake.id]?.favored ? 'red' : '#dba617'}
-                  size={27}
-                  style={styles.favIcon}
-                />
-                <View style={styles.infoContainer}>
-                  <Text style={styles.reviews}>{`${cake.totalReviews} 👤 ⭐: ${cake.averageRating}`}</Text>
-                  <Text style={styles.name}>{cake.name}</Text>
-                  <Text style={styles.price}>${cake.price}</Text>
+            {filteredCakes.map((cake, index) => {
+              const isLastOddCard = filteredCakes.length % 2 !== 0 && index === filteredCakes.length - 1;
+              return (
+                <View style={[styles.card, isLastOddCard && styles.lastOddCard]} key={cake.id}>
+                  <TouchableOpacity onPress={() => handleNavigateToDetails(cake)}>
+                    <Image source={{ uri: cake.imgUrl }} style={styles.image} />
+                  </TouchableOpacity>
                   <Icon
-                    name={favorites[cake.id]?.inCart ? 'cart' : 'cart-outline'}
-                    size={24}
-                    onPress={() => toggleFeature(cake.id, 'inCart')}
-                    style={styles.cartIcon}
+                    name={favorites[cake.id]?.favored ? 'heart' : 'heart-outline'}
+                    color={favorites[cake.id]?.favored ? 'red' : '#dba617'}
+                    size={27}
+                    style={styles.favIcon}
                   />
+                  <View style={styles.infoContainer}>
+                    <Text style={styles.reviews}>{`${cake.totalReviews} 👤 ⭐: ${cake.averageRating}`}</Text>
+                    <Text style={styles.name}>{cake.name}</Text>
+                    <Text style={styles.price}>${cake.price}</Text>
+                    <Icon
+                      name={favorites[cake.id]?.inCart ? 'cart' : 'cart-outline'}
+                      size={24}
+                      onPress={() => toggleFeature(cake.id, 'inCart')}
+                      style={styles.cartIcon}
+                    />
+                  </View>
                 </View>
-              </View>
-            ))}
+              );
+            })}
           </View>
         )}
       </ScrollView>
@@ -192,6 +194,9 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 6,
     elevation: 5,
+  },
+  lastOddCard: {
+    width: '98%',
   },
   image: {
     height: 150,

@@ -108,7 +108,7 @@ const styles = StyleSheet.create({
   },
   backIcon: {
     margin: 16,
-    color: 'rgba(253,190,29,1)',
+    color: 'rgba(219, 166, 23, 1)',
   },
   card: {
     flexDirection: 'row',
@@ -168,7 +168,7 @@ const styles = StyleSheet.create({
   },
   paymentButton: {
     marginTop: 12,
-    backgroundColor: 'rgba(253,190,29,1)',
+    backgroundColor: 'rgba(219, 166, 23, 1)',
     padding: 14,
     borderRadius: 10,
     alignItems: 'center',
