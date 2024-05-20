@@ -88,7 +88,7 @@ const AllCoffees = ({ navigation }) => {
   return (
     <SafeAreaView style={styles.container}>
       <LinearGradient
-        colors={['rgba(253,190,29,1)', 'rgba(252,145,69,1)']}
+        colors={['rgba(219, 166, 23, 1)', 'rgba(219, 166, 23, 1)']}
         start={{ x: 0, y: 0 }}
         end={{ x: 1, y: 0 }}
         style={styles.gradientBackground}
