@@ -8,10 +8,10 @@ module.exports=(sequelize,DataTypes)=>{
       type: DataTypes.STRING,
       allowNull: false
     },
-    price: {
-      type: DataTypes.INTEGER,
-      allowNull: false
-    },
+    // price: {
+    //   type: DataTypes.INTEGER,
+    //   allowNull: false
+    // },
     imgUrl: {
       type: DataTypes.STRING,
       allowNull :true

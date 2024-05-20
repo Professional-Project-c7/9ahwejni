@@ -54,11 +54,10 @@ const ProductCard = ({ product }) => {
       <View style={styles.details}>
         <Text style={styles.name}>{product.name}</Text>
         <Text style={styles.description}>{product.description}</Text>
-        <Text style={styles.price}>{product.price} $</Text>
-        {/* <Text style={styles.price}>
-          {product.prices[0].currency}
-          {product.prices[0].price}
-        </Text> */}
+        {/* <Text style={styles.price}>{product.price} $</Text> */}
+        {(product.options || []).map((option, index) => (
+          <Text key={index} style={styles.price}>{option.option}: {option.price} $</Text>
+        ))}
         <View style={styles.bottomRow}>
           {/* <Text style={styles.size}>Size: {product.prices[0].size}</Text> */}
           {/* <Text style={styles.rating}>Rating: {product.average_rating}</Text> */}

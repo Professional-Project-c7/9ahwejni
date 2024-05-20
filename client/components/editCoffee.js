@@ -8,6 +8,7 @@ import {
   StyleSheet,
   ScrollView,
   Alert,
+  Image
 } from 'react-native';
 import {useTheme} from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -16,6 +17,7 @@ import Feather from 'react-native-vector-icons/Feather';
 import AsyncStorage from '@react-native-async-storage/async-storage'; // Import AsyncStorage
 import axios from 'axios';
 import { ipAdress } from '../config';
+import { launchImageLibrary } from 'react-native-image-picker';
 
 
 const EditProfileScreen = ({navigation}) => {
@@ -35,6 +37,51 @@ const EditProfileScreen = ({navigation}) => {
   useEffect(() => {
     retrieveData();
   }, []);
+
+  const imageHandler = async (image) => {
+    try {
+      const data = new FormData();
+      data.append('file', {
+        uri: image.assets[0].uri,
+        type: image.assets[0].type,
+        name: 'photo.jpg'
+      });
+      data.append('upload_preset', 'i38oelnt'); // Replace 'your_upload_preset' with your Cloudinary upload preset
+      data.append('cloud_name', 'dqyx6lht5'); // Replace 'your_cloud_name' with your Cloudinary cloud name
+  
+      const response = await fetch('https://api.cloudinary.com/v1_1/dqyx6lht5/image/upload', {
+        method: 'POST',
+        body: data
+      });
+      const result = await response.json();
+      console.log('Cloudinary response:', result);
+      return result.secure_url;
+    } catch (error) {
+      console.error('Error uploading image:', error);
+      throw error;
+    }
+  };
+  
+  const pickImage = () => {
+    launchImageLibrary({}, async (response) => {
+      if (response.didCancel) {
+        console.log('User cancelled image picker');
+      } else if (response.error) {
+        console.log('ImagePicker Error: ', response.error);
+      } else {
+        try {
+          const imageUri = await imageHandler(response);
+          console.log('Image URI:', imageUri);
+          setimgUrl(imageUri);
+        } catch (error) {
+          console.error('Error uploading image:', error);
+          Alert.alert('Upload Failed', 'Failed to upload image. Please try again.');
+        }
+      }
+    });
+  };
+  
+  
 
   const retrieveData = async () => {
     try {
@@ -58,7 +105,8 @@ const EditProfileScreen = ({navigation}) => {
         phone: phone,
         email: email,
         country: country,
-        city: city
+        city: city,
+        ImageUrl:image
       };
       console.log(userData); // Check if userData is correct before sending the request
       const response = await axios.put(`http://${ipAdress}:3000/api/user/${userID}`, userData);
@@ -142,29 +190,33 @@ useEffect(() => {
                 alignItems: 'center',
                 
               }}>
-              <ImageBackground
-                source={{uri:image}} 
-                style={{height: 100, width: 100}}
-                imageStyle={{borderRadius: 15}}>
-                <View
-                  style={{
-                    flex: 1,
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                  }}>
-                  <Icon
-                    name="camera"
-                    size={35}
-                    color='#dba617'
+             <ImageBackground>
+                 <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+                  {image && (
+                    <Image source={{ uri: image }} style={{ width: 125, height: 120 }} />
+                  )}
+                   </View>
+                  {/* style={{ height: 120, width: 125 }}
+                  imageStyle={{ borderRadius: 15 }}> */}
+                  <View
                     style={{
-                      opacity: 0.7,
-                      alignItems: 'center',
+                      flex: 1,
                       justifyContent: 'center',
-                    
-                    }}
-                  />
-                </View>
-              </ImageBackground>
+                      alignItems: 'center',
+                    }}>
+                    <Icon
+                    onPress={pickImage}
+                      name="camera"
+                      size={35}
+                      color='#dba617'
+                      style={{
+                        opacity: 0.7,
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                      }}
+                    />
+                  </View>
+                </ImageBackground>
             </View>
           </TouchableOpacity>
           <Text style={{marginTop: 10, fontSize: 18, fontWeight: 'bold'}}>
@@ -194,7 +246,7 @@ useEffect(() => {
         <View style={styles.action}>
           <FontAwesome name="user-o" color={'#dba617'} size={20} />
           <TextInput
-            placeholder={userData.lastName}
+            placeholder="LastName"
             placeholderTextColor="#666666"
             value={lastName}
         onChangeText={text => setLastName(text)}
