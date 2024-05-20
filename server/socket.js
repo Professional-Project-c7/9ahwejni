@@ -52,7 +52,10 @@ io.on('connection', (socket) => {
       }
     });
   }
-
+  // socket.on('new_review', (review) => {
+  //   io.to(roomId).emit('new_review', review);
+  // });
+  
   socket.on('disconnect', () => {
     console.log(`User disconnected: ${socket.id}`);
     delete userSockets[userId];

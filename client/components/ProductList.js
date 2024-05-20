@@ -264,6 +264,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginBottom: 5,
     color: '#333',
+    fontStyle: 'italic',
   },
   shopReviews: {
     fontSize: 18,
