@@ -8,7 +8,8 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 const Panier = ({ navigation }) => {
   const [posts, setPosts] = useState([]);
   const [totalPrice, setTotalPrice] = useState(0);
-
+  // console.log("posts   in panier  ",posts[1].userId);
+  console.log("posts   in panier  ",posts);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -54,20 +55,20 @@ const Panier = ({ navigation }) => {
     setTotalPrice(totalPrice);
   };
 
-  const addToCart = (item) => {
-    // Check if the item is already in the cart
-    const exists = posts.some(cartItem => cartItem.id === item.id);
-    if (!exists) {
-      const updatedPosts = [...posts, item];
-      setPosts(updatedPosts);
-      try {
-        AsyncStorage.setItem('favorites', JSON.stringify(updatedPosts));
-        calculateTotalPrice(updatedPosts);
-      } catch (error) {
-        console.log('Error updating favorites:', error);
-      }
-    }
-  };
+  // const addToCart = (item) => {
+  //   // Check if the item is already in the cart
+  //   const exists = posts.some(cartItem => cartItem.id === item.id);
+  //   if (!exists) {
+  //     const updatedPosts = [...posts, item];
+  //     setPosts(updatedPosts);
+  //     try {
+  //       AsyncStorage.setItem('favorites', JSON.stringify(updatedPosts));
+  //       calculateTotalPrice(updatedPosts);
+  //     } catch (error) {
+  //       console.log('Error updating favorites:', error);
+  //     }
+  //   }
+  // };
 
   return (
     <View style={styles.container}>
@@ -108,7 +109,7 @@ const styles = StyleSheet.create({
   },
   backIcon: {
     margin: 16,
-    color: 'rgba(253,190,29,1)',
+    color: 'rgba(219, 166, 23, 1)',
   },
   card: {
     flexDirection: 'row',
@@ -168,7 +169,7 @@ const styles = StyleSheet.create({
   },
   paymentButton: {
     marginTop: 12,
-    backgroundColor: 'rgba(253,190,29,1)',
+    backgroundColor: 'rgba(219, 166, 23, 1)',
     padding: 14,
     borderRadius: 10,
     alignItems: 'center',

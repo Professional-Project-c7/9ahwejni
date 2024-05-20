@@ -159,7 +159,7 @@ function TabNavigator() {
        <Tab.Screen name="  Panier" component={  Panier}  options={{
           tabBarButton: () => null, // This hides the tab from the tab bar
         }} />
-      <Tab.Screen name="  Allpack" component={  Allpack}  options={{
+      <Tab.Screen name="Allpack" component={  Allpack}  options={{
           tabBarButton: () => null, // This hides the tab from the tab bar
         }} />
       <Tab.Screen name="  SeeAllPacksCoffee" component={  SeeAllPacksCoffee}  options={{

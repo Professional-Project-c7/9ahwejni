@@ -21,6 +21,8 @@ const ProductList = ({ navigation, route }) => {
   const { products, getProducts, status, error } = useProducts();
   const [favorites, setFavorites] = useState({});
   const [productsWithReviews, setProductsWithReviews] = useState([]);
+  const [shopTitle, setShopTitle] = useState('');
+  const [shopAddress, setShopAddress] = useState('');
 
   useEffect(() => {
     if (status === 'idle') {
@@ -72,7 +74,6 @@ const ProductList = ({ navigation, route }) => {
         favoritesArray.push(product);
         await AsyncStorage.setItem('favorites', JSON.stringify(favoritesArray));
 
-        // Displaying a toast message at the top
         ToastAndroid.showWithGravity('Item added to cart', ToastAndroid.SHORT, ToastAndroid.TOP);
       }
     } catch (error) {
@@ -91,6 +92,20 @@ const ProductList = ({ navigation, route }) => {
 
   const filteredProducts = productsWithReviews.filter((product) => product.userId === coffeeShopId);
 
+  useEffect(() => {
+    const fetchShopDetails = async () => {
+      try {
+        const response = await axios.get(`http://${ipAdress}:3000/api/user/${coffeeShopId}`);
+        setShopTitle(response.data.FirstName + ' ' + response.data.LastName);
+        setShopAddress(response.data.Address);
+      } catch (error) {
+        console.log('Error fetching shop details:', error);
+      }
+    };
+
+    fetchShopDetails();
+  }, [coffeeShopId]);
+
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView>
@@ -101,40 +116,47 @@ const ProductList = ({ navigation, route }) => {
               style={styles.shopImage}
               source={{ uri: filteredProducts[0].shopImage }}
             />
-            <Text  style={styles.shopAddress}>{filteredProducts[0].shopAddress} 📍</Text>
+            <Text style={styles.shopAddress}>{filteredProducts[0].shopAddress} 📍</Text>
             <Title style={styles.productListTitle}>Products:</Title>
             <View style={styles.productsContainer}>
-              {filteredProducts.map((product) => (
-                <View style={styles.card} key={product.id}>
-                  <TouchableOpacity onPress={() => handleNavigateToDetails(product)}>
-                    <Image source={{ uri: product.imgUrl }} style={styles.image} />
-                  </TouchableOpacity>
-                  <Icon
-                    name={favorites[product.id]?.favored ? 'heart' : 'heart-outline'}
-                    color={favorites[product.id]?.favored ? 'red' : '#dba617'}
-                    size={27}
-                    onPress={() => toggleFeature(product.id, 'favored')}
-                    style={styles.favIcon}
-                  />
-                  <View style={styles.infoContainer}>
+              {filteredProducts.map((product, index) => {
+                const isLastOddCard = filteredProducts.length % 2 !== 0 && index === filteredProducts.length - 1;
+                return (
+                  <View style={[styles.card, isLastOddCard && styles.lastOddCard]} key={product.id}>
                     <TouchableOpacity onPress={() => handleNavigateToDetails(product)}>
-                      <Text style={styles.name}>{product.name}</Text>
+                      <Image source={{ uri: product.imgUrl }} style={styles.image} />
                     </TouchableOpacity>
-                    <Text style={styles.price}>${product.price}</Text>
-                    <Text style={styles.reviews}>{`${product.totalReviews} 👤 ⭐: ${product.averageRating}`}</Text>
                     <Icon
-                      name={favorites[product.id]?.inCart ? 'cart' : 'cart-outline'}
-                      size={24}
-                      onPress={() => toggleFeature(product.id, 'inCart')}
-                      style={styles.cartIcon}
+                      name={favorites[product.id]?.favored ? 'heart' : 'heart-outline'}
+                      color={favorites[product.id]?.favored ? 'red' : '#dba617'}
+                      size={27}
+                      onPress={() => toggleFeature(product.id, 'favored')}
+                      style={styles.favIcon}
                     />
+                    <View style={styles.infoContainer}>
+                      <TouchableOpacity onPress={() => handleNavigateToDetails(product)}>
+                        <Text style={styles.name}>{product.name}</Text>
+                      </TouchableOpacity>
+                      <Text style={styles.price}>${product.price}</Text>
+                      <Text style={styles.reviews}>{`${product.totalReviews} 👤 ⭐: ${product.averageRating}`}</Text>
+                      <Icon
+                        name={favorites[product.id]?.inCart ? 'cart' : 'cart-outline'}
+                        size={24}
+                        onPress={() => toggleFeature(product.id, 'inCart')}
+                        style={styles.cartIcon}
+                      />
+                    </View>
                   </View>
-                </View>
-              ))}
+                );
+              })}
             </View>
           </>
         ) : (
-          <Text style={styles.noProductsMessage}>This coffee shop has no products for the moment! 😔</Text>
+          <>
+            <Title style={styles.shopTitle}>{shopTitle}</Title>
+            <Text style={styles.shopAddress}>{shopAddress} 📍</Text>
+            <Text style={styles.noProductsMessage}>This coffee shop has no products at the moment! 😔</Text>
+          </>
         )}
       </ScrollView>
     </SafeAreaView>
@@ -145,6 +167,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
+    padding: 16,
   },
   shopTitle: {
     fontSize: 31,
@@ -195,6 +218,9 @@ const styles = StyleSheet.create({
     shadowRadius: 6,
     elevation: 5,
   },
+  lastOddCard: {
+    width: '98%',
+  },
   image: {
     height: 150,
     width: '100%',
@@ -243,15 +269,20 @@ const styles = StyleSheet.create({
     borderRadius: 15,
   },
   noProductsMessage: {
-    fontSize: 28,
+    fontSize: 20,
     fontWeight: 'bold',
     color: '#fff',
-    backgroundColor: '#dba617',
-    borderRadius: 20,
-    textAlign: 'center',
+    backgroundColor: '#FF6347',
+    borderRadius: 50,
+    textAlign: 'left',
     padding: 20,
-    marginTop: 280,
+    marginTop: 20,
     width: '100%',
+    elevation: 3,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
   },
 });
 

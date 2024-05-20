@@ -16,6 +16,7 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import LinearGradient from 'react-native-linear-gradient';
 import axios from 'axios';
 import { ipAdress } from '../config';
+import packos from '../image/packos.png';
 
 const Allpack = ({ navigation }) => {
   const [drinks, setDrinks] = useState([]);
@@ -94,7 +95,10 @@ const Allpack = ({ navigation }) => {
         end={{ x: 1, y: 0 }}
         style={styles.gradientBackground}
       >
-        <Text style={styles.title}>pack 🥤</Text>
+        <View style={styles.titleContainer}>
+          <Text style={styles.titleText}>packs</Text>
+          <Image source={packos} style={styles.packosImage} />
+        </View>
       </LinearGradient>
       <View style={styles.searchSection}>
         <TextInput
@@ -152,12 +156,21 @@ const styles = StyleSheet.create({
     marginHorizontal: 0,
     marginBottom: 10,
   },
-  title: {
+  titleContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingVertical: 10,
+  },
+  titleText: {
     fontSize: 30,
     fontWeight: 'bold',
-    textAlign: 'center',
-    paddingVertical: 10,
     color: '#fff',
+    marginRight: 10,
+  },
+  packosImage: {
+    width: 30,
+    height: 30,
   },
   searchSection: {
     flexDirection: 'row',
@@ -188,7 +201,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     overflow: 'hidden',
     shadowColor: '#000',
-    
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.1,
     shadowRadius: 6,
@@ -215,6 +227,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#333',
     marginBottom: 5,
+    
   },
   price: {
     fontSize: 16,

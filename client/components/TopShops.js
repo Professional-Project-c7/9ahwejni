@@ -15,7 +15,7 @@ const TopShops = ({ navigation }) => {
         const response = await axios.get(`http://${ipAdress}:3000/api/user/`);
         const filteredShops = response.data.filter(user => user.UserType === "coffee");
         const shuffledShops = filteredShops.sort(() => 0.5 - Math.random());
-        setCoffeeShops(shuffledShops.slice(0, 8));
+        setCoffeeShops(shuffledShops.slice(0, 6));
       } catch (err) {
         setError(err.message);
       }

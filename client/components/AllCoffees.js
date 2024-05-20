@@ -11,7 +11,6 @@ import {
   ToastAndroid,
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { Rating } from 'react-native-ratings';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import LinearGradient from 'react-native-linear-gradient';
 import axios from 'axios';
@@ -109,30 +108,33 @@ const AllCoffees = ({ navigation }) => {
           <Text>Error: {error}</Text>
         ) : (
           <View style={styles.productsContainer}>
-            {filteredCoffees.map((coffee) => (
-              <View style={styles.card} key={coffee.id}>
-                <TouchableOpacity onPress={() => handleNavigateToDetails(coffee)}>
-                  <Image source={{ uri: coffee.imgUrl }} style={styles.image} />
-                </TouchableOpacity>
-                <Icon
-                  name={favorites[coffee.id]?.favored ? 'heart' : 'heart-outline'}
-                  color={favorites[coffee.id]?.favored ? 'red' : '#dba617'}
-                  size={27}
-                  style={styles.favIcon}
-                />
-                <View style={styles.infoContainer}>
-                  <Text style={styles.reviews}>{`${coffee.totalReviews} 👤 ⭐: ${coffee.averageRating}`}</Text>
-                  <Text style={styles.name}>{coffee.name}</Text>
-                  <Text style={styles.price}>${coffee.price}</Text>
+            {filteredCoffees.map((coffee, index) => {
+              const isLastOddCard = filteredCoffees.length % 2 !== 0 && index === filteredCoffees.length - 1;
+              return (
+                <View style={[styles.card, isLastOddCard && styles.lastOddCard]} key={coffee.id}>
+                  <TouchableOpacity onPress={() => handleNavigateToDetails(coffee)}>
+                    <Image source={{ uri: coffee.imgUrl }} style={styles.image} />
+                  </TouchableOpacity>
                   <Icon
-                    name={favorites[coffee.id]?.inCart ? 'cart' : 'cart-outline'}
-                    size={24}
-                    onPress={() => toggleFeature(coffee.id, 'inCart')}
-                    style={styles.cartIcon}
+                    name={favorites[coffee.id]?.favored ? 'heart' : 'heart-outline'}
+                    color={favorites[coffee.id]?.favored ? 'red' : '#dba617'}
+                    size={27}
+                    style={styles.favIcon}
                   />
+                  <View style={styles.infoContainer}>
+                    <Text style={styles.reviews}>{`${coffee.totalReviews} 👤 ⭐: ${coffee.averageRating}`}</Text>
+                    <Text style={styles.name}>{coffee.name}</Text>
+                    <Text style={styles.price}>${coffee.price}</Text>
+                    <Icon
+                      name={favorites[coffee.id]?.inCart ? 'cart' : 'cart-outline'}
+                      size={24}
+                      onPress={() => toggleFeature(coffee.id, 'inCart')}
+                      style={styles.cartIcon}
+                    />
+                  </View>
                 </View>
-              </View>
-            ))}
+              );
+            })}
           </View>
         )}
       </ScrollView>
@@ -192,6 +194,9 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 6,
     elevation: 5,
+  },
+  lastOddCard: {
+    width: '98%',
   },
   image: {
     height: 150,

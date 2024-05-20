@@ -8,26 +8,26 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 const dummyData = [
   {
     "id": 1,
-    "title": "Lorem Ipsum",
-    "description": "The customer is very important, the customer will be followed by the customer. But at the same time they happened with great labor and pain.",
+    "title": "Enjoy Your Coffee",
+    "description": "Start your day with a smile and a great cup of coffee. Discover our wide range of coffee selections just for you.",
     image: require("../image/ob1.png")
   },
   {
     "id": 2,
-    "title": "Dolor Sit Amet",
-    "description": "Do not be angry with the pain in the rebuke, in the pleasure he wants to be a hair from the pain, let him run away from the pain.",
+    "title": "Secure and Reliable",
+    "description": "Your security is our priority. Enjoy a seamless and secure experience with our app.",
     image: require("../image/ob2.png")
   },
   {
     "id": 3,
-    "title": "Adipiscing will follow",
-    "description": "Unless they are blinded by lust, they do not come out, they are in fault who abandon their duties, the soul softens, that is toils.",
+    "title": "Find Your Way",
+    "description": "Locate the best coffee shops around you with our easy-to-use GPS feature.",
     image: require("../image/ob3.png")
   }, 
   {
-    "id": 5,
-    "title": "Adipiscing will follow",
-    "description": "Unless they are blinded by lust, they do not come forth; they are in fault who abandon their duties and soften their hearts, that is, their labors.",
+    "id": 4,
+    "title": "Welcome to 9ahwejni",
+    "description": "Join us and enjoy the best coffee experience with our app. Let's get started!",
     image: require("../image/logo.png")
   }
 ]
@@ -97,7 +97,7 @@ function Onboarding({ navigation }) {
         )}
         {!showGetStarted && (
           <TouchableOpacity onPress={scrollTo} style={styles.NextButton} activeOpacity={0.6}>
-            <Icon name="arrow-circle-right" size={60} color="#dba617" />
+            <Icon name="arrow-circle-right" size={60}  />
           </TouchableOpacity>
         )}
         {showGetStarted && (
@@ -133,7 +133,7 @@ const styles = StyleSheet.create({
   },
   getStartedText: {
     fontSize: 30,
-    color: '#dba617',
+    color: 'black',
   },
   skipButton: {
     marginLeft: -10,
