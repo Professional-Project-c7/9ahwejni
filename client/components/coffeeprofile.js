@@ -64,7 +64,7 @@ const MyComponent = ({navigation}) => {
       console.error('Error fetching user data:', error.message);
     }
   };
-  
+  console.log(userData);
   useEffect(() => {
     retrieveData();
   }, []);
@@ -97,8 +97,8 @@ const MyComponent = ({navigation}) => {
     <ScrollView>
       <View style={styles.container}>
         <View style={styles.header}>
-        <ImageBackground source={{ uri: 'https://esquirescoffee.co.uk/wp-content/uploads/2019/07/Picture-1.pngxx_.png' }} style={styles.profileImage}>
-  {/* Text on the left */}
+        <ImageBackground source={{ uri: userData.ImageUrl }} style={styles.profileImage}>
+ 
   <View style={styles.leftTextContainer}>
   <View style={styles.textWithIcon}>
     <Text style={styles.textrate}>4.5</Text>
@@ -106,7 +106,7 @@ const MyComponent = ({navigation}) => {
   </View>
 </View>
 
-  {/* Text on the right */}
+ 
   <View style={styles.rightTextContainer}>
   <View style={styles.textWithIcon}>
     <IconButton icon="google-maps" iconColor='#dba617' size={23} style={styles.locIcon} />
