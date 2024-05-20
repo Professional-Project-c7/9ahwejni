@@ -64,35 +64,35 @@ const ProductList = ({ navigation, route }) => {
     fetchShopDetails();
   }, [coffeeShopId]);
 
+  const fetchReviews = async () => {
+    try {
+      const reviewsResponse = await axios.get(`http://${ipAdress}:3000/api/review`);
+      const shopReviewsResponse = await axios.get(`http://${ipAdress}:3000/api/reviewz/reviewee/${coffeeShopId}`);
+
+      const productsWithReviews = products.map(product => {
+        const productReviews = reviewsResponse.data.filter(review => review.prodId === product.id);
+        const totalReviews = productReviews.length;
+        const averageRating = totalReviews ? productReviews.reduce((acc, review) => acc + review.stars, 0) / totalReviews : 0;
+        return {
+          ...product,
+          totalReviews,
+          averageRating: averageRating.toFixed(1),
+        };
+      });
+
+      setProductsWithReviews(productsWithReviews);
+
+      const totalReviews = shopReviewsResponse.data.length;
+      const averageRating = totalReviews ? shopReviewsResponse.data.reduce((acc, review) => acc + review.stars, 0) / totalReviews : 0;
+
+      setTotalShopReviews(totalReviews);
+      setAverageShopRating(averageRating.toFixed(1));
+    } catch (err) {
+      console.error('Error fetching reviews:', err);
+    }
+  };
+
   useEffect(() => {
-    const fetchReviews = async () => {
-      try {
-        const reviewsResponse = await axios.get(`http://${ipAdress}:3000/api/review`);
-        const shopReviewsResponse = await axios.get(`http://${ipAdress}:3000/api/reviewz/reviewee/${coffeeShopId}`);
-
-        const productsWithReviews = products.map(product => {
-          const productReviews = reviewsResponse.data.filter(review => review.prodId === product.id);
-          const totalReviews = productReviews.length;
-          const averageRating = totalReviews ? productReviews.reduce((acc, review) => acc + review.stars, 0) / totalReviews : 0;
-          return {
-            ...product,
-            totalReviews,
-            averageRating: averageRating.toFixed(1),
-          };
-        });
-
-        setProductsWithReviews(productsWithReviews);
-
-        const totalReviews = shopReviewsResponse.data.length;
-        const averageRating = totalReviews ? shopReviewsResponse.data.reduce((acc, review) => acc + review.stars, 0) / totalReviews : 0;
-
-        setTotalShopReviews(totalReviews);
-        setAverageShopRating(averageRating.toFixed(1));
-      } catch (err) {
-        console.error('Error fetching reviews:', err);
-      }
-    };
-
     if (products.length > 0) {
       fetchReviews();
     }
@@ -218,7 +218,12 @@ const ProductList = ({ navigation, route }) => {
         onRequestClose={() => setIsModalVisible(false)}>
         <View style={styles.modalOverlay}>
           <View style={styles.modalContainer}>
-            <AddReviewz coffeeShopId={coffeeShopId} userId={userId} onClose={() => setIsModalVisible(false)} />
+            <AddReviewz
+              coffeeShopId={coffeeShopId}
+              userId={userId}
+              onClose={() => setIsModalVisible(false)}
+              onReviewSubmitted={fetchReviews}
+            />
             <TouchableOpacity onPress={() => setIsModalVisible(false)} style={styles.closeButton}>
               <Text style={styles.closeButtonText}>Close</Text>
             </TouchableOpacity>

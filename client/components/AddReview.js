@@ -7,7 +7,7 @@ import { ipAdress } from '../config';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Toast from 'react-native-toast-message';
 
-const AddReview = ({ productId, userId }) => {
+const AddReview = ({ productId, userId, onReviewSubmitted }) => {
     const [rating, setRating] = useState(3); 
     const [comment, setComment] = useState('');
 
@@ -19,8 +19,6 @@ const AddReview = ({ productId, userId }) => {
                 stars: rating,
                 comment: comment
             });
-           
-          
 
             Toast.show({
                 type: 'success',
@@ -34,6 +32,10 @@ const AddReview = ({ productId, userId }) => {
                 text1Style: { fontSize: 20 },
                 text2Style: { fontSize: 16 }
             });
+
+            if (onReviewSubmitted) {
+                onReviewSubmitted();
+            }
         } catch (error) {
             console.error('Error submitting review:', error);
             Toast.show({
@@ -113,7 +115,6 @@ const styles = StyleSheet.create({
     },
     button: {
         marginTop: 20,
-        color:'pink'
     },
 });
 
