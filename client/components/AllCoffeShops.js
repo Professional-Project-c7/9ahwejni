@@ -1,4 +1,3 @@
-// CoffeeShopsList.js
 import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, StyleSheet, FlatList, Image, TouchableOpacity } from 'react-native';
 import axios from 'axios';
@@ -10,16 +9,27 @@ import { useNavigation } from '@react-navigation/native';
 const CoffeeShopsList = ({ navigation }) => {
   const [coffeeShopsData, setCoffeeShopsData] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
-
-
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const response = await axios.get(`http://${ipAdress}:3000/api/user`);
-        setCoffeeShopsData(response.data.filter(user => user.UserType === 'coffee'));
+        const filteredShops = response.data.filter(user => user.UserType === 'coffee');
+
+        // Fetch reviews for each shop
+        const shopsWithReviewsPromises = filteredShops.map(async shop => {
+          const reviewsResponse = await axios.get(`http://${ipAdress}:3000/api/reviewz/reviewee/${shop.id}`);
+          const reviews = reviewsResponse.data;
+          const totalReviews = reviews.length;
+          const averageRating = totalReviews ? (reviews.reduce((acc, review) => acc + review.stars, 0) / totalReviews).toFixed(1) : 0;
+          return { ...shop, totalReviews, averageRating };
+        });
+
+        const shopsWithReviews = await Promise.all(shopsWithReviewsPromises);
+        setCoffeeShopsData(shopsWithReviews);
       } catch (error) {
-        console.error('Error fetching data: ', error);
+        setError('Error fetching data: ' + error.message);
       }
     };
 
@@ -39,9 +49,9 @@ const CoffeeShopsList = ({ navigation }) => {
   return (
     <View style={styles.container}>
       <LinearGradient
-         colors={['rgba(219, 166, 23, 1)', 'rgba(219, 166, 23, 1)']} 
-         start={{x: 1, y: 1}} 
-         end={{x: 1, y: 0}} 
+        colors={['rgba(219, 166, 23, 1)', 'rgba(219, 166, 23, 1)']}
+        start={{ x: 1, y: 1 }}
+        end={{ x: 1, y: 0 }}
         style={styles.gradientBackground}
       >
         <Text style={styles.title}>Coffee Shops</Text>
@@ -52,10 +62,11 @@ const CoffeeShopsList = ({ navigation }) => {
           placeholder="Search..."
           onChangeText={text => setSearchQuery(text)}
           value={searchQuery}
-          />
+        />
       </View>
       <FlatListPopularShops />
       <Text style={styles.TxtList}>List of our shops ({filteredCoffeeShops.length})</Text>
+      {error && <Text style={styles.errorText}>{error}</Text>}
       <FlatList
         data={filteredCoffeeShops}
         keyExtractor={item => item.id.toString()}
@@ -71,6 +82,7 @@ const CoffeeShopsList = ({ navigation }) => {
             <View style={styles.info}>
               <Text style={styles.name}>{item.FirstName} {item.LastName}</Text>
               <Text style={styles.address}>{item.Address}</Text>
+              <Text style={styles.ratingText}>{`⭐ ${item.averageRating} (${item.totalReviews} reviews)`}</Text>
             </View>
           </TouchableOpacity>
         )}
@@ -89,7 +101,6 @@ const styles = StyleSheet.create({
     borderBottomLeftRadius: 5,
     marginHorizontal: 0,
     marginBottom: 10,
-    
   },
   title: {
     fontSize: 24,
@@ -151,6 +162,15 @@ const styles = StyleSheet.create({
   address: {
     fontSize: 18,
     color: '#111',
+  },
+  ratingText: {
+    fontSize: 16,
+    color: '#555',
+  },
+  errorText: {
+    color: 'red',
+    textAlign: 'center',
+    marginBottom: 10,
   },
 });
 

@@ -4,12 +4,11 @@ import {
   Text,
   TouchableOpacity,
   ImageBackground,
-  
+  Image,
   TextInput,
   StyleSheet,
   ScrollView,
   Alert,
-  Image
 } from 'react-native';
 import {useTheme} from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -19,7 +18,6 @@ import AsyncStorage from '@react-native-async-storage/async-storage'; // Import 
 import axios from 'axios';
 import { ipAdress } from '../config';
 import { launchImageLibrary } from 'react-native-image-picker';
-
 
 
 const EditProfileScreen = ({navigation}) => {
@@ -37,8 +35,12 @@ const EditProfileScreen = ({navigation}) => {
   useEffect(() => {
     retrieveData();
   }, []);
+  useEffect(() => {
+    if (userID) {
+      getUserData(userID);
+    }
+  }, [userID]);
 
-  
 
   const retrieveData = async () => {
     try {
@@ -58,22 +60,23 @@ const EditProfileScreen = ({navigation}) => {
 
   const imageHandler = async (image) => {
     try {
-      const userData = {
-        firstName: firstName,
-        lastName: lastName,
-        phone: phone,
-        email: email,
-        country: country,
-        city: city,
-        ImageUrl:image
-      };
-      console.log(userData); // Check if userData is correct before sending the request
-      const response = await axios.put(`http://${ipAdress}:3000/api/user/${userID}`, userData);
-      
-      console.log('Update successful:', response.data);
-     
-      console.log(userID);
-      navigation.navigate('User');
+      const data = new FormData();
+      data.append('file', {
+        uri: image.assets[0].uri,
+        type: image.assets[0].type,
+        name: 'photo.jpg'
+      });
+      data.append('upload_preset', 'i38oelnt'); // Replace 'your_upload_preset' with your Cloudinary upload preset
+      data.append('cloud_name', 'dqyx6lht5'); // Replace 'your_cloud_name' with your Cloudinary cloud name
+  
+      const response = await fetch('https://api.cloudinary.com/v1_1/dqyx6lht5/image/upload', {
+        method: 'POST',
+        body: data
+      });
+      const result = await response.json();
+      console.log('Cloudinary response:', result);
+      return result.secure_url;
+      setimgUrl( result.secure_url)
     } catch (error) {
       console.error('Error uploading image:', error);
       throw error;
@@ -117,7 +120,7 @@ const handleUpdateProfile = async () => {
   try {
     const userData = {
       FirstName: firstName,
-      LastName: lastName,
+      lastName: lastName,
       phone: phone,
       email: email,
       country: country,
@@ -169,7 +172,7 @@ const handleUpdateProfile = async () => {
      {userData && (
         <>
         <View style={{alignItems: 'center', marginTop:15}}>
-          <TouchableOpacity onPress={pickImage} >
+          <TouchableOpacity >
             <View
               style={{
                 height: 100,
@@ -179,33 +182,38 @@ const handleUpdateProfile = async () => {
                 alignItems: 'center',
                 
               }}>
-              <ImageBackground
-                source={{uri:image}} 
-                style={{height: 100, width: 100}}
-                imageStyle={{borderRadius: 15}}>
-                <View
-                  style={{
-                    flex: 1,
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                  }}>
-                  <Icon
-                    name="camera"
-                    size={35}
-                    color='#dba617'
+             <ImageBackground>
+                 <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+                  {imgUrl && (
+                    <Image source={{ uri: imgUrl }} style={{ width: 125, height: 120 }} />
+                  )}
+                   </View>
+                  {/* style={{ height: 120, width: 125 }}
+                  imageStyle={{ borderRadius: 15 }}> */}
+                  <View
                     style={{
-                      opacity: 0.7,
-                      alignItems: 'center',
+                      flex: 1,
                       justifyContent: 'center',
-                    
-                    }}
-                  />
-                </View>
-              </ImageBackground>
+                      alignItems: 'center',
+                    }}>
+                    <Icon
+                    onPress={pickImage}
+                      name="camera"
+                      size={35}
+                      color='#dba617'
+                      style={{
+                        opacity: 0.7,
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                      }}
+                    />
+                  </View>
+                </ImageBackground>
+
             </View>
           </TouchableOpacity>
           <Text style={{marginTop: 10, fontSize: 18, fontWeight: 'bold'}}>
-          {userData.FirstName +" " + userData.LastName}
+          {userData.FirstName }
 
           </Text>
         </View>
@@ -231,7 +239,7 @@ const handleUpdateProfile = async () => {
         <View style={styles.action}>
           <FontAwesome name="user-o" color={'#dba617'} size={20} />
           <TextInput
-            placeholder={userData.lastName}
+            placeholder="lastName"
             placeholderTextColor="#666666"
             value={lastName}
         onChangeText={text => setLastName(text)}

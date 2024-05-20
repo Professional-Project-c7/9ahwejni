@@ -41,8 +41,6 @@ const ProductDetailsPage = ({ navigation }) => {
         }
     };
 
-
-
     useEffect(() => {
         const fetchProductDetails = async () => {
             try {
@@ -97,6 +95,11 @@ const ProductDetailsPage = ({ navigation }) => {
 
     const toggleModalVisibility = () => {
         setIsModalVisible(!isModalVisible);
+    };
+
+    const handleReviewSubmitted = () => {
+        fetchReviews(selectedProductId);
+        toggleModalVisibility();
     };
 
     return (
@@ -177,18 +180,20 @@ const ProductDetailsPage = ({ navigation }) => {
                 onRequestClose={toggleModalVisibility}>
                 <View style={styles.modalOverlay}>
                     <View style={styles.modalContainer}>
-                        <AddReview productId={selectedProductId} userId={selectedUserId} />
-                        <Button title="Close" onPress={toggleModalVisibility} style={styles.closeButton} />
+                        <AddReview productId={selectedProductId} userId={selectedUserId} onReviewSubmitted={handleReviewSubmitted} />
+                        <TouchableOpacity onPress={toggleModalVisibility} style={styles.closeButton}>
+                            <Text style={styles.closeButtonText}>Close</Text>
+                        </TouchableOpacity>
                     </View>
                 </View>
             </Modal>
             <View style={styles.reviewsContainer}>
                 {reviews.map((review, index) => (
                     <View key={index} style={styles.reviewCard}>
-                        <Image source={{ uri: review.user ? review.user.ImageUrl : defaultUserImage }} style={styles.userImage} />
+                        <Image source={{ uri: review.user ? review.user.ImageUrl : user }} style={styles.userImage} />
                         <View style={styles.reviewContent}>
                             <Text style={styles.userName}>
-                                {review.user ? `${review.user.FirstName} ${review.user.LastName}` : 'monkey'}
+                                {review.user ? `${review.user.FirstName} ${review.user.LastName}` : 'Anonymous'}
                             </Text>
                             <Text>{moment(review.createdAt).fromNow()}</Text>
                             <Rating
@@ -334,8 +339,14 @@ const styles = StyleSheet.create({
     },
     closeButton: {
         marginTop: 10,
-        backgroundColor: '#FFBB70',
+        backgroundColor: '#dba617',
+        padding: 10,
+        borderRadius: 10,
+        alignItems: 'center',
+    },
+    closeButtonText: {
         color: 'white',
+        fontWeight: 'bold',
     },
     reviewsContainer: {
         padding: 10,

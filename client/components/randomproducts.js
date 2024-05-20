@@ -46,8 +46,8 @@ const RandomProducts = () => {
           };
         });
 
-        // Sorting products by averageRating in descending order and taking top 4
-        const topRatedProducts = productsWithReviews.sort((a, b) => b.averageRating - a.averageRating).slice(0, 10);
+        // Sorting products by averageRating in descending order and taking top 6
+        const topRatedProducts = productsWithReviews.sort((a, b) => b.averageRating - a.averageRating).slice(0, 6);
 
         setProducts(topRatedProducts);
       } catch (err) {
@@ -106,12 +106,12 @@ const RandomProducts = () => {
                 <TouchableOpacity onPress={() => handleNavigateToDetails(product)}>
                   <Image source={{ uri: product.imgUrl }} style={styles.image} />
                 </TouchableOpacity>
-                {/* <Icon
+                <Icon
                   name={hearttt[product.id]?.favored ? 'heart' : 'heart-outline'}
                   color={hearttt[product.id]?.favored ? 'red' : '#dba617'}
                   size={27}
                   style={styles.favIcon}
-                /> */}
+                />
                 <View style={styles.infoContainer}>
                   <Text style={styles.reviews}>{`${product.totalReviews} 👤 ⭐: ${product.averageRating}`}</Text>
                   <Text style={styles.name}>{product.name}</Text>
@@ -189,7 +189,8 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
     color: '#000',
-    right: 5
+    right: 5,
+    top:5
   },
   reviews: {
     fontSize: 14,
@@ -201,10 +202,11 @@ const styles = StyleSheet.create({
   cartIcon: {
     position: 'absolute',
     right: 10,
-    bottom: 10,
+    bottom: 5,
     backgroundColor: '#dba617',
     padding: 5,
     borderRadius: 15,
+    
   },
 });
 

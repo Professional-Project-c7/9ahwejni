@@ -20,7 +20,7 @@ export default function Marketplace() {
   useEffect(() => {
     async function fetchReviews() {
       try {
-        const response = await axios.get("http://127.0.0.1:3000/api/review");
+        const response = await axios.get("http://localhost:3000/api/review");
         setReviewData(response.data);
       } catch (error) {
         console.error("Error fetching reviews: ", error);
@@ -54,7 +54,7 @@ export default function Marketplace() {
 
   const deleteReview = async (reviewId) => {
     try {
-      await axios.delete(`http://127.0.0.1:3000/api/review/${reviewId}`);
+      await axios.delete(`http://localhost:3000/api/review/${reviewId}`);
       setReviewData(prevData => prevData.filter(review => review.id !== reviewId));
     } catch (error) {
       console.error("Error deleting review: ", error);
