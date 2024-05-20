@@ -23,6 +23,7 @@ async function connectionTest (){
   connectionTest()
   const db={}
   db.User=require('./UserModel')(connection,DataTypes)
+  db.favorit=require('./favorit')(connection,DataTypes)
   db.Products=require('./product.Model')(connection,DataTypes)
   db.Coffee=require('./cofee.model')(connection,DataTypes)
   db.Message=require('./Message.model')(connection,DataTypes)
@@ -49,7 +50,8 @@ async function connectionTest (){
   db.Products.hasMany(db.Size);
   db.Size.belongsTo(db.Products);
 
-
+  db.favorit.hasMany(db.Products);
+  db.Products.belongsTo(db.favorit);
 
   db.Products.hasMany(db.Options);
   db.Options.belongsTo(db.Products);

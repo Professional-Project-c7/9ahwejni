@@ -81,7 +81,7 @@ useEffect(() => {
             <TouchableOpacity>
               <View style={{ height: 100, width: 100, borderRadius: 15, justifyContent: 'center', alignItems: 'center' }}>
                 <ImageBackground
-                  source={{ uri: userData.avatar }} // Assuming the API response has an 'avatar' field
+                  source={{ uri: userData.ImageUrl }} // Assuming the API response has an 'avatar' field
                   style={{ height: 100, width: 100 }}
                   imageStyle={{ borderRadius: 15 }}>
                   <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>

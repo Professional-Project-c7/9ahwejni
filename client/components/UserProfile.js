@@ -142,6 +142,8 @@ useEffect(() => {
 // }, []);
 const handleLogout = () => {
   AsyncStorage.removeItem('favorites')
+  AsyncStorage.removeItem('favv')
+
   removeTokenFromStorage();
   navigation.navigate('Login');
 };
@@ -163,22 +165,12 @@ const defaultImgUrl = imgUrl ||"https://img.freepik.com/premium-photo/bearded-ma
                 justifyContent: 'center',
                 alignItems: 'center',
               }}>
-            <ImageBackground>
-                 <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-                 
- <Image 
-    source={{ uri: defaultImgUrl }} 
-    style={{ width: 125, height: 120, borderRadius: 70, marginBottom: -60 }} 
-  />
-                   </View>
-                 
-                  <View
-                    style={{
-                      flex: 1,
-                      justifyContent: 'center',
-                      alignItems: 'center',
-                    }}>
-                   
+           <ImageBackground
+                  source={{ uri: userData.ImageUrl }} // Assuming the API response has an 'avatar' field
+                  style={{ height: 100, width: 100 }}
+                  imageStyle={{ borderRadius: 15 }}>
+                  <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+                    <Icon name="camera" size={35} color='#dba617' style={{ opacity: 0.7 }} />
                   </View>
                 </ImageBackground>
                 <Icon
