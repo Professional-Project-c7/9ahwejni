@@ -13,7 +13,7 @@ export default function Banner(props) {
     "#111C44 !important"
   );
   return (
-    <Card mb={{ base: "0px", lg: "20px" }} align='center'>
+    <Card  mb={{ base: "0px", lg: "20px" }} align='center' w="306%">
       <Box
         bg={`url(${banner})`}
         bgSize='cover'
@@ -42,7 +42,7 @@ export default function Banner(props) {
             {posts}
           </Text>
           <Text color={textColorSecondary} fontSize='sm' fontWeight='400'>
-            Posts
+            Review
           </Text>
         </Flex>
         <Flex mx='auto' me='60px' align='center' direction='column'>
@@ -50,7 +50,7 @@ export default function Banner(props) {
             {followers}
           </Text>
           <Text color={textColorSecondary} fontSize='sm' fontWeight='400'>
-            Followers
+            CoffeeShop
           </Text>
         </Flex>
         <Flex mx='auto' align='center' direction='column'>
@@ -58,7 +58,7 @@ export default function Banner(props) {
             {following}
           </Text>
           <Text color={textColorSecondary} fontSize='sm' fontWeight='400'>
-            Following
+            Users
           </Text>
         </Flex>
       </Flex>

@@ -21,7 +21,7 @@ const MyComponent = ({navigation}) => {
 const [userID,setuserID] = useState(null)
 const [isModalVisible, setIsModalVisible] = useState(false);
 const [imgUrl, setimgUrl] = useState('');
-
+// console.log(userData.ImageUrl);
 
 const imageHandler = async (image) => {
   try {
@@ -47,7 +47,6 @@ const imageHandler = async (image) => {
     throw error;
   }
 };
-console.log('helllllllllllllllo',imgUrl)
 
 const pickImage = () => {
   launchImageLibrary({}, async (response) => {
@@ -148,7 +147,7 @@ const handleLogout = () => {
 };
 
 
-
+const defaultImgUrl = imgUrl ||"https://img.freepik.com/premium-photo/bearded-man-illustration_665280-67047.jpg?w=826";
   return (
     <ScrollView>
       <View style={styles.container}>
