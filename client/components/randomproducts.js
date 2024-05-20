@@ -46,7 +46,7 @@ const RandomProducts = () => {
           };
         });
 
-        // Sorting products by averageRating in descending order and taking top 4
+        // Sorting products by averageRating in descending order and taking top 6
         const topRatedProducts = productsWithReviews.sort((a, b) => b.averageRating - a.averageRating).slice(0, 6);
 
         setProducts(topRatedProducts);

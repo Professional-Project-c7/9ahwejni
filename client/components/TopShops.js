@@ -1,4 +1,3 @@
-// TopShops.js
 import React, { useState, useEffect } from 'react';
 import { View, Text, Image, FlatList, TouchableOpacity, StyleSheet } from 'react-native';
 import axios from 'axios';
@@ -14,8 +13,19 @@ const TopShops = ({ navigation }) => {
       try {
         const response = await axios.get(`http://${ipAdress}:3000/api/user/`);
         const filteredShops = response.data.filter(user => user.UserType === "coffee");
-        const shuffledShops = filteredShops.sort(() => 0.5 - Math.random());
-        setCoffeeShops(shuffledShops.slice(0, 6));
+
+        // Fetch reviews for each shop
+        const shopsWithReviewsPromises = filteredShops.map(async shop => {
+          const reviewsResponse = await axios.get(`http://${ipAdress}:3000/api/reviewz/reviewee/${shop.id}`);
+          const reviews = reviewsResponse.data;
+          const totalReviews = reviews.length;
+          const averageRating = totalReviews ? (reviews.reduce((acc, review) => acc + review.stars, 0) / totalReviews).toFixed(1) : 0;
+          return { ...shop, totalReviews, averageRating };
+        });
+
+        const shopsWithReviews = await Promise.all(shopsWithReviewsPromises);
+        const topRatedShops = shopsWithReviews.sort((a, b) => b.averageRating - a.averageRating).slice(0, 6);
+        setCoffeeShops(topRatedShops);
       } catch (err) {
         setError(err.message);
       }
@@ -29,7 +39,7 @@ const TopShops = ({ navigation }) => {
   };
 
   if (error) {
-    return <Text>Error: {error}</Text>;
+    return <Text style={styles.errorText}>Error: {error}</Text>;
   }
 
   return (
@@ -46,9 +56,7 @@ const TopShops = ({ navigation }) => {
             <View style={styles.info}>
               <Text style={styles.name}>{item.FirstName} {item.LastName}</Text>
               <Text style={styles.address}>{item.Address}</Text>
-              {/* <View style={styles.ratingSection}>
-                <Text style={styles.ratingText}>{`${item.rating || 0} (${item.reviews || 0} reviews)`}</Text>
-              </View> */}
+              <Text style={styles.ratingText}>{`⭐ ${item.averageRating} (${item.totalReviews} 👤)`}</Text>
             </View>
           </TouchableOpacity>
         )}
@@ -62,44 +70,50 @@ const TopShops = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     marginTop: 20,
+    paddingHorizontal: 10,
   },
   card: {
     flexDirection: 'column',
-    backgroundColor: '#fff',
-    borderRadius: 8,
+    backgroundColor: '#fdfdfd',
+    borderRadius: 12,
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.1,
+    shadowRadius: 8,
     elevation: 5,
     marginHorizontal: 10,
     marginVertical: 10,
-    width: 200,
+    width: 220,
+    overflow: 'hidden',
   },
   image: {
     width: '100%',
-    height: 150,
-    borderTopLeftRadius: 8,
-    borderTopRightRadius: 8,
+    height: 140,
   },
   info: {
-    padding: 10,
+    padding: 15,
+    backgroundColor: '#fff',
   },
   name: {
-    fontSize: 20,
-    fontWeight: 'bold',
+    fontSize: 18,
+    fontWeight: '600',
+    color: '#333',
+    marginBottom: 5,
   },
   address: {
-    fontSize: 18,
-    color: '#555',
-  },
-  ratingSection: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    fontSize: 14,
+    color: '#888',
+    marginBottom: 5,
   },
   ratingText: {
-    marginLeft: 5,
-    fontSize: 16,
+    fontSize: 14,
+    fontWeight: '500',
+    color: '#444',
+  },
+  errorText: {
+    color: 'red',
+    textAlign: 'center',
+    marginTop: 20,
   },
 });
 

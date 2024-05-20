@@ -4,11 +4,9 @@ import { Button } from 'react-native-paper';
 import { Rating } from 'react-native-ratings';
 import axios from 'axios';
 import { ipAdress } from '../config';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import Toast from 'react-native-toast-message';
-import LinearGradient from 'react-native-linear-gradient';
 
-const AddReviewz = ({ coffeeShopId, userId, onClose }) => {
+const AddReviewz = ({ coffeeShopId, userId, onClose, onReviewSubmitted }) => {
     const [rating, setRating] = useState(3);
 
     const submitReview = async () => {
@@ -31,6 +29,10 @@ const AddReviewz = ({ coffeeShopId, userId, onClose }) => {
                 text1Style: { fontSize: 20 },
                 text2Style: { fontSize: 16 }
             });
+
+            if (onReviewSubmitted) {
+                onReviewSubmitted();
+            }
             onClose(); // Close the modal after submitting the review
         } catch (error) {
             console.error('Error submitting review:', error);
@@ -51,8 +53,7 @@ const AddReviewz = ({ coffeeShopId, userId, onClose }) => {
 
     return (
         <View style={styles.container}>
-        
-                <Text style={styles.header}>Rate this Shop</Text>
+            <Text style={styles.header}>Rate this Shop</Text>
             <Rating
                 type="star"
                 ratingCount={5}
@@ -87,10 +88,6 @@ const styles = StyleSheet.create({
         elevation: 10,
         width: '99%',
         alignSelf: 'center',
-    },
-    gradientBackground: {
-        borderRadius: 10,
-        padding: 10,
     },
     header: {
         fontSize: 24,
