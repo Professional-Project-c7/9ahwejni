@@ -1,4 +1,4 @@
-import React,{useState} from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, Modal, TouchableOpacity, Image, StyleSheet, ScrollView,ImageBackground } from 'react-native';
 import { IconButton } from 'react-native-paper';
 import AddPacks from './addpacks';
@@ -8,12 +8,73 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { useNavigation } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
+import axios from 'axios';
+import { ipAdress } from '../config';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 const MyComponent = ({navigation}) => {
     
+  const [userData, setUserData] = useState(null);
+  const [userID,setuserID] = useState(null)
+
+
+  const retrieveData = async () => {
+    try {
+      const value = await AsyncStorage.getItem('IdUser');
+      if (value !== null) {
+        const tokenObject = JSON.parse(value);
+        const userId = tokenObject; 
+        console.log("taww",userId);
+        setuserID(userId);
+      }
+    } catch (error) {
+      console.error('Error retrieving data:', error);
+    }
+  };
+  
+  
+  
+    const myCustomShare = async() => {
+      const shareOptions = {
+        message: 'Order your next meal from FoodFinder App.',
+        url: "https://parottaexpress.com/wp-content/uploads/2023/11/Coffee.png",
+        // urls: [files.image1, files.image2]
+      }
+  
+      try {
+        const ShareResponse = await Share.open(shareOptions);
+        console.log(JSON.stringify(ShareResponse));
+      } catch(error) {
+        console.log('Error => ', error);
+      }
+    }
+  
+  const getUserData = async (userId) => {
+    try {
+      const response = await axios.get(`http://${ipAdress}:3000/api/user/${userId}`);
+      console.log(response.data); // Check response data
+      console.log(userData);
+      if (response.status === 200) {
+        setUserData(response.data);
+      } else {
+        console.error('Failed to fetch user data');
+      }
+    } catch (error) {
+      console.error('Error fetching user data:', error.message);
+    }
+  };
+  
+  useEffect(() => {
+    retrieveData();
+  }, []);
+  
+  useEffect(() => {
+    if (userID) {
+      getUserData(userID);
+    }
+  }, [userID]);
+
   const removeTokenFromStorage = async () => {
     try {
       await AsyncStorage.removeItem('IdUser');
@@ -59,7 +120,7 @@ const MyComponent = ({navigation}) => {
        
 
         <View style={styles.profileInfo}>
-          <Text style={styles.name}>COFFEESHOP</Text>
+          {/* <Text style={styles.name}>{userData.FirstName+" "+userData.LastName}</Text> */}
         </View>
         <View style={styles.optionsContainerOne}>
         <TouchableOpacity style={styles.optionOne} onPress={() => navigation.navigate('Info')}>

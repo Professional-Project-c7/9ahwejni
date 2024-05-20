@@ -1,51 +1,114 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, Text, View, Image, FlatList, TextInput, TouchableOpacity, ImageBackground, ScrollView, SafeAreaView } from 'react-native';
+import { StyleSheet, Text, View, Image, FlatList, TextInput, TouchableOpacity, ImageBackground, ScrollView, SafeAreaView,Alert } from 'react-native';
 import { useTheme } from 'react-native-paper';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import { ipAdress } from '../config';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
-import Feather from 'react-native-vector-icons/Feather';
-
-
-
+import { launchImageLibrary } from 'react-native-image-picker';
 const ProductCard = ({ product }) => {
   return (
     <View style={styles.card}>
-      <Image source={{uri:product.imgUrl}} style={styles.image} />
+      <Image source={{ uri: product.imgUrl }} style={styles.image} />
       <View style={styles.details}>
         <Text style={styles.name}>{product.name}</Text>
         <Text style={styles.description}>{product.description}</Text>
-        <Text style={styles.price}>{product.price} $</Text>
-        {/* <Text style={styles.price}>
-          {product.prices[0].currency}
-          {product.prices[0].price}
-        </Text> */}
-        <View style={styles.bottomRow}>
-          {/* <Text style={styles.size}>Size: {product.prices[0].size}</Text> */}
-          {/* <Text style={styles.rating}>Rating: {product.average_rating}</Text> */}
+        <View style={styles.optionContainer}>
+          {(product.options || []).map((option, index) => (
+            <View key={index}>
+              <View style={styles.optionWrapper}>
+                <Text style={styles.option}>{option.option}</Text>
+                <Text style={styles.price}>{option.price} $</Text>
+              </View>
+            </View>
+          ))}
         </View>
       </View>
     </View>
   );
 };
 
-const ProductList = ({navigation}) => {
+
+const ProductList = ({ navigation }) => {
   const { colors } = useTheme();
   const [productName, setProductName] = useState('');
   const [productDescription, setProductDescription] = useState('');
   const [productSize, setProductSize] = useState('');
   const [productPrice, setProductPrice] = useState('');
-  const [imgUrl, setimgUrl] = useState('https://cdn.vox-cdn.com/thumbor/6kLvmWfhU4h64EhC0S6tsn714fI=/0x0:4032x3024/1200x900/filters:focal(1694x1190:2338x1834)/cdn.vox-cdn.com/uploads/chorus_image/image/59740845/IMG_1503.42.jpg');
+  const [imgUrl, setimgUrl] = useState('');
   const [userData, setUserData] = useState(null);
   const [userID, setUserID] = useState(0);
-  const [selectedSize, setSelectedSize] = useState(null);
+  const [smallSelected, setSmallSelected] = useState(false);
+  const [mediumSelected, setMediumSelected] = useState(false);
+  const [largeSelected, setLargeSelected] = useState(false);
+  const [smallSizePrice, setsmallSizePrice] = useState('');
+  const [mediumSizePrice, setmediumSizePrice] = useState('');
+  const [largeSizePrice, setlargeSizePrice] = useState('');
+  const [options, setOptions] = useState([]);
+console.log("options",options);
+const handleSizeSelection = (size, price, setSelected) => {
+  setSelected(prevSelected => {
+    const isSelected = !prevSelected;
+    let updatedOptions;
 
-  const handleSizeSelection = size => setSelectedSize(size);
+    if (isSelected) {
+      if (price) {
+        updatedOptions = [...options, { option: size, price }];
+      } else {
+        updatedOptions = options;
+      }
+    } else {
+      updatedOptions = options.filter(option => option.option !== size);
+    }
 
+    setOptions(updatedOptions);
+    return isSelected;
+  });
+};
+const imageHandler = async (image) => {
+  try {
+    const data = new FormData();
+    data.append('file', {
+      uri: image.assets[0].uri,
+      type: image.assets[0].type,
+      name: 'photo.jpg'
+    });
+    data.append('upload_preset', 'i38oelnt'); // Replace 'your_upload_preset' with your Cloudinary upload preset
+    data.append('cloud_name', 'dqyx6lht5'); // Replace 'your_cloud_name' with your Cloudinary cloud name
 
-  console.log(productName);
+    const response = await fetch('https://api.cloudinary.com/v1_1/dqyx6lht5/image/upload', {
+      method: 'POST',
+      body: data
+    });
+    const result = await response.json();
+    console.log('Cloudinary response:', result);
+    return result.secure_url;
+  } catch (error) {
+    console.error('Error uploading image:', error);
+    throw error;
+  }
+};
+
+const pickImage = () => {
+  launchImageLibrary({}, async (response) => {
+    if (response.didCancel) {
+      console.log('User cancelled image picker');
+    } else if (response.error) {
+      console.log('ImagePicker Error: ', response.error);
+    } else {
+      try {
+        const imageUri = await imageHandler(response);
+        console.log('Image URI:', imageUri);
+        setimgUrl(imageUri);
+      } catch (error) {
+        console.error('Error uploading image:', error);
+        Alert.alert('Upload Failed', 'Failed to upload image. Please try again.');
+      }
+    }
+  });
+};
+
   useEffect(() => {
     retrieveData();
   }, []);
@@ -55,15 +118,14 @@ const ProductList = ({navigation}) => {
       const value = await AsyncStorage.getItem('IdUser');
       if (value !== null) {
         const tokenObject = JSON.parse(value);
-        const userId = tokenObject; 
-        console.log("userId",userId);
+        const userId = tokenObject;
         setUserID(userId);
       }
     } catch (error) {
       console.error('Error retrieving data:', error);
     }
   };
-  
+
   useEffect(() => {
     const getUserData = async (userId) => {
       try {
@@ -81,52 +143,58 @@ const ProductList = ({navigation}) => {
     }
   }, [userID]);
 
- 
-const handleAddProduct = async () => {
-  try {
-    if (!userID) {
-      console.error('User ID not found.');
-      return;
+  const handleAddProduct = async () => {
+    try {
+      if (!userID) {
+        console.error('User ID not found.');
+        return;
+      }
+
+      const newProduct = {
+        name: productName,
+        // price: 10,
+        description: productDescription,
+        userId: userID,
+        imgUrl: imgUrl,
+        options: options
+      };
+
+      const response = await axios.post(`http://${ipAdress}:3000/api/product`, newProduct);
+      console.log('Product added successfully:', response.data);
+
+      setProductName('');
+      setProductDescription('');
+      setProductSize('');
+      setProductPrice('');
+      setOptions([]);
+      setsmallSizePrice('');
+      setmediumSizePrice('');
+      setlargeSizePrice('');
+      setSmallSelected(false);
+      setMediumSelected(false);
+      setLargeSelected(false);
+    } catch (error) {
+      console.error('Error adding product:', error);
     }
-console.log("before" ,userID);
-    const newProduct = {
-      name: productName,
-      description: productDescription,
-      price: productPrice,
-      userId: userID,
-      imgUrl:imgUrl
-    };
+  };
 
-    const response = await axios.post(`http://${ipAdress}:3000/api/product`, newProduct);
-    console.log('Product added successfully:', response.data);
+  const filteredProducts = userData ? userData.filter(product => product.userId === userID) : [];
+  const firstTwoImages = filteredProducts.slice(0, 2);
 
-    
-    setProductName('');
-    setProductDescription('');
-    setProductSize('');
-    setProductPrice('');
-  } catch (error) {
-    console.error('Error adding product:', error);
-  }
- 
-};
-const filteredProducts = userData ? userData.filter(product => product.userId === userID) : [];
-
-const firstTwoImages = filteredProducts.slice(0, 2)
   return (
     <ScrollView>
       <View>
         <View style={styles.top}>
-          <Text style={styles.Texttitlepacks} >Products's List</Text>
+          <Text style={styles.Texttitlepacks}>Products' List</Text>
           <Text style={styles.seeAllpacks} onPress={() => navigation.navigate('SeeAllProdsCoffee')}>See All</Text>
         </View>
         <SafeAreaView style={{ flex: 1 }}>
           <FlatList
-            data={firstTwoImages}
+            data={filteredProducts}
             renderItem={({ item }) => <ProductCard product={item} />}
             keyExtractor={(item) => item.id}
             contentContainerStyle={styles.container}
-            numColumns={2} 
+            numColumns={2}
           />
         </SafeAreaView>
         <View style={styles.container}>
@@ -140,10 +208,14 @@ const firstTwoImages = filteredProducts.slice(0, 2)
                   justifyContent: 'center',
                   alignItems: 'center',
                 }}>
-                <ImageBackground
-                  source={require("../image/square.png")}
-                  style={{ height: 120, width: 125 }}
-                  imageStyle={{ borderRadius: 15 }}>
+                <ImageBackground>
+                 <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+                  {imgUrl && (
+                    <Image source={{ uri: imgUrl }} style={{ width: 125, height: 120 }} />
+                  )}
+                   </View>
+                  {/* style={{ height: 120, width: 125 }}
+                  imageStyle={{ borderRadius: 15 }}> */}
                   <View
                     style={{
                       flex: 1,
@@ -151,6 +223,7 @@ const firstTwoImages = filteredProducts.slice(0, 2)
                       alignItems: 'center',
                     }}>
                     <Icon
+                    onPress={pickImage}
                       name="camera"
                       size={35}
                       color='#dba617'
@@ -171,7 +244,6 @@ const firstTwoImages = filteredProducts.slice(0, 2)
           <View style={styles.action}>
             <FontAwesome name="user-o" color={'#dba617'} size={20} />
             <TextInput
-            
               placeholder="Name"
               placeholderTextColor="#666666"
               autoCorrect={false}
@@ -190,7 +262,6 @@ const firstTwoImages = filteredProducts.slice(0, 2)
             <TextInput
               placeholder="Description"
               placeholderTextColor="#666666"
-              
               autoCorrect={false}
               style={[
                 styles.textInput,
@@ -203,48 +274,129 @@ const firstTwoImages = filteredProducts.slice(0, 2)
             />
           </View>
           <View style={styles.action}>
-            <FontAwesome name="expand" color={'#dba617'} size={20} />
             <View style={styles.optionButtonsContainer}>
-                                    <Text style={styles.optionTitle}>Size</Text>
-                                    <TouchableOpacity style={[styles.optionButton, selectedSize === 'Small' && styles.selectedOption]} onPress={() => handleSizeSelection('Small')}>
-  <Text style={styles.optionButtonText}>Small</Text>
-</TouchableOpacity>
-<TouchableOpacity style={[styles.optionButton, selectedSize === 'Regular' && styles.selectedOption]} onPress={() => handleSizeSelection('Regular')}>
-  <Text style={styles.optionButtonText}>Medium</Text>
-</TouchableOpacity>
-<TouchableOpacity style={[styles.optionButton, selectedSize === 'Large' && styles.selectedOption]} onPress={() => handleSizeSelection('Large')}>
-  <Text style={styles.optionButtonText}>Large</Text>
-</TouchableOpacity>
-
-                                </View>
-          </View>
-          <View style={styles.action}>
-            <FontAwesome name="dollar" color={'#dba617'} size={20} />
-            <TextInput
-              placeholder="Price"
-              placeholderTextColor="#666666"
-              autoCorrect={false}
-              keyboardType="number-pad"
-              style={[
-                styles.textInput,
-                {
-                  color: colors.text,
-                },
-              ]}
-              value={productPrice}
-              onChangeText={setProductPrice}
-            />
+              <View style={styles.sizePriceContainer}>
+                <View style={styles.sizeInputContainer}>
+                  <TouchableOpacity
+                    style={[styles.optionButton, smallSelected && styles.selectedOption]}
+                    onPress={() => handleSizeSelection('Small', smallSizePrice, setSmallSelected)}>
+                    <Text style={styles.optionButtonText}>Small</Text>
+                  </TouchableOpacity>
+                  <TextInput
+  placeholder="Price"
+  placeholderTextColor="#666666"
+  autoCorrect={false}
+  keyboardType="number-pad"
+  style={[
+    styles.sizePriceInput2,
+    {
+      color: colors.text,
+    },
+  ]}
+  value={smallSizePrice}
+  onChangeText={setsmallSizePrice}
+  onFocus={() => setSmallSelected(true)} // Maintain selection state when input is focused
+  onBlur={() => handleSizeSelection('Small', smallSizePrice, setSmallSelected)}
+/>
+                </View>
+                <View style={styles.sizeInputContainer}>
+                  <TouchableOpacity
+                    style={[styles.optionButton, mediumSelected && styles.selectedOption]}
+                    onPress={() => handleSizeSelection('Medium', mediumSizePrice, setMediumSelected)}>
+                    <Text style={styles.optionButtonText}>Medium</Text>
+                  </TouchableOpacity>
+                  <TextInput
+  placeholder="Price"
+  placeholderTextColor="#666666"
+  autoCorrect={false}
+  keyboardType="number-pad"
+  style={[
+    styles.sizePriceInput,
+    {
+      color: colors.text,
+    },
+  ]}
+  value={mediumSizePrice}
+  onChangeText={setmediumSizePrice}
+  onFocus={() => setMediumSelected(true)} // Maintain selection state when input is focused
+  onBlur={() => handleSizeSelection('Medium', mediumSizePrice, setMediumSelected)}
+/>
+                </View>
+                <View style={styles.sizeInputContainer}>
+                  <TouchableOpacity
+                    style={[styles.optionButton, largeSelected && styles.selectedOption]}
+                    onPress={() => handleSizeSelection('Large', largeSizePrice, setLargeSelected)}>
+                    <Text style={styles.optionButtonText}>Large</Text>
+                  </TouchableOpacity>
+                  <TextInput
+  placeholder="Price"
+  placeholderTextColor="#666666"
+  autoCorrect={false}
+  keyboardType="number-pad"
+  style={[
+    styles.sizePriceInput,
+    {
+      color: colors.text,
+    },
+  ]}
+  value={largeSizePrice}
+  onChangeText={setlargeSizePrice}
+  onFocus={() => setLargeSelected(true)} // Maintain selection state when input is focused
+  onBlur={() => handleSizeSelection('Large', largeSizePrice, setLargeSelected)}
+/>
+                </View>
+              </View>
+            </View>
           </View>
           <TouchableOpacity style={styles.commandButton} onPress={handleAddProduct}>
-            <Text style={styles.panelButtonTitle}>Submit</Text>
+            <Text style={styles.panelButtonTitle}>Add Product</Text>
           </TouchableOpacity>
         </View>
       </View>
     </ScrollView>
   );
 };
-
 const styles = StyleSheet.create({
+  sizePriceContainer: {
+    flexDirection: 'column',
+    
+  },
+  sizeInputContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 10, // Add margin bottom to separate input fields
+    marginLeft:58
+  },
+  title: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 10,
+  },
+  sizePriceInput: {
+    // flex: 1,
+    paddingLeft:14,
+    padding: 7,
+    color: '#05375a',
+    borderWidth: 1,
+    borderColor: '#ccc', // Set border color
+    borderRadius: 15, // Set border radius
+   marginLeft:36,
+   width:60
+  },
+
+  sizePriceInput2: {
+    // flex: 1,
+    paddingLeft:14,
+    padding: 7,
+    color: '#05375a',
+    borderWidth: 1,
+    borderColor: '#ccc', // Set border color
+    borderRadius: 15, // Set border radius
+   marginLeft:55,
+   width:60
+  },
+  
+  
   optionButtonsContainer: {
     flexDirection: 'row',
     justifyContent: 'space-around',
@@ -298,15 +450,36 @@ selectedOption: {
     fontWeight: 'bold',
     color: '#dba617',
     marginTop: 40,
-    marginRight: 20
+    marginRight: 30
+  },
+  optionWrapper: {
+    backgroundColor: '#dba617', // Background color for the option wrapper
+    borderRadius: 20, // Border radius for the option wrapper
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    // padding: 4,
+    marginBottom: 5,
+    // overflow: 'hidden',
+    elevation: 10, 
   },
   card: {
     flex: 1,
     margin: 10,
-    borderRadius: 10,
+    borderRadius: 30,
     backgroundColor: '#EFECEC',
     overflow: 'hidden',
-    elevation: 4, // Add shadow
+    elevation: 15, // Add shadow
+  },
+  price: {
+    fontSize: 15,
+    color: 'black',
+    marginBottom: 5,
+    backgroundColor: 'white',
+    padding:4,
+    borderRadius: 20,
+    marginTop:5,
+    marginRight:5
   },
   image: {
     width: '100%',
@@ -329,17 +502,31 @@ selectedOption: {
     color: '#888',
     marginBottom: 5,
   },
-  price: {
-    fontSize: 16,
-    color: '#f85c24',
-    marginBottom: 5,
-  },
+ 
   container: {
     backgroundColor: 'white',
     paddingHorizontal: 10,
     paddingVertical: 10,
   },
-  
+  optionContainer: {
+    flexDirection: 'flex',
+    alignItems: 'center',
+    marginTop: 5,
+  },
+  option: {
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    marginRight: 5,
+    borderRadius: 5,
+    // backgroundColor: '#FFC300',
+    color: 'white',
+    fontSize: 18,
+  },
+  optionText: {
+    fontSize: 14,
+    fontWeight: 'bold',
+    color: '#333333',
+  },
   bottomRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -366,6 +553,9 @@ selectedOption: {
   profileImageContainer: {
     alignItems: 'center',
     marginBottom: 20,
+  },
+  selectedOption: {
+    backgroundColor: '#dba617',
   },
   profileImage: {
     height: 100,
