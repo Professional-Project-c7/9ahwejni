@@ -47,7 +47,6 @@ const imageHandler = async (image) => {
     throw error;
   }
 };
-console.log('helllllllllllllllo',imgUrl)
 
 const pickImage = () => {
   launchImageLibrary({}, async (response) => {

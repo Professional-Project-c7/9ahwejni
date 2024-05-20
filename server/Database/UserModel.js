@@ -26,7 +26,7 @@ module.exports = (sequelize, DataTypes) => {
     },
     ImageUrl: {
       type: DataTypes.STRING,
-      allowNull: true
+      allowNull: false
     },
     UserType: {
       type: DataTypes.ENUM('coffee', 'client'),
