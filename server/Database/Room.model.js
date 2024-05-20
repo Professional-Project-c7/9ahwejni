@@ -2,11 +2,11 @@ const { Sequelize, DataTypes } = require('sequelize');
 const sequelize = new Sequelize('sqlite::memory:');
 
 module.exports = (sequelize, DataTypes) => {
-  const Message = sequelize.define('Message', {
-    content: {
+  const Room = sequelize.define('Room', {
+    name: {
       type: DataTypes.STRING,
-      allowNull: false,
-    }
+      allowNull: true,
+    },
   });
-  return Message;
+  return Room;
 };

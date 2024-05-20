@@ -9,11 +9,12 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Feather from 'react-native-vector-icons/Feather';
 import imagee from "../image/expresso.png"
 import { imageHandler } from '../components/imagehandlercloud';
+import { launchImageLibrary } from 'react-native-image-picker';
 
 const PackCard = ({ pack, onPressProducts }) => {
   return (
     <TouchableOpacity style={styles.card} onPress={onPressProducts}>
-      <Image source={require("../image/expresso.png")} style={styles.image} />
+      <Image source={{ uri: pack.imgUrl }} style={styles.image} />
       <View style={styles.details}>
         <Text style={styles.name}>{pack.name}</Text>
         <Text style={styles.description}>{pack.description}</Text>
@@ -69,11 +70,57 @@ const AddPacks = ({navigation}) => {
   const [userpacks, setUserpacks] = useState(null);
   const [selectedPack, setSelectedPack] = useState(null);
   const [isProductModalVisible, setIsProductModalVisible] = useState(false);
+  const [imgUrl, setimgUrl] = useState('');
+
   const handleShowProducts = (pack) => {
     setSelectedPack(pack);
     setIsProductModalVisible(true);
   };
   console.log(userID);
+
+  const imageHandler = async (image) => {
+    try {
+      const data = new FormData();
+      data.append('file', {
+        uri: image.assets[0].uri,
+        type: image.assets[0].type,
+        name: 'photo.jpg'
+      });
+      data.append('upload_preset', 'i38oelnt'); // Replace 'your_upload_preset' with your Cloudinary upload preset
+      data.append('cloud_name', 'dqyx6lht5'); // Replace 'your_cloud_name' with your Cloudinary cloud name
+  
+      const response = await fetch('https://api.cloudinary.com/v1_1/dqyx6lht5/image/upload', {
+        method: 'POST',
+        body: data
+      });
+      const result = await response.json();
+      console.log('Cloudinary response:', result);
+      return result.secure_url;
+    } catch (error) {
+      console.error('Error uploading image:', error);
+      throw error;
+    }
+  };
+  
+  const pickImage = () => {
+    launchImageLibrary({}, async (response) => {
+      if (response.didCancel) {
+        console.log('User cancelled image picker');
+      } else if (response.error) {
+        console.log('ImagePicker Error: ', response.error);
+      } else {
+        try {
+          const imageUri = await imageHandler(response);
+          console.log('Image URI:', imageUri);
+          setimgUrl(imageUri);
+        } catch (error) {
+          console.error('Error uploading image:', error);
+          Alert.alert('Upload Failed', 'Failed to upload image. Please try again.');
+        }
+      }
+    });
+  };
+
   useEffect(() => {
     retrieveData();
     getArrayOfProductsIds()
@@ -138,6 +185,7 @@ console.log("before" ,userID);
       description: packDescription,
       price: packPrice,
       userId: userID,
+      imgUrl:imgUrl,
       checkedProductIDs:array
     };
 
@@ -149,6 +197,7 @@ console.log("before" ,userID);
     setpackDescription('');
     setpackSize('');
     setpackPrice('');
+    setimgUrl('')
   } catch (error) {
     console.error('Error adding pack:', error);
   }
@@ -212,10 +261,14 @@ const firstTwoImages = filteredProducts.slice(0, 2)
                   justifyContent: 'center',
                   alignItems: 'center',
                 }}>
-                <ImageBackground
-                  source={require("../image/square.png")}
-                  style={{ height: 120, width: 125 }}
-                  imageStyle={{ borderRadius: 15 }}>
+                <ImageBackground>
+                 <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+                  {imgUrl && (
+                    <Image source={{ uri: imgUrl }} style={{ width: 125, height: 120 }} />
+                  )}
+                   </View>
+                  {/* style={{ height: 120, width: 125 }}
+                  imageStyle={{ borderRadius: 15 }}> */}
                   <View
                     style={{
                       flex: 1,
@@ -223,6 +276,7 @@ const firstTwoImages = filteredProducts.slice(0, 2)
                       alignItems: 'center',
                     }}>
                     <Icon
+                    onPress={pickImage}
                       name="camera"
                       size={35}
                       color='#dba617'
@@ -313,9 +367,9 @@ const firstTwoImages = filteredProducts.slice(0, 2)
           <TouchableOpacity style={styles.commandButton} onPress={handleAddpack}>
             <Text style={styles.panelButtonTitle}>Submit</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.commandButton} onPress={()=> navigation.navigate('TestCloud')}>
+          {/* <TouchableOpacity style={styles.commandButton}  onPress={() => navigation.navigate('TestCloud')}>
             <Text style={styles.panelButtonTitle}>Submit</Text>
-          </TouchableOpacity>
+          </TouchableOpacity> */}
          
           
         </View>

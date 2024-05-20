@@ -1,4 +1,4 @@
-const { Sequelize, DataTypes } = require('sequelize');
+  const { Sequelize, DataTypes } = require('sequelize');
 const sequelize = new Sequelize('sqlite:///:memory:');
 
 module.exports = (sequelize, DataTypes) => {
@@ -26,7 +26,7 @@ module.exports = (sequelize, DataTypes) => {
     },
     ImageUrl: {
       type: DataTypes.STRING,
-      allowNull: true
+      allowNull: false
     },
     UserType: {
       type: DataTypes.ENUM('coffee', 'client'),

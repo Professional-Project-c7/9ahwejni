@@ -7,7 +7,7 @@ module.exports = {
 selectAll :async function(req,res){
     try {
         const product= await db.Products.findAll({
-            include: [{ model: db.User}]
+            include: [{ model: db.Options}]
         })
         res.status(200).send(product)
         
@@ -27,16 +27,39 @@ selectOne: async function(req, res) {
     }
 
     },
-addOne:async function(req,res){
-    try {
-        console.log("req" , req.body);
-        const product = await db.Products.create(req.body)
-        
-    res.status(201).send(product)
-    } catch (error) {
-       console.log(error)
-    }
+    addOne: async function(req, res) {
+        try {
+            console.log("req", req.body);
+            
+            const product = await db.Products.create(req.body);
+           const createArr=req.body.options.map((e)=>{
+            return {
+                price:e.price,
+                option:e.option,
+                prodId:product.id
+            }
+           }) 
+            
+            const option = await db.Options.bulkCreate(createArr)
+            
+            
+            // const productOption = await db.productoptions.create({
+            //     name: product.name, 
+            //     price: product.price,
+            //     description: product.description,
+            //     imgUrl: product.imgUrl,
+            //     prodId: product.id,
+            //     optionId: option.id 
+            // });
+            
+            
+            res.status(201).send({ product, option,  });
+        } catch (error) {
+            console.log(error);
+            res.status(500).send("Internal Server Error");
+        }
     },
+    
 deleteOne:async (req, res) => {
     try {
     const product = await db.Products.destroy({

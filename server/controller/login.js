@@ -7,7 +7,7 @@ const jwt = require('jsonwebtoken');
 
 exports.register = async (req, res) => {
     try {
-        const { UserType, Email, Password, FirstName, LastName,Address} = req.body;
+        const { UserType, Email, Password, FirstName, LastName,Address,ImageUrl} = req.body;
         if (!Password) {
             return res.status(400).json({ error: 'Password is required' });
         }
@@ -16,7 +16,7 @@ exports.register = async (req, res) => {
         const user = await db.User.create({
 
                 UserType,
-             
+                ImageUrl:"https://img.freepik.com/premium-photo/bearded-man-illustration_665280-67047.jpg?w=826",
                 Email,
                 Password: hashedPassword,
                 Address,
@@ -53,7 +53,7 @@ exports.login = async (req, res) => {
         }
 
         const token = jwt.sign({ userId: user.UserType,FirstName:user.FirstName  }, 'your-secret-key', { expiresIn: '1h' });
-        res.status(200).json({ token, userId: user.UserType,IdUser:user.id });
+        res.status(200).json({ token, userId: user.UserType,IdUser:user.id,name: user.FirstName });
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: 'Login failed' });

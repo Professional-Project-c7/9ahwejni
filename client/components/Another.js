@@ -5,15 +5,15 @@ import Icon from 'react-native-vector-icons/Ionicons';
 
 
 const initialFavorites = [
-  {
-    id: '1',
-    title: 'Espresso Delight',
-    category: 'Espresso',
+  // {
+  //   id: '1',
+  //   title: 'Espresso Delight',
+  //   category: 'Espresso',
    
-    rating: 4.8,
-    isFavorite: true,
-    logo: 'https://via.placeholder.com/80x80?text=ED',
-  },
+  //   rating: 4.8,
+  //   isFavorite: true,
+  //   logo: 'https://via.placeholder.com/80x80?text=ED',
+  // },
   {
     id: '2',
     title: 'Latte Love',
@@ -32,15 +32,15 @@ const initialFavorites = [
     isFavorite: true,
     logo: 'https://via.placeholder.com/80x80?text=CC',
   },
-  {
-    id: '4',
-    title: 'Mocha Magic',
-    category: 'Mocha',
+  // {
+  //   id: '4',
+  //   title: 'Mocha Magic',
+  //   category: 'Mocha',
    
-    rating: 4.8,
-    isFavorite: true,
-    logo: 'https://via.placeholder.com/80x80?text=MM',
-  },
+  //   rating: 4.8,
+  //   isFavorite: true,
+  //   logo: 'https://via.placeholder.com/80x80?text=MM',
+  // },
 ];
 
 const Favorit = () => {

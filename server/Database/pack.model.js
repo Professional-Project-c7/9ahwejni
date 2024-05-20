@@ -15,7 +15,10 @@ module.exports=(sequelize,DataTypes)=>{
     description: {
         type: DataTypes.STRING
       },
-      
+      imgUrl: {
+        type: DataTypes.STRING,
+        allowNull :true
+      },
     
   });
   return pack

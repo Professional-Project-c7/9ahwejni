@@ -30,8 +30,13 @@ const Login = ({ navigation }) => {
       );
       await AsyncStorage.setItem('userToken', JSON.stringify(response.data.userId));
       await AsyncStorage.setItem('IdUser', JSON.stringify(response.data.IdUser));
+      await AsyncStorage.setItem('NAME', JSON.stringify(response.data.name));
+
       await AsyncStorage.setItem('welcomeBack', 'true');  // Set flag for welcome message
-      console.log(response.data.userId);
+
+       // Clear input fields
+       setEmail('');
+       setPassword('');
       navigation.navigate('Tabs');
     } catch (error) {
       Toast.show({
