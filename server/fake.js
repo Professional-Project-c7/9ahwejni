@@ -12,10 +12,10 @@ function getRandomElementFromArray(arr) {
   }
 module.exports = async (sequelize) => {
     // Adjust the number of seeds you want for each model
-    const userCount = 50;
-    const productCount = 50;
-    const packCount = 50;
-    const reviewCount = 50;
+    const userCount = 10;
+    const productCount = 10;
+    const packCount = 10;
+    const reviewCount = 10;
         // Generate random users
     const users = await Promise.all(
       Array.from({ length: userCount }).map(async () => {

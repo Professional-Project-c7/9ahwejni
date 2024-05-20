@@ -1,23 +1,20 @@
 import React, { useState } from 'react';
 import { View, StyleSheet, Text } from 'react-native';
-import { TextInput, Button } from 'react-native-paper';
+import { Button } from 'react-native-paper';
 import { Rating } from 'react-native-ratings';
 import axios from 'axios';
 import { ipAdress } from '../config';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import Toast from 'react-native-toast-message';
 
-const AddReview = ({ productId, userId, onReviewSubmitted }) => {
-    const [rating, setRating] = useState(3); 
-    const [comment, setComment] = useState('');
+const AddReviewz = ({ coffeeShopId, userId, onClose, onReviewSubmitted }) => {
+    const [rating, setRating] = useState(3);
 
     const submitReview = async () => {
         try {
-            await axios.post(`http://${ipAdress}:3000/api/review`, {
-                userId: userId,
-                prodId: productId,
+            await axios.post(`http://${ipAdress}:3000/api/reviewz`, {
+                reviewerId: userId,
+                revieweeId: coffeeShopId,
                 stars: rating,
-                comment: comment
             });
 
             Toast.show({
@@ -36,6 +33,7 @@ const AddReview = ({ productId, userId, onReviewSubmitted }) => {
             if (onReviewSubmitted) {
                 onReviewSubmitted();
             }
+            onClose(); // Close the modal after submitting the review
         } catch (error) {
             console.error('Error submitting review:', error);
             Toast.show({
@@ -55,7 +53,7 @@ const AddReview = ({ productId, userId, onReviewSubmitted }) => {
 
     return (
         <View style={styles.container}>
-            <Text style={styles.header}>Leave a Review</Text>
+            <Text style={styles.header}>Rate this Shop</Text>
             <Rating
                 type="star"
                 ratingCount={5}
@@ -64,14 +62,6 @@ const AddReview = ({ productId, userId, onReviewSubmitted }) => {
                 onFinishRating={setRating}
                 startingValue={rating}
                 style={styles.rating}
-            />
-            <TextInput
-                label="Add a comment (optional)"
-                value={comment}
-                onChangeText={setComment}
-                mode="outlined"
-                style={styles.input}
-                right={<TextInput.Icon name="pencil" />}
             />
             <Button 
                 icon="send" 
@@ -90,32 +80,28 @@ const styles = StyleSheet.create({
     container: {
         padding: 30,
         backgroundColor: '#fff',
-        borderRadius: 20,
+        borderRadius: 25,
         shadowColor: '#000',
         shadowOffset: { width: 0, height: 5 },
         shadowOpacity: 0.3,
         shadowRadius: 10,
         elevation: 10,
-        width: '90%',
+        width: '99%',
         alignSelf: 'center',
     },
     header: {
         fontSize: 24,
         fontWeight: 'bold',
-        marginBottom: 20,
         textAlign: 'center',
-        color: '#333',
+        color: 'black',
     },
     rating: {
         marginBottom: 30,
         alignSelf: 'center',
-    },
-    input: {
-        marginBottom: 30,
     },
     button: {
         marginTop: 20,
     },
 });
 
-export default AddReview;
+export default AddReviewz;

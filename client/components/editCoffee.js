@@ -120,7 +120,7 @@ const handleUpdateProfile = async () => {
   try {
     const userData = {
       FirstName: firstName,
-      LastName: lastName,
+      lastName: lastName,
       phone: phone,
       email: email,
       country: country,
@@ -172,7 +172,7 @@ const handleUpdateProfile = async () => {
      {userData && (
         <>
         <View style={{alignItems: 'center', marginTop:15}}>
-          <TouchableOpacity onPress={pickImage} >
+          <TouchableOpacity >
             <View
               style={{
                 height: 100,
@@ -185,7 +185,7 @@ const handleUpdateProfile = async () => {
              <ImageBackground>
                  <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
                   {imgUrl && (
-                    <Image source={{ uri: imgUrl }} style={{ width: 125, height: 120, borderRadius:70, marginBottom:-40  }} />
+                    <Image source={{ uri: imgUrl }} style={{ width: 125, height: 120 }} />
                   )}
                    </View>
                   {/* style={{ height: 120, width: 125 }}
@@ -196,14 +196,24 @@ const handleUpdateProfile = async () => {
                       justifyContent: 'center',
                       alignItems: 'center',
                     }}>
-                   
+                    <Icon
+                    onPress={pickImage}
+                      name="camera"
+                      size={35}
+                      color='#dba617'
+                      style={{
+                        opacity: 0.7,
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                      }}
+                    />
                   </View>
                 </ImageBackground>
 
             </View>
           </TouchableOpacity>
           <Text style={{marginTop: 10, fontSize: 18, fontWeight: 'bold'}}>
-          {userData.FirstName +" " + userData.LastName}
+          {userData.FirstName }
 
           </Text>
         </View>

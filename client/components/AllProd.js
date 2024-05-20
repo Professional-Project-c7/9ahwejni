@@ -149,7 +149,7 @@ const styles = StyleSheet.create({
   },
   logo: {
     width: 120,
-    height: 60,
+    height: 120,
   },
   searchSection: {
     flexDirection: 'row',

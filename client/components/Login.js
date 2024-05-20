@@ -33,10 +33,10 @@ const Login = ({ navigation }) => {
       await AsyncStorage.setItem('NAME', JSON.stringify(response.data.name));
 
       await AsyncStorage.setItem('welcomeBack', 'true');  // Set flag for welcome message
-      console.log(response.data.IdUser);
-      console.log(response.data.userId);
-      console.log(response.data.name);
 
+       // Clear input fields
+       setEmail('');
+       setPassword('');
       navigation.navigate('Tabs');
     } catch (error) {
       Toast.show({

@@ -1,95 +1,79 @@
-// Favorit.js
-import React, { useState } from 'react';
-import { View, Text, FlatList, Image, TouchableOpacity, StyleSheet } from 'react-native';
-import Icon from 'react-native-vector-icons/Ionicons';
+import React, { useState, useEffect, useCallback } from 'react';
+import { StyleSheet, Text, TouchableOpacity, View, Image, FlatList, RefreshControl } from 'react-native';
+import { useFocusEffect, useNavigation } from '@react-navigation/native';
+import Icon from 'react-native-vector-icons/FontAwesome';
+import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
+const Favorites = ({ navigation }) => {
+  const [posts, setPosts] = useState([]);
+  const [refreshing, setRefreshing] = useState(false);
 
-const initialFavorites = [
-  {
-    id: '1',
-    title: 'Espresso Delight',
-    category: 'Espresso',
-   
-    rating: 4.8,
-    isFavorite: true,
-    logo: 'https://via.placeholder.com/80x80?text=ED',
-  },
-  {
-    id: '2',
-    title: 'Latte Love',
-    category: 'Latte',
-  
-    rating: 4.7,
-    isFavorite: false,
-    logo: 'https://via.placeholder.com/80x80?text=LL',
-  },
-  {
-    id: '3',
-    title: 'Cappuccino Craze',
-    category: 'Cappuccino',
-   
-    rating: 4.9,
-    isFavorite: true,
-    logo: 'https://via.placeholder.com/80x80?text=CC',
-  },
-  {
-    id: '4',
-    title: 'Mocha Magic',
-    category: 'Mocha',
-   
-    rating: 4.8,
-    isFavorite: true,
-    logo: 'https://via.placeholder.com/80x80?text=MM',
-  },
-];
+  console.log("Fetched posts:", posts);
 
-const Favorit = () => {
-  const [favorites, setFavorites] = useState(initialFavorites);
-
-  const toggleFavorite = (id) => {
-    const updatedFavorites = favorites.map(item =>
-      item.id === id ? { ...item, isFavorite: !item.isFavorite } : item
-    );
-    setFavorites(updatedFavorites);
+  const fetchData = async () => {
+    try {
+      const storedPosts = await AsyncStorage.getItem('favv');
+      if (storedPosts) {
+        const parsedPosts = JSON.parse(storedPosts);
+        console.log('Parsed posts:', parsedPosts); // Debugging: Log parsed posts
+        setPosts(parsedPosts);
+      } else {
+        console.log('No posts found in AsyncStorage');
+      }
+    } catch (error) {
+      console.log('Error fetching data:', error); 
+    }
   };
 
-  const renderItem = ({ item }) => (
-    <View style={styles.itemContainer}>
-      <Image source={{ uri: item.logo }} style={styles.logo} />
-      <View style={styles.details}>
-        <Text style={styles.title}>{item.title}</Text>
-        <Text style={styles.subtitle}>{item.category}</Text>
-        <View style={styles.row}>
-          {Array.from({ length: 5 }).map((_, index) => (
-            <Icon
-              key={index}
-              name="star"
-              size={16}
-              color={index < Math.floor(item.rating) ? '#FFD700' : '#E0E0E0'}
-            />
-          ))}
-          <Text style={styles.rating}>{item.rating.toFixed(1)}</Text>
-        </View>
-      </View>
-      <TouchableOpacity
-        style={styles.favoriteButton}
-        onPress={() => toggleFavorite(item.id)}
-      >
-        <Icon
-          name={item.isFavorite ? 'heart' : 'heart-outline'}
-          size={24}
-          color={item.isFavorite ? '#FF0000' : '#9e9e9e'}
-        />
-      </TouchableOpacity>
-    </View>
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  useFocusEffect(
+    useCallback(() => {
+      fetchData();
+    }, [])
   );
+
+  const handleDeleteItem = async (itemId) => {
+    const updatedPosts = posts.filter(item => item.id !== itemId);
+    setPosts(updatedPosts);
+    try {
+      await AsyncStorage.setItem('favv', JSON.stringify(updatedPosts));
+    } catch (error) {
+      console.log('Error updating favorites:', error);
+    }
+  };
+
+  const onRefresh = () => {
+    setRefreshing(true);
+    fetchData().then(() => setRefreshing(false));
+  };
 
   return (
     <View style={styles.container}>
+      <Icon name="arrow-left" size={30} style={styles.backIcon} onPress={() => navigation.goBack()} />
       <FlatList
-        data={favorites}
-        keyExtractor={(item) => item.id}
-        renderItem={renderItem}
+        data={posts}
+        renderItem={({ item, index }) => (
+          <View key={index} style={styles.card}>
+            <Image style={styles.cardImage} source={{ uri: item.imgUrl }} />
+            <View style={styles.cardContent}>
+              <Text style={styles.title}>{item.name}</Text>
+              <Text style={styles.description}>{item.description}</Text>
+              <Text style={styles.price}>${item.price}</Text>
+              <TouchableOpacity style={styles.deleteButton} onPress={() => handleDeleteItem(item.id)}>
+                <MaterialIcon name="delete" size={24} color="#ff6347" />
+              </TouchableOpacity>
+            </View>
+          </View>
+        )}
+        keyExtractor={(item, index) => index.toString()}
+        ItemSeparatorComponent={() => <View style={styles.separator} />}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }
       />
     </View>
   );
@@ -98,48 +82,57 @@ const Favorit = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f2f2f2',
-    padding: 10,
+    backgroundColor: '#f4f3ef',
   },
-  itemContainer: {
+  backIcon: {
+    margin: 16,
+    color: 'rgba(219, 166, 23, 1)',
+  },
+  card: {
     flexDirection: 'row',
-    alignItems: 'center',
     backgroundColor: '#fff',
-    borderRadius: 8,
-    padding: 10,
-    marginVertical: 5,
-    elevation: 2,
+    borderRadius: 15,
+    margin: 10,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 6,
+    elevation: 6,
   },
-  logo: {
-    width: 50,
-    height: 50,
-    borderRadius: 25,
-    marginRight: 10,
+  cardImage: {
+    width: 100,
+    height: '100%',
+    borderTopLeftRadius: 15,
+    borderBottomLeftRadius: 15,
   },
-  details: {
+  cardContent: {
     flex: 1,
+    padding: 15,
   },
   title: {
-    fontSize: 16,
+    fontSize: 20,
     fontWeight: 'bold',
   },
-  subtitle: {
-    fontSize: 14,
-    color: '#666',
+  description: {
+    color: '#6e695b',
+    fontSize: 16,
+    flexWrap: 'wrap',
+    marginBottom: 10,
   },
-  row: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginTop: 5,
+  price: {
+    fontSize: 19,
+    fontWeight: 'bold',
+    color: '#38761d',
   },
-  rating: {
-    marginLeft: 5,
-    fontSize: 14,
-    color: '#666',
+  deleteButton: {
+    position: 'absolute',
+    right: 10,
+    top: 10,
   },
-  favoriteButton: {
-    padding: 5,
+  separator: {
+    height: 2,
+    backgroundColor: '#ececec',
   },
 });
 
-export default Favorit;
+export default Favorites;

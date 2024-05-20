@@ -107,8 +107,8 @@ const HomePage = ({ navigation }) => {
         onRequestClose={toggleNotification}
       >
         <View style={styles.notificationModal}>
-          <Notification />
-          <IconButton icon="close" iconColor="#FFF" onPress={toggleNotification} />
+         <Notification/>
+          <IconButton icon="close" color="#000" onPress={toggleNotification} />
         </View>
       </Modal>
 

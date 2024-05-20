@@ -23,11 +23,13 @@ async function connectionTest (){
   connectionTest()
   const db={}
   db.User=require('./UserModel')(connection,DataTypes)
+  db.favorit=require('./favorit')(connection,DataTypes)
   db.Products=require('./product.Model')(connection,DataTypes)
   db.Coffee=require('./cofee.model')(connection,DataTypes)
   db.Message=require('./Message.model')(connection,DataTypes)
   db.Packproduct=require('./packproduct')(connection,DataTypes)
   db.Review = require('./review.model')(connection, DataTypes);
+  db.Reviewz = require('./reviewz.model')(connection, DataTypes);
   db.Options = require('./options.model')(connection, DataTypes);
   db.Notification = require('./notification')(connection, DataTypes);
   db.Room = require('./Room.model')(connection, DataTypes);
@@ -48,10 +50,11 @@ async function connectionTest (){
   db.Products.hasMany(db.Size);
   db.Size.belongsTo(db.Products);
 
-  db.Products.belongsToMany(db.Options,{ through: db.productoptions });
-  db.Options.belongsToMany(db.Products,{ through: db.productoptions });
+  db.favorit.hasMany(db.Products);
+  db.Products.belongsTo(db.favorit);
 
-
+  db.Products.hasMany(db.Options);
+  db.Options.belongsTo(db.Products);
 
   db.User.hasMany(db.Pack);
   db.Pack.belongsTo(db.User);
@@ -59,11 +62,9 @@ async function connectionTest (){
   db.User.hasMany(db.Products);
   db.Products.belongsTo(db.User);
 
+
 db.User.hasMany(db.Review);
 db.Review.belongsTo(db.User);
-// db.Products.hasMany(db.Review);
-// db.Review.belongsTo(db.Products);
-
 db.Products.hasMany(db.Review, { foreignKey: 'prodId' });
 db.Review.belongsTo(db.Products, { foreignKey: 'prodId' });
 
@@ -72,11 +73,12 @@ db.Review.belongsTo(db.Products, { foreignKey: 'prodId' });
 
 //  relationships for messages and rooms
 
-db.User.hasMany(db.Message,{ foreignKey: 'senderId' } );
-db.Message.belongsTo(db.User, { foreignKey: 'senderId' });
+db.Reviewz.belongsTo(db.User, { as: 'Reviewer', foreignKey: 'reviewerId' });
+db.Reviewz.belongsTo(db.User, { as: 'Reviewee', foreignKey: 'revieweeId' });
 
-db.Room.hasMany(db.Message, { foreignKey: 'roomId' });
-db.Message.belongsTo(db.Room, { foreignKey: 'roomId' });
+
+// db.Room.hasMany(db.Message, { foreignKey: 'roomId' });
+// db.Message.belongsTo(db.Room, { foreignKey: 'roomId' });
 
 // db.Room.belongsToMany(db.User,{ through: db.RoomUser });
 // db.User.belongsToMany(db.Room,{ through: db.RoomUser }); 
