@@ -1,7 +1,8 @@
 // favorit.controller.js
 
 // Import your model or any other dependencies you may need
-const Favorit = require('../models/favorit.model');
+const db = require('../Database/index')
+
 
 // Controller function to handle selecting all favorites
 const selectAll = async (req, res) => {

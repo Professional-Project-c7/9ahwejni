@@ -13,7 +13,7 @@ app.use(express.urlencoded({extended: true}));
 // require('./fake.js')()
 const User = require('./Routers/user.routes.js')
 const ProductRoutes=require("./Routers/products.routes.js")
-const favorit=require("./Routers/favorit.routes.js")
+// const favorit=require("./Routers/favorit.routes.js")
 
 const packs = require('./Routers/packs.routes.js')
 const Authentication = require('./Routers/login.routers.js');
@@ -32,7 +32,7 @@ app.use("/api/not", Notification);
 app.use("/api/auth", Authentication);
 app.use('/api/messages', messagesRouter);
 app.use('/api/user', User);
-app.use('/api/favorit', favorit);
+// app.use('/api/favorit', favorit);
 
 app.use("/api/product", ProductRoutes);
 app.use("/api/packs", packs);
