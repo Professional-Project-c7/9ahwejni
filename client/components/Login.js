@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, Text, View, TextInput, TouchableOpacity, Image, Alert } from 'react-native';
+import { StyleSheet, Text, View, TextInput, TouchableOpacity, Image } from 'react-native';
 import { Button } from 'react-native-paper';
 import axios from 'axios';
 import { useNavigation } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { ipAdress } from '../config';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import Toast from 'react-native-toast-message';
 
 const Login = ({ navigation }) => {
   const [email, setEmail] = useState('');
@@ -13,11 +14,13 @@ const Login = ({ navigation }) => {
   const [error, setError] = useState(null);
   const [showPassword, setShowPassword] = useState(false);
 
-
-
   const handleSubmit = async () => {
     if (email === '' || password === '') {
-      Alert.alert('Incomplete Information', 'Please fill in all fields.');
+      Toast.show({
+        type: 'error',
+        text1: 'Incomplete Information',
+        text2: 'Please fill in all fields.',
+      });
       return;
     }
     try {
@@ -25,12 +28,17 @@ const Login = ({ navigation }) => {
         `http://${ipAdress}:3000/api/auth/login`,
         { Email: email, Password: password }
       );
-      AsyncStorage.setItem('userToken', JSON.stringify(response.data.userId));
-      AsyncStorage.setItem('IdUser', JSON.stringify(response.data.IdUser));
+      await AsyncStorage.setItem('userToken', JSON.stringify(response.data.userId));
+      await AsyncStorage.setItem('IdUser', JSON.stringify(response.data.IdUser));
+      await AsyncStorage.setItem('welcomeBack', 'true');  // Set flag for welcome message
       console.log(response.data.userId);
       navigation.navigate('Tabs');
     } catch (error) {
-      Alert.alert('Invalid email or password. Please check your credentials.');
+      Toast.show({
+        type: 'error',
+        text1: 'Invalid email or password',
+        text2: 'Please check your credentials.',
+      });
     }
   };
 
@@ -60,7 +68,7 @@ const Login = ({ navigation }) => {
             onChangeText={setPassword}
           />
           <TouchableOpacity onPress={() => setShowPassword(!showPassword)} style={styles.eyeIcon}>
-            <Icon  name={ 'eye' } style={styles.eyeImage} />
+            <Icon name='eye' style={styles.eyeImage} />
           </TouchableOpacity>
         </View>
       </View>
@@ -71,6 +79,7 @@ const Login = ({ navigation }) => {
       <TouchableOpacity onPress={navigateToUserAccount}>
         <Text style={styles.createAccount}>Don't have an account? Create one</Text>
       </TouchableOpacity>
+      <Toast />
     </View>
   );
 };
@@ -90,7 +99,7 @@ const styles = StyleSheet.create({
   inputContainer: {
     marginBottom: 20,
     width: '80%',
-    color:'black'
+    color: 'black',
   },
   input: {
     height: 50,
@@ -100,12 +109,12 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     borderRadius: 25,
     backgroundColor: '#FFF',
-    color:'black'
+    color: 'black',
   },
   passwordInput: {
     flexDirection: 'row',
     alignItems: 'center',
-    color:'black'
+    color: 'black',
   },
   passwordTextInput: {
     flex: 1,
@@ -116,17 +125,17 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     borderRadius: 25,
     backgroundColor: '#FFF',
-    color:'black'
+    color: 'black',
   },
   eyeIcon: {
     position: 'absolute',
     right: 10,
-    color:'black'
+    color: 'black',
   },
   eyeImage: {
     width: 25,
     height: 25,
-    color:'black'
+    color: 'black',
   },
   button: {
     backgroundColor: '#dba617',
@@ -144,7 +153,8 @@ const styles = StyleSheet.create({
   errorText: {
     color: 'red',
     marginBottom: 10,
-    color:'black'
+    color: 'black',
+    
   },
 });
 

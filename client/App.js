@@ -23,7 +23,7 @@ import AllProd from './components/AllProd';
 import AllCakes from './components/AllCakes';
 import AllCoffees from './components/AllCoffees';
 import AllDrinks from './components/AllDrinks';
-
+import Allpack from './components/allpack';
 function App() {
 
   return (
