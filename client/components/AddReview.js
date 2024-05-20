@@ -19,6 +19,9 @@ const AddReview = ({ productId, userId }) => {
                 stars: rating,
                 comment: comment
             });
+           
+          
+
             Toast.show({
                 type: 'success',
                 text1: 'Review Submitted',

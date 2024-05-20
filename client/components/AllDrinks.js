@@ -11,7 +11,6 @@ import {
   ToastAndroid,
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { Rating } from 'react-native-ratings';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import LinearGradient from 'react-native-linear-gradient';
 import axios from 'axios';
@@ -109,30 +108,33 @@ const AllDrinks = ({ navigation }) => {
           <Text>Error: {error}</Text>
         ) : (
           <View style={styles.productsContainer}>
-            {filteredDrinks.map((drink) => (
-              <View style={styles.card} key={drink.id}>
-                <TouchableOpacity onPress={() => handleNavigateToDetails(drink)}>
-                  <Image source={{ uri: drink.imgUrl }} style={styles.image} />
-                </TouchableOpacity>
-                <Icon
-                  name={favorites[drink.id]?.favored ? 'heart' : 'heart-outline'}
-                  color={favorites[drink.id]?.favored ? 'red' : '#dba617'}
-                  size={27}
-                  style={styles.favIcon}
-                />
-                <View style={styles.infoContainer}>
-                  <Text style={styles.reviews}>{`${drink.totalReviews} 👤 ⭐: ${drink.averageRating}`}</Text>
-                  <Text style={styles.name}>{drink.name}</Text>
-                  <Text style={styles.price}>${drink.price}</Text>
+            {filteredDrinks.map((drink, index) => {
+              const isLastOddCard = filteredDrinks.length % 2 !== 0 && index === filteredDrinks.length - 1;
+              return (
+                <View style={[styles.card, isLastOddCard && styles.lastOddCard]} key={drink.id}>
+                  <TouchableOpacity onPress={() => handleNavigateToDetails(drink)}>
+                    <Image source={{ uri: drink.imgUrl }} style={styles.image} />
+                  </TouchableOpacity>
                   <Icon
-                    name={favorites[drink.id]?.inCart ? 'cart' : 'cart-outline'}
-                    size={24}
-                    onPress={() => toggleFeature(drink.id, 'inCart')}
-                    style={styles.cartIcon}
+                    name={favorites[drink.id]?.favored ? 'heart' : 'heart-outline'}
+                    color={favorites[drink.id]?.favored ? 'red' : '#dba617'}
+                    size={27}
+                    style={styles.favIcon}
                   />
+                  <View style={styles.infoContainer}>
+                    <Text style={styles.reviews}>{`${drink.totalReviews} 👤 ⭐: ${drink.averageRating}`}</Text>
+                    <Text style={styles.name}>{drink.name}</Text>
+                    <Text style={styles.price}>${drink.price}</Text>
+                    <Icon
+                      name={favorites[drink.id]?.inCart ? 'cart' : 'cart-outline'}
+                      size={24}
+                      onPress={() => toggleFeature(drink.id, 'inCart')}
+                      style={styles.cartIcon}
+                    />
+                  </View>
                 </View>
-              </View>
-            ))}
+              );
+            })}
           </View>
         )}
       </ScrollView>
@@ -192,6 +194,9 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 6,
     elevation: 5,
+  },
+  lastOddCard: {
+    width: '98%',
   },
   image: {
     height: 150,

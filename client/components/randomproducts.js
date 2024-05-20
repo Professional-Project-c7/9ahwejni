@@ -175,7 +175,10 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
     color: '#333',
-    marginBottom: 5,
+    marginBottom: 7,
+    textAlign: 'left',
+    bottom: 5,
+    right: 5,
   },
   description: {
     fontSize: 14,
@@ -186,6 +189,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
     color: '#000',
+    right: 5
   },
   reviews: {
     fontSize: 14,
