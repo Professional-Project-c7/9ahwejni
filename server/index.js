@@ -19,12 +19,15 @@ const messagesRouter = require('./Routers/messages.routers')
 const Payment=require('./Routers/Payment.js')
 const reviewRouter = require('./Routers/review.router.js');
 const roomRouter = require('./Routers/room.routers.js')
+const Notif= require ('./Routers/Noti.js')
+
 const Notification = require('./Routers/Notification.routes.js')
 
 
 app.use(cors()) 
 
 app.use("/api/not", Notification);
+app.use("/api/Notif", Notif);
 app.use("/api/auth", Authentication);
 app.use('/api/messages', messagesRouter);
 app.use('/api/user', User);

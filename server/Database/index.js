@@ -33,6 +33,8 @@ async function connectionTest (){
   db.Room = require('./Room.model')(connection, DataTypes);
   db.productoptions=require('./productoptions')(connection,DataTypes)
  db.RoomUser=require('./userRooms')(connection,DataTypes)
+  db.Noti= require('./Noti')(connection,DataTypes)
+
 
 
   db.Pack=require('./pack.model')(connection,DataTypes)

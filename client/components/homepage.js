@@ -72,7 +72,7 @@ const HomePage = ({ navigation }) => {
         style={styles.topBackground}
       >
         <View style={styles.top}>
-          <IconButton icon="bell" color="#FFF" onPress={toggleNotification} />
+          <IconButton icon="bell" iconColor="#FFF" onPress={toggleNotification} />
           {type && <IconButton icon="chat" iconColor='#FFF' onPress={() => navigation.navigate('chat')} />}
         </View>
       </LinearGradient>
@@ -105,7 +105,7 @@ const HomePage = ({ navigation }) => {
       >
         <View style={styles.notificationModal}>
           <Notification />
-          <IconButton icon="close" color="#000" onPress={toggleNotification} />
+          <IconButton icon="close" iconColor="#FFF" onPress={toggleNotification} />
         </View>
       </Modal>
 
@@ -117,7 +117,7 @@ const HomePage = ({ navigation }) => {
       >
         <View style={styles.fullScreenModal}>
           <AdvancedFilter />
-          <IconButton icon="close" onPress={hideFilterModal} style={styles.closeButton} />
+          <IconButton icon="close" iconColor="#FFF" onPress={hideFilterModal} style={styles.closeButton} />
         </View>
       </Modal>
       <Toast />
