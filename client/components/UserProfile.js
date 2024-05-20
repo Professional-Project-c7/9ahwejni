@@ -21,7 +21,7 @@ const MyComponent = ({navigation}) => {
 const [userID,setuserID] = useState(null)
 const [isModalVisible, setIsModalVisible] = useState(false);
 const [imgUrl, setimgUrl] = useState('');
-
+// console.log(userData.ImageUrl);
 
 const imageHandler = async (image) => {
   try {
@@ -147,7 +147,7 @@ const handleLogout = () => {
 };
 
 
-
+const defaultImgUrl = imgUrl ||"https://img.freepik.com/premium-photo/bearded-man-illustration_665280-67047.jpg?w=826";
   return (
     <ScrollView>
       <View style={styles.container}>
@@ -165,12 +165,13 @@ const handleLogout = () => {
               }}>
             <ImageBackground>
                  <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-                  {imgUrl && (
-                    <Image source={{ uri: imgUrl }} style={{ width: 125, height: 120, borderRadius:70, marginBottom:-60 }} />
-                  )}
+                 
+ <Image 
+    source={{ uri: defaultImgUrl }} 
+    style={{ width: 125, height: 120, borderRadius: 70, marginBottom: -60 }} 
+  />
                    </View>
-                  {/* style={{ height: 120, width: 125 }}
-                  imageStyle={{ borderRadius: 15 }}> */}
+                 
                   <View
                     style={{
                       flex: 1,

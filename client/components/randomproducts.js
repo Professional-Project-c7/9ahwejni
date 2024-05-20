@@ -106,12 +106,12 @@ const RandomProducts = () => {
                 <TouchableOpacity onPress={() => handleNavigateToDetails(product)}>
                   <Image source={{ uri: product.imgUrl }} style={styles.image} />
                 </TouchableOpacity>
-                <Icon
+                {/* <Icon
                   name={hearttt[product.id]?.favored ? 'heart' : 'heart-outline'}
                   color={hearttt[product.id]?.favored ? 'red' : '#dba617'}
                   size={27}
                   style={styles.favIcon}
-                />
+                /> */}
                 <View style={styles.infoContainer}>
                   <Text style={styles.reviews}>{`${product.totalReviews} 👤 ⭐: ${product.averageRating}`}</Text>
                   <Text style={styles.name}>{product.name}</Text>
