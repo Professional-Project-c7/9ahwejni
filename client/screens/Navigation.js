@@ -78,7 +78,6 @@ function TabNavigator() {
         console.log('Error storing user type:', error);
       }
     };
-  console.log("hello",userType)
   return (
     <Tab.Navigator
       tabBarOptions={{

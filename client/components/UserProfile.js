@@ -142,6 +142,8 @@ useEffect(() => {
 // }, []);
 const handleLogout = () => {
   AsyncStorage.removeItem('favorites')
+  AsyncStorage.removeItem('favv')
+
   removeTokenFromStorage();
   navigation.navigate('Login');
 };
