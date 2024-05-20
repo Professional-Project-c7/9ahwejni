@@ -34,7 +34,9 @@ const Login = ({ navigation }) => {
 
       await AsyncStorage.setItem('welcomeBack', 'true');  // Set flag for welcome message
 
-
+       // Clear input fields
+       setEmail('');
+       setPassword('');
       navigation.navigate('Tabs');
     } catch (error) {
       Toast.show({
