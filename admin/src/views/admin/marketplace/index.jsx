@@ -59,7 +59,7 @@ export default function Marketplace() {
   return (
     <Box pt={{ base: "180px", md: "80px", xl: "80px" }}>
       <Flex justifyContent="center" mb="20px">
-        <Text fontSize="2xl" fontWeight="bold">User Reviews</Text>
+        <Text fontSize="2xl" fontWeight="bold">Users Reviews</Text>
       </Flex>
       <SimpleGrid columns={{ base: 1, md: 3 }} spacing="20px">
         {reviewData.map((review, index) => (
