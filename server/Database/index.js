@@ -31,6 +31,7 @@ async function connectionTest (){
   db.Options = require('./options.model')(connection, DataTypes);
   db.Notification = require('./notification')(connection, DataTypes);
   db.productoptions=require('./productoptions')(connection,DataTypes)
+  db.Noti= require('./Noti')(connection,DataTypes)
 
 
 

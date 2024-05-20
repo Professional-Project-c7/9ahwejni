@@ -8,8 +8,6 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 const Panier = ({ navigation }) => {
   const [posts, setPosts] = useState([]);
   const [totalPrice, setTotalPrice] = useState(0);
-  // console.log("posts   in panier  ",posts[1].userId);
-  console.log("posts   in panier  ",posts);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -31,8 +29,8 @@ const Panier = ({ navigation }) => {
     navigation.navigate('Tabs');
   };
 
-  const handlepayment = () => {
-    AsyncStorage.setItem('PRICE', JSON.stringify(totalPrice))
+  const handlePayment = async () => {
+    await AsyncStorage.setItem('PRICE', JSON.stringify(totalPrice));
     navigation.navigate('Paye');
   };
 
@@ -54,21 +52,6 @@ const Panier = ({ navigation }) => {
     });
     setTotalPrice(totalPrice);
   };
-
-  // const addToCart = (item) => {
-  //   // Check if the item is already in the cart
-  //   const exists = posts.some(cartItem => cartItem.id === item.id);
-  //   if (!exists) {
-  //     const updatedPosts = [...posts, item];
-  //     setPosts(updatedPosts);
-  //     try {
-  //       AsyncStorage.setItem('favorites', JSON.stringify(updatedPosts));
-  //       calculateTotalPrice(updatedPosts);
-  //     } catch (error) {
-  //       console.log('Error updating favorites:', error);
-  //     }
-  //   }
-  // };
 
   return (
     <View style={styles.container}>
@@ -94,7 +77,7 @@ const Panier = ({ navigation }) => {
       </ScrollView>
       <View style={styles.footer}>
         <Text style={styles.totalPrice}>Total: ${totalPrice.toFixed(2)}</Text>
-        <TouchableOpacity style={styles.paymentButton} onPress={handlepayment}>
+        <TouchableOpacity style={styles.paymentButton} onPress={handlePayment}>
           <Text style={styles.paymentButtonText}>Go to Payment</Text>
         </TouchableOpacity>
       </View>
