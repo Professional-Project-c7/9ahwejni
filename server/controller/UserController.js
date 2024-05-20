@@ -59,7 +59,7 @@ module.exports = {
 
         updateOne: async (req, res)  => {
             const { id } = req.params;
-            const { FirstName, LastName, email, password, Address } = req.body;
+            const { FirstName, LastName, email, password, Address,ImageUrl } = req.body;
 
             try {
                 // Find the user by ID
@@ -74,6 +74,7 @@ module.exports = {
                 user.LastName = LastName || user.LastName;
                 user.Email = email||  user.Email;
                 user.Address = Address  ||user.Address;
+                user.ImageUrl= ImageUrl|| user.ImageUrl
 
                 // Hash the password if it is being updated
                 if (password) {

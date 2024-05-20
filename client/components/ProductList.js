@@ -25,8 +25,7 @@ const ProductList = ({ navigation, route }) => {
   const { products, getProducts, status, error } = useProducts();
   const [favorites, setFavorites] = useState({});
   const [productsWithReviews, setProductsWithReviews] = useState([]);
-  const [shopTitle, setShopTitle] = useState('');
-  const [shopAddress, setShopAddress] = useState('');
+  const [shopDetails, setShopDetails] = useState({});
   const [totalShopReviews, setTotalShopReviews] = useState(0);
   const [averageShopRating, setAverageShopRating] = useState(0);
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -51,6 +50,19 @@ const ProductList = ({ navigation, route }) => {
       getProducts();
     }
   }, [status, getProducts]);
+
+  useEffect(() => {
+    const fetchShopDetails = async () => {
+      try {
+        const response = await axios.get(`http://${ipAdress}:3000/api/user/${coffeeShopId}`);
+        setShopDetails(response.data);
+      } catch (error) {
+        console.log('Error fetching shop details:', error);
+      }
+    };
+
+    fetchShopDetails();
+  }, [coffeeShopId]);
 
   useEffect(() => {
     const fetchReviews = async () => {
@@ -121,31 +133,17 @@ const ProductList = ({ navigation, route }) => {
 
   const filteredProducts = productsWithReviews.filter((product) => product.userId === coffeeShopId);
 
-  useEffect(() => {
-    const fetchShopDetails = async () => {
-      try {
-        const response = await axios.get(`http://${ipAdress}:3000/api/user/${coffeeShopId}`);
-        setShopTitle(response.data.FirstName + ' ' + response.data.LastName);
-        setShopAddress(response.data.Address);
-      } catch (error) {
-        console.log('Error fetching shop details:', error);
-      }
-    };
-
-    fetchShopDetails();
-  }, [coffeeShopId]);
-
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView>
         {filteredProducts.length > 0 ? (
           <>
-            <Title style={styles.shopTitle}>{filteredProducts[0].shopName}</Title>
+            <Title style={styles.shopTitle}>{shopDetails.FirstName} {shopDetails.LastName}</Title>
             <Image
               style={styles.shopImage}
-              source={{ uri: filteredProducts[0].shopImage }}
+              source={{ uri: shopDetails.ImageUrl }}
             />
-            <Text style={styles.shopAddress}>{filteredProducts[0].shopAddress} 📍</Text>
+            <Text style={styles.shopAddress}>{shopDetails.Address} 📍</Text>
             <Text style={styles.shopReviews}>{`Total Reviews: ${totalShopReviews}⭐ Average Rating: ${averageShopRating}`}</Text>
             <TouchableOpacity onPress={() => setIsModalVisible(true)}>
               <LinearGradient
@@ -193,8 +191,12 @@ const ProductList = ({ navigation, route }) => {
           </>
         ) : (
           <>
-            <Title style={styles.shopTitle}>{shopTitle}</Title>
-            <Text style={styles.shopAddress}>{shopAddress} 📍</Text>
+            <Title style={styles.shopTitle}>{shopDetails.FirstName} {shopDetails.LastName}</Title>
+            <Image
+              style={styles.shopImage}
+              source={{ uri: shopDetails.ImageUrl }}
+            />
+            <Text style={styles.shopAddress}>{shopDetails.Address} 📍</Text>
             <Text style={styles.shopReviews}>{`Total Reviews: ${totalShopReviews} ⭐ Average Rating: ${averageShopRating}`}</Text>
             <TouchableOpacity onPress={() => setIsModalVisible(true)}>
               <LinearGradient

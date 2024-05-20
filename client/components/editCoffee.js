@@ -4,10 +4,12 @@ import {
   Text,
   TouchableOpacity,
   ImageBackground,
+  
   TextInput,
   StyleSheet,
   ScrollView,
   Alert,
+  Image
 } from 'react-native';
 import {useTheme} from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -16,6 +18,8 @@ import Feather from 'react-native-vector-icons/Feather';
 import AsyncStorage from '@react-native-async-storage/async-storage'; // Import AsyncStorage
 import axios from 'axios';
 import { ipAdress } from '../config';
+import { launchImageLibrary } from 'react-native-image-picker';
+
 
 
 const EditProfileScreen = ({navigation}) => {
@@ -27,20 +31,14 @@ const EditProfileScreen = ({navigation}) => {
   const [email, setEmail] = useState('');
   const [country, setCountry] = useState('');
   const [city, setCity] = useState('');
-  const [image, setImage] = useState(
-    'https://api.adorable.io/avatars/80/abott@adorable.png',
-  );
+  const [imgUrl, setimgUrl] = useState('');
   const {colors} = useTheme();
 
   useEffect(() => {
     retrieveData();
   }, []);
-  useEffect(() => {
-    if (userID) {
-      getUserData(userID);
-    }
-  }, [userID]);
 
+  
 
   const retrieveData = async () => {
     try {
@@ -58,14 +56,49 @@ const EditProfileScreen = ({navigation}) => {
 
 
 
-  // const handleUpdateProfile = async () => {
-  //   try {
-  //     await axios.patch(`http://${ipAdress}:3000/api/user/${userID}`, userData);
-  //     console.log('Changes saved');
-  //   } catch (error) {
-  //     console.error('Error updating user profile:', error);
-  //   }
-  // };
+  const imageHandler = async (image) => {
+    try {
+      const userData = {
+        firstName: firstName,
+        lastName: lastName,
+        phone: phone,
+        email: email,
+        country: country,
+        city: city,
+        ImageUrl:image
+      };
+      console.log(userData); // Check if userData is correct before sending the request
+      const response = await axios.put(`http://${ipAdress}:3000/api/user/${userID}`, userData);
+      
+      console.log('Update successful:', response.data);
+     
+      console.log(userID);
+      navigation.navigate('User');
+    } catch (error) {
+      console.error('Error uploading image:', error);
+      throw error;
+    }
+  };
+  console.log('gooddddd',imgUrl)
+  
+  const pickImage = () => {
+    launchImageLibrary({}, async (response) => {
+      if (response.didCancel) {
+        console.log('User cancelled image picker');
+      } else if (response.error) {
+        console.log('ImagePicker Error: ', response.error);
+      } else {
+        try {
+          const imageUri = await imageHandler(response);
+          console.log('Image URI:', imageUri);
+          setimgUrl(imageUri);
+        } catch (error) {
+          console.error('Error uploading image:', error);
+          Alert.alert('Upload Failed', 'Failed to upload image. Please try again.');
+        }
+      }
+    });
+  }
   
 const getUserData = async (userId) => {
   try {
@@ -84,11 +117,13 @@ const handleUpdateProfile = async () => {
   try {
     const userData = {
       FirstName: firstName,
-      lastName: lastName,
+      LastName: lastName,
       phone: phone,
       email: email,
       country: country,
-      city: city
+      city: city,
+      ImageUrl: imgUrl,
+      
     };
     console.log(userData); // Check if userData is correct before sending the request
     const response = await axios.put(`http://${ipAdress}:3000/api/user/${userID}`, userData);
@@ -134,7 +169,7 @@ const handleUpdateProfile = async () => {
      {userData && (
         <>
         <View style={{alignItems: 'center', marginTop:15}}>
-          <TouchableOpacity >
+          <TouchableOpacity onPress={pickImage} >
             <View
               style={{
                 height: 100,
@@ -145,7 +180,7 @@ const handleUpdateProfile = async () => {
                 
               }}>
               <ImageBackground
-                source={require("../image/image.png")} 
+                source={{uri:image}} 
                 style={{height: 100, width: 100}}
                 imageStyle={{borderRadius: 15}}>
                 <View
@@ -170,7 +205,7 @@ const handleUpdateProfile = async () => {
             </View>
           </TouchableOpacity>
           <Text style={{marginTop: 10, fontSize: 18, fontWeight: 'bold'}}>
-          {userData.FirstName }
+          {userData.FirstName +" " + userData.LastName}
 
           </Text>
         </View>
@@ -196,7 +231,7 @@ const handleUpdateProfile = async () => {
         <View style={styles.action}>
           <FontAwesome name="user-o" color={'#dba617'} size={20} />
           <TextInput
-            placeholder="lastName"
+            placeholder={userData.lastName}
             placeholderTextColor="#666666"
             value={lastName}
         onChangeText={text => setLastName(text)}

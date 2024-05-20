@@ -31,7 +31,10 @@ async function connectionTest (){
   db.Reviewz = require('./reviewz.model')(connection, DataTypes);
   db.Options = require('./options.model')(connection, DataTypes);
   db.Notification = require('./notification')(connection, DataTypes);
+  db.Room = require('./Room.model')(connection, DataTypes);
   db.productoptions=require('./productoptions')(connection,DataTypes)
+ db.RoomUser=require('./userRooms')(connection,DataTypes)
+  db.Noti= require('./Noti')(connection,DataTypes)
 
 
 
@@ -46,10 +49,10 @@ async function connectionTest (){
   db.Products.hasMany(db.Size);
   db.Size.belongsTo(db.Products);
 
-  db.Products.belongsToMany(db.Options,{ through: db.productoptions });
-  db.Options.belongsToMany(db.Products,{ through: db.productoptions });
 
 
+  db.Products.hasMany(db.Options);
+  db.Options.belongsTo(db.Products);
 
   db.User.hasMany(db.Pack);
   db.Pack.belongsTo(db.User);
@@ -66,11 +69,40 @@ db.Review.belongsTo(db.Products, { foreignKey: 'prodId' });
 // db.User.hasMany(db.Review, { foreignKey: 'coffeeShopId' })
 // db.Review.belongsTo(db.User, { foreignKey: 'coffeeShopId' })
 
+//  relationships for messages and rooms
 
 db.Reviewz.belongsTo(db.User, { as: 'Reviewer', foreignKey: 'reviewerId' });
 db.Reviewz.belongsTo(db.User, { as: 'Reviewee', foreignKey: 'revieweeId' });
 
 
+// db.Room.hasMany(db.Message, { foreignKey: 'roomId' });
+// db.Message.belongsTo(db.Room, { foreignKey: 'roomId' });
+
+// db.Room.belongsToMany(db.User,{ through: db.RoomUser });
+// db.User.belongsToMany(db.Room,{ through: db.RoomUser }); 
+db.Room.belongsToMany(db.User, {
+  through: {
+    model: db.RoomUser,
+    unique: false
+  },
+  foreignKey: {
+    name: 'roomId',
+    field: 'room_id'
+  },
+  otherKey: 'userId'
+});
+
+db.User.belongsToMany(db.Room, {
+  through: {
+    model: db.RoomUser,
+    unique: false
+  },
+  foreignKey: 'userId',
+  otherKey: {
+    name: 'roomId',
+    field: 'room_id'
+  }
+});
 
 // Sync the models with the database
 

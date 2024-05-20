@@ -51,14 +51,8 @@ const AddReviewz = ({ coffeeShopId, userId, onClose }) => {
 
     return (
         <View style={styles.container}>
-            <LinearGradient
-                colors={['rgba(219, 166, 23, 1)', 'rgba(219, 166, 23, 1)']}
-                start={{ x: 0, y: 0 }}
-                end={{ x: 1, y: 0 }}
-                style={styles.gradientBackground}
-            >
+        
                 <Text style={styles.header}>Rate this Shop</Text>
-            </LinearGradient>
             <Rating
                 type="star"
                 ratingCount={5}
@@ -102,7 +96,7 @@ const styles = StyleSheet.create({
         fontSize: 24,
         fontWeight: 'bold',
         textAlign: 'center',
-        color: '#fff',
+        color: 'black',
     },
     rating: {
         marginBottom: 30,

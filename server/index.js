@@ -26,6 +26,7 @@ const Notification = require('./Routers/Notification.routes.js')
 app.use(cors()) 
 
 app.use("/api/not", Notification);
+// app.use("/api/Notif", Notif);
 app.use("/api/auth", Authentication);
 app.use('/api/messages', messagesRouter);
 app.use('/api/user', User);
