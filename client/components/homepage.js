@@ -42,6 +42,7 @@ const HomePage = ({ navigation }) => {
       try {
         const storedPrice = await AsyncStorage.getItem('userToken');
         const welcomeBack = await AsyncStorage.getItem('welcomeBack');
+        const NAME = await AsyncStorage.getItem('NAME');
         
         if (storedPrice) {
           const parsedPrice = JSON.parse(storedPrice);
@@ -51,8 +52,10 @@ const HomePage = ({ navigation }) => {
         }
         if (welcomeBack) {
           Toast.show({
-            type: 'success',
-            text1: 'Welcome Back! ☕',
+            type: 'success' ,
+            // text1: 'Welcome Back! ☕',
+            text1:  `Welcome  ${NAME} ☕`,
+
           });
           await AsyncStorage.removeItem('welcomeBack');  // Clear flag after showing toast
         }
