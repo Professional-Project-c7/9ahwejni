@@ -24,7 +24,7 @@ export default function DevelopmentTable() {
   useEffect(() => {
     async function fetchData() {
       try {
-        const response = await axios.get("http://192.168.11.96:3000/api/user");
+        const response = await axios.get("http://192.168.11.244:3000/api/user");
         const filteredData = response.data.filter(e => e.UserType === "client");
         setUserData(filteredData);
       } catch (error) {

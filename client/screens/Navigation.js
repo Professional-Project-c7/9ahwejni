@@ -196,9 +196,9 @@ function TabNavigator() {
           <Tab.Screen name="PaymentCardsDetails" component={PaymentCardsDetails}  options={{
           tabBarButton: () => null, // This hides the tab from the tab bar
         }} />
-          <Tab.Screen name="paymentSucces" component={PaymentSuccess}  options={{
+          {/* <Tab.Screen name="paymentSucces" component={PaymentSuccess}  options={{
           tabBarButton: () => null, // This hides the tab from the tab bar
-        }} />
+        }} /> */}
         
          <Tab.Screen name="  prd" component={  ProductDetailsPage}  options={{
           tabBarButton: () => null, // This hides the tab from the tab bar
@@ -209,10 +209,6 @@ function TabNavigator() {
 }
 function NAVSTART() {
 
-
-
-  
-  
   return (
     <NavigationContainer>
       <Stack.Navigator initialRouteName="Onboarding">
