@@ -57,82 +57,38 @@ module.exports = {
         }
         },
 
-        // updateOne: async (req, res) => {
-        //     const { id } = req.params;
-        //     const { FirstName, LastName, email, password, Address } = req.body;
-          
-        //     try {
-        //       // Find the user by ID
-        //       let user = await db.User.findByPk(id);
-          
-        //       if (!user) {
-        //         return res.status(404).json({ message: 'User not found' });
-        //       }
-          
-        //       // Update the user
-        //       user.FirstName = FirstName || user.FirstName;
-        //       user.LastName = LastName || user.LastName;
-        //       user.Email = email || user.Email;
-        //       user.password = password || user.password;
-        //       user.Address = Address || user.Address;
-          
-        //       // Save the updated user
-        //       await user.save();
-          
-        //       return res.status(200).json({ user });
-        //     } catch (error) {
-        //       console.error(error);
-        //       return res.status(500).json({ message: 'Server Error' });
-        //     }
-        //   },
         updateOne: async (req, res)  => {
             const { id } = req.params;
-            const { FirstName, LastName, email, password, Address } = req.body;
-        
+            const { FirstName, LastName, email, password, Address,ImageUrl } = req.body;
+
             try {
                 // Find the user by ID
                 let user = await db.User.findByPk(id);
-        
+
                 if (!user) {
                     return res.status(404).json({ message: 'User not found' });
                 }
-        
+
                 // Update the user
                 user.FirstName = FirstName || user.FirstName;
                 user.LastName = LastName || user.LastName;
-                user.Email = email || user.Email;
-                user.Address = Address || user.Address;
-        
+                user.Email = email||  user.Email;
+                user.Address = Address  ||user.Address;
+                user.ImageUrl= ImageUrl|| user.ImageUrl
+
                 // Hash the password if it is being updated
                 if (password) {
                     const salt = await bcrypt.genSalt(10);
                     user.password = await bcrypt.hash(password, salt);
                 }
-        
+
                 // Save the updated user
                 await user.save();
-        
+
                 return res.status(200).json({ user });
             } catch (error) {
                 console.error(error);
                 return res.status(500).json({ message: 'Server Error' });
             }
-        },
+        }}
           
-    
-    
-
-// Endpoint to handle file upload
-// upload:async function(req,res){
-//   try {
-//     // Upload file to Cloudinary
-//     const result = await cloudinary.uploader.upload(req.file.path);
-
-//     // Send the secure URL of the uploaded image back to the client
-//     res.json({ imageUrl: result.secure_url });
-//   } catch (error) {
-//     console.error('Error uploading image:', error);
-//     res.status(500).json({ error: 'Failed to upload image' });
-//   }
-// }
-}

@@ -39,9 +39,9 @@ const CoffeeShopsList = ({ navigation }) => {
   return (
     <View style={styles.container}>
       <LinearGradient
-        colors={['rgba(253,190,29,1)', 'rgba(252,145,69,1)']}
-        start={{ x: 0, y: 0 }}
-        end={{ x: 1, y: 0 }}
+         colors={['rgba(219, 166, 23, 1)', 'rgba(219, 166, 23, 1)']} 
+         start={{x: 1, y: 1}} 
+         end={{x: 1, y: 0}} 
         style={styles.gradientBackground}
       >
         <Text style={styles.title}>Coffee Shops</Text>

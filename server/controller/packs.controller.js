@@ -1,5 +1,5 @@
 const db = require('../Database/index')
-const axios = require('axios')
+// const axios = require('axios')
 
 
 module.exports = { 
@@ -31,7 +31,7 @@ selectOne: async function(req, res) {
     },
 addOne:async function(req,res){
     try {
-        console.log("req" , req.body);
+       
         const pack = await db.Pack.create(req.body)
         req.body.checkedProductIDs.map(async(e)=>{
             await db.Packproduct.create({ 

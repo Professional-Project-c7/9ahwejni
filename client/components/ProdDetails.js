@@ -6,6 +6,8 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Rating } from 'react-native-ratings';
 import AddReview from './AddReview';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import user from '../image/user.png';
+import moment from 'moment';
 
 const ProductDetailsPage = ({ navigation }) => {
     const [products, setProducts] = useState([]);
@@ -33,11 +35,13 @@ const ProductDetailsPage = ({ navigation }) => {
     const fetchReviews = async (productId) => {
         try {
             const response = await axios.get(`http://${ipAdress}:3000/api/review/product/${productId}`);
-            setReviews(response.data);
+            setReviews(response.data.reverse());
         } catch (error) {
             console.error('Error fetching reviews:', error);
         }
     };
+
+
 
     useEffect(() => {
         const fetchProductDetails = async () => {
@@ -97,7 +101,6 @@ const ProductDetailsPage = ({ navigation }) => {
 
     return (
         <ScrollView style={styles.container}>
-            <Icon name="arrow-left" size={30} onPress={handleAddToHome} />
             {products.map((product, index) => (
                 <View key={index} style={styles.productContainer}>
                     <Image source={{ uri: product.imgUrl }} style={styles.productImage} />
@@ -148,12 +151,15 @@ const ProductDetailsPage = ({ navigation }) => {
                                     </TouchableOpacity>
                                 </View>
                             </View>
+                            <Text style={styles.productPrice}>{product.price} TND</Text>
+
                             <View style={styles.priceContainer}>
-                                <Text style={styles.productPrice}>${product.price}</Text>
-                                <TouchableOpacity onPress={toggleModalVisibility}>
-                                    <Text style={styles.addReviewButton}>Add Review ⭐</Text>
+                                <TouchableOpacity onPress={handleAddToCart}>
+                                    <Text style={styles.addReviewButton}>Add to cart</Text>
                                 </TouchableOpacity>
-                                <Icon name="cart" onPress={handleAddToCart} style={styles.add} />
+                                <TouchableOpacity onPress={toggleModalVisibility}>
+                                    <Text style={styles.addReviewButton}>Add Review</Text>
+                                </TouchableOpacity>
                             </View>
                             <Button
                                 title="Go to Home"
@@ -177,40 +183,14 @@ const ProductDetailsPage = ({ navigation }) => {
                 </View>
             </Modal>
             <View style={styles.reviewsContainer}>
-                {reviews.length > 0 && (
-                    <View style={styles.reviewCard}>
-                        {reviews[reviews.length - 1].User && reviews[reviews.length - 1].User.ImageUrl ? (
-                            <Image source={{ uri: reviews[reviews.length - 1].User.ImageUrl }} style={styles.userImage} />
-                        ) : (
-                            <Image source={{ uri: 'https://via.placeholder.com/150' }} style={styles.userImage} />
-                        )}
-                        <View style={styles.reviewContent}>
-                            <Text style={styles.userName}>
-                                {reviews[reviews.length - 1].User ? `${reviews[reviews.length - 1].User.FirstName} ${reviews[reviews.length - 1].User.LastName}` : 'Anonymous'}
-                            </Text>
-                            <Rating
-                                type="star"
-                                ratingCount={5}
-                                imageSize={20}
-                                startingValue={reviews[reviews.length - 1].stars}
-                                readonly
-                                style={styles.rating}
-                            />
-                            <Text style={styles.comment}>{reviews[reviews.length - 1].comment}</Text>
-                        </View>
-                    </View>
-                )}
-                {reviews.slice(0, -1).map((review, index) => (
+                {reviews.map((review, index) => (
                     <View key={index} style={styles.reviewCard}>
-                        {review.User && review.User.ImageUrl ? (
-                            <Image source={{ uri: review.User.ImageUrl }} style={styles.userImage} />
-                        ) : (
-                            <Image source={{ uri: 'https://via.placeholder.com/150' }} style={styles.userImage} />
-                        )}
+                        <Image source={{ uri: review.user ? review.user.ImageUrl : defaultUserImage }} style={styles.userImage} />
                         <View style={styles.reviewContent}>
                             <Text style={styles.userName}>
-                                {review.User ? `${review.User.FirstName} ${review.User.LastName}` : 'Anonymous'}
+                                {review.user ? `${review.user.FirstName} ${review.user.LastName}` : 'monkey'}
                             </Text>
+                            <Text>{moment(review.createdAt).fromNow()}</Text>
                             <Rating
                                 type="star"
                                 ratingCount={5}
@@ -235,7 +215,7 @@ const styles = StyleSheet.create({
         padding: 10
     },
     adad: {
-        marginTop: 20
+        marginTop: 50,
     },
     productContainer: {
         marginBottom: 30,
@@ -244,7 +224,6 @@ const styles = StyleSheet.create({
         overflow: 'hidden'
     },
     productImage: {
-        marginTop: 35,
         width: '100%',
         height: 250,
     },
@@ -255,7 +234,8 @@ const styles = StyleSheet.create({
         fontSize: 27,
         fontWeight: 'bold',
         textAlign: 'center',
-        color: '#FFBB70'
+        color: '#FFBB70',
+        marginBottom: 15
     },
     description: {
         fontSize: 18,
@@ -263,7 +243,7 @@ const styles = StyleSheet.create({
         color: 'black'
     },
     bottomContainer: {
-        marginTop: 30
+        marginTop: 60
     },
     add: {
         color: '#FFBB70',
@@ -272,7 +252,6 @@ const styles = StyleSheet.create({
         fontSize: 35,
     },
     addReviewButton: {
-        marginTop: 30,
         backgroundColor: '#FFBB70',
         color: 'white',
         padding: 10,
@@ -289,7 +268,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
-        padding: 10
+        padding: 10,
     },
     productPrice: {
         fontSize: 25,
@@ -299,7 +278,9 @@ const styles = StyleSheet.create({
         borderRadius: 15,
         paddingHorizontal: 10,
         paddingVertical: 5,
-        marginTop: 30
+        marginTop: 30,
+        marginLeft: 115,
+        width: 120
     },
     optionContainer: {
         backgroundColor: '#FFFFFF',
@@ -358,6 +339,7 @@ const styles = StyleSheet.create({
     },
     reviewsContainer: {
         padding: 10,
+        marginTop: 50
     },
     reviewCard: {
         flexDirection: 'row',
@@ -374,23 +356,26 @@ const styles = StyleSheet.create({
     userImage: {
         width: 50,
         height: 50,
-        borderRadius: 25,
         marginRight: 15,
+        borderRadius: 25,
+        overflow: 'hidden'
     },
     reviewContent: {
         flex: 1,
     },
     userName: {
-        fontSize: 17,
+        fontSize: 18,
         fontWeight: 'bold',
         marginBottom: 5,
+        color: '#481E14',
     },
     rating: {
         marginVertical: 5,
+        right: 90
     },
     comment: {
-        fontSize: 14,
-        color: 'black',
+        fontSize: 16,
+        color: '#200E3A',
     },
 });
 
