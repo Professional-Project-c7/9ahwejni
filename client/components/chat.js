@@ -5,7 +5,6 @@ import io from 'socket.io-client';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import { ipAdress } from '../config';
-import moment from 'moment';
 
 const SERVER_ENDPOINT = `http://${ipAdress}:4001`;
 
@@ -13,21 +12,18 @@ function Chat() {
   const [messages, setMessages] = useState([]);
   const [messageInput, setMessageInput] = useState('');
   const [userId, setUserId] = useState('');
-  const [userName, setUserName] = useState('');
   const [socket, setSocket] = useState(null);
-  const [room, setRoom] = useState('global');
-  const [availableRooms, setAvailableRooms] = useState(['global', 'room1', 'room2']);
+  const [room, setRoom] = useState(1); // Default to room ID 1
+  const [availableRooms, setAvailableRooms] = useState([1, 2, 3]); // Example room IDs
 
   useEffect(() => {
     const retrieveData = async () => {
       try {
         const value = await AsyncStorage.getItem('IdUser');
-        const name = await AsyncStorage.getItem('UserName');
-        if (value !== null && name !== null) {
+        if (value !== null) {
           const id = JSON.parse(value);
           setUserId(id);
-          setUserName(name);
-          establishSocketConnection(id, name, room);
+          establishSocketConnection(id);
           fetchMessages(room);
         }
       } catch (error) {
@@ -44,25 +40,12 @@ function Chat() {
     };
   }, [room]);
 
-  const establishSocketConnection = (id, name, room) => {
-    if (socket) {
-      socket.disconnect();
-    }
-
+  const establishSocketConnection = (id) => {
     const newSocket = io(SERVER_ENDPOINT, {
       query: { userId: id, room },
     });
 
-    newSocket.on('connect', () => {
-      console.log('Socket connected');
-    });
-
-    newSocket.on('disconnect', (reason) => {
-      console.log('Socket disconnected:', reason);
-    });
-
     newSocket.on('receive_message', (message) => {
-      console.log('Message received:', message);
       setMessages((prevMessages) => [...prevMessages, message]);
     });
 
@@ -87,21 +70,15 @@ function Chat() {
   };
 
   const sendMessage = () => {
-    console.log('Send button pressed');
     if (socket && messageInput.trim()) {
-      console.log('Socket exists and message input is not empty');
       const newMessage = {
         senderId: userId,
-        senderName: userName,
         content: messageInput,
         room,
-        timestamp: Date.now(),
+        timestamp: new Date().toLocaleString(),
       };
 
-      console.log('Sending message:', newMessage);
-
       socket.emit('send_message', newMessage, (acknowledgement) => {
-        console.log('Message send acknowledgement:', acknowledgement);
         if (acknowledgement === 'success') {
           setMessages((prevMessages) => [...prevMessages, newMessage]);
           saveMessage(newMessage);
@@ -111,21 +88,15 @@ function Chat() {
       });
 
       setMessageInput('');
-    } else {
-      console.log('Socket does not exist or message input is empty');
     }
-  };
-
-  const formatTimestamp = (timestamp) => {
-    return moment(timestamp).fromNow();
   };
 
   return (
     <ImageBackground source={require('../image/bgg.jpeg')} style={styles.background}>
       <View style={styles.container}>
-        <Picker selectedValue={room} onValueChange={(value) => setRoom(value)} style={styles.roomPicker}>
-          {availableRooms.map((room, index) => (
-            <Picker.Item key={index} label={room} value={room} />
+        <Picker selectedValue={room} onValueChange={(value) => setRoom(parseInt(value, 10))} style={styles.roomPicker}>
+          {availableRooms.map((roomId) => (
+            <Picker.Item key={roomId} label={`Room ${roomId}`} value={roomId} />
           ))}
         </Picker>
         <ScrollView contentContainerStyle={styles.messagesContainer}>
@@ -137,10 +108,8 @@ function Chat() {
                 message.senderId === userId ? styles.sender : styles.receiver,
               ]}
             >
-              <Text style={styles.messageText}>
-                {message.senderId === userId ? 'You' : message.senderName}: {message.content}
-              </Text>
-              <Text style={styles.timestamp}>{formatTimestamp(message.timestamp)}</Text>
+              <Text style={styles.messageText}>{message.content}</Text>
+              <Text style={styles.timestamp}>{message.timestamp}</Text>
             </View>
           ))}
         </ScrollView>
