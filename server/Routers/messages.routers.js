@@ -4,7 +4,7 @@ const router = express.Router();
 const { getMessages, postMessage,deleteMessage } = require('../controller/messages'); 
 
 
-router.get('/',getMessages);
+router.get('/:room',getMessages);
 router.post('/', postMessage);
 router.delete('/:id', deleteMessage);
 

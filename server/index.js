@@ -18,7 +18,7 @@ const Authentication = require('./Routers/login.routers.js');
 const messagesRouter = require('./Routers/messages.routers')
 const Payment=require('./Routers/Payment.js')
 const reviewRouter = require('./Routers/review.router.js');
-
+const roomRouter = require('./Routers/room.routers.js')
 const Notification = require('./Routers/Notification.routes.js')
 
 
@@ -32,6 +32,7 @@ app.use("/api/product", ProductRoutes);
 app.use("/api/packs", packs);
 app.use('/api/payment', Payment);
 app.use('/api/review', reviewRouter);
+app.use('/api/roomRouter', roomRouter);
 
 
 let port = 3000;

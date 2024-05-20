@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, View, TextInput, Text, Image, ScrollView, TouchableOpacity, Alert } from 'react-native';
+import { StyleSheet, View, TextInput, Text, Image, ScrollView, TouchableOpacity, Alert, Modal, Pressable } from 'react-native';
 import MapView, { Marker, Polyline } from 'react-native-maps';
 import Geolocation from '@react-native-community/geolocation';
 import Geocoder from 'react-native-geocoding';
@@ -15,6 +15,7 @@ export default function MapCoffee() {
   const [coffeeShops, setCoffeeShops] = useState([]);
   const [selectedCoffeeShop, setSelectedCoffeeShop] = useState(null);
   const [directions, setDirections] = useState(null);
+  const [modalVisible, setModalVisible] = useState(false);
 
   useEffect(() => {
     Geolocation.requestAuthorization();
@@ -47,13 +48,22 @@ export default function MapCoffee() {
         `https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${latitude},${longitude}&radius=5000&type=cafe&keyword=coffee&key=${'AIzaSyDYm4cfAj3Lrk6HqMJZHGeB1JevFbEC55o'}`
       );
       const data = await response.json();
-      const coffeeShopsData = data.results.map(result => ({
-        name: result.name,
-        latitude: result.geometry.location.lat,
-        longitude: result.geometry.location.lng,
-        photoReference: result.photos ? result.photos[0].photo_reference : null,
-        distance: calculateDistance(latitude, longitude, result.geometry.location.lat, result.geometry.location.lng)
-      }));
+      const coffeeShopsData = await Promise.all(
+        data.results.map(async result => {
+          const details = await fetch(
+            `https://maps.googleapis.com/maps/api/place/details/json?place_id=${result.place_id}&fields=name,rating,reviews,photos&key=${'AIzaSyDYm4cfAj3Lrk6HqMJZHGeB1JevFbEC55o'}`
+          );
+          const detailsData = await details.json();
+          return {
+            name: result.name,
+            latitude: result.geometry.location.lat,
+            longitude: result.geometry.location.lng,
+            photoReference: result.photos ? result.photos[0].photo_reference : null,
+            distance: calculateDistance(latitude, longitude, result.geometry.location.lat, result.geometry.location.lng),
+            reviews: detailsData.result.reviews || []
+          };
+        })
+      );
       setCoffeeShops(coffeeShopsData);
     } catch (error) {
       console.error(error);
@@ -115,6 +125,7 @@ export default function MapCoffee() {
       const data = await response.json();
       setDirections(data);
       setSelectedCoffeeShop(coffeeShop);
+      setModalVisible(true); // Show the modal with coffee shop details
     } catch (error) {
       console.error('Error fetching directions:', error);
       Alert.alert(
@@ -175,7 +186,7 @@ export default function MapCoffee() {
       {region ? (
         <MapView style={styles.map} initialRegion={region}>
           <Marker coordinate={{ latitude: region.latitude, longitude: region.longitude }} />
-          {coffeeShops.map((marker, index) => (
+          {Array.isArray(coffeeShops) && coffeeShops.map((marker, index) => (
             <Marker
               key={index}
               coordinate={{ latitude: marker.latitude, longitude: marker.longitude }}
@@ -202,33 +213,76 @@ export default function MapCoffee() {
       <List.Accordion
         title="Coffee Shops"
         style={styles.coffeeShopsList}
-        left={props => <List.Icon {...props} icon="coffee" color='white' />}
+        left={props => <List.Icon {...props} icon="coffee" />}
       >
         <ScrollView style={styles.coffeeShopsContainer}>
-          {coffeeShops.map((coffeeShop, index) => (
+          {Array.isArray(coffeeShops) && coffeeShops.map((coffeeShop, index) => (
             <TouchableOpacity key={index} onPress={() => handleGetDirections(coffeeShop)}>
               <View style={styles.coffeeShopItem}>
                 <View style={styles.coffeeShopInfo}>
                   {coffeeShop.photoReference && (
                     <Image
-                      source={{
-                        uri: `https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=${coffeeShop.photoReference}&key=${'AIzaSyDYm4cfAj3Lrk6HqMJZHGeB1JevFbEC55o'}`,
-                      }}
                       style={styles.coffeeShopImage}
+                      source={{
+                        uri: `https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=${coffeeShop.photoReference}&key=${'AIzaSyDYm4cfAj3Lrk6HqMJZHGeB1JevFbEC55o'}`
+                      }}
                     />
                   )}
                   <Text style={styles.coffeeShopName}>{coffeeShop.name}</Text>
-                </View>
-                <View style={styles.distanceContainer}>
                   <Text style={styles.distanceText}>
                     <Text style={styles.distanceValue}>{coffeeShop.distance} km</Text>
                   </Text>
+                </View>
+                <View style={styles.reviewsContainer}>
+                  {coffeeShop.reviews.map((review, reviewIndex) => (
+                    <View key={reviewIndex} style={styles.reviewItem}>
+                      <Text style={styles.reviewAuthor}>{review.author_name}</Text>
+                      <Text style={styles.reviewText}>{review.text}</Text>
+                      <Text style={styles.reviewRating}>Rating: {review.rating}</Text>
+                    </View>
+                  ))}
                 </View>
               </View>
             </TouchableOpacity>
           ))}
         </ScrollView>
       </List.Accordion>
+
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={modalVisible}
+        onRequestClose={() => {
+          setModalVisible(!modalVisible);
+        }}
+      >
+        <View style={styles.modalView}>
+          <Text style={styles.modalTitle}>{selectedCoffeeShop?.name}</Text>
+          {selectedCoffeeShop?.photoReference && (
+            <Image
+              style={styles.modalImage}
+              source={{
+                uri: `https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=${selectedCoffeeShop.photoReference}&key=${'AIzaSyDYm4cfAj3Lrk6HqMJZHGeB1JevFbEC55o'}`
+              }}
+            />
+          )}
+          <ScrollView style={styles.modalReviewsContainer}>
+            {selectedCoffeeShop?.reviews.map((review, index) => (
+              <View key={index} style={styles.reviewItem}>
+                <Text style={styles.reviewAuthor}>{review.author_name}</Text>
+                <Text style={styles.reviewText}>{review.text}</Text>
+                <Text style={styles.reviewRating}>Rating: {review.rating}</Text>
+              </View>
+            ))}
+          </ScrollView>
+          <Pressable
+            style={[styles.button, styles.buttonClose]}
+            onPress={() => setModalVisible(!modalVisible)}
+          >
+            <Text style={styles.textStyle}>Close</Text>
+          </Pressable>
+        </View>
+      </Modal>
     </View>
   );
 }
@@ -249,7 +303,6 @@ const styles = StyleSheet.create({
   },
   button: {
     backgroundColor: '#dba617',
-    padding :4,
   },
   input: {
     flex: 1,
@@ -257,13 +310,13 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
     paddingHorizontal: 12,
     borderWidth: 1,
-    borderColor: '#dba617',
+    borderColor: '#ccc',
     borderRadius: 15,
     fontSize: 16,
   },
   coffeeShopsList: {
     marginBottom: 10,
-    backgroundColor: '#dba617',
+    backgroundColor: '#fff',
     borderRadius: 10,
     shadowColor: '#000',
     shadowOffset: {
@@ -275,8 +328,6 @@ const styles = StyleSheet.create({
     elevation: 5,
   },
   coffeeShopsContainer: {
-    paddingLeft : -10,
-
     padding: 10,
   },
   coffeeShopItem: {
@@ -317,5 +368,78 @@ const styles = StyleSheet.create({
   },
   distanceValue: {
     fontWeight: 'bold',
+  },
+  reviewsContainer: {
+    padding: 10,
+  },
+  reviewItem: {
+    marginBottom: 10,
+    padding: 10,
+    backgroundColor: '#f9f9f9',
+    borderRadius: 10,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 1,
+    },
+    shadowOpacity: 0.1,
+    shadowRadius: 2,
+    elevation: 3,
+  },
+  reviewAuthor: {
+    fontWeight: 'bold',
+    marginBottom: 5,
+    color: '#333',
+  },
+  reviewText: {
+    fontStyle: 'italic',
+    color: '#666',
+    marginBottom: 5,
+  },
+  reviewRating: {
+    fontWeight: 'bold',
+    color: '#dba617',
+  },
+  modalView: {
+    flex: 1,
+    margin: 20,
+    backgroundColor: 'white',
+    borderRadius: 20,
+    padding: 20,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  modalTitle: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    marginBottom: 15,
+    textAlign: 'center',
+  },
+  modalImage: {
+    width: 200,
+    height: 200,
+    borderRadius: 10,
+    marginBottom: 15,
+    alignSelf: 'center',
+  },
+  modalReviewsContainer: {
+    flex: 1,
+  },
+  buttonClose: {
+    backgroundColor: '#dba617',
+    marginTop: 15,
+    padding: 10,
+    borderRadius: 10,
+  },
+  textStyle: {
+    color: 'white',
+    fontWeight: 'bold',
+    textAlign: 'center',
   },
 });
