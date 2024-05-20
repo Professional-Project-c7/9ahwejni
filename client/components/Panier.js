@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, Text, TouchableOpacity, View, ScrollView, Image, FlatList } from 'react-native';
+import { StyleSheet, Text, TouchableOpacity, View, Image, FlatList } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
@@ -56,25 +56,24 @@ const Panier = ({ navigation }) => {
   return (
     <View style={styles.container}>
       <Icon name="arrow-left" size={30} style={styles.backIcon} onPress={handleAddToCart} />
-      <ScrollView>
-        <FlatList
-          data={posts}
-          renderItem={({ item }) => (
-            <View style={styles.card}>
-              <Image style={styles.cardImage} source={{ uri: item.imgUrl }} />
-              <View style={styles.cardContent}>
-                <Text style={styles.title}>{item.name}</Text>
-                <Text style={styles.description}>{item.description}</Text>
-                <Text style={styles.price}>${item.price}</Text>
-                <TouchableOpacity style={styles.deleteButton} onPress={() => handleDeleteItem(item.id)}>
-                  <MaterialIcon name="delete" size={24} color="#ff6347" />
-                </TouchableOpacity>
-              </View>
+      <FlatList
+        data={posts}
+        renderItem={({ item }) => (
+          <View style={styles.card}>
+            <Image style={styles.cardImage} source={{ uri: item.imgUrl }} />
+            <View style={styles.cardContent}>
+              <Text style={styles.title}>{item.name}</Text>
+              <Text style={styles.description}>{item.description}</Text>
+              <Text style={styles.price}>${item.price}</Text>
+              <TouchableOpacity style={styles.deleteButton} onPress={() => handleDeleteItem(item.id)}>
+                <MaterialIcon name="delete" size={24} color="#ff6347" />
+              </TouchableOpacity>
             </View>
-          )}
-          ItemSeparatorComponent={() => <View style={styles.separator} />}
-        />
-      </ScrollView>
+          </View>
+        )}
+        keyExtractor={(item) => item.id.toString()}
+        ItemSeparatorComponent={() => <View style={styles.separator} />}
+      />
       <View style={styles.footer}>
         <Text style={styles.totalPrice}>Total: ${totalPrice.toFixed(2)}</Text>
         <TouchableOpacity style={styles.paymentButton} onPress={handlePayment}>

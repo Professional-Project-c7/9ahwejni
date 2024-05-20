@@ -10,8 +10,6 @@ import {
   ToastAndroid,
 } from 'react-native';
 
-
-
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
 import { Rating } from 'react-native-ratings';
@@ -19,13 +17,12 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import axios from 'axios';
 import { ipAdress } from '../config';
 
-
-
 const RandomProducts = () => {
   const navigation = useNavigation();
   const [products, setProducts] = useState([]);
   const [favorites, setFavorites] = useState({});
-  const [hearttt, sethearttt] = useState({});
+  const [favoritess, setFavoritess] = useState({});
+
   const [error, setError] = useState(null);
 
   useEffect(() => {
@@ -57,9 +54,47 @@ const RandomProducts = () => {
     fetchProducts();
   }, []);
 
+  const handleAddToFavorites = async (product) => {
+    try {
+      // Validate product
+      if (!product || !product.id) {
+        throw new Error('Invalid product data');
+      }
+  
+      // Get existing favorites or initialize an empty array
+      const existingFavorites = await AsyncStorage.getItem('favv');
+      let favoritesArray = existingFavorites ? JSON.parse(existingFavorites) : [];
+  
+      // Check for duplicate
+      const isDuplicate = favoritesArray.some((fav) => fav.id === product.id);
+      if (isDuplicate) {
+        throw new Error('Product already exists in favorites');
+      }
+  
+      // Add the product to favorites (immutable update)
+      favoritesArray = [...favoritesArray, product];
+  
+      // Save the updated favorites back to AsyncStorage
+      await AsyncStorage.setItem('favv', JSON.stringify(favoritesArray));
+  
+      // Display toast message
+      ToastAndroid.showWithGravity('Item added to favorites', ToastAndroid.TOP, ToastAndroid.TOP);
+    } catch (error) {
+      console.error('Error storing favorite:', error.message);
+      // Optionally, show a toast message for the error
+      ToastAndroid.showWithGravity('Failed to add item to favorites', ToastAndroid.TOP, ToastAndroid.TOP);
+    }
+  };
   
 
-
+  const handleNavigateToDetails = async (product) => {
+    try {
+      await AsyncStorage.setItem('selectedProductId', product.id.toString());
+      navigation.navigate('prd', { product });
+    } catch (error) {
+      console.log('Error storing selected product ID:', error);
+    }
+  };
   const toggleFeature = async (id, feature) => {
     try {
       const isFavorited = favorites[id]?.[feature];
@@ -84,16 +119,7 @@ const RandomProducts = () => {
       console.log('Error toggling feature:', error);
     }
   };
-
-  const handleNavigateToDetails = async (product) => {
-    try {
-      await AsyncStorage.setItem('selectedProductId', product.id.toString());
-      navigation.navigate('prd', { product });
-    } catch (error) {
-      console.log('Error storing selected product ID:', error);
-    }
-  };
-
+  
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView>
@@ -107,10 +133,10 @@ const RandomProducts = () => {
                   <Image source={{ uri: product.imgUrl }} style={styles.image} />
                 </TouchableOpacity>
                 <Icon
-                  name={hearttt[product.id]?.favored ? 'heart' : 'heart-outline'}
-                  color={hearttt[product.id]?.favored ? 'red' : '#dba617'}
+                  name={'heart-outline'}
                   size={27}
                   style={styles.favIcon}
+                  onPress={() => handleAddToFavorites(product)} // Pass the product to handleAddToFavorites
                 />
                 <View style={styles.infoContainer}>
                   <Text style={styles.reviews}>{`${product.totalReviews} 👤 ⭐: ${product.averageRating}`}</Text>
@@ -206,7 +232,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#dba617',
     padding: 5,
     borderRadius: 15,
-    
   },
 });
 

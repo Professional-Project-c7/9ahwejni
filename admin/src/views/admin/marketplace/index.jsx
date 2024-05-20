@@ -13,7 +13,6 @@ import { DeleteIcon } from "@chakra-ui/icons";
 export default function Marketplace() {
   const [reviewData, setReviewData] = useState([]);
   const [userData, setUserData] = useState([]);
-console.log("userDatauserData",userData);
   useEffect(() => {
     async function fetchReviews() {
       try {
