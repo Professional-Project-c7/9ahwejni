@@ -30,22 +30,22 @@ io.on('connection', (socket) => {
   }
 
   socket.on('send_message', (data, callback) => {
-    const { recipientId, content, room, timestamp } = data;
+    const { recipientId, content, roomId } = data; // Use roomId instead of room
     const message = {
-      senderId: userId,
-      content,
-      room: parseInt(room, 10) || 1,
-      timestamp: timestamp || new Date().toLocaleString(),
+        senderId: userId,
+        content,
+        roomId: parseInt(roomId, 10) || 1,  // Parse roomId to an integer
     };
 
     if (recipientId && userSockets[recipientId]) {
-      io.to(userSockets[recipientId]).emit('receive_message', message);
+        io.to(userSockets[recipientId]).emit('receive_message', message);
     } else {
-      socket.broadcast.to(message.room).emit('receive_message', message);
+        socket.broadcast.to(message.roomId).emit('receive_message', message);  // Use roomId here
     }
 
     callback('success');
-  });
+});
+
 
   socket.on('disconnect', () => {
     console.log(`User disconnected: ${socket.id}`);

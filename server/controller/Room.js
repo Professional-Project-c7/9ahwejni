@@ -7,12 +7,16 @@ const createRoom = async (req, res) => {
         // Check if a room with the same name already exists
         const existingRoom = await Room.findOne({ where: { name } });
         if (existingRoom) {
-            return res.status(400).json({ error: 'Room already exists' });
+             res.json(existingRoom);
+        }
+        else{
+
+            const room = await Room.create({ name });
+            res.status(200).json(room);
+
         }
 
         // Create the new room
-        const room = await Room.create({ name });
-        res.status(200).json(room);
     } catch (error) {
         console.error('Error creating room:', error);
         res.status(500).json({ error: 'Failed to create room' });
@@ -64,9 +68,24 @@ const addUserToRoom = async (req, res) => {
         res.status(500).json({ error: 'Failed to add user to room' });
     }
 };
+const getRoomByName = async (req, res) => {
+    try {
+        const { name } = req.query;
+        const existingRoom = await Room.findOne({ where: { name } });
 
+        if (existingRoom) {
+           res.status(200).json(existingRoom);
+        } else {
+         res.status(404).json({ error: 'Room not found' });
+        }
+    } catch (error) {
+        console.error('Error fetching room:', error);
+        res.status(500).json({ error: 'Failed to fetch room' });
+    }
+};
 module.exports = {
     createRoom,
     getAllRoomsByUserId,
-    addUserToRoom
+    addUserToRoom, 
+    getRoomByName
 };

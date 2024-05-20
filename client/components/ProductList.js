@@ -9,7 +9,7 @@ import {
   TouchableOpacity,
   ToastAndroid,
 } from 'react-native';
-import { Title } from 'react-native-paper';
+import { Title, IconButton } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { useProducts } from '../redux/products/productHooks';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -18,7 +18,7 @@ import { ipAdress } from '../config';
 
 const ProductList = ({ navigation, route }) => {
   const { coffeeShopId } = route.params;
-  const { products, getProducts, status, error } = useProducts();
+  const { products, getProducts, status } = useProducts();
   const [favorites, setFavorites] = useState({});
   const [productsWithReviews, setProductsWithReviews] = useState([]);
   const [shopTitle, setShopTitle] = useState('');
@@ -57,41 +57,6 @@ const ProductList = ({ navigation, route }) => {
     }
   }, [products]);
 
-  const toggleFeature = async (id, feature) => {
-    try {
-      const isFavorited = favorites[id]?.[feature];
-      const product = productsWithReviews.find((product) => product.id === id);
-      const storedFavorites = await AsyncStorage.getItem('favorites');
-      let favoritesArray = storedFavorites ? JSON.parse(storedFavorites) : [];
-      if (!isFavorited) {
-        setFavorites((prevFavorites) => ({
-          ...prevFavorites,
-          [id]: {
-            ...prevFavorites[id],
-            [feature]: true,
-          },
-        }));
-        favoritesArray.push(product);
-        await AsyncStorage.setItem('favorites', JSON.stringify(favoritesArray));
-
-        ToastAndroid.showWithGravity('Item added to cart', ToastAndroid.SHORT, ToastAndroid.TOP);
-      }
-    } catch (error) {
-      console.log('Error toggling feature:', error);
-    }
-  };
-
-  const handleNavigateToDetails = async (product) => {
-    try {
-      await AsyncStorage.setItem('selectedProductId', product.id.toString());
-      navigation.navigate('prd', { product });
-    } catch (error) {
-      console.log('Error storing selected product ID:', error);
-    }
-  };
-
-  const filteredProducts = productsWithReviews.filter((product) => product.userId === coffeeShopId);
-
   useEffect(() => {
     const fetchShopDetails = async () => {
       try {
@@ -106,21 +71,59 @@ const ProductList = ({ navigation, route }) => {
     fetchShopDetails();
   }, [coffeeShopId]);
 
+  const handleCreateOrJoinChatRoom = async () => {
+    try {
+      // // Check if the room already exists
+      // const checkResponse = await axios.get(`http://${ipAdress}:3000/api/roomRouter`, {
+      //   params: { name: shopTitle }
+      // });
+
+      // let roomId;
+      // if (checkResponse.data && checkResponse.data.length > 0) {
+      //   // Room exists, get the room ID
+      //   roomId = checkResponse.data[0].id;
+      // } else {
+        // Room does not exist, create a new room
+        const value = await AsyncStorage.getItem('IdUser');
+        const userId = JSON.parse(value);
+
+        const createResponse = await axios.post(`http://${ipAdress}:3000/api/roomRouter`, { name: shopTitle });
+       var roomId = createResponse.data.id;
+      // }
+
+      // Add user to the room
+      await axios.post(`http://${ipAdress}:3000/api/roomRouter/user`, { roomId, userId });
+
+      // Navigate to the Chat screen
+      navigation.navigate('chat', { roomId,  shopTitle });
+    } catch (error) {
+      console.error('Error checking or creating chat room:', error);
+    }
+  };
+  
+
   return (
     <SafeAreaView style={styles.container}>
+      <View style={styles.top}>
+        <IconButton
+          icon="chat"
+          iconColor="black"
+          onPress={handleCreateOrJoinChatRoom}
+        />
+      </View>
       <ScrollView>
-        {filteredProducts.length > 0 ? (
+        {productsWithReviews.length > 0 ? (
           <>
-            <Title style={styles.shopTitle}>{filteredProducts[0].shopName}</Title>
+            <Title style={styles.shopTitle}>{productsWithReviews[0].shopName}</Title>
             <Image
               style={styles.shopImage}
-              source={{ uri: filteredProducts[0].shopImage }}
+              source={{ uri: productsWithReviews[0].shopImage }}
             />
-            <Text style={styles.shopAddress}>{filteredProducts[0].shopAddress} 📍</Text>
+            <Text style={styles.shopAddress}>{productsWithReviews[0].shopAddress} 📍</Text>
             <Title style={styles.productListTitle}>Products:</Title>
             <View style={styles.productsContainer}>
-              {filteredProducts.map((product, index) => {
-                const isLastOddCard = filteredProducts.length % 2 !== 0 && index === filteredProducts.length - 1;
+              {productsWithReviews.map((product, index) => {
+                const isLastOddCard = productsWithReviews.length % 2 !== 0 && index === productsWithReviews.length - 1;
                 return (
                   <View style={[styles.card, isLastOddCard && styles.lastOddCard]} key={product.id}>
                     <TouchableOpacity onPress={() => handleNavigateToDetails(product)}>

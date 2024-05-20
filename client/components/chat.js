@@ -8,13 +8,12 @@ import { ipAdress } from '../config';
 
 const SERVER_ENDPOINT = `http://${ipAdress}:4001`;
 
-function Chat() {
+const Chat = ({ navigation, route }) => {
+  const { roomId, roomName } = route.params;
   const [messages, setMessages] = useState([]);
   const [messageInput, setMessageInput] = useState('');
   const [userId, setUserId] = useState('');
   const [socket, setSocket] = useState(null);
-  const [room, setRoom] = useState(1); // Default to room ID 1
-  const [availableRooms, setAvailableRooms] = useState([1, 2, 3]); // Example room IDs
 
   useEffect(() => {
     const retrieveData = async () => {
@@ -23,8 +22,8 @@ function Chat() {
         if (value !== null) {
           const id = JSON.parse(value);
           setUserId(id);
-          establishSocketConnection(id);
-          fetchMessages(room);
+          establishSocketConnection(id, roomId);
+          fetchMessages(roomId);
         }
       } catch (error) {
         console.error('Error retrieving data:', error);
@@ -38,9 +37,9 @@ function Chat() {
         socket.disconnect();
       }
     };
-  }, [room]);
+  }, [roomId]);
 
-  const establishSocketConnection = (id) => {
+  const establishSocketConnection = (id, room) => {
     const newSocket = io(SERVER_ENDPOINT, {
       query: { userId: id, room },
     });
@@ -74,8 +73,7 @@ function Chat() {
       const newMessage = {
         senderId: userId,
         content: messageInput,
-        room,
-        timestamp: new Date().toLocaleString(),
+        roomId: roomId,
       };
 
       socket.emit('send_message', newMessage, (acknowledgement) => {
@@ -94,31 +92,25 @@ function Chat() {
   return (
     <ImageBackground source={require('../image/bgg.jpeg')} style={styles.background}>
       <View style={styles.container}>
-        <Picker selectedValue={room} onValueChange={(value) => setRoom(parseInt(value, 10))} style={styles.roomPicker}>
-          {availableRooms.map((roomId) => (
-            <Picker.Item key={roomId} label={`Room ${roomId}`} value={roomId} />
-          ))}
-        </Picker>
         <ScrollView contentContainerStyle={styles.messagesContainer}>
           {messages.map((message, index) => (
             <View
               key={index}
               style={[
-                styles.messageBubble,
+                styles.message,
                 message.senderId === userId ? styles.sender : styles.receiver,
               ]}
             >
               <Text style={styles.messageText}>{message.content}</Text>
-              <Text style={styles.timestamp}>{message.timestamp}</Text>
             </View>
           ))}
         </ScrollView>
         <View style={styles.inputContainer}>
           <TextInput
-            style={styles.input}
-            placeholder="Type a message..."
+            style={styles.messageInput}
             value={messageInput}
             onChangeText={setMessageInput}
+            placeholder="Type a message..."
           />
           <TouchableOpacity onPress={sendMessage} style={styles.sendButton}>
             <Text style={styles.sendButtonText}>Send</Text>
@@ -127,10 +119,10 @@ function Chat() {
       </View>
     </ImageBackground>
   );
-}
+};
 
 const styles = StyleSheet.create({
-  background: {
+   background: {
     flex: 1,
   },
   container: {
@@ -159,39 +151,41 @@ const styles = StyleSheet.create({
   sender: {
     backgroundColor: '#dba617',
     alignSelf: 'flex-end',
+    padding:15,
+    borderRadius : 20 , 
+
   },
   receiver: {
     backgroundColor: '#fff',
     alignSelf: 'flex-start',
+    padding:15,
+    borderRadius : 20 , 
+
   },
   messageText: {
-    fontSize: 16,
+    fontSize: 20,
     color: '#333',
   },
-  timestamp: {
-    fontSize: 10,
-    color: '#666',
-    marginTop: 4,
-  },
+ 
   inputContainer: {
     flexDirection: 'row',
     padding: 8,
     backgroundColor: 'white',
   },
-  input: {
+  messageInput: {
     flex: 1,
     borderWidth: 1,
     borderColor: '#ccc',
     borderRadius: 20,
     paddingHorizontal: 12,
-    height: 40,
+    height: 50,
     backgroundColor: '#fff',
     borderColor: '#dba617',
   },
   sendButton: {
     backgroundColor: '#dba617',
     borderRadius: 20,
-    padding: 10,
+    padding: 15,
     justifyContent: 'center',
     marginLeft: 4,
   },
@@ -199,6 +193,7 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontSize: 16,
   },
+
 });
 
 export default Chat;
