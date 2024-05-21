@@ -1,12 +1,12 @@
 const db = require('../Database/index');
-// const io = require('../path_to_your_socket_instance');
+// const io = require('../socket');
 module.exports = {
   createReview: async (req, res) => {
     try {
       
       const { userId, stars ,comment,prodId,coffeeShopId } = req.body;
       const review = await db.Review.create({ userId, stars ,comment,prodId });
-      // io.emit('new_review', review);
+      // io.emit('new_review', review); // Emit the new review to all connected clients
       res.status(201).send(review);
     } catch (error) {
       res.status(500).send(error.message);

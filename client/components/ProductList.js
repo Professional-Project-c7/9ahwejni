@@ -19,7 +19,7 @@ import { ipAdress } from '../config';
 import AddReviewz from './AddReviewz';
 import LinearGradient from 'react-native-linear-gradient';
 import Toast from 'react-native-toast-message';
-import chatcoffee from '../image/chatcoffee.png';
+
 const ProductList = ({ navigation, route }) => {
   const { coffeeShopId } = route.params;
   const { products, getProducts, status, error } = useProducts();
@@ -186,12 +186,7 @@ const ProductList = ({ navigation, route }) => {
       <ScrollView>
         {filteredProducts.length > 0 ? (
           <>
-            <View style={styles.header}>
-              <Title style={styles.shopTitle}>{shopDetails.FirstName} {shopDetails.LastName}</Title>
-              <TouchableOpacity onPress={handleCreateOrJoinChatRoom}>
-                <Image source={chatcoffee} style={styles.chatIcon} />
-              </TouchableOpacity>
-            </View>
+            <Title style={styles.shopTitle}>{shopDetails.FirstName} {shopDetails.LastName}</Title>
             <Image
               style={styles.shopImage}
               source={{ uri: shopDetails.ImageUrl }}
@@ -243,12 +238,7 @@ const ProductList = ({ navigation, route }) => {
           </>
         ) : (
           <>
-            <View style={styles.header}>
-              <Title style={styles.shopTitle}>{shopDetails.FirstName} {shopDetails.LastName}</Title>
-              <TouchableOpacity onPress={handleCreateOrJoinChatRoom}>
-                <Image source={chatcoffee} style={styles.chatIcon} />
-              </TouchableOpacity>
-            </View>
+            <Title style={styles.shopTitle}>{shopDetails.FirstName} {shopDetails.LastName}</Title>
             <Image
               style={styles.shopImage}
               source={{ uri: shopDetails.ImageUrl }}

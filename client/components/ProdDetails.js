@@ -8,7 +8,6 @@ import AddReview from './AddReview';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import user from '../image/user.png';
 import moment from 'moment';
-import { useNavigation } from '@react-navigation/native';
 
 const ProductDetailsPage = ({ navigation }) => {
     const [products, setProducts] = useState([]);

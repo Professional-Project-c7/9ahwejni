@@ -43,14 +43,25 @@ const Favorites = ({ navigation }) => {
     }
   };
 
-  const handleAddToCart = (itemId) => {
-    console.log('Add to cart item id:', itemId);
-    // Add your logic for adding the item to the cart here
-  };
+  // const handleAddToCart = async(itemId) => {
+  //   try {
+  //   console.log('Add to cart item id:', itemId);
 
-  const handleViewProduct = async (productId) => {
-    await AsyncStorage.setItem('selectedProductId', productId);
-    navigation.navigate('prd');
+  //     await AsyncStorage.setItem('favorites', JSON.stringify(itemId));
+  //   } catch (error) {
+  //     console.log('Error updating favorites:', error);
+  //   }
+  //   // Add your logic for adding the item to the cart here
+  // };
+
+  const handleNavigateToDetails = async (item) => {
+    try {
+      await AsyncStorage.setItem('selecteditemId', item.id.toString());
+      console.log(item.id.toString());
+      navigation.navigate('prd', { item });
+    } catch (error) {
+      console.log('Error storing selected product ID:', error);
+    }
   };
 
   const onRefresh = () => {
@@ -63,16 +74,16 @@ const Favorites = ({ navigation }) => {
       <FlatList
         data={posts}
         renderItem={({ item, index }) => (
-          <TouchableOpacity key={index} onPress={() => handleViewProduct(item.id)} style={styles.card}>
+          <TouchableOpacity key={index} onPress={() => handleNavigateToDetails(item)} style={styles.card}>
             <Image style={styles.cardImage} source={{ uri: item.imgUrl }} />
             <View style={styles.cardContent}>
               <Text style={styles.title}>{item.name}</Text>
               <Text style={styles.description}>{item.description}</Text>
               <Text style={styles.price}>${item.price}</Text>
               <View style={styles.iconContainer}>
-                <TouchableOpacity style={styles.cartButton} onPress={() => handleAddToCart(item.id)}>
+                {/* <TouchableOpacity style={styles.cartButton} onPress={() => handleAddToCart(item.id)}>
                   <MaterialIcon name="add-shopping-cart" size={24} color="#00aaff" />
-                </TouchableOpacity>
+                </TouchableOpacity> */}
                 <TouchableOpacity style={styles.deleteButton} onPress={() => handleDeleteItem(item.id)}>
                   <MaterialIcon name="delete" size={24} color="#ff6347" />
                 </TouchableOpacity>

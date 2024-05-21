@@ -21,6 +21,7 @@ const roomRouters = require('./Routers/room.routers')
 const Payment=require('./Routers/Payment.js')
 const reviewRouter = require('./Routers/review.router.js');
 const reviewzRouter = require('./Routers/reviewz.router.js');
+const packReviewRouter = require('./Routers/packreview.routes.js'); 
 const Notification = require('./Routers/Notification.routes.js')
 const path = require('path');
 
@@ -37,6 +38,8 @@ app.use("/api/packs", packs);
 app.use('/api/payment', Payment);
 app.use('/api/review', reviewRouter);
 app.use('/api/reviewz', reviewzRouter);
+app.use('/api/packreview', packReviewRouter);  
+
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 let port = 3000;
 app.listen(port, function () {
