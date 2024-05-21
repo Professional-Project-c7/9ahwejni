@@ -62,7 +62,6 @@ const ProductList = ({ navigation }) => {
   const [category, setCategory] = useState('');
   const [refresh,setrefresh]= useState(false)
 
-  console.log('options', options);
 
   const handleSizeSelection = (size, price, setSelected) => {
     setSelected(prevSelected => {

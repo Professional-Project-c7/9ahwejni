@@ -93,7 +93,6 @@ const AddPacks = ({navigation}) => {
         body: data
       });
       const result = await response.json();
-      console.log('Cloudinary response:', result);
       return result.secure_url;
     } catch (error) {
       console.error('Error uploading image:', error);
@@ -131,7 +130,6 @@ const AddPacks = ({navigation}) => {
       if (value !== null) {
         const tokenObject = JSON.parse(value);
         const userId = tokenObject; 
-        console.log("taww",userId);
         setUserID(userId);
       }
     } catch (error) {
