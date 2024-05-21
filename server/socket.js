@@ -19,8 +19,8 @@ io.on('connection', (socket) => {
   console.log(`User connected: ${socket.id}`);
 
   const userId = socket.handshake.query.userId;
-  const room = parseInt(socket.handshake.query.room, 10) || 1; // Default to room ID 1
-  
+  const room = parseInt(socket.handshake.query.room, 10) || 1;
+
   if (userId) {
     console.log(`User ID: ${userId}, Room: ${room}`);
     userSockets[userId] = socket.id;
@@ -28,24 +28,28 @@ io.on('connection', (socket) => {
 
     socket.join(room);
   }
+  // socket.on('new_review', (review) => {
+  //   io.to(roomId).emit('new_review', review);
+  // });
+  
 
   socket.on('send_message', (data, callback) => {
-    const { recipientId, content, roomId } = data; // Use roomId instead of room
+    const { recipientId, content, roomId, isAudio } = data;
     const message = {
-        senderId: userId,
-        content,
-        roomId: parseInt(roomId, 10) || 1,  // Parse roomId to an integer
+      senderId: userId,
+      content,
+      roomId: parseInt(roomId, 10) || 1,
+      isAudio: isAudio || false,
     };
 
     if (recipientId && userSockets[recipientId]) {
-        io.to(userSockets[recipientId]).emit('receive_message', message);
+      io.to(userSockets[recipientId]).emit('receive_message', message);
     } else {
-        socket.broadcast.to(message.roomId).emit('receive_message', message);  // Use roomId here
+      socket.broadcast.to(message.roomId).emit('receive_message', message);
     }
 
     callback('success');
-});
-
+  });
 
   socket.on('disconnect', () => {
     console.log(`User disconnected: ${socket.id}`);

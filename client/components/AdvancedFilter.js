@@ -60,6 +60,15 @@ const AdvancedFilter = () => {
     fetchProductsAndReviews();
   }, []);
 
+  const fetchPacks = async () => {
+    try {
+      const packsResponse = await axios.get(`http://${ipAdress}:3000/api/packs`);
+      setProducts(packsResponse.data);
+    } catch (error) {
+      console.error('Error fetching packs:', error);
+    }
+  };
+
   const filterProducts = () => {
     const [minPrice, maxPrice] = priceRange;
     let filteredProductsList = products.filter(product => {
@@ -73,7 +82,16 @@ const AdvancedFilter = () => {
     setResultsModalVisible(true);
   };
 
-  const handleCategorySelect = (value) => {
+  const handleCategorySelect = async (value) => {
+    if (value === '') {
+      // Select all categories
+      const allCategories = categories.map(category => category.value).filter(v => v);
+      setSelectedCategories(allCategories);
+      return;
+    } else if (value === 'packs') {
+      await fetchPacks();
+    }
+
     setSelectedCategories((prevSelected) =>
       prevSelected.includes(value)
         ? prevSelected.filter((category) => category !== value)
@@ -81,10 +99,10 @@ const AdvancedFilter = () => {
     );
   };
 
-  const handleNavigateToDetails = async (product) => {
+  const handleNavigateToDetails = async (item) => {
     try {
-      await AsyncStorage.setItem('selectedProductId', product.id.toString());
-      navigation.navigate('ProductDetailsPage', { product });
+      await AsyncStorage.setItem('selectedProductId', item.id.toString());
+      navigation.navigate('prd', { item });
     } catch (error) {
       console.error('Error navigating to product details:', error);
     }

@@ -135,44 +135,54 @@ const ProductList = ({ navigation, route }) => {
 
   const handleCreateOrJoinChatRoom = async () => {
     try {
-      // // Check if the room already exists
-      // const checkResponse = await axios.get(`http://${ipAdress}:3000/api/roomRouter`, {
-      //   params: { name: shopTitle }
-      // });
-
-      // let roomId;
-      // if (checkResponse.data && checkResponse.data.length > 0) {
-      //   // Room exists, get the room ID
-      //   roomId = checkResponse.data[0].id;
-      // } else {
-        // Room does not exist, create a new room
+      
         const value = await AsyncStorage.getItem('IdUser');
         const userId = JSON.parse(value);
         var RoomName = shopDetails.FirstName
 
         const createResponse = await axios.post(`http://${ipAdress}:3000/api/roomRouter`, { name: RoomName});
        var roomId = createResponse.data.id;
-      // }
 
-      // Add user to the room
       await axios.post(`http://${ipAdress}:3000/api/roomRouter/user`, { roomId, userId });
-      // Navigate to the Chat screen
       navigation.navigate('chat', { roomId,  RoomName });
     } catch (error) {
       console.error('Error checking or creating chat room:', error);
     }
   };
-  // console.log(shopDetails.FirstName);
-
+  const handleAddToFavorites = async (product) => {
+    try {
+      // Validate product
+      if (!product || !product.id) {
+        throw new Error('Invalid product data');
+      }
+  
+      // Get existing favorites or initialize an empty array
+      const existingFavorites = await AsyncStorage.getItem('favv');
+      let favoritesArray = existingFavorites ? JSON.parse(existingFavorites) : [];
+  
+      // Check for duplicate
+      const isDuplicate = favoritesArray.some((fav) => fav.id === product.id);
+      if (isDuplicate) {
+        throw new Error('Product already exists in favorites');
+      }
+  
+      // Add the product to favorites (immutable update)
+      favoritesArray = [...favoritesArray, product];
+  
+      // Save the updated favorites back to AsyncStorage
+      await AsyncStorage.setItem('favv', JSON.stringify(favoritesArray));
+  
+      // Display toast message
+      ToastAndroid.showWithGravity('Item added to favorites', ToastAndroid.TOP, ToastAndroid.TOP);
+    } catch (error) {
+      console.error('Error storing favorite:', error.message);
+      // Optionally, show a toast message for the error
+      ToastAndroid.showWithGravity('Failed to add item to favorites', ToastAndroid.TOP, ToastAndroid.TOP);
+    }
+  };
+  
   return (
     <SafeAreaView style={styles.container}>
-      <View style={styles.top}>
-        <IconButton
-          icon="chat"
-          iconColor="black"
-          onPress={handleCreateOrJoinChatRoom}
-        />
-      </View>
       <ScrollView>
         {filteredProducts.length > 0 ? (
           <>
@@ -203,12 +213,11 @@ const ProductList = ({ navigation, route }) => {
                       <Image source={{ uri: product.imgUrl }} style={styles.image} />
                     </TouchableOpacity>
                     <Icon
-                      name={favorites[product.id]?.favored ? 'heart' : 'heart-outline'}
-                      color={favorites[product.id]?.favored ? 'red' : '#dba617'}
-                      size={27}
-                      onPress={() => toggleFeature(product.id, 'favored')}
-                      style={styles.favIcon}
-                    />
+                  name={'heart-outline'}
+                  size={27}
+                  style={styles.favIcon}
+                  onPress={() => handleAddToFavorites(product)} // Pass the product to handleAddToFavorites
+                />
                     <View style={styles.infoContainer}>
                       <TouchableOpacity onPress={() => handleNavigateToDetails(product)}>
                         <Text style={styles.name}>{product.name}</Text>
@@ -216,11 +225,11 @@ const ProductList = ({ navigation, route }) => {
                       <Text style={styles.price}>${product.price}</Text>
                       <Text style={styles.reviews}>{`${product.totalReviews} 👤 ⭐: ${product.averageRating}`}</Text>
                       <Icon
-                        name={favorites[product.id]?.inCart ? 'cart' : 'cart-outline'}
-                        size={24}
-                        onPress={() => toggleFeature(product.id, 'inCart')}
-                        style={styles.cartIcon}
-                      />
+                    name={favorites[product.id]?.inCart ? 'cart' : 'cart'}
+                    size={24}
+                    onPress={() => toggleFeature(product.id, 'inCart')}
+                    style={styles.cartIcon}
+                  />
                     </View>
                   </View>
                 );
@@ -279,12 +288,24 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     padding: 16,
   },
+  header: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
   shopTitle: {
     fontSize: 31,
     fontWeight: '700',
     textAlign: 'center',
     marginTop: 16,
     color: '#dba617',
+  },
+  chatIcon: {
+    width: 40,
+    height: 40,
+    marginRight: 5,
+    marginTop: 10,
+   bottom : 7
   },
   shopImage: {
     width: '100%',
@@ -302,6 +323,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginBottom: 5,
     color: '#333',
+    fontStyle: 'italic',
   },
   shopReviews: {
     fontSize: 18,

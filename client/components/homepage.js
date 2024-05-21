@@ -15,6 +15,8 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import MusicPlayer from './MusicPlayer';
 import Notification from './Notification';
 import Toast from 'react-native-toast-message';
+import TopPacks from '../components/TopPacks';
+import chatcoffee from '../image/chatcoffee.png';
 
 const HomePage = ({ navigation }) => {
   const [filterVisible, setFilterVisible] = useState(false);
@@ -53,9 +55,7 @@ const HomePage = ({ navigation }) => {
         if (welcomeBack) {
           Toast.show({
             type: 'success' ,
-            // text1: 'Welcome Back! ☕',
-            text1:  `Welcome  ${NAME} ☕`,
-
+            text1:  `Welcome ${NAME} ☕`,
           });
           await AsyncStorage.removeItem('welcomeBack');  // Clear flag after showing toast
         }
@@ -76,7 +76,7 @@ const HomePage = ({ navigation }) => {
       >
         <View style={styles.top}>
           <IconButton icon="bell" iconColor="#FFF" onPress={toggleNotification} />
-          {type && <IconButton icon="chat" iconColor='#FFF' onPress={() => navigation.navigate('chat')} />}
+          {type && <IconButton icon="chat" iconColor='#FFF' onPress={() => navigation.navigate('chat' ,{ roomId : 1,  RoomName : "general" })} />}
         </View>
       </LinearGradient>
       <View style={styles.searchContainer}>
@@ -94,12 +94,14 @@ const HomePage = ({ navigation }) => {
       </View>
       <RandomProducts />
       <View style={styles.top}>
+        {/* <Text style={[styles.Texttitlecoffee, { marginLeft: 0 }]}>Top Packs of the Day!</Text> */}
+      </View>
+      <TopPacks navigation={navigation} />
+      <View style={styles.top}>
         <Text style={[styles.Texttitlecoffee, { marginLeft: 0 }]}>Top Selling Coffee Shops of the Day!</Text>
       </View>
       <TopShops navigation={navigation} />
-
       <StatusBar style="auto" />
-
       <Modal
         visible={showNotification}
         animationType="slide"
@@ -111,7 +113,6 @@ const HomePage = ({ navigation }) => {
           <IconButton icon="close" color="#000" onPress={toggleNotification} />
         </View>
       </Modal>
-
       <Modal
         visible={filterVisible}
         animationType="slide"
@@ -162,7 +163,6 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     paddingHorizontal: 12,
     paddingVertical: 5,
-    
   },
   categoryTitleContainer: {
     alignItems: 'center',
@@ -197,6 +197,7 @@ const styles = StyleSheet.create({
     color: '#dba617',
     marginTop: 40,
     marginRight: 20,
+    fontFamily: 'Montserrat',
   },
   fullScreenModal: {
     flex: 1,
