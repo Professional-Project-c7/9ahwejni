@@ -15,7 +15,9 @@ export default function Marketplace() {
   const [reviewData, setReviewData] = useState([]);
   const [userData, setUserData] = useState([]);
   const [productData, setProductData] = useState([]);
-
+var myImg =productData.map(e=>(e.imgUrl))
+var name = productData.map(e=>(e.name))
+const image = userData.map (e=>(e.ImageUrl))
   useEffect(() => {
     async function fetchReviews() {
       try {
@@ -55,20 +57,20 @@ export default function Marketplace() {
   const deleteReview = async (reviewId) => {
     try {
       await axios.delete(`http://localhost:3000/api/review/${reviewId}`);
-      setReviewData(prevData => prevData.filter(review => review.id !== reviewId));
+      setReviewData((prevData) => prevData.filter((review) => review.id !== reviewId));
     } catch (error) {
       console.error("Error deleting review: ", error);
-      alert('Failed to delete review');
+      alert("Failed to delete review");
     }
   };
 
   const getUserNameById = (userId) => {
-    const user = userData.find(user => user.id === userId);
+    const user = userData.find((user) => user.id === userId);
     return user ? user.FirstName : "Unknown";
   };
 
   const getProductImageUrlById = (productId) => {
-    const product = productData.find(product => product.id === productId);
+    const product = productData.find((product) => product.id === productId);
     return product ? product.imgUrl : "https://via.placeholder.com/150"; // Fallback image
   };
 
@@ -80,21 +82,43 @@ export default function Marketplace() {
         <Text fontSize="2xl" fontWeight="bold">Users Reviews</Text>
       </Flex>
       <SimpleGrid columns={{ base: 1, md: 3 }} spacing="20px">
-        {reviewData.map((review) => (
-          <Box key={review.id} bg="white" boxShadow="lg" borderRadius="xl" p="4">
+        {reviewData.map((review,index) => (
+            <Box key={review.id} bg="white"  boxShadow="lg" borderRadius="xl" p="4"    transition="transform 0.2s, box-shadow 0.2s, background-color 0.2s"
+            _hover={{ transform: "scale(1.05)", boxShadow: "x50", bg: "black.100" }}>
             <Flex alignItems="center" mb="2">
               <Image
-                src={getProductImageUrlById(review.productId)}
-                alt="Product Image"
+                src={myImg[index]}
+                alt="Product"
                 borderRadius="xl"
                 mb="4"
-                boxSize="150px"
+                boxSize="300px"
+                height="12rem"
+                marginLeft="14px" 
+              marginTop='10px'
+               objectFit="cover"
+              />
+             
+             
+            </Flex>
+            <Text color={textColor} fontSize="lg" textAlign="center" marginTop="-17px" fontWeight="bold" ml="4">
+                {/* {getUserNameById(review.userId)} */}
+               {name[index]}
+              </Text>
+            <div  style={{ display: 'flex', alignItems: 'center' }}>
+           
+              <Image
+                src={image[index]}
+                alt="Product"
+                borderRadius="100"
+                mb="4"
+                boxSize="40px"
                 objectFit="cover"
               />
-              <Text color={textColor} fontSize="lg" fontWeight="bold" ml="4">
+               <Text color={textColor} fontSize="lg" fontWeight="bold" ml="4" marginTop="-13px">
                 {getUserNameById(review.userId)}
+              
               </Text>
-            </Flex>
+              </div>
             <Text color={textColor} fontSize="md" mb="4">{review.comment}</Text>
             <Flex justifyContent="flex-end">
               <Button onClick={() => deleteReview(review.id)} colorScheme="red" leftIcon={<DeleteIcon />} variant="outline">
