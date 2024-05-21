@@ -34,7 +34,6 @@ const CoffeeProductList = ({navigation}) => {
         if (value !== null) {
           const tokenObject = JSON.parse(value);
           const userId = tokenObject;
-          console.log("taww",userId);
           setUserID(userId);
         }
       } catch (error) {
@@ -114,7 +113,6 @@ const CoffeeProductList = ({navigation}) => {
   const setArrayOfProductsIds = async () => {
     try {
       await  AsyncStorage.setItem('ArrayOfProductsIds', JSON.stringify(checkedProductIDs));
-      console.log('Array Stored successfully');
     } catch (error) {
       console.error('Error Stored array:', error);
     }
@@ -140,8 +138,6 @@ const CoffeeProductList = ({navigation}) => {
 
 
   const filteredProducts = userData ? userData.filter(product => product.userId === userID) : [];
-  console.log('filtered',filteredProducts);
-  console.log("checkedProductIDs",checkedProductIDs);
   return (
     <View style={styles.container}>
       <Text style={styles.header}>Product List</Text>
