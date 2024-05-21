@@ -36,7 +36,7 @@ async function connectionTest (){
   db.productoptions=require('./productoptions')(connection,DataTypes)
  db.RoomUser=require('./userRooms')(connection,DataTypes)
   db.Noti= require('./Noti')(connection,DataTypes)
-
+  db.PackReview = require('./packreview.model')(connection, DataTypes);
 
 
   db.Pack=require('./pack.model')(connection,DataTypes)
@@ -68,8 +68,14 @@ db.Review.belongsTo(db.User);
 db.Products.hasMany(db.Review, { foreignKey: 'prodId' });
 db.Review.belongsTo(db.Products, { foreignKey: 'prodId' });
 
-// db.User.hasMany(db.Review, { foreignKey: 'coffeeShopId' })
-// db.Review.belongsTo(db.User, { foreignKey: 'coffeeShopId' })
+db.Pack.hasMany(db.PackReview);  
+db.PackReview.belongsTo(db.Pack);
+
+db.User.hasMany(db.PackReview);
+db.PackReview.belongsTo(db.User);
+
+
+
 
 //  relationships for messages and rooms
 
