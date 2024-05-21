@@ -1,7 +1,6 @@
 const express = require('express');
 const http = require('http');
 const socketIo = require('socket.io');
-const db = require('./Database/index'); // Ensure correct path to your Sequelize models
 
 const PORT = 4001;
 
@@ -20,50 +19,49 @@ io.on('connection', (socket) => {
   console.log(`User connected: ${socket.id}`);
 
   const userId = socket.handshake.query.userId;
-  const roomId = parseInt(socket.handshake.query.roomId, 10) || 1;
+  const room = parseInt(socket.handshake.query.room, 10) || 1;
 
   if (userId) {
-    console.log(`User ID: ${userId}, Room ID: ${roomId}`);
+    console.log(`User ID: ${userId}, Room: ${room}`);
     userSockets[userId] = socket.id;
     connectedUsers[userId] = true;
 
-    socket.join(roomId);
-
-    socket.on('send_message', async (data, callback) => {
-      const { content, timestamp } = data;
-      try {
-        const message = await db.Message.create({
-          content,
-          senderId: userId,
-          roomId,
-        });
-
-        const fullMessage = {
-          ...message.toJSON(),
-          senderId: userId,
-          timestamp: timestamp || new Date().toISOString(),
-        };
-
-        io.to(roomId).emit('receive_message', fullMessage);
-        callback('success');
-      } catch (error) {
-        console.error('Error sending message:', error);
-        callback('error');
-      }
-    });
+    socket.join(room);
   }
   // socket.on('new_review', (review) => {
   //   io.to(roomId).emit('new_review', review);
   // });
   
+
+  socket.on('send_message', (data, callback) => {
+    const { recipientId, content, roomId, isAudio } = data;
+    const message = {
+      senderId: userId,
+      content,
+      roomId: parseInt(roomId, 10) || 1,
+      isAudio: isAudio || false,
+    };
+
+    if (recipientId && userSockets[recipientId]) {
+      io.to(userSockets[recipientId]).emit('receive_message', message);
+    } else {
+      socket.broadcast.to(message.roomId).emit('receive_message', message);
+    }
+
+    callback('success');
+  });
+
   socket.on('disconnect', () => {
     console.log(`User disconnected: ${socket.id}`);
-    delete userSockets[userId];
-    delete connectedUsers[userId];
+    for (const [key, value] of Object.entries(userSockets)) {
+      if (value === socket.id) {
+        delete userSockets[key];
+        delete connectedUsers[key];
+        break;
+      }
+    }
   });
 });
-
-app.use(express.json()); // Ensure express.json() is used to parse JSON bodies
 
 app.get('/isConnected', (req, res) => {
   const userId = req.headers.userid;

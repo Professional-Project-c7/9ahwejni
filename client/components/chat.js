@@ -1,34 +1,34 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, TouchableOpacity, ScrollView, StyleSheet, ImageBackground } from 'react-native';
-import { Picker } from '@react-native-picker/picker';
+import { View, ScrollView, StyleSheet, ImageBackground, TouchableOpacity, Alert } from 'react-native';
+import { TextInput, IconButton, Card, Text } from 'react-native-paper';
 import io from 'socket.io-client';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
-import { ipAdress } from '../config';
 import moment from 'moment';
+import { ipAdress } from '../config';
+import AudioRecorderPlayer from 'react-native-audio-recorder-player';
+import RNFS from 'react-native-fs';
 
 const SERVER_ENDPOINT = `http://${ipAdress}:4001`;
 
-function Chat() {
+const audioRecorderPlayer = new AudioRecorderPlayer();
+
+const Chat = ({ navigation, route }) => {
+  const { roomId, roomName } = route.params;
   const [messages, setMessages] = useState([]);
   const [messageInput, setMessageInput] = useState('');
   const [userId, setUserId] = useState('');
-  const [userName, setUserName] = useState('');
   const [socket, setSocket] = useState(null);
-  const [room, setRoom] = useState('global');
-  const [availableRooms, setAvailableRooms] = useState(['global', 'room1', 'room2']);
 
   useEffect(() => {
     const retrieveData = async () => {
       try {
         const value = await AsyncStorage.getItem('IdUser');
-        const name = await AsyncStorage.getItem('UserName');
-        if (value !== null && name !== null) {
+        if (value !== null) {
           const id = JSON.parse(value);
           setUserId(id);
-          setUserName(name);
-          establishSocketConnection(id, name, room);
-          fetchMessages(room);
+          establishSocketConnection(id, roomId);
+          fetchMessages(roomId);
         }
       } catch (error) {
         console.error('Error retrieving data:', error);
@@ -42,27 +42,14 @@ function Chat() {
         socket.disconnect();
       }
     };
-  }, [room]);
+  }, [roomId]);
 
-  const establishSocketConnection = (id, name, room) => {
-    if (socket) {
-      socket.disconnect();
-    }
-
+  const establishSocketConnection = (id, room) => {
     const newSocket = io(SERVER_ENDPOINT, {
       query: { userId: id, room },
     });
 
-    newSocket.on('connect', () => {
-      console.log('Socket connected');
-    });
-
-    newSocket.on('disconnect', (reason) => {
-      console.log('Socket disconnected:', reason);
-    });
-
     newSocket.on('receive_message', (message) => {
-      console.log('Message received:', message);
       setMessages((prevMessages) => [...prevMessages, message]);
     });
 
@@ -87,21 +74,15 @@ function Chat() {
   };
 
   const sendMessage = () => {
-    console.log('Send button pressed');
     if (socket && messageInput.trim()) {
-      console.log('Socket exists and message input is not empty');
       const newMessage = {
         senderId: userId,
-        senderName: userName,
         content: messageInput,
-        room,
-        timestamp: Date.now(),
+        roomId: roomId,
+        timestamp: new Date(),
       };
 
-      console.log('Sending message:', newMessage);
-
       socket.emit('send_message', newMessage, (acknowledgement) => {
-        console.log('Message send acknowledgement:', acknowledgement);
         if (acknowledgement === 'success') {
           setMessages((prevMessages) => [...prevMessages, newMessage]);
           saveMessage(newMessage);
@@ -111,54 +92,85 @@ function Chat() {
       });
 
       setMessageInput('');
-    } else {
-      console.log('Socket does not exist or message input is empty');
     }
   };
 
-  const formatTimestamp = (timestamp) => {
-    return moment(timestamp).fromNow();
+  const playAudio = async (filePath) => {
+    try {
+      console.log('Playing audio from:', filePath);
+      const result = await audioRecorderPlayer.startPlayer(filePath);
+      if (result === 'success') {
+        audioRecorderPlayer.addPlayBackListener((e) => {
+          console.log({
+            currentPosition: e.currentPosition,
+            duration: e.duration,
+          });
+          if (e.currentPosition === e.duration) {
+            audioRecorderPlayer.stopPlayer();
+            audioRecorderPlayer.removePlayBackListener();
+          }
+        });
+      } else {
+        console.error('Failed to start audio player:', result);
+        Alert.alert('Error', 'Failed to start audio player');
+      }
+    } catch (error) {
+      console.error('Error playing audio:', error);
+      Alert.alert('Error', `Error playing audio: ${error.message}`);
+    }
   };
+  
+  
 
   return (
-    <ImageBackground source={require('../image/bgg.jpeg')} style={styles.background}>
-      <View style={styles.container}>
-        <Picker selectedValue={room} onValueChange={(value) => setRoom(value)} style={styles.roomPicker}>
-          {availableRooms.map((room, index) => (
-            <Picker.Item key={index} label={room} value={room} />
-          ))}
-        </Picker>
-        <ScrollView contentContainerStyle={styles.messagesContainer}>
-          {messages.map((message, index) => (
-            <View
-              key={index}
-              style={[
-                styles.messageBubble,
-                message.senderId === userId ? styles.sender : styles.receiver,
-              ]}
-            >
-              <Text style={styles.messageText}>
-                {message.senderId === userId ? 'You' : message.senderName}: {message.content}
-              </Text>
-              <Text style={styles.timestamp}>{formatTimestamp(message.timestamp)}</Text>
-            </View>
-          ))}
-        </ScrollView>
-        <View style={styles.inputContainer}>
-          <TextInput
-            style={styles.input}
-            placeholder="Type a message..."
-            value={messageInput}
-            onChangeText={setMessageInput}
-          />
-          <TouchableOpacity onPress={sendMessage} style={styles.sendButton}>
-            <Text style={styles.sendButtonText}>Send</Text>
-          </TouchableOpacity>
+      <ImageBackground source={require('../image/bgg.jpeg')} style={styles.background}>
+        <View style={styles.container}>
+          <ScrollView contentContainerStyle={styles.messagesContainer}>
+            {messages.map((message, index) => (
+              <Card
+                key={index}
+                style={[
+                  styles.message,
+                  message.senderId === userId ? styles.sender : styles.receiver,
+                ]}
+              >
+                <Card.Content>
+                  {message.isAudio ? (
+                    <TouchableOpacity onPress={() => playAudio(message.content)}>
+                      <Text style={styles.audioMessage}>Play Audio</Text>
+                    </TouchableOpacity>
+                  ) : (
+                    <>
+                      <Text style={styles.messageText}>{message.content}</Text>
+                      <Text style={styles.timestampText}>{moment(message.timestamp).fromNow()}</Text>
+                    </>
+                  )}
+                </Card.Content>
+              </Card>
+            ))}
+          </ScrollView>
+          <View style={styles.inputContainer}>
+            <TextInput
+              style={styles.messageInput}
+              value={messageInput}
+              onChangeText={setMessageInput}
+              placeholder="Type a message..."
+              mode="outlined"
+              outlineStyle={styles.textInputOutline}
+            />
+            <IconButton
+              icon="send"
+              color="#dba617"
+              size={30}
+              onPress={sendMessage}
+              style={styles.sendButton}
+            />
+          </View>
         </View>
-      </View>
-    </ImageBackground>
-  );
-}
+      </ImageBackground>
+    );
+    
+};
 
 const styles = StyleSheet.create({
   background: {
@@ -168,24 +180,15 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: 'transparent',
   },
-  roomPicker: {
-    backgroundColor: '#dba617',
-    height: 50,
-    width: 150,
-    alignSelf: 'center',
-    marginVertical: 10,
-    marginLeft: 260,
-  },
   messagesContainer: {
     flexGrow: 1,
     padding: 10,
   },
-  messageBubble: {
-    padding: 10,
-    borderRadius: 20,
+  message: {
     marginVertical: 4,
     maxWidth: '70%',
-    elevation: 1,
+    alignSelf: 'flex-start',
+    borderRadius: 30,
   },
   sender: {
     backgroundColor: '#dba617',
@@ -193,42 +196,41 @@ const styles = StyleSheet.create({
   },
   receiver: {
     backgroundColor: '#fff',
-    alignSelf: 'flex-start',
   },
   messageText: {
     fontSize: 16,
     color: '#333',
   },
-  timestamp: {
-    fontSize: 10,
-    color: '#666',
+  timestampText: {
+    fontSize: 14,
+    color: 'black',
+    textAlign: 'right',
     marginTop: 4,
   },
   inputContainer: {
     flexDirection: 'row',
     padding: 8,
     backgroundColor: 'white',
+    borderTopWidth: 1,
+    borderTopColor: '#dba617',
   },
-  input: {
+  messageInput: {
     flex: 1,
-    borderWidth: 1,
-    borderColor: '#ccc',
-    borderRadius: 20,
-    paddingHorizontal: 12,
-    height: 40,
+    marginRight: 8,
     backgroundColor: '#fff',
     borderColor: '#dba617',
   },
-  sendButton: {
-    backgroundColor: '#dba617',
+  textInputOutline: {
     borderRadius: 20,
-    padding: 10,
-    justifyContent: 'center',
-    marginLeft: 4,
   },
-  sendButtonText: {
-    color: '#fff',
+  sendButton: {
+    justifyContent: 'center',
+    alignSelf: 'center',
+  },
+  audioMessage: {
     fontSize: 16,
+    color: '#dba617',
+    textDecorationLine: 'underline',
   },
 });
 

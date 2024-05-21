@@ -10,7 +10,7 @@ import {
   Modal,
   ToastAndroid,
 } from 'react-native';
-import { Title } from 'react-native-paper';
+import { Title , IconButton } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { useProducts } from '../redux/products/productHooks';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -19,7 +19,6 @@ import { ipAdress } from '../config';
 import AddReviewz from './AddReviewz';
 import LinearGradient from 'react-native-linear-gradient';
 import Toast from 'react-native-toast-message';
-import chatcoffee from '../image/chatcoffee.png';
 
 const ProductList = ({ navigation, route }) => {
   const { coffeeShopId } = route.params;
@@ -134,17 +133,43 @@ const ProductList = ({ navigation, route }) => {
 
   const filteredProducts = productsWithReviews.filter((product) => product.userId === coffeeShopId);
 
+  const handleCreateOrJoinChatRoom = async () => {
+    try {
+      // // Check if the room already exists
+      // const checkResponse = await axios.get(`http://${ipAdress}:3000/api/roomRouter`, {
+      //   params: { name: shopTitle }
+      // });
+
+      // let roomId;
+      // if (checkResponse.data && checkResponse.data.length > 0) {
+      //   // Room exists, get the room ID
+      //   roomId = checkResponse.data[0].id;
+      // } else {
+        // Room does not exist, create a new room
+        const value = await AsyncStorage.getItem('IdUser');
+        const userId = JSON.parse(value);
+        var RoomName = shopDetails.FirstName
+
+        const createResponse = await axios.post(`http://${ipAdress}:3000/api/roomRouter`, { name: RoomName});
+       var roomId = createResponse.data.id;
+      // }
+
+      // Add user to the room
+      await axios.post(`http://${ipAdress}:3000/api/roomRouter/user`, { roomId, userId });
+      // Navigate to the Chat screen
+      navigation.navigate('chat', { roomId,  RoomName });
+    } catch (error) {
+      console.error('Error checking or creating chat room:', error);
+    }
+  };
+  // console.log(shopDetails.FirstName);
+
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView>
         {filteredProducts.length > 0 ? (
           <>
-            <View style={styles.header}>
-              <Title style={styles.shopTitle}>{shopDetails.FirstName} {shopDetails.LastName}</Title>
-              <TouchableOpacity onPress={() => navigation.navigate('Chat')}>
-                <Image source={chatcoffee} style={styles.chatIcon} />
-              </TouchableOpacity>
-            </View>
+            <Title style={styles.shopTitle}>{shopDetails.FirstName} {shopDetails.LastName}</Title>
             <Image
               style={styles.shopImage}
               source={{ uri: shopDetails.ImageUrl }}
@@ -197,12 +222,7 @@ const ProductList = ({ navigation, route }) => {
           </>
         ) : (
           <>
-            <View style={styles.header}>
-              <Title style={styles.shopTitle}>{shopDetails.FirstName} {shopDetails.LastName}</Title>
-              <TouchableOpacity onPress={() => navigation.navigate('Chat')}>
-                <Image source={chatcoffee} style={styles.chatIcon} />
-              </TouchableOpacity>
-            </View>
+            <Title style={styles.shopTitle}>{shopDetails.FirstName} {shopDetails.LastName}</Title>
             <Image
               style={styles.shopImage}
               source={{ uri: shopDetails.ImageUrl }}

@@ -50,8 +50,8 @@ async function connectionTest (){
   db.Products.hasMany(db.Size);
   db.Size.belongsTo(db.Products);
 
-  db.favorit.hasMany(db.Products);
-  db.Products.belongsTo(db.favorit);
+  // db.favorit.hasMany(db.Products);
+  // db.Products.belongsTo(db.favorit);
 
   db.Products.hasMany(db.Options);
   db.Options.belongsTo(db.Products);
@@ -83,11 +83,13 @@ db.Reviewz.belongsTo(db.User, { as: 'Reviewer', foreignKey: 'reviewerId' });
 db.Reviewz.belongsTo(db.User, { as: 'Reviewee', foreignKey: 'revieweeId' });
 
 
-// db.Room.hasMany(db.Message, { foreignKey: 'roomId' });
-// db.Message.belongsTo(db.Room, { foreignKey: 'roomId' });
+db.Room.hasMany(db.Message, { foreignKey: 'roomId' });
+db.Message.belongsTo(db.Room, { foreignKey: 'roomId' });
 
-// db.Room.belongsToMany(db.User,{ through: db.RoomUser });
-// db.User.belongsToMany(db.Room,{ through: db.RoomUser }); 
+db.User.hasMany(db.Message, { foreignKey: 'senderId' });
+db.Message.belongsTo(db.User, { foreignKey: 'senderId' });
+
+
 db.Room.belongsToMany(db.User, {
   through: {
     model: db.RoomUser,

@@ -9,20 +9,17 @@ const Favorites = ({ navigation }) => {
   const [posts, setPosts] = useState([]);
   const [refreshing, setRefreshing] = useState(false);
 
-  console.log("Fetched posts:", posts);
-
   const fetchData = async () => {
     try {
       const storedPosts = await AsyncStorage.getItem('favv');
       if (storedPosts) {
         const parsedPosts = JSON.parse(storedPosts);
-        console.log('Parsed posts:', parsedPosts); // Debugging: Log parsed posts
         setPosts(parsedPosts);
       } else {
         console.log('No posts found in AsyncStorage');
       }
     } catch (error) {
-      console.log('Error fetching data:', error); 
+      console.log('Error fetching data:', error);
     }
   };
 
@@ -46,6 +43,12 @@ const Favorites = ({ navigation }) => {
     }
   };
 
+  const handleAddToCart = (itemId) => {
+    // Add your logic for adding the item to the cart here
+    console.log('Add to cart item id:', itemId);
+    
+  };
+
   const onRefresh = () => {
     setRefreshing(true);
     fetchData().then(() => setRefreshing(false));
@@ -53,7 +56,6 @@ const Favorites = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
-      <Icon name="arrow-left" size={30} style={styles.backIcon} onPress={() => navigation.goBack()} />
       <FlatList
         data={posts}
         renderItem={({ item, index }) => (
@@ -63,9 +65,14 @@ const Favorites = ({ navigation }) => {
               <Text style={styles.title}>{item.name}</Text>
               <Text style={styles.description}>{item.description}</Text>
               <Text style={styles.price}>${item.price}</Text>
-              <TouchableOpacity style={styles.deleteButton} onPress={() => handleDeleteItem(item.id)}>
-                <MaterialIcon name="delete" size={24} color="#ff6347" />
-              </TouchableOpacity>
+              <View style={styles.iconContainer}>
+                <TouchableOpacity style={styles.cartButton} onPress={() => handleAddToCart(item.id)}>
+                  <Icon name="cart-plus" size={24} color="#00aaff" />
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.deleteButton} onPress={() => handleDeleteItem(item.id)}>
+                  <MaterialIcon name="delete" size={24} color="#ff6347" />
+                </TouchableOpacity>
+              </View>
             </View>
           </View>
         )}
@@ -83,55 +90,57 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#f4f3ef',
-  },
-  backIcon: {
-    margin: 16,
-    color: 'rgba(219, 166, 23, 1)',
+    padding: 10,
   },
   card: {
     flexDirection: 'row',
     backgroundColor: '#fff',
     borderRadius: 15,
-    margin: 10,
+    marginVertical: 8,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.3,
     shadowRadius: 6,
     elevation: 6,
+    overflow: 'hidden',
   },
   cardImage: {
-    width: 100,
-    height: '100%',
-    borderTopLeftRadius: 15,
-    borderBottomLeftRadius: 15,
+    width: 120,
+    height: 120,
   },
   cardContent: {
     flex: 1,
-    padding: 15,
+    padding: 10,
+    justifyContent: 'center',
   },
   title: {
-    fontSize: 20,
+    fontSize: 18,
     fontWeight: 'bold',
+    color: '#333',
   },
   description: {
     color: '#6e695b',
-    fontSize: 16,
-    flexWrap: 'wrap',
-    marginBottom: 10,
+    fontSize: 14,
+    marginVertical: 5,
   },
   price: {
-    fontSize: 19,
+    fontSize: 16,
     fontWeight: 'bold',
     color: '#38761d',
   },
+  iconContainer: {
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    marginTop: 10,
+  },
+  cartButton: {
+    marginRight: 15,
+  },
   deleteButton: {
-    position: 'absolute',
-    right: 10,
-    top: 10,
+    marginLeft: 10,
   },
   separator: {
-    height: 2,
-    backgroundColor: '#ececec',
+    height: 10,
   },
 });
 

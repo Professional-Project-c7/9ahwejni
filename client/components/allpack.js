@@ -11,7 +11,6 @@ import {
   ToastAndroid,
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { Rating } from 'react-native-ratings';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import LinearGradient from 'react-native-linear-gradient';
 import axios from 'axios';
@@ -27,11 +26,11 @@ const Allpack = ({ navigation }) => {
   useEffect(() => {
     const fetchPacks = async () => {
       try {
-        const productsResponse = await axios.get(`http://${ipAdress}:3000/api/packs`);
-        const reviewsResponse = await axios.get(`http://${ipAdress}:3000/api/review`);
+        const packsResponse = await axios.get(`http://${ipAdress}:3000/api/packs`);
+        const reviewsResponse = await axios.get(`http://${ipAdress}:3000/api/packreview`);
 
-        const packsWithReviews = productsResponse.data.map(pack => {
-          const packReviews = reviewsResponse.data.filter(review => review.prodId === pack.id);
+        const packsWithReviews = packsResponse.data.map(pack => {
+          const packReviews = reviewsResponse.data.filter(review => review.PackId === pack.id);
           const totalReviews = packReviews.length;
           const averageRating = totalReviews ? packReviews.reduce((acc, review) => acc + review.stars, 0) / totalReviews : 0;
           return {
@@ -96,7 +95,7 @@ const Allpack = ({ navigation }) => {
         style={styles.gradientBackground}
       >
         <View style={styles.titleContainer}>
-          <Text style={styles.titleText}>packs</Text>
+          <Text style={styles.titleText}>Packs</Text>
           <Image source={packos} style={styles.packosImage} />
         </View>
       </LinearGradient>
