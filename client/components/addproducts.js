@@ -11,6 +11,8 @@ import {
   ScrollView,
   SafeAreaView,
   Alert,
+  Modal,
+  Pressable,
 } from 'react-native';
 import { useTheme } from 'react-native-paper';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -19,6 +21,7 @@ import { ipAdress } from '../config';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import { launchImageLibrary } from 'react-native-image-picker';
+
 const ProductCard = ({ product }) => {
   return (
     <View style={styles.card}>
@@ -60,7 +63,7 @@ const ProductList = ({ navigation }) => {
   const [largeSizePrice, setlargeSizePrice] = useState('');
   const [options, setOptions] = useState([]);
   const [category, setCategory] = useState('');
-  const [refresh,setrefresh]= useState(false)
+  const [isModalVisible, setIsModalVisible] = useState(false);
 
 
   const handleSizeSelection = (size, price, setSelected) => {
@@ -128,7 +131,6 @@ const ProductList = ({ navigation }) => {
       }
     });
   };
-
   useEffect(() => {
     retrieveData();
   }, []);
@@ -161,7 +163,7 @@ const ProductList = ({ navigation }) => {
     if (userID) {
       getUserData(userID);
     }
-  }, [userID,refresh]);
+  }, [userID]);
 
   const handleAddProduct = async () => {
     try {
@@ -169,7 +171,7 @@ const ProductList = ({ navigation }) => {
         console.error('User ID not found.');
         return;
       }
-  
+
       const newProduct = {
         name: productName,
         price: mediumSizePrice,
@@ -179,12 +181,12 @@ const ProductList = ({ navigation }) => {
         options: options,
         category: category,
       };
-  
+
       const response = await axios.post(`http://${ipAdress}:3000/api/product`, newProduct);
       console.log('Product added successfully:', response.data);
-  
-      setrefresh(!refresh)
-  
+
+      setIsModalVisible(false);
+
       setProductName('');
       setProductDescription('');
       setProductSize('');
@@ -203,22 +205,9 @@ const ProductList = ({ navigation }) => {
     }
   };
 
-  useEffect(() => {
-    const getUserData = async userId => {
-      try {
-        const response = await axios.get(`http://${ipAdress}:3000/api/product`);
-        if (response.status === 200) {
-          setUserData(response.data.filter(product => product.userId === userId));
-        }
-      } catch (error) {
-        console.error('Error fetching user data:', error.message);
-      }
-    };
-  
-    if (userID) {
-      getUserData(userID);
-    }
-  }, [userID]);
+  const toggleModal = () => {
+    setIsModalVisible(!isModalVisible);
+  };
 
   const filteredProducts = userData? userData.filter(product => product.userId === userID) : [];
   const firstTwoImages = filteredProducts.slice(0, 2);
@@ -232,9 +221,9 @@ const ProductList = ({ navigation }) => {
             See All
           </Text>
         </View>
-        <SafeAreaView style={{ flex: 1 }}>
+        <SafeAreaView style={{ flex:1 }}>
           <FlatList
-            data={filteredProducts}
+            data={firstTwoImages}
             renderItem={({ item }) => <ProductCard product={item} />}
             keyExtractor={(item) => item.id}
             contentContainerStyle={styles.container}
@@ -242,270 +231,272 @@ const ProductList = ({ navigation }) => {
           />
         </SafeAreaView>
         <View style={styles.container}>
-          <View style={{ alignItems: 'center', marginTop: 15 }}>
-            <TouchableOpacity>
-              <View
-                style={{
-                  height: 100,
-                  width: 100,
-                  borderRadius: 15,
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                }}>
-                <ImageBackground>
-                  <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-                    {imgUrl && (
-                      <Image source={{ uri: imgUrl }} style={{ width: 125, height: 120 }} />
-                    )}
-                  </View>
-                  <View
-                    style={{
-                      flex: 1,
-                      justifyContent: 'center',
-                      alignItems: 'center',
-                    }}>
-                    <Icon
-                      onPress={pickImage}
-                      name="camera"
-                      size={35}
-                      color='#dba617'
-                      style={{
-                        opacity: 0.7,
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                      }}
-                    />
-                  </View>
-                </ImageBackground>
-              </View>
+          <View style={styles.addProductButton}>
+            <TouchableOpacity onPress={toggleModal}>
+            <Image source={require("../image/cross-selling.png")} style={styles.optionImageE} />
             </TouchableOpacity>
-            <Text style={{ marginTop: 10, fontSize: 18, fontWeight: 'bold' }}>
-              Add Product Photo
-            </Text>
           </View>
-          <View style={styles.action}>
-            <FontAwesome name="user-o" color={'#dba617'} size={20} />
-            <TextInput
-              placeholder="Name"
-              placeholderTextColor="#666666"
-              autoCorrect={false}
-              style={[
-                styles.textInput,
-                {
-                  color: colors.text,
-                },
-              ]}
-              value={productName}
-              onChangeText={setProductName}
-            />
-          </View>
-          <View style={styles.action}>
-            <FontAwesome name="file-text" color={'#dba617'} size={20} />
-            <TextInput
-              placeholder="Description"
-              placeholderTextColor="#666666"
-              autoCorrect={false}
-              style={[
-                styles.textInput,
-                {
-                  color: colors.text,
-                },
-              ]}
-              value={productDescription}
-              onChangeText={setProductDescription}
-            />
-          </View>
-          <View style={styles.action}>
-            <Text style={styles.optionTitle}>Size</Text>
-            <View style={styles.optionButtonsContainer}>
-              <View style={styles.sizePriceContainer}>
-                <View style={styles.sizeInputContainer}>
-                  <TouchableOpacity
-                    style={[styles.optionButton, smallSelected && styles.selectedOption]}
-                    onPress={() => handleSizeSelection('Small', smallSizePrice, setSmallSelected)}>
-                    <Text style={styles.optionButtonText}>Small</Text>
-                  </TouchableOpacity>
-                  <TextInput
-                    placeholder="Price"
-                    placeholderTextColor="#666666"
-                    autoCorrect={false}
-                    keyboardType="number-pad"
-                    style={[
-                      styles.sizePriceInput2,
-                      {
-                        color: colors.text,
-                      },
-                    ]}
-                    value={smallSizePrice}
-                    onChangeText={setsmallSizePrice}
-                    onFocus={() => setSmallSelected(true)} // Maintain selection state when input is focused
-                    onBlur={() => handleSizeSelection('Small', smallSizePrice, setSmallSelected)}
-                  />
-                </View>
-                <View style={styles.sizeInputContainer}>
-                  <TouchableOpacity
-                    style={[styles.optionButton, mediumSelected && styles.selectedOption]}
-                    onPress={() => handleSizeSelection('Medium', mediumSizePrice, setMediumSelected)}>
-                    <Text style={styles.optionButtonText}>Medium</Text>
-                  </TouchableOpacity>
-                  <TextInput
-                    placeholder="Price"
-                    placeholderTextColor="#666666"
-                    autoCorrect={false}
-                    keyboardType="number-pad"
-                    style={[
-                      styles.sizePriceInput,
-                      {
-                        color: colors.text,
-                      },
-                    ]}
-                    value={mediumSizePrice}
-                    onChangeText={setmediumSizePrice}
-                    onFocus={() => setMediumSelected(true)} // Maintain selection state when input is focused
-                    onBlur={() => handleSizeSelection('Medium', mediumSizePrice, setMediumSelected)}
-                  />
-                </View>
-                <View style={styles.sizeInputContainer}>
-                  <TouchableOpacity
-                    style={[styles.optionButton, largeSelected && styles.selectedOption]}
-                    onPress={() => handleSizeSelection('Large', largeSizePrice, setLargeSelected)}>
-                    <Text style={styles.optionButtonText}>Large</Text>
-                  </TouchableOpacity>
-                  <TextInput
-                    placeholder="Price"
-                    placeholderTextColor="#666666"
-                    autoCorrect={false}
-                    keyboardType="number-pad"
-                    style={[
-                      styles.sizePriceInput,
-                      {
-                        color: colors.text,
-                      },
-                    ]}
-                    value={largeSizePrice}
-                    onChangeText={setlargeSizePrice}
-                    onFocus={() => setLargeSelected(true)} // Maintain selection state when input is focused
-                    onBlur={() => handleSizeSelection('Large', largeSizePrice, setLargeSelected)}
-                  />
-                </View>
-              </View>
-            </View>
-          </View>
-          {/* <View style={styles.action}>
-            <Text style={styles.optionTitle}>Prices</Text>
-            <View style={styles.optionButtonsContainer}>
-              <View style={styles.sizePriceContainer}>
-                <View style={styles.sizeInputContainer}>
-                  <TouchableOpacity
-                    style={[styles.optionButton, smallSelected && styles.selectedOption]}
-                    onPress={() => handleSizeSelection('Small', smallSizePrice, setSmallSelected)}>
-                    <Text style={styles.optionButtonText}>Small</Text>
-                  </TouchableOpacity>
-                  <TextInput
-                    placeholder="Price"
-                    placeholderTextColor="#666666"
-                    autoCorrect={false}
-                    keyboardType="number-pad"
-                    style={[
-                      styles.sizePriceInput2,
-                      {
-                        color: colors.text,
-                      },
-                    ]}
-                    value={smallSizePrice}
-                    onChangeText={setsmallSizePrice}
-                    onFocus={() => setSmallSelected(true)} // Maintain selection state when input is focused
-                    onBlur={() => handleSizeSelection('Small', smallSizePrice, setSmallSelected)}
-                  />
-                </View>
-                <View style={styles.sizeInputContainer}>
-                  <TouchableOpacity
-                    style={[styles.optionButton, mediumSelected && styles.selectedOption]}
-                    onPress={() => handleSizeSelection('Medium', mediumSizePrice, setMediumSelected)}>
-                    <Text style={styles.optionButtonText}>Medium</Text>
-                  </TouchableOpacity>
-                  <TextInput
-                    placeholder="Price"
-                    placeholderTextColor="#666666"
-                    autoCorrect={false}
-                    keyboardType="number-pad"
-                    style={[
-                      styles.sizePriceInput,
-                      {
-                        color: colors.text,
-                      },
-                    ]}
-                    value={mediumSizePrice}
-                    onChangeText={setmediumSizePrice}
-                    onFocus={() => setMediumSelected(true)} // Maintain selection state when input is focused
-                    onBlur={() => handleSizeSelection('Medium', mediumSizePrice, setMediumSelected)}
-                  />
-                </View>
-                <View style={styles.sizeInputContainer}>
-                  <TouchableOpacity
-                    style={[styles.optionButton, largeSelected && styles.selectedOption]}
-                    onPress={() => handleSizeSelection('Large', largeSizePrice, setLargeSelected)}>
-                    <Text style={styles.optionButtonText}>Large</Text>
-                  </TouchableOpacity>
-                  <TextInput
-                    placeholder="Price"
-                    placeholderTextColor="#666666"
-                    autoCorrect={false}
-                    keyboardType="number-pad"
-                    style={[
-                      styles.sizePriceInput,
-                      {
-                        color: colors.text,
-                      },
-                    ]}
-                    value={largeSizePrice}
-                    onChangeText={setlargeSizePrice}
-                    onFocus={() => setLargeSelected(true)} // Maintain selection state when input is focused
-                    onBlur={() => handleSizeSelection('Large', largeSizePrice, setLargeSelected)}
-                  />
-                </View>
-              </View>
-            </View>
-          </View> */}
-          <View style={styles.action}>
-            <Text style={styles.optionTitle}>Category</Text>
-            <View style={styles.optionButtonsContainer}>
-              <TouchableOpacity
-                style={[
-                  styles.optionButton,
-                  category === 'coffee' && styles.selectedOption,
-                ]}
-                onPress={() => setCategory('coffee')}>
-                <Text style={styles.optionButtonText}>Coffee</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={[
-                  styles.optionButton,
-                  category === 'cake' && styles.selectedOption,
-                ]}
-                onPress={() => setCategory('cake')}>
-                <Text style={styles.optionButtonText}>Cake</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={[
-                  styles.optionButton,
-                  category ==='drink' && styles.selectedOption,
-                ]}
-                onPress={() => setCategory('drink')}>
-                <Text style={styles.optionButtonText}>Drink</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-          <TouchableOpacity style={styles.commandButton} onPress={handleAddProduct}>
-            <Text style={styles.panelButtonTitle}>Add Product</Text>
-          </TouchableOpacity>
         </View>
       </View>
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={isModalVisible}
+        onRequestClose={toggleModal}
+      >
+        <ScrollView>
+        <View style={styles.centeredView}>
+          <View style={styles.modalView}>
+            <View style={styles.modalHeader}>
+              {/* <Text style={styles.modalTitle}>Add Product</Text> */}
+              <Pressable onPress={toggleModal}>
+                <Icon name="close" size={24} color="#dba617" />
+              </Pressable>
+            </View>
+            <View style={styles.modalContent}>
+              <View style={styles.imageContainer}>
+    <Image source={{ uri: imgUrl }} style={styles.image} />
+  </View>
+              <View style={styles.action}>
+                <FontAwesome name="user-o" color={'#dba617'} size={20} />
+                <TextInput
+                  placeholder="Name"
+                  placeholderTextColor="#666666"
+                  autoCorrect={false}
+                  style={[
+                    styles.textInput,
+                    {
+                      color: colors.text,
+                    },
+                  ]}
+                  value={productName}
+                  onChangeText={setProductName}
+                />
+              </View>
+              <View style={styles.action}>
+                <FontAwesome name="file-text" color={'#dba617'} size={20} />
+                <TextInput
+                  placeholder="Description"
+                  placeholderTextColor="#666666"
+                  autoCorrect={false}
+                  style={[
+                    styles.textInput,
+                    {
+                      color: colors.text,
+                    },
+                  ]}
+                  value={productDescription}
+                  onChangeText={setProductDescription}
+                />
+              </View>
+              <View style={styles.action}>
+                <Text style={styles.optionTitle}>Size</Text>
+                <View style={styles.optionButtonsContainer}>
+                  <View style={styles.sizePriceContainer}>
+                    <View style={styles.sizeInputContainer}>
+                      <TouchableOpacity
+                        style={[styles.optionButton, smallSelected && styles.selectedOption]}
+                        onPress={() => handleSizeSelection('Small', smallSizePrice, setSmallSelected)}>
+                        <Text style={styles.optionButtonText}>Small</Text>
+                      </TouchableOpacity>
+                      <TextInput
+                        placeholder="Price"
+                        placeholderTextColor="#666666"
+                        autoCorrect={false}
+                        keyboardType="number-pad"
+                        style={[
+                          styles.sizePriceInput2,
+                          {
+                            color: colors.text,
+                          },
+                        ]}
+                        value={smallSizePrice}
+                        onChangeText={setsmallSizePrice}
+                        onFocus={() => setSmallSelected(true)} // Maintain selection state when input is focused
+                        onBlur={() => handleSizeSelection('Small', smallSizePrice, setSmallSelected)}
+                      />
+                    </View>
+                    <View style={styles.sizeInputContainer}>
+                      <TouchableOpacity
+                        style={[styles.optionButton, mediumSelected && styles.selectedOption]}
+                        onPress={() => handleSizeSelection('Medium', mediumSizePrice, setMediumSelected)}>
+                        <Text style={styles.optionButtonText}>Medium</Text>
+                      </TouchableOpacity>
+                      <TextInput
+                        placeholder="Price"
+                        placeholderTextColor="#666666"
+                        autoCorrect={false}
+                        keyboardType="number-pad"
+                        style={[
+                          styles.sizePriceInput,
+                {
+                            color: colors.text,
+                          },
+                        ]}
+                        value={mediumSizePrice}
+                        onChangeText={setmediumSizePrice}
+                        onFocus={() => setMediumSelected(true)} // Maintain selection state when input is focused
+                        onBlur={() => handleSizeSelection('Medium', mediumSizePrice, setMediumSelected)}
+                      />
+                    </View>
+                    <View style={styles.sizeInputContainer}>
+                      <TouchableOpacity
+                        style={[styles.optionButton, largeSelected && styles.selectedOption]}
+                        onPress={() => handleSizeSelection('Large', largeSizePrice, setLargeSelected)}>
+                        <Text style={styles.optionButtonText}>Large</Text>
+                      </TouchableOpacity>
+                      <TextInput
+                        placeholder="Price"
+                        placeholderTextColor="#666666"
+                        autoCorrect={false}
+                        keyboardType="number-pad"
+                        style={[
+                          styles.sizePriceInput,
+                          {
+                            color: colors.text,
+                          },
+                        ]}
+                        value={largeSizePrice}
+                        onChangeText={setlargeSizePrice}
+                        onFocus={() => setLargeSelected(true)} // Maintain selection state when input is focused
+                        onBlur={() => handleSizeSelection('Large', largeSizePrice, setLargeSelected)}
+                      />
+                    </View>
+                  </View>
+                </View>
+              </View>
+              <View style={styles.action}>
+                <Text style={styles.optionTitle}>Category</Text>
+                <View style={styles.optionButtonsContainer}>
+                  <TouchableOpacity
+                    style={[
+                      styles.optionButton,
+                      category === 'coffee' && styles.selectedOption,
+                    ]}
+                    onPress={() => setCategory('coffee')}>
+                    <Text style={styles.optionButtonText}>Coffee</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    style={[
+                      styles.optionButton,
+                      category === 'cake' && styles.selectedOption,
+                    ]}
+                    onPress={() => setCategory('cake')}>
+                    <Text style={styles.optionButtonText}>Cake</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    style={[
+                      styles.optionButton,
+                      category ==='drink' && styles.selectedOption,
+                    ]}
+                    onPress={() => setCategory('drink')}>
+                    <Text style={styles.optionButtonText}>Drink</Text>
+                  </TouchableOpacity>
+                </View>
+              </View>
+              <View style={styles.action2}>
+           
+                <TouchableOpacity onPress={pickImage}>
+                  {/* <TextInput
+                    // placeholder="Image URL"
+                    placeholderTextColor="#666666"
+                    autoCorrect={false}
+                    style={[
+                      styles.textInput,
+                      {
+                        color: colors.text,
+                      },
+                    ]}
+                    value={imgUrl}
+                    onChangeText={setimgUrl}
+                    editable={false}
+                  /> */}
+                     <TouchableOpacity style={styles.cameraIconContainer} onPress={pickImage}>
+  <FontAwesome name="camera" color={'#dba617'} size={30} />
+</TouchableOpacity>
+                </TouchableOpacity>
+                
+              </View>
+              <TouchableOpacity style={styles.commandButton} onPress={handleAddProduct}>
+                <Text style={styles.panelButtonTitle}>Add Product</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
     </ScrollView>
+
+      </Modal>
+    </ScrollView>
+  
   );
 };
 
 const styles = StyleSheet.create({
+  addProductButton: {
+    // backgroundColor: '#dba617',
+    padding: 10,
+    borderRadius: 30,
+    alignItems: 'center',
+    marginBottom: 10,
+  },
+  addProductText: {
+    color: 'white',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  centeredView: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 0, // remove the marginTop property
+    
+  },
+  modalView: {
+    margin: 20,
+    backgroundColor: 'white',
+    borderRadius: 20,
+    padding: 35,
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+    width: '90%', // set the width to 90%
+    height: '80%', // set the height to 80%
+  },
+  modalHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 20,
+  },
+  modalTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
+  modalContent: {
+    width: '70%',
+    margin: 10,
+    alignItems: 'center',
+    maxHeight: '70%', // Limit the height of the modal content to 70% of the screen height
+  },
+  imageContainer: {
+    width: 80,
+    height: 80,
+    // borderRadius: 75,
+    overflow: 'hidden',
+    marginBottom: 10,
+  },
+  image: {
+    width: '100%',
+    height: '100%',
+    resizeMode: 'cover',
+  },
   sizePriceContainer: {
     flexDirection: 'column',
   },
@@ -543,7 +534,19 @@ const styles = StyleSheet.create({
     marginLeft: 55,
     width: 60,
   },
-
+  cameraIconContainer: {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: [{ translateX: -20 }, { translateY: -20 }],
+    // backgroundColor: '#000',
+    padding: 10,
+    borderRadius: 20,
+    display: 'flex',
+    justifyContent: 'center',
+   
+    borderWidth: 0, // remove the line under the camera icon by setting borderWidth to 0
+  },
   optionButtonsContainer: {
     flexDirection: 'row',
     justifyContent: 'space-around',
@@ -558,9 +561,9 @@ const styles = StyleSheet.create({
   optionButton: {
     backgroundColor: '#fff',
     borderRadius: 15,
-    paddingHorizontal: 12,
+    paddingHorizontal: 5,
     paddingVertical: 8,
-    marginHorizontal: 5,
+    marginHorizontal: 10, // add this line to add some space between the buttons
     borderWidth: 1,
     borderColor: '#FFBB70',
     overflow: 'hidden',
@@ -738,6 +741,14 @@ borderRadius: 20,
     alignItems: 'center',
     marginTop: 10,
     borderBottomWidth: 1,
+    borderBottomColor: '#ccc',
+    paddingBottom: 5,
+  },
+  action2: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: 10,
+    // borderBottomWidth: 1,
     borderBottomColor: '#ccc',
     paddingBottom: 5,
   },
