@@ -87,7 +87,7 @@ function Chat() {
   };
 
   const sendMessage = () => {
-    console.log('Send button pressed');
+    // console.log('Send button pressed');
     if (socket && messageInput.trim()) {
       console.log('Socket exists and message input is not empty');
       const newMessage = {
@@ -98,7 +98,7 @@ function Chat() {
         timestamp: Date.now(),
       };
 
-      console.log('Sending message:', newMessage);
+      // console.log('Sending message:', newMessage);
 
       socket.emit('send_message', newMessage, (acknowledgement) => {
         console.log('Message send acknowledgement:', acknowledgement);
