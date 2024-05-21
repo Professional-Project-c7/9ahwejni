@@ -19,7 +19,7 @@ import { ipAdress } from '../config';
 import AddReviewz from './AddReviewz';
 import LinearGradient from 'react-native-linear-gradient';
 import Toast from 'react-native-toast-message';
-
+import chatcoffee from '../image/chatcoffee.png';
 const ProductList = ({ navigation, route }) => {
   const { coffeeShopId } = route.params;
   const { products, getProducts, status, error } = useProducts();
@@ -166,17 +166,15 @@ const ProductList = ({ navigation, route }) => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <View style={styles.top}>
-        <IconButton
-          icon="chat"
-          iconColor="black"
-          onPress={handleCreateOrJoinChatRoom}
-        />
-      </View>
       <ScrollView>
         {filteredProducts.length > 0 ? (
           <>
-            <Title style={styles.shopTitle}>{shopDetails.FirstName} {shopDetails.LastName}</Title>
+            <View style={styles.header}>
+              <Title style={styles.shopTitle}>{shopDetails.FirstName} {shopDetails.LastName}</Title>
+              <TouchableOpacity onPress={handleCreateOrJoinChatRoom}>
+                <Image source={chatcoffee} style={styles.chatIcon} />
+              </TouchableOpacity>
+            </View>
             <Image
               style={styles.shopImage}
               source={{ uri: shopDetails.ImageUrl }}
@@ -229,7 +227,12 @@ const ProductList = ({ navigation, route }) => {
           </>
         ) : (
           <>
-            <Title style={styles.shopTitle}>{shopDetails.FirstName} {shopDetails.LastName}</Title>
+            <View style={styles.header}>
+              <Title style={styles.shopTitle}>{shopDetails.FirstName} {shopDetails.LastName}</Title>
+              <TouchableOpacity onPress={handleCreateOrJoinChatRoom}>
+                <Image source={chatcoffee} style={styles.chatIcon} />
+              </TouchableOpacity>
+            </View>
             <Image
               style={styles.shopImage}
               source={{ uri: shopDetails.ImageUrl }}
@@ -279,12 +282,24 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     padding: 16,
   },
+  header: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
   shopTitle: {
     fontSize: 31,
     fontWeight: '700',
     textAlign: 'center',
     marginTop: 16,
     color: '#dba617',
+  },
+  chatIcon: {
+    width: 40,
+    height: 40,
+    marginRight: 5,
+    marginTop: 10,
+   bottom : 7
   },
   shopImage: {
     width: '100%',
@@ -302,6 +317,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginBottom: 5,
     color: '#333',
+    fontStyle: 'italic',
   },
   shopReviews: {
     fontSize: 18,
