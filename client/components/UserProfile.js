@@ -39,7 +39,7 @@ const imageHandler = async (image) => {
       body: data
     });
     const result = await response.json();
-    console.log('Cloudinary response:', result);
+    // console.log('Cloudinary response:', result);
     return result.secure_url;
     setimgUrl( result.secure_url)
   } catch (error) {
@@ -71,7 +71,7 @@ const removeTokenFromStorage = async () => {
     await AsyncStorage.removeItem('IdUser');
     await AsyncStorage.removeItem('favorites');
 
-    console.log('Token removed successfully');
+    // console.log('Token removed successfully');
   } catch (error) {
     console.error('Error removing token:', error);
   }
@@ -87,7 +87,7 @@ const retrieveData = async () => {
     if (value !== null) {
       const tokenObject = JSON.parse(value);
       const userId = tokenObject; 
-      console.log('helllllo',userId);
+      // console.log('helllllo',userId);
       setuserID(userId);
     }
   } catch (error) {
@@ -116,7 +116,6 @@ const handleUpdateProfile = async () => {
       ImageUrl: imgUrl,
      
     };
-    console.log(userData); // Check if userData is correct before sending the request
     const response = await axios.put(`http://${ipAdress}:3000/api/user/${userID}`, userData);
     
     console.log('Update successful:', response.data);
@@ -142,6 +141,8 @@ useEffect(() => {
 // }, []);
 const handleLogout = () => {
   AsyncStorage.removeItem('favorites')
+  AsyncStorage.removeItem('favv')
+
   removeTokenFromStorage();
   navigation.navigate('Login');
 };

@@ -78,7 +78,6 @@ function TabNavigator() {
         console.log('Error storing user type:', error);
       }
     };
-  console.log("hello",userType)
   return (
     <Tab.Navigator
       tabBarOptions={{
@@ -221,10 +220,10 @@ function NAVSTART() {
         <Stack.Screen name="ProductList" component={ProductList} options={{ headerShown: false }} />
         <Stack.Screen name="AddPacks" component={AddPacks} options={{ headerShown: false }} />
         <Stack.Screen name="AddProducts" component={AddProducts} options={{ headerShown: false }} />
-        <Stack.Screen name="Orders" component={Orders}  />
-        <Stack.Screen name="Edit" component={EditCoffee} />
-        <Stack.Screen name="Info" component={InfoCoffee} />
-        <Stack.Screen name="Coffeelist" component={Coffeelist} />
+        <Stack.Screen name="Orders" component={Orders}options={{ headerShown: false }}  />
+        <Stack.Screen name="Edit" component={EditCoffee}options={{ headerShown: false }} />
+        <Stack.Screen name="Info" component={InfoCoffee} options={{ headerShown: false }} />
+        <Stack.Screen name="Coffeelist" component={Coffeelist} options={{ headerShown: false }}/>
         <Stack.Screen name="TestCloud" component={TestCloud} />
 
         <Stack.Screen
@@ -235,7 +234,7 @@ function NAVSTART() {
          <Stack.Screen name="SeeAllPacksCoffee" component={SeeAllPacksCoffee} options={{ headerShown: false }} />
         <Stack.Screen name="ReviewsCoffee" component={ReviewsCoffee} options={{ headerShown: false }} />
         <Stack.Screen name="PaymentCardsDetails" component={PaymentCardsDetails}  />
-        <Stack.Screen name="User" component={UserProfile} />
+        <Stack.Screen name="User" component={UserProfile} options={{ headerShown: false }}/>
         <Stack.Screen name="prd" component={ProductDetailsPage} options={{ headerShown: false }} />
         <Stack.Screen name="panier" component={Panier} options={{ headerShown: false }} />
         <Stack.Screen name="Allcoffeeshops" component={Allcoffeeshops} options={{ headerShown: false }} />
@@ -248,13 +247,13 @@ function NAVSTART() {
         <Stack.Screen name="Tabs"  component={TabNavigator} options={{ headerShown: false }} />
         <Stack.Screen name="Onboarding" component={Onboarding} options={{ headerShown: false }} />
         <Stack.Screen name="AdvancedFilter" component={AdvancedFilter} options={{ headerShown: false }} />
-        <Stack.Screen name="Favorit" component={Favorit }  />
-        <Stack.Screen  name="SeeAllProdsCoffee" component={SeeAllProdsCoffee} />
+        <Stack.Screen name="Favorit" component={Favorit } options={{ headerShown: false }} />
+        <Stack.Screen  name="SeeAllProdsCoffee" component={SeeAllProdsCoffee} options={{ headerShown: false }}/>
         <Stack.Screen name="AllProducts" component={AllProducts} options={{ headerShown: false }} />
         <Stack.Screen name="AllCakes" component={AllCakes} options={{ headerShown: false }} />
         <Stack.Screen name="AllCoffees" component={AllCoffees} options={{ headerShown: false }} />
         <Stack.Screen name="AllDrinks" component={AllDrinks} options={{ headerShown: false }} />
-        <Stack.Screen name="chat" component={chat} />
+        <Stack.Screen name="chat" component={chat} options={{ headerShown: false }}/>
         <Stack.Screen name="paymentSucces" component={PaymentSuccessPage}  />
         <Stack.Screen  name="SettingComponent" component={SettingComponent} />
       </Stack.Navigator>

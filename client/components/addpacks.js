@@ -76,7 +76,6 @@ console.log(array);
     setSelectedPack(pack);
     setIsProductModalVisible(true);
   };
-  console.log(userID);
 
   const imageHandler = async (image) => {
     try {
@@ -94,7 +93,6 @@ console.log(array);
         body: data
       });
       const result = await response.json();
-      console.log('Cloudinary response:', result);
       return result.secure_url;
     } catch (error) {
       console.error('Error uploading image:', error);
@@ -132,7 +130,6 @@ console.log(array);
       if (value !== null) {
         const tokenObject = JSON.parse(value);
         const userId = tokenObject; 
-        console.log("taww",userId);
         setUserID(userId);
       }
     } catch (error) {

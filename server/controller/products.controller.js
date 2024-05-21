@@ -36,7 +36,9 @@ selectOne: async function(req, res) {
             return {
                 price:e.price,
                 option:e.option,
-                prodId:product.id
+                prodId:product.id,
+                
+                
             }
            }) 
             
@@ -47,7 +49,7 @@ selectOne: async function(req, res) {
             //     name: product.name, 
             //     price: product.price,
             //     description: product.description,
-            //     imgUrl: product.imgUrl,
+            //     
             //     prodId: product.id,
             //     optionId: option.id 
             // });

@@ -2,7 +2,7 @@ const { Message, User } = require('../Database/index');
 
 const getMessages = async (req, res) => {
     try {
-        const roomId = parseInt(req.params.room, 10);
+        const roomId = parseInt(req.params.room);
         const messages = await Message.findAll({
             where: { roomId },
             include: [

@@ -20,7 +20,6 @@ import { DeleteIcon } from "@chakra-ui/icons";
 
 export default function DevelopmentTable() {
   const [userData, setUserData] = useState([]);
-console.log(userData);
   useEffect(() => {
     async function fetchData() {
       try {
