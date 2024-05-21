@@ -11,7 +11,7 @@ import com.facebook.react.defaults.DefaultReactHost.getDefaultReactHost
 import com.facebook.react.defaults.DefaultReactNativeHost
 import com.facebook.soloader.SoLoader
 import com.oblador.vectoricons.VectorIconsPackage;
-
+import com.dieam.reactnativepushnotification.ReactNativePushNotificationPackage;  // <--- Import Package
 class MainApplication : Application(), ReactApplication {
 
   override val reactNativeHost: ReactNativeHost =

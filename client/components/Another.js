@@ -9,7 +9,7 @@ const Favorites = ({ navigation }) => {
   const [posts, setPosts] = useState([]);
   const [refreshing, setRefreshing] = useState(false);
 
-  console.log("Fetched posts:", posts);
+  // console.log("Fetched posts:", posts);
 
   const fetchData = async () => {
     try {
@@ -53,7 +53,7 @@ const Favorites = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
-      <Icon name="arrow-left" size={30} style={styles.backIcon} onPress={() => navigation.goBack()} />
+      {/* <Icon name="arrow-left" size={30} style={styles.backIcon} onPress={() => navigation.goBack()} /> */}
       <FlatList
         data={posts}
         renderItem={({ item, index }) => (
