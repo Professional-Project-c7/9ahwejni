@@ -50,8 +50,8 @@ async function connectionTest (){
   db.Products.hasMany(db.Size);
   db.Size.belongsTo(db.Products);
 
-  db.favorit.hasMany(db.Products);
-  db.Products.belongsTo(db.favorit);
+  // db.favorit.hasMany(db.Products);
+  // db.Products.belongsTo(db.favorit);
 
   db.Products.hasMany(db.Options);
   db.Options.belongsTo(db.Products);
