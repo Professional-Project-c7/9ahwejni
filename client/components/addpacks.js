@@ -27,7 +27,7 @@ const PackCard = ({ pack, onPressProducts }) => {
   );
 };
 
-const ProductModal = ({ isVisible, onHide, products }) => {
+const ProductModal = ({ isVisible, onHide, products,options }) => {
   return (
     <Modal
       visible={isVisible}
@@ -71,7 +71,7 @@ const AddPacks = ({navigation}) => {
   const [selectedPack, setSelectedPack] = useState(null);
   const [isProductModalVisible, setIsProductModalVisible] = useState(false);
   const [imgUrl, setimgUrl] = useState('');
-
+console.log(array);
   const handleShowProducts = (pack) => {
     setSelectedPack(pack);
     setIsProductModalVisible(true);
@@ -171,37 +171,40 @@ const AddPacks = ({navigation}) => {
   
 
 
-const handleAddpack = async () => {
-  try {
-    if (!userID) {
-      console.error('User ID not found.');
-      return;
+  const handleAddpack = async () => {
+    try {
+      if (!userID) {
+        console.error('User ID not found.');
+        return;
+      }
+      getArrayOfProductsIds()
+      console.log("array" ,array);
+  console.log("before" ,userID);
+      const newpack = {
+        name: packName,
+        description: packDescription,
+        price: packPrice,
+        userId: userID,
+        imgUrl:imgUrl,
+        checkedProductIDs:array
+      };
+  
+      const response = await axios.post(`http://${ipAdress}:3000/api/packs`, newpack);
+      console.log('pack added successfully:', response.data);
+  
+      // Clear the AsyncStorage after adding a new pack
+      removeArrayFromStorage();
+  
+      setpackName('');
+      setpackDescription('');
+      setpackSize('');
+      setpackPrice('');
+      setimgUrl('')
+      // setarray([])
+    } catch (error) {
+      console.error('Error adding pack:', error);
     }
-    getArrayOfProductsIds()
-    console.log("array" ,array);
-console.log("before" ,userID);
-    const newpack = {
-      name: packName,
-      description: packDescription,
-      price: packPrice,
-      userId: userID,
-      imgUrl:imgUrl,
-      checkedProductIDs:array
-    };
-
-    const response = await axios.post(`http://${ipAdress}:3000/api/packs`, newpack);
-    console.log('pack added successfully:', response.data);
-
-    
-    setpackName('');
-    setpackDescription('');
-    setpackSize('');
-    setpackPrice('');
-    setimgUrl('')
-  } catch (error) {
-    console.error('Error adding pack:', error);
-  }
-};
+  };
 const removeArrayFromStorage = async () => {
   try {
     await AsyncStorage.removeItem('ArrayOfProductsIds');

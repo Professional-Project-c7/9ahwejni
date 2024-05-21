@@ -92,12 +92,12 @@ const MyComponent = ({navigation}) => {
   const toggleModal = () => {
     setIsModalVisible(!isModalVisible);
   };
-const img = userData.ImageUrl
+// const img = userData.ImageUrl
   return (
     <ScrollView>
       <View style={styles.container}>
         <View style={styles.header}>
-        <ImageBackground 
+        {/* <ImageBackground 
         source={{ uri: img }}
          style={styles.profileImage}>
  
@@ -116,7 +116,7 @@ const img = userData.ImageUrl
   </View>
 </View>
   <IconButton icon="keyboard-backspace" iconColor='#dba617' size={35} style={styles.backIcon} />
-</ImageBackground>
+</ImageBackground> */}
 
         </View>
        
