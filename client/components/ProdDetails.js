@@ -97,6 +97,11 @@ const ProductDetailsPage = ({ navigation }) => {
         setIsModalVisible(!isModalVisible);
     };
 
+    const handleReviewSubmitted = () => {
+        fetchReviews(selectedProductId);
+        toggleModalVisibility();
+    };
+
     return (
         <ScrollView style={styles.container}>
             {products.map((product, index) => (
@@ -175,7 +180,7 @@ const ProductDetailsPage = ({ navigation }) => {
                 onRequestClose={toggleModalVisibility}>
                 <View style={styles.modalOverlay}>
                     <View style={styles.modalContainer}>
-                        <AddReview productId={selectedProductId} userId={selectedUserId} onReviewSubmitted={() => fetchReviews(selectedProductId)} />
+                        <AddReview productId={selectedProductId} userId={selectedUserId} onReviewSubmitted={handleReviewSubmitted} />
                         <TouchableOpacity onPress={toggleModalVisibility} style={styles.closeButton}>
                             <Text style={styles.closeButtonText}>Close</Text>
                         </TouchableOpacity>
