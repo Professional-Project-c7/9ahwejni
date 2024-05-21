@@ -28,6 +28,10 @@ io.on('connection', (socket) => {
     connectedUsers[userId] = true;
     socket.join(room);
   }
+  // socket.on('new_review', (review) => {
+  //   io.to(roomId).emit('new_review', review);
+  // });
+  
 
   socket.on('send_message', (data, callback) => {
     const { recipientId, content, roomId, isAudio } = data;

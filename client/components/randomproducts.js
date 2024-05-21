@@ -88,6 +88,7 @@ const RandomProducts = () => {
   const handleNavigateToDetails = async (product) => {
     try {
       await AsyncStorage.setItem('selectedProductId', product.id.toString());
+      console.log(product.id.toString());
       navigation.navigate('prd', { product });
     } catch (error) {
       console.log('Error storing selected product ID:', error);
