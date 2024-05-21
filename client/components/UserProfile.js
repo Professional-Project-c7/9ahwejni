@@ -116,7 +116,6 @@ const handleUpdateProfile = async () => {
       ImageUrl: imgUrl,
      
     };
-    console.log(userData); // Check if userData is correct before sending the request
     const response = await axios.put(`http://${ipAdress}:3000/api/user/${userID}`, userData);
     
     console.log('Update successful:', response.data);
