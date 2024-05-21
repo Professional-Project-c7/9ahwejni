@@ -12,10 +12,10 @@ function getRandomElementFromArray(arr) {
   }
 module.exports = async (sequelize) => {
     // Adjust the number of seeds you want for each model
-    const userCount = 10;
-    const productCount = 10;
-    const packCount = 10;
-    const reviewCount = 10;
+    const userCount = 66;
+    const productCount = 66;
+    const packCount = 66;
+    const reviewCount = 66;
         // Generate random users
     const users = await Promise.all(
       Array.from({ length: userCount }).map(async () => {
@@ -87,16 +87,25 @@ module.exports = async (sequelize) => {
             name = faker.random.word() + " Coffee Pack";
             description = faker.lorem.sentence();
         }
-
+        let imgUrl;
+        if (category === "coffee") {
+            imgUrl = faker.image.imageUrl(400, 400, "coffee", true, true);
+        } else if (category === "cake") {
+            imgUrl = faker.image.imageUrl(400, 400, "cake", true, true);
+        } else {
+            imgUrl = faker.image.imageUrl(400, 400, "drink", true, true);
+        }
         return await db.Pack.create({
             name: name,
             price: faker.commerce.price(),
             description: description,
             category: category,
             userId: user.id,
+            imgUrl: imgUrl,
         });
     })
 );
+
 
 
       const packproduct =await Promise.all(

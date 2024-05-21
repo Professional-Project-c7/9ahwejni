@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { StyleSheet, Text, TouchableOpacity, View, Image, FlatList, RefreshControl } from 'react-native';
-import { useFocusEffect, useNavigation } from '@react-navigation/native';
-import Icon from 'react-native-vector-icons/FontAwesome';
+import { useFocusEffect } from '@react-navigation/native';
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useNavigation } from '@react-navigation/native';
 
 const Favorites = ({ navigation }) => {
   const [posts, setPosts] = useState([]);
@@ -43,10 +43,25 @@ const Favorites = ({ navigation }) => {
     }
   };
 
-  const handleAddToCart = (itemId) => {
-    // Add your logic for adding the item to the cart here
-    console.log('Add to cart item id:', itemId);
-    
+  // const handleAddToCart = async(itemId) => {
+  //   try {
+  //   console.log('Add to cart item id:', itemId);
+
+  //     await AsyncStorage.setItem('favorites', JSON.stringify(itemId));
+  //   } catch (error) {
+  //     console.log('Error updating favorites:', error);
+  //   }
+  //   // Add your logic for adding the item to the cart here
+  // };
+
+  const handleNavigateToDetails = async (item) => {
+    try {
+      await AsyncStorage.setItem('selecteditemId', item.id.toString());
+      console.log(item.id.toString());
+      navigation.navigate('prd', { item });
+    } catch (error) {
+      console.log('Error storing selected product ID:', error);
+    }
   };
 
   const onRefresh = () => {
@@ -59,22 +74,22 @@ const Favorites = ({ navigation }) => {
       <FlatList
         data={posts}
         renderItem={({ item, index }) => (
-          <View key={index} style={styles.card}>
+          <TouchableOpacity key={index} onPress={() => handleNavigateToDetails(item)} style={styles.card}>
             <Image style={styles.cardImage} source={{ uri: item.imgUrl }} />
             <View style={styles.cardContent}>
               <Text style={styles.title}>{item.name}</Text>
               <Text style={styles.description}>{item.description}</Text>
               <Text style={styles.price}>${item.price}</Text>
               <View style={styles.iconContainer}>
-                <TouchableOpacity style={styles.cartButton} onPress={() => handleAddToCart(item.id)}>
-                  <Icon name="cart-plus" size={24} color="#00aaff" />
-                </TouchableOpacity>
+                {/* <TouchableOpacity style={styles.cartButton} onPress={() => handleAddToCart(item.id)}>
+                  <MaterialIcon name="add-shopping-cart" size={24} color="#00aaff" />
+                </TouchableOpacity> */}
                 <TouchableOpacity style={styles.deleteButton} onPress={() => handleDeleteItem(item.id)}>
                   <MaterialIcon name="delete" size={24} color="#ff6347" />
                 </TouchableOpacity>
               </View>
             </View>
-          </View>
+          </TouchableOpacity>
         )}
         keyExtractor={(item, index) => index.toString()}
         ItemSeparatorComponent={() => <View style={styles.separator} />}
