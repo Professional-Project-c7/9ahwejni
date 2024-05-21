@@ -6,6 +6,10 @@ module.exports = (sequelize, DataTypes) => {
     content: {
       type: DataTypes.STRING,
       allowNull: false,
+    },
+    isAudio: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: false,
     }
   });
   return Message;

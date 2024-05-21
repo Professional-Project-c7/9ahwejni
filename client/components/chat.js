@@ -1,12 +1,17 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, TouchableOpacity, ScrollView, StyleSheet, ImageBackground } from 'react-native';
-import { Picker } from '@react-native-picker/picker';
+import { View, ScrollView, StyleSheet, ImageBackground, TouchableOpacity, Alert } from 'react-native';
+import { TextInput, IconButton, Card, Text } from 'react-native-paper';
 import io from 'socket.io-client';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
+import moment from 'moment';
 import { ipAdress } from '../config';
+import AudioRecorderPlayer from 'react-native-audio-recorder-player';
+import RNFS from 'react-native-fs';
 
 const SERVER_ENDPOINT = `http://${ipAdress}:4001`;
+
+const audioRecorderPlayer = new AudioRecorderPlayer();
 
 const Chat = ({ navigation, route }) => {
   const { roomId, roomName } = route.params;
@@ -74,6 +79,7 @@ const Chat = ({ navigation, route }) => {
         senderId: userId,
         content: messageInput,
         roomId: roomId,
+        timestamp: new Date(),
       };
 
       socket.emit('send_message', newMessage, (acknowledgement) => {
@@ -89,111 +95,143 @@ const Chat = ({ navigation, route }) => {
     }
   };
 
+  const playAudio = async (filePath) => {
+    try {
+      console.log('Playing audio from:', filePath);
+      const result = await audioRecorderPlayer.startPlayer(filePath);
+      if (result === 'success') {
+        audioRecorderPlayer.addPlayBackListener((e) => {
+          console.log({
+            currentPosition: e.currentPosition,
+            duration: e.duration,
+          });
+          if (e.currentPosition === e.duration) {
+            audioRecorderPlayer.stopPlayer();
+            audioRecorderPlayer.removePlayBackListener();
+          }
+        });
+      } else {
+        console.error('Failed to start audio player:', result);
+        Alert.alert('Error', 'Failed to start audio player');
+      }
+    } catch (error) {
+      console.error('Error playing audio:', error);
+      Alert.alert('Error', `Error playing audio: ${error.message}`);
+    }
+  };
+  
+  
+
   return (
-    <ImageBackground source={require('../image/bgg.jpeg')} style={styles.background}>
-      <View style={styles.container}>
-        <ScrollView contentContainerStyle={styles.messagesContainer}>
-          {messages.map((message, index) => (
-            <View
-              key={index}
-              style={[
-                styles.message,
-                message.senderId === userId ? styles.sender : styles.receiver,
-              ]}
-            >
-              <Text style={styles.messageText}>{message.content}</Text>
-            </View>
-          ))}
-        </ScrollView>
-        <View style={styles.inputContainer}>
-          <TextInput
-            style={styles.messageInput}
-            value={messageInput}
-            onChangeText={setMessageInput}
-            placeholder="Type a message..."
-          />
-          <TouchableOpacity onPress={sendMessage} style={styles.sendButton}>
-            <Text style={styles.sendButtonText}>Send</Text>
-          </TouchableOpacity>
+      <ImageBackground source={require('../image/bgg.jpeg')} style={styles.background}>
+        <View style={styles.container}>
+          <ScrollView contentContainerStyle={styles.messagesContainer}>
+            {messages.map((message, index) => (
+              <Card
+                key={index}
+                style={[
+                  styles.message,
+                  message.senderId === userId ? styles.sender : styles.receiver,
+                ]}
+              >
+                <Card.Content>
+                  {message.isAudio ? (
+                    <TouchableOpacity onPress={() => playAudio(message.content)}>
+                      <Text style={styles.audioMessage}>Play Audio</Text>
+                    </TouchableOpacity>
+                  ) : (
+                    <>
+                      <Text style={styles.messageText}>{message.content}</Text>
+                      <Text style={styles.timestampText}>{moment(message.timestamp).fromNow()}</Text>
+                    </>
+                  )}
+                </Card.Content>
+              </Card>
+            ))}
+          </ScrollView>
+          <View style={styles.inputContainer}>
+            <TextInput
+              style={styles.messageInput}
+              value={messageInput}
+              onChangeText={setMessageInput}
+              placeholder="Type a message..."
+              mode="outlined"
+              outlineStyle={styles.textInputOutline}
+            />
+            <IconButton
+              icon="send"
+              color="#dba617"
+              size={30}
+              onPress={sendMessage}
+              style={styles.sendButton}
+            />
+          </View>
         </View>
-      </View>
-    </ImageBackground>
-  );
+      </ImageBackground>
+    );
+    
 };
 
 const styles = StyleSheet.create({
-   background: {
+  background: {
     flex: 1,
   },
   container: {
     flex: 1,
     backgroundColor: 'transparent',
   },
-  roomPicker: {
-    backgroundColor: '#dba617',
-    height: 50,
-    width: 150,
-    alignSelf: 'center',
-    marginVertical: 10,
-    marginLeft: 260,
-  },
   messagesContainer: {
     flexGrow: 1,
     padding: 10,
   },
-  messageBubble: {
-    padding: 10,
-    borderRadius: 20,
+  message: {
     marginVertical: 4,
     maxWidth: '70%',
-    elevation: 1,
+    alignSelf: 'flex-start',
+    borderRadius: 30,
   },
   sender: {
     backgroundColor: '#dba617',
     alignSelf: 'flex-end',
-    padding:15,
-    borderRadius : 20 , 
-
   },
   receiver: {
     backgroundColor: '#fff',
-    alignSelf: 'flex-start',
-    padding:15,
-    borderRadius : 20 , 
-
   },
   messageText: {
-    fontSize: 20,
+    fontSize: 16,
     color: '#333',
   },
- 
+  timestampText: {
+    fontSize: 14,
+    color: 'black',
+    textAlign: 'right',
+    marginTop: 4,
+  },
   inputContainer: {
     flexDirection: 'row',
     padding: 8,
     backgroundColor: 'white',
+    borderTopWidth: 1,
+    borderTopColor: '#dba617',
   },
   messageInput: {
     flex: 1,
-    borderWidth: 1,
-    borderColor: '#ccc',
-    borderRadius: 20,
-    paddingHorizontal: 12,
-    height: 50,
+    marginRight: 8,
     backgroundColor: '#fff',
     borderColor: '#dba617',
   },
-  sendButton: {
-    backgroundColor: '#dba617',
+  textInputOutline: {
     borderRadius: 20,
-    padding: 15,
+  },
+  sendButton: {
     justifyContent: 'center',
-    marginLeft: 4,
+    alignSelf: 'center',
   },
-  sendButtonText: {
-    color: '#fff',
+  audioMessage: {
     fontSize: 16,
+    color: '#dba617',
+    textDecorationLine: 'underline',
   },
-
 });
 
 export default Chat;
