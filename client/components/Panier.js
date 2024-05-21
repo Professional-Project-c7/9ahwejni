@@ -1,37 +1,51 @@
-import React, { useState, useEffect } from 'react';
-import { StyleSheet, Text, TouchableOpacity, View, ScrollView, Image, FlatList } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import React, { useState, useEffect, useCallback } from 'react';
+import { StyleSheet, Text, TouchableOpacity, View, Image, FlatList, Alert } from 'react-native';
+import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const Panier = ({ navigation }) => {
+const Panier = () => {
+  const navigation = useNavigation();
   const [posts, setPosts] = useState([]);
   const [totalPrice, setTotalPrice] = useState(0);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const storedPosts = await AsyncStorage.getItem('favorites');
-        if (storedPosts) {
-          const parsedPosts = JSON.parse(storedPosts);
-          setPosts(parsedPosts);
-          calculateTotalPrice(parsedPosts);
-        }
-      } catch (error) {
-        console.log('Error fetching data:', error); 
+  const fetchData = async () => {
+    try {
+      const storedPosts = await AsyncStorage.getItem('favorites');
+      if (storedPosts) {
+        const parsedPosts = JSON.parse(storedPosts);
+        setPosts(parsedPosts);
+        calculateTotalPrice(parsedPosts);
       }
-    };
+    } catch (error) {
+      console.log('Error fetching data:', error); 
+      Alert.alert('Error', 'There was an error fetching your cart items.');
+    }
+  };
+
+  useEffect(() => {
     fetchData();
   }, []);
+
+  useFocusEffect(
+    useCallback(() => {
+      fetchData();
+    }, [])
+  );
 
   const handleAddToCart = () => {
     navigation.navigate('Tabs');
   };
 
   const handlePayment = async () => {
-    await AsyncStorage.setItem('PRICE', JSON.stringify(totalPrice));
-    navigation.navigate('Paye');
+    try {
+      await AsyncStorage.setItem('PRICE', JSON.stringify(totalPrice));
+      navigation.navigate('Paye');
+    } catch (error) {
+      console.log('Error saving total price:', error);
+      Alert.alert('Error', 'There was an error processing your payment.');
+    }
   };
 
   const handleDeleteItem = async (itemId) => {
@@ -42,39 +56,37 @@ const Panier = ({ navigation }) => {
       calculateTotalPrice(updatedPosts);
     } catch (error) {
       console.log('Error updating favorites:', error);
+      Alert.alert('Error', 'There was an error updating your cart.');
     }
   };
 
   const calculateTotalPrice = (items) => {
-    let totalPrice = 0;
-    items.forEach(item => {
-      totalPrice += item.price;
-    });
+    const totalPrice = items.reduce((total, item) => total + item.price, 0);
     setTotalPrice(totalPrice);
   };
 
   return (
     <View style={styles.container}>
       <Icon name="arrow-left" size={30} style={styles.backIcon} onPress={handleAddToCart} />
-      <ScrollView>
-        <FlatList
-          data={posts}
-          renderItem={({ item }) => (
-            <View style={styles.card}>
-              <Image style={styles.cardImage} source={{ uri: item.imgUrl }} />
-              <View style={styles.cardContent}>
-                <Text style={styles.title}>{item.name}</Text>
-                <Text style={styles.description}>{item.description}</Text>
-                <Text style={styles.price}>${item.price}</Text>
-                <TouchableOpacity style={styles.deleteButton} onPress={() => handleDeleteItem(item.id)}>
-                  <MaterialIcon name="delete" size={24} color="#ff6347" />
-                </TouchableOpacity>
-              </View>
+      <FlatList
+        data={posts}
+        renderItem={({ item }) => (
+          <View style={styles.card}>
+            <Image style={styles.cardImage} source={{ uri: item.imgUrl }} />
+            <View style={styles.cardContent}>
+              <Text style={styles.title}>{item.name}</Text>
+              <Text style={styles.description}>{item.description}</Text>
+              <Text style={styles.price}>${item.price}</Text>
+              <TouchableOpacity style={styles.deleteButton} onPress={() => handleDeleteItem(item.id)}>
+                <MaterialIcon name="delete" size={24} color="#ff6347" />
+              </TouchableOpacity>
             </View>
-          )}
-          ItemSeparatorComponent={() => <View style={styles.separator} />}
-        />
-      </ScrollView>
+          </View>
+        )}
+        keyExtractor={(item) => item.id.toString()}
+        ItemSeparatorComponent={() => <View style={styles.separator} />}
+        ListEmptyComponent={() => <Text style={styles.emptyMessage}>Your cart is empty</Text>}
+      />
       <View style={styles.footer}>
         <Text style={styles.totalPrice}>Total: ${totalPrice.toFixed(2)}</Text>
         <TouchableOpacity style={styles.paymentButton} onPress={handlePayment}>
@@ -138,6 +150,12 @@ const styles = StyleSheet.create({
   separator: {
     height: 2,
     backgroundColor: '#ececec',
+  },
+  emptyMessage: {
+    textAlign: 'center',
+    fontSize: 18,
+    color: '#6e695b',
+    marginTop: 20,
   },
   footer: {
     padding: 20,

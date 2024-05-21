@@ -76,7 +76,6 @@ const AddPacks = ({navigation}) => {
     setSelectedPack(pack);
     setIsProductModalVisible(true);
   };
-  console.log(userID);
 
   const imageHandler = async (image) => {
     try {

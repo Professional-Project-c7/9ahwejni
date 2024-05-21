@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, Image, StyleSheet, TouchableOpacity, ScrollView, Modal,Button } from 'react-native';
+import { View, Text, Image, StyleSheet, TouchableOpacity, ScrollView, Modal, Button } from 'react-native';
 import axios from 'axios';
 import { ipAdress } from '../config';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -97,6 +97,11 @@ const ProductDetailsPage = ({ navigation }) => {
         setIsModalVisible(!isModalVisible);
     };
 
+    const handleReviewSubmitted = () => {
+        fetchReviews(selectedProductId);
+        toggleModalVisibility();
+    };
+
     return (
         <ScrollView style={styles.container}>
             {products.map((product, index) => (
@@ -175,7 +180,7 @@ const ProductDetailsPage = ({ navigation }) => {
                 onRequestClose={toggleModalVisibility}>
                 <View style={styles.modalOverlay}>
                     <View style={styles.modalContainer}>
-                        <AddReview productId={selectedProductId} userId={selectedUserId} />
+                        <AddReview productId={selectedProductId} userId={selectedUserId} onReviewSubmitted={handleReviewSubmitted} />
                         <TouchableOpacity onPress={toggleModalVisibility} style={styles.closeButton}>
                             <Text style={styles.closeButtonText}>Close</Text>
                         </TouchableOpacity>
