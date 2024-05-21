@@ -1,5 +1,17 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, Text, View, Image, FlatList, TextInput, TouchableOpacity, ImageBackground, ScrollView, SafeAreaView,Alert } from 'react-native';
+import {
+  StyleSheet,
+  Text,
+  View,
+  Image,
+  FlatList,
+  TextInput,
+  TouchableOpacity,
+  ImageBackground,
+  ScrollView,
+  SafeAreaView,
+  Alert,
+} from 'react-native';
 import { useTheme } from 'react-native-paper';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
@@ -14,6 +26,8 @@ const ProductCard = ({ product }) => {
       <View style={styles.details}>
         <Text style={styles.name}>{product.name}</Text>
         <Text style={styles.description}>{product.description}</Text>
+        <Text style={styles.description}>{product.category}</Text>
+
         <View style={styles.optionContainer}>
           {(product.options || []).map((option, index) => (
             <View key={index}>
@@ -28,7 +42,6 @@ const ProductCard = ({ product }) => {
     </View>
   );
 };
-
 
 const ProductList = ({ navigation }) => {
   const { colors } = useTheme();
@@ -46,68 +59,76 @@ const ProductList = ({ navigation }) => {
   const [mediumSizePrice, setmediumSizePrice] = useState('');
   const [largeSizePrice, setlargeSizePrice] = useState('');
   const [options, setOptions] = useState([]);
-console.log("options",options);
-const handleSizeSelection = (size, price, setSelected) => {
-  setSelected(prevSelected => {
-    const isSelected = !prevSelected;
-    let updatedOptions;
+  const [category, setCategory] = useState('');
+  const [refresh,setrefresh]= useState(false)
 
-    if (isSelected) {
-      if (price) {
-        updatedOptions = [...options, { option: size, price }];
+  console.log('options', options);
+
+  const handleSizeSelection = (size, price, setSelected) => {
+    setSelected(prevSelected => {
+      const isSelected = !prevSelected;
+      let updatedOptions;
+
+      if (isSelected) {
+        if (price) {
+          updatedOptions = [...options, { option: size, price }];
+        } else {
+          updatedOptions = options;
+        }
       } else {
-        updatedOptions = options;
+        updatedOptions = options.filter(option => option.option !== size);
       }
-    } else {
-      updatedOptions = options.filter(option => option.option !== size);
+
+      setOptions(updatedOptions);
+      return isSelected;
+    });
+  };
+
+  const imageHandler = async image => {
+    try {
+      const data = new FormData();
+      data.append('file', {
+        uri: image.assets[0].uri,
+        type: image.assets[0].type,
+        name: 'photo.jpg',
+      });
+      data.append('upload_preset', 'i38oelnt'); // Replace 'your_upload_preset' with your Cloudinary upload preset
+      data.append('cloud_name', 'dqyx6lht5'); // Replace 'your_cloud_name' with your Cloudinary cloud name
+
+      const response = await fetch(
+        'https://api.cloudinary.com/v1_1/dqyx6lht5/image/upload',
+        {
+          method: 'POST',
+          body: data,
+        },
+      );
+      const result =await response.json();
+      console.log('Cloudinary response:', result);
+      return result.secure_url;
+    } catch (error) {
+      console.error('Error uploading image:', error);
+      throw error;
     }
+  };
 
-    setOptions(updatedOptions);
-    return isSelected;
-  });
-};
-const imageHandler = async (image) => {
-  try {
-    const data = new FormData();
-    data.append('file', {
-      uri: image.assets[0].uri,
-      type: image.assets[0].type,
-      name: 'photo.jpg'
-    });
-    data.append('upload_preset', 'i38oelnt'); // Replace 'your_upload_preset' with your Cloudinary upload preset
-    data.append('cloud_name', 'dqyx6lht5'); // Replace 'your_cloud_name' with your Cloudinary cloud name
-
-    const response = await fetch('https://api.cloudinary.com/v1_1/dqyx6lht5/image/upload', {
-      method: 'POST',
-      body: data
-    });
-    const result = await response.json();
-    console.log('Cloudinary response:', result);
-    return result.secure_url;
-  } catch (error) {
-    console.error('Error uploading image:', error);
-    throw error;
-  }
-};
-
-const pickImage = () => {
-  launchImageLibrary({}, async (response) => {
-    if (response.didCancel) {
-      console.log('User cancelled image picker');
-    } else if (response.error) {
-      console.log('ImagePicker Error: ', response.error);
-    } else {
-      try {
-        const imageUri = await imageHandler(response);
-        console.log('Image URI:', imageUri);
-        setimgUrl(imageUri);
-      } catch (error) {
-        console.error('Error uploading image:', error);
-        Alert.alert('Upload Failed', 'Failed to upload image. Please try again.');
+  const pickImage = () => {
+    launchImageLibrary({}, async response => {
+      if (response.didCancel) {
+        console.log('User cancelled image picker');
+      } else if (response.error) {
+        console.log('ImagePicker Error: ', response.error);
+      } else {
+        try {
+          const imageUri = await imageHandler(response);
+          console.log('Image URI:', imageUri);
+          setimgUrl(imageUri);
+        } catch (error) {
+          console.error('Error uploading image:', error);
+          Alert.alert('Upload Failed', 'Failed to upload image. Please try again.');
+        }
       }
-    }
-  });
-};
+    });
+  };
 
   useEffect(() => {
     retrieveData();
@@ -116,7 +137,7 @@ const pickImage = () => {
   const retrieveData = async () => {
     try {
       const value = await AsyncStorage.getItem('IdUser');
-      if (value !== null) {
+      if (value!== null) {
         const tokenObject = JSON.parse(value);
         const userId = tokenObject;
         setUserID(userId);
@@ -127,7 +148,7 @@ const pickImage = () => {
   };
 
   useEffect(() => {
-    const getUserData = async (userId) => {
+    const getUserData = async userId => {
       try {
         const response = await axios.get(`http://${ipAdress}:3000/api/product`);
         if (response.status === 200) {
@@ -141,7 +162,7 @@ const pickImage = () => {
     if (userID) {
       getUserData(userID);
     }
-  }, [userID]);
+  }, [userID,refresh]);
 
   const handleAddProduct = async () => {
     try {
@@ -149,19 +170,22 @@ const pickImage = () => {
         console.error('User ID not found.');
         return;
       }
-
+  
       const newProduct = {
         name: productName,
-        // price: 10,
+        price: mediumSizePrice,
         description: productDescription,
         userId: userID,
         imgUrl: imgUrl,
-        options: options
+        options: options,
+        category: category,
       };
-
+  
       const response = await axios.post(`http://${ipAdress}:3000/api/product`, newProduct);
       console.log('Product added successfully:', response.data);
-
+  
+      setrefresh(!refresh)
+  
       setProductName('');
       setProductDescription('');
       setProductSize('');
@@ -173,12 +197,31 @@ const pickImage = () => {
       setSmallSelected(false);
       setMediumSelected(false);
       setLargeSelected(false);
+      setCategory('');
+      setimgUrl('')
     } catch (error) {
       console.error('Error adding product:', error);
     }
   };
 
-  const filteredProducts = userData ? userData.filter(product => product.userId === userID) : [];
+  useEffect(() => {
+    const getUserData = async userId => {
+      try {
+        const response = await axios.get(`http://${ipAdress}:3000/api/product`);
+        if (response.status === 200) {
+          setUserData(response.data.filter(product => product.userId === userId));
+        }
+      } catch (error) {
+        console.error('Error fetching user data:', error.message);
+      }
+    };
+  
+    if (userID) {
+      getUserData(userID);
+    }
+  }, [userID]);
+
+  const filteredProducts = userData? userData.filter(product => product.userId === userID) : [];
   const firstTwoImages = filteredProducts.slice(0, 2);
 
   return (
@@ -186,7 +229,9 @@ const pickImage = () => {
       <View>
         <View style={styles.top}>
           <Text style={styles.Texttitlepacks}>Products' List</Text>
-          <Text style={styles.seeAllpacks} onPress={() => navigation.navigate('SeeAllProdsCoffee')}>See All</Text>
+          <Text style={styles.seeAllpacks} onPress={() => navigation.navigate('SeeAllProdsCoffee')}>
+            See All
+          </Text>
         </View>
         <SafeAreaView style={{ flex: 1 }}>
           <FlatList
@@ -199,7 +244,7 @@ const pickImage = () => {
         </SafeAreaView>
         <View style={styles.container}>
           <View style={{ alignItems: 'center', marginTop: 15 }}>
-            <TouchableOpacity >
+            <TouchableOpacity>
               <View
                 style={{
                   height: 100,
@@ -209,13 +254,11 @@ const pickImage = () => {
                   alignItems: 'center',
                 }}>
                 <ImageBackground>
-                 <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-                  {imgUrl && (
-                    <Image source={{ uri: imgUrl }} style={{ width: 125, height: 120 }} />
-                  )}
-                   </View>
-                  {/* style={{ height: 120, width: 125 }}
-                  imageStyle={{ borderRadius: 15 }}> */}
+                  <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+                    {imgUrl && (
+                      <Image source={{ uri: imgUrl }} style={{ width: 125, height: 120 }} />
+                    )}
+                  </View>
                   <View
                     style={{
                       flex: 1,
@@ -223,7 +266,7 @@ const pickImage = () => {
                       alignItems: 'center',
                     }}>
                     <Icon
-                    onPress={pickImage}
+                      onPress={pickImage}
                       name="camera"
                       size={35}
                       color='#dba617'
@@ -274,6 +317,7 @@ const pickImage = () => {
             />
           </View>
           <View style={styles.action}>
+            <Text style={styles.optionTitle}>Size</Text>
             <View style={styles.optionButtonsContainer}>
               <View style={styles.sizePriceContainer}>
                 <View style={styles.sizeInputContainer}>
@@ -283,21 +327,21 @@ const pickImage = () => {
                     <Text style={styles.optionButtonText}>Small</Text>
                   </TouchableOpacity>
                   <TextInput
-  placeholder="Price"
-  placeholderTextColor="#666666"
-  autoCorrect={false}
-  keyboardType="number-pad"
-  style={[
-    styles.sizePriceInput2,
-    {
-      color: colors.text,
-    },
-  ]}
-  value={smallSizePrice}
-  onChangeText={setsmallSizePrice}
-  onFocus={() => setSmallSelected(true)} // Maintain selection state when input is focused
-  onBlur={() => handleSizeSelection('Small', smallSizePrice, setSmallSelected)}
-/>
+                    placeholder="Price"
+                    placeholderTextColor="#666666"
+                    autoCorrect={false}
+                    keyboardType="number-pad"
+                    style={[
+                      styles.sizePriceInput2,
+                      {
+                        color: colors.text,
+                      },
+                    ]}
+                    value={smallSizePrice}
+                    onChangeText={setsmallSizePrice}
+                    onFocus={() => setSmallSelected(true)} // Maintain selection state when input is focused
+                    onBlur={() => handleSizeSelection('Small', smallSizePrice, setSmallSelected)}
+                  />
                 </View>
                 <View style={styles.sizeInputContainer}>
                   <TouchableOpacity
@@ -306,21 +350,21 @@ const pickImage = () => {
                     <Text style={styles.optionButtonText}>Medium</Text>
                   </TouchableOpacity>
                   <TextInput
-  placeholder="Price"
-  placeholderTextColor="#666666"
-  autoCorrect={false}
-  keyboardType="number-pad"
-  style={[
-    styles.sizePriceInput,
-    {
-      color: colors.text,
-    },
-  ]}
-  value={mediumSizePrice}
-  onChangeText={setmediumSizePrice}
-  onFocus={() => setMediumSelected(true)} // Maintain selection state when input is focused
-  onBlur={() => handleSizeSelection('Medium', mediumSizePrice, setMediumSelected)}
-/>
+                    placeholder="Price"
+                    placeholderTextColor="#666666"
+                    autoCorrect={false}
+                    keyboardType="number-pad"
+                    style={[
+                      styles.sizePriceInput,
+                      {
+                        color: colors.text,
+                      },
+                    ]}
+                    value={mediumSizePrice}
+                    onChangeText={setmediumSizePrice}
+                    onFocus={() => setMediumSelected(true)} // Maintain selection state when input is focused
+                    onBlur={() => handleSizeSelection('Medium', mediumSizePrice, setMediumSelected)}
+                  />
                 </View>
                 <View style={styles.sizeInputContainer}>
                   <TouchableOpacity
@@ -329,23 +373,128 @@ const pickImage = () => {
                     <Text style={styles.optionButtonText}>Large</Text>
                   </TouchableOpacity>
                   <TextInput
-  placeholder="Price"
-  placeholderTextColor="#666666"
-  autoCorrect={false}
-  keyboardType="number-pad"
-  style={[
-    styles.sizePriceInput,
-    {
-      color: colors.text,
-    },
-  ]}
-  value={largeSizePrice}
-  onChangeText={setlargeSizePrice}
-  onFocus={() => setLargeSelected(true)} // Maintain selection state when input is focused
-  onBlur={() => handleSizeSelection('Large', largeSizePrice, setLargeSelected)}
-/>
+                    placeholder="Price"
+                    placeholderTextColor="#666666"
+                    autoCorrect={false}
+                    keyboardType="number-pad"
+                    style={[
+                      styles.sizePriceInput,
+                      {
+                        color: colors.text,
+                      },
+                    ]}
+                    value={largeSizePrice}
+                    onChangeText={setlargeSizePrice}
+                    onFocus={() => setLargeSelected(true)} // Maintain selection state when input is focused
+                    onBlur={() => handleSizeSelection('Large', largeSizePrice, setLargeSelected)}
+                  />
                 </View>
               </View>
+            </View>
+          </View>
+          {/* <View style={styles.action}>
+            <Text style={styles.optionTitle}>Prices</Text>
+            <View style={styles.optionButtonsContainer}>
+              <View style={styles.sizePriceContainer}>
+                <View style={styles.sizeInputContainer}>
+                  <TouchableOpacity
+                    style={[styles.optionButton, smallSelected && styles.selectedOption]}
+                    onPress={() => handleSizeSelection('Small', smallSizePrice, setSmallSelected)}>
+                    <Text style={styles.optionButtonText}>Small</Text>
+                  </TouchableOpacity>
+                  <TextInput
+                    placeholder="Price"
+                    placeholderTextColor="#666666"
+                    autoCorrect={false}
+                    keyboardType="number-pad"
+                    style={[
+                      styles.sizePriceInput2,
+                      {
+                        color: colors.text,
+                      },
+                    ]}
+                    value={smallSizePrice}
+                    onChangeText={setsmallSizePrice}
+                    onFocus={() => setSmallSelected(true)} // Maintain selection state when input is focused
+                    onBlur={() => handleSizeSelection('Small', smallSizePrice, setSmallSelected)}
+                  />
+                </View>
+                <View style={styles.sizeInputContainer}>
+                  <TouchableOpacity
+                    style={[styles.optionButton, mediumSelected && styles.selectedOption]}
+                    onPress={() => handleSizeSelection('Medium', mediumSizePrice, setMediumSelected)}>
+                    <Text style={styles.optionButtonText}>Medium</Text>
+                  </TouchableOpacity>
+                  <TextInput
+                    placeholder="Price"
+                    placeholderTextColor="#666666"
+                    autoCorrect={false}
+                    keyboardType="number-pad"
+                    style={[
+                      styles.sizePriceInput,
+                      {
+                        color: colors.text,
+                      },
+                    ]}
+                    value={mediumSizePrice}
+                    onChangeText={setmediumSizePrice}
+                    onFocus={() => setMediumSelected(true)} // Maintain selection state when input is focused
+                    onBlur={() => handleSizeSelection('Medium', mediumSizePrice, setMediumSelected)}
+                  />
+                </View>
+                <View style={styles.sizeInputContainer}>
+                  <TouchableOpacity
+                    style={[styles.optionButton, largeSelected && styles.selectedOption]}
+                    onPress={() => handleSizeSelection('Large', largeSizePrice, setLargeSelected)}>
+                    <Text style={styles.optionButtonText}>Large</Text>
+                  </TouchableOpacity>
+                  <TextInput
+                    placeholder="Price"
+                    placeholderTextColor="#666666"
+                    autoCorrect={false}
+                    keyboardType="number-pad"
+                    style={[
+                      styles.sizePriceInput,
+                      {
+                        color: colors.text,
+                      },
+                    ]}
+                    value={largeSizePrice}
+                    onChangeText={setlargeSizePrice}
+                    onFocus={() => setLargeSelected(true)} // Maintain selection state when input is focused
+                    onBlur={() => handleSizeSelection('Large', largeSizePrice, setLargeSelected)}
+                  />
+                </View>
+              </View>
+            </View>
+          </View> */}
+          <View style={styles.action}>
+            <Text style={styles.optionTitle}>Category</Text>
+            <View style={styles.optionButtonsContainer}>
+              <TouchableOpacity
+                style={[
+                  styles.optionButton,
+                  category === 'coffee' && styles.selectedOption,
+                ]}
+                onPress={() => setCategory('coffee')}>
+                <Text style={styles.optionButtonText}>Coffee</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[
+                  styles.optionButton,
+                  category === 'cake' && styles.selectedOption,
+                ]}
+                onPress={() => setCategory('cake')}>
+                <Text style={styles.optionButtonText}>Cake</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[
+                  styles.optionButton,
+                  category ==='drink' && styles.selectedOption,
+                ]}
+                onPress={() => setCategory('drink')}>
+                <Text style={styles.optionButtonText}>Drink</Text>
+              </TouchableOpacity>
             </View>
           </View>
           <TouchableOpacity style={styles.commandButton} onPress={handleAddProduct}>
@@ -356,16 +505,16 @@ const pickImage = () => {
     </ScrollView>
   );
 };
+
 const styles = StyleSheet.create({
   sizePriceContainer: {
     flexDirection: 'column',
-    
   },
   sizeInputContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 10, // Add margin bottom to separate input fields
-    marginLeft:58
+    marginBottom: 10,
+    marginLeft: 58,
   },
   title: {
     fontSize: 18,
@@ -374,58 +523,56 @@ const styles = StyleSheet.create({
   },
   sizePriceInput: {
     // flex: 1,
-    paddingLeft:14,
+    paddingLeft: 14,
     padding: 7,
     color: '#05375a',
     borderWidth: 1,
-    borderColor: '#ccc', // Set border color
-    borderRadius: 15, // Set border radius
-   marginLeft:36,
-   width:60
+    borderColor: '#ccc',
+    borderRadius: 15,
+    marginLeft: 36,
+    width: 60,
   },
 
   sizePriceInput2: {
     // flex: 1,
-    paddingLeft:14,
+    paddingLeft: 14,
     padding: 7,
     color: '#05375a',
     borderWidth: 1,
-    borderColor: '#ccc', // Set border color
-    borderRadius: 15, // Set border radius
-   marginLeft:55,
-   width:60
+    borderColor: '#ccc',
+    borderRadius: 15,
+    marginLeft: 55,
+    width: 60,
   },
-  
-  
+
   optionButtonsContainer: {
     flexDirection: 'row',
     justifyContent: 'space-around',
-    marginLeft:12,
-},
-optionTitle: {
+    marginLeft: 12,
+  },
+  optionTitle: {
     fontSize: 16,
-    // marginLeft:4,
-    marginBottom:8,
-
-    // fontWeight: 'bold'
-},
-optionButton: {
-  backgroundColor: '#fff',
-  borderRadius: 15,
-  paddingHorizontal: 12,
-  paddingVertical: 8,
-  marginHorizontal: 5,
-  borderWidth: 1,
-  borderColor: '#FFBB70',
-  overflow: 'hidden',
-},
-optionButtonText: {
+    marginLeft: 4,
+    marginBottom: 8,
+    fontWeight: 'bold',
+  },
+  optionButton: {
+    backgroundColor: '#fff',
+    borderRadius: 15,
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    marginHorizontal: 5,
+    borderWidth: 1,
+    borderColor: '#FFBB70',
+    overflow: 'hidden',
+  },
+  optionButtonText: {
     fontSize: 17,
-    color: '#666' 
-},
-selectedOption: {
-  backgroundColor: '#dba617',  // Change border color for selected option
-},
+    color: '#666',
+  },
+  selectedOption: {
+    backgroundColor: '#dba617',
+  },
   top: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -443,25 +590,25 @@ selectedOption: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginLeft: 20
+    marginLeft: 20,
   },
   seeAllpacks: {
     fontSize: 16,
     fontWeight: 'bold',
     color: '#dba617',
     marginTop: 40,
-    marginRight: 30
+    marginRight: 30,
   },
   optionWrapper: {
-    backgroundColor: '#dba617', // Background color for the option wrapper
-    borderRadius: 20, // Border radius for the option wrapper
+    backgroundColor: '#dba617',
+    borderRadius: 20,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    // padding: 4,
+    padding: 4,
     marginBottom: 5,
-    // overflow: 'hidden',
-    elevation: 10, 
+    overflow: 'hidden',
+    elevation: 10,
   },
   card: {
     flex: 1,
@@ -469,23 +616,23 @@ selectedOption: {
     borderRadius: 30,
     backgroundColor: '#EFECEC',
     overflow: 'hidden',
-    elevation: 15, // Add shadow
+    elevation: 15,
   },
   price: {
     fontSize: 15,
     color: 'black',
     marginBottom: 5,
     backgroundColor: 'white',
-    padding:4,
-    borderRadius: 20,
-    marginTop:5,
-    marginRight:5
+    padding: 4,
+borderRadius: 20,
+    marginTop: 5,
+    marginRight: 5,
   },
   image: {
     width: '100%',
     height: 150,
     resizeMode: 'cover',
-    borderTopLeftRadius: 10, // Add border radius to top-left and top-right corners
+    borderTopLeftRadius: 10,
     borderTopRightRadius: 10,
   },
   details: {
@@ -496,13 +643,16 @@ selectedOption: {
     fontWeight: 'bold',
     color: '#dba617',
     marginBottom: 5,
+    display:"flex",
+    flexDirection: 'row',
+    alignItems: 'center',
   },
   description: {
     fontSize: 14,
     color: '#888',
     marginBottom: 5,
   },
- 
+
   container: {
     backgroundColor: 'white',
     paddingHorizontal: 10,
@@ -518,7 +668,6 @@ selectedOption: {
     paddingVertical: 5,
     marginRight: 5,
     borderRadius: 5,
-    // backgroundColor: '#FFC300',
     color: 'white',
     fontSize: 18,
   },
@@ -542,7 +691,7 @@ selectedOption: {
   },
   addProductContainer: {
     padding: 20,
-    backgroundColor: '#f0f0f0', // Example background color
+    backgroundColor: '#f0f0f0',
   },
   container: {
     flex: 1,
