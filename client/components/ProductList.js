@@ -7,22 +7,43 @@ import {
   Image,
   Text,
   TouchableOpacity,
+  Modal,
   ToastAndroid,
 } from 'react-native';
-import { Title, IconButton } from 'react-native-paper';
+import { Title , IconButton } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { useProducts } from '../redux/products/productHooks';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import { ipAdress } from '../config';
+import AddReviewz from './AddReviewz';
+import LinearGradient from 'react-native-linear-gradient';
+import Toast from 'react-native-toast-message';
 
 const ProductList = ({ navigation, route }) => {
   const { coffeeShopId } = route.params;
-  const { products, getProducts, status } = useProducts();
+  const { products, getProducts, status, error } = useProducts();
   const [favorites, setFavorites] = useState({});
   const [productsWithReviews, setProductsWithReviews] = useState([]);
-  const [shopTitle, setShopTitle] = useState('');
-  const [shopAddress, setShopAddress] = useState('');
+  const [shopDetails, setShopDetails] = useState({});
+  const [totalShopReviews, setTotalShopReviews] = useState(0);
+  const [averageShopRating, setAverageShopRating] = useState(0);
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [userId, setUserId] = useState(null);
+
+  useEffect(() => {
+    const fetchUserId = async () => {
+      try {
+        const value = await AsyncStorage.getItem('IdUser');
+        if (value !== null) {
+          setUserId(JSON.parse(value));
+        }
+      } catch (error) {
+        console.error('Error retrieving user ID:', error);
+      }
+    };
+    fetchUserId();
+  }, []);
 
   useEffect(() => {
     if (status === 'idle') {
@@ -31,38 +52,10 @@ const ProductList = ({ navigation, route }) => {
   }, [status, getProducts]);
 
   useEffect(() => {
-    const fetchReviews = async () => {
-      try {
-        const reviewsResponse = await axios.get(`http://${ipAdress}:3000/api/review`);
-
-        const productsWithReviews = products.map(product => {
-          const productReviews = reviewsResponse.data.filter(review => review.prodId === product.id);
-          const totalReviews = productReviews.length;
-          const averageRating = totalReviews ? productReviews.reduce((acc, review) => acc + review.stars, 0) / totalReviews : 0;
-          return {
-            ...product,
-            totalReviews,
-            averageRating: averageRating.toFixed(1),
-          };
-        });
-
-        setProductsWithReviews(productsWithReviews);
-      } catch (err) {
-        console.error('Error fetching product reviews:', err);
-      }
-    };
-
-    if (products.length > 0) {
-      fetchReviews();
-    }
-  }, [products]);
-
-  useEffect(() => {
     const fetchShopDetails = async () => {
       try {
         const response = await axios.get(`http://${ipAdress}:3000/api/user/${coffeeShopId}`);
-        setShopTitle(response.data.FirstName + ' ' + response.data.LastName);
-        setShopAddress(response.data.Address);
+        setShopDetails(response.data);
       } catch (error) {
         console.log('Error fetching shop details:', error);
       }
@@ -70,6 +63,75 @@ const ProductList = ({ navigation, route }) => {
 
     fetchShopDetails();
   }, [coffeeShopId]);
+
+  const fetchReviews = async () => {
+    try {
+      const reviewsResponse = await axios.get(`http://${ipAdress}:3000/api/review`);
+      const shopReviewsResponse = await axios.get(`http://${ipAdress}:3000/api/reviewz/reviewee/${coffeeShopId}`);
+
+      const productsWithReviews = products.map(product => {
+        const productReviews = reviewsResponse.data.filter(review => review.prodId === product.id);
+        const totalReviews = productReviews.length;
+        const averageRating = totalReviews ? productReviews.reduce((acc, review) => acc + review.stars, 0) / totalReviews : 0;
+        return {
+          ...product,
+          totalReviews,
+          averageRating: averageRating.toFixed(1),
+        };
+      });
+
+      setProductsWithReviews(productsWithReviews);
+
+      const totalReviews = shopReviewsResponse.data.length;
+      const averageRating = totalReviews ? shopReviewsResponse.data.reduce((acc, review) => acc + review.stars, 0) / totalReviews : 0;
+
+      setTotalShopReviews(totalReviews);
+      setAverageShopRating(averageRating.toFixed(1));
+    } catch (err) {
+      console.error('Error fetching reviews:', err);
+    }
+  };
+
+  useEffect(() => {
+    if (products.length > 0) {
+      fetchReviews();
+    }
+  }, [products]);
+
+  const toggleFeature = async (id, feature) => {
+    try {
+      const isFavorited = favorites[id]?.[feature];
+      const product = productsWithReviews.find((product) => product.id === id);
+      const storedFavorites = await AsyncStorage.getItem('favorites');
+      let favoritesArray = storedFavorites ? JSON.parse(storedFavorites) : [];
+      if (!isFavorited) {
+        setFavorites((prevFavorites) => ({
+          ...prevFavorites,
+          [id]: {
+            ...prevFavorites[id],
+            [feature]: true,
+          },
+        }));
+        favoritesArray.push(product);
+        await AsyncStorage.setItem('favorites', JSON.stringify(favoritesArray));
+
+        ToastAndroid.showWithGravity('Item added to cart', ToastAndroid.SHORT, ToastAndroid.TOP);
+      }
+    } catch (error) {
+      console.log('Error toggling feature:', error);
+    }
+  };
+
+  const handleNavigateToDetails = async (product) => {
+    try {
+      await AsyncStorage.setItem('selectedProductId', product.id.toString());
+      navigation.navigate('prd', { product });
+    } catch (error) {
+      console.log('Error storing selected product ID:', error);
+    }
+  };
+
+  const filteredProducts = productsWithReviews.filter((product) => product.userId === coffeeShopId);
 
   const handleCreateOrJoinChatRoom = async () => {
     try {
@@ -86,21 +148,21 @@ const ProductList = ({ navigation, route }) => {
         // Room does not exist, create a new room
         const value = await AsyncStorage.getItem('IdUser');
         const userId = JSON.parse(value);
+        var RoomName = shopDetails.FirstName
 
-        const createResponse = await axios.post(`http://${ipAdress}:3000/api/roomRouter`, { name: shopTitle });
+        const createResponse = await axios.post(`http://${ipAdress}:3000/api/roomRouter`, { name: RoomName});
        var roomId = createResponse.data.id;
       // }
 
       // Add user to the room
       await axios.post(`http://${ipAdress}:3000/api/roomRouter/user`, { roomId, userId });
-
       // Navigate to the Chat screen
-      navigation.navigate('chat', { roomId,  shopTitle });
+      navigation.navigate('chat', { roomId,  RoomName });
     } catch (error) {
       console.error('Error checking or creating chat room:', error);
     }
   };
-  
+  // console.log(shopDetails.FirstName);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -112,18 +174,29 @@ const ProductList = ({ navigation, route }) => {
         />
       </View>
       <ScrollView>
-        {productsWithReviews.length > 0 ? (
+        {filteredProducts.length > 0 ? (
           <>
-            <Title style={styles.shopTitle}>{productsWithReviews[0].shopName}</Title>
+            <Title style={styles.shopTitle}>{shopDetails.FirstName} {shopDetails.LastName}</Title>
             <Image
               style={styles.shopImage}
-              source={{ uri: productsWithReviews[0].shopImage }}
+              source={{ uri: shopDetails.ImageUrl }}
             />
-            <Text style={styles.shopAddress}>{productsWithReviews[0].shopAddress} 📍</Text>
+            <Text style={styles.shopAddress}>{shopDetails.Address} 📍</Text>
+            <Text style={styles.shopReviews}>{`Total Reviews: ${totalShopReviews}⭐ Average Rating: ${averageShopRating}`}</Text>
+            <TouchableOpacity onPress={() => setIsModalVisible(true)}>
+              <LinearGradient
+                colors={['rgba(219, 166, 23, 1)', 'rgba(219, 166, 23, 1)']}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 0 }}
+                style={styles.gradientButton}
+              >
+                <Text style={styles.buttonText}>Rate this shop</Text>
+              </LinearGradient>
+            </TouchableOpacity>
             <Title style={styles.productListTitle}>Products:</Title>
             <View style={styles.productsContainer}>
-              {productsWithReviews.map((product, index) => {
-                const isLastOddCard = productsWithReviews.length % 2 !== 0 && index === productsWithReviews.length - 1;
+              {filteredProducts.map((product, index) => {
+                const isLastOddCard = filteredProducts.length % 2 !== 0 && index === filteredProducts.length - 1;
                 return (
                   <View style={[styles.card, isLastOddCard && styles.lastOddCard]} key={product.id}>
                     <TouchableOpacity onPress={() => handleNavigateToDetails(product)}>
@@ -156,12 +229,46 @@ const ProductList = ({ navigation, route }) => {
           </>
         ) : (
           <>
-            <Title style={styles.shopTitle}>{shopTitle}</Title>
-            <Text style={styles.shopAddress}>{shopAddress} 📍</Text>
+            <Title style={styles.shopTitle}>{shopDetails.FirstName} {shopDetails.LastName}</Title>
+            <Image
+              style={styles.shopImage}
+              source={{ uri: shopDetails.ImageUrl }}
+            />
+            <Text style={styles.shopAddress}>{shopDetails.Address} 📍</Text>
+            <Text style={styles.shopReviews}>{`Total Reviews: ${totalShopReviews} ⭐ Average Rating: ${averageShopRating}`}</Text>
+            <TouchableOpacity onPress={() => setIsModalVisible(true)}>
+              <LinearGradient
+                colors={['rgba(219, 166, 23, 1)', 'rgba(219, 166, 23, 1)']}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 0 }}
+                style={styles.gradientButton}
+              >
+                <Text style={styles.buttonText}>Rate this shop</Text>
+              </LinearGradient>
+            </TouchableOpacity>
             <Text style={styles.noProductsMessage}>This coffee shop has no products at the moment! 😔</Text>
           </>
         )}
       </ScrollView>
+      <Modal
+        transparent={true}
+        visible={isModalVisible}
+        onRequestClose={() => setIsModalVisible(false)}>
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContainer}>
+            <AddReviewz
+              coffeeShopId={coffeeShopId}
+              userId={userId}
+              onClose={() => setIsModalVisible(false)}
+              onReviewSubmitted={fetchReviews}
+            />
+            <TouchableOpacity onPress={() => setIsModalVisible(false)} style={styles.closeButton}>
+              <Text style={styles.closeButtonText}>Close</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
+      <Toast ref={(ref) => Toast.setRef(ref)} />
     </SafeAreaView>
   );
 };
@@ -195,6 +302,24 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginBottom: 5,
     color: '#333',
+  },
+  shopReviews: {
+    fontSize: 18,
+    textAlign: 'center',
+    marginBottom: 10,
+    color: '#666',
+  },
+  gradientButton: {
+    borderRadius: 10,
+    padding: 10,
+    alignItems: 'center',
+    marginBottom: 15,
+    marginHorizontal: 20,
+  },
+  buttonText: {
+    color: '#fff',
+    fontSize: 18,
+    fontWeight: 'bold',
   },
   productListTitle: {
     fontSize: 20,
@@ -286,6 +411,34 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
+  },
+  modalOverlay: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
+  modalContainer: {
+    backgroundColor: 'white',
+    padding: 20,
+    borderRadius: 10,
+    width: '80%',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+  },
+  closeButton: {
+    marginTop: 10,
+    backgroundColor: '#dba617',
+    padding: 10,
+    borderRadius: 10,
+    alignItems: 'center',
+  },
+  closeButtonText: {
+    color: 'white',
+    fontWeight: 'bold',
   },
 });
 
