@@ -92,12 +92,14 @@ const MyComponent = ({navigation}) => {
   const toggleModal = () => {
     setIsModalVisible(!isModalVisible);
   };
-
+const img = userData.ImageUrl
   return (
     <ScrollView>
       <View style={styles.container}>
         <View style={styles.header}>
-        <ImageBackground source={{ uri: userData.ImageUrl }} style={styles.profileImage}>
+        <ImageBackground 
+        source={{ uri: img }}
+         style={styles.profileImage}>
  
   <View style={styles.leftTextContainer}>
   <View style={styles.textWithIcon}>
