@@ -68,9 +68,9 @@ db.Review.belongsTo(db.User);
 db.Products.hasMany(db.Review, { foreignKey: 'prodId' });
 db.Review.belongsTo(db.Products, { foreignKey: 'prodId' });
 
+
 db.Pack.hasMany(db.PackReview);  
 db.PackReview.belongsTo(db.Pack);
-
 db.User.hasMany(db.PackReview);
 db.PackReview.belongsTo(db.User);
 

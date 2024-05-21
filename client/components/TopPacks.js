@@ -3,6 +3,7 @@ import { View, Text, Image, FlatList, TouchableOpacity, StyleSheet } from 'react
 import axios from 'axios';
 import { ipAdress } from '../config';
 import { useNavigation } from '@react-navigation/native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const TopPacks = ({ navigation }) => {
   const [packs, setPacks] = useState([]);
@@ -11,8 +12,21 @@ const TopPacks = ({ navigation }) => {
   useEffect(() => {
     const fetchPacks = async () => {
       try {
-        const response = await axios.get(`http://${ipAdress}:3000/api/packs`);
-        const shuffledPacks = response.data.sort(() => 0.5 - Math.random());
+        const packsResponse = await axios.get(`http://${ipAdress}:3000/api/packs`);
+        const reviewsResponse = await axios.get(`http://${ipAdress}:3000/api/packreview`);
+
+        const packsWithReviews = packsResponse.data.map(pack => {
+          const packReviews = reviewsResponse.data.filter(review => review.PackId === pack.id);
+          const totalReviews = packReviews.length;
+          const averageRating = totalReviews ? packReviews.reduce((acc, review) => acc + review.stars, 0) / totalReviews : 0;
+          return {
+            ...pack,
+            totalReviews,
+            averageRating: averageRating.toFixed(1),
+          };
+        });
+
+        const shuffledPacks = packsWithReviews.sort(() => 0.5 - Math.random());
         const selectedPacks = shuffledPacks.slice(0, 5);
         setPacks(selectedPacks);
       } catch (err) {
@@ -51,6 +65,7 @@ const TopPacks = ({ navigation }) => {
             <View style={styles.info}>
               <Text style={styles.name}>{item.name}</Text>
               <Text style={styles.price}>${item.price}</Text>
+              <Text style={styles.reviews}>{`${item.totalReviews} 👤 ⭐: ${item.averageRating}`}</Text>
             </View>
           </TouchableOpacity>
         )}
@@ -105,6 +120,11 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
     color: '#000',
+  },
+  reviews: {
+    fontSize: 14,
+    color: '#999',
+    marginTop: 5,
   },
   errorText: {
     color: 'red',
