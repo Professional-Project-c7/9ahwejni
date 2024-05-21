@@ -1,17 +1,16 @@
-import React, { useState, useEffect } from 'react';
-import { View, ScrollView, StyleSheet, ImageBackground, TouchableOpacity, Alert } from 'react-native';
+import React, { useState, useEffect, useRef } from 'react';
+import { View, ScrollView, StyleSheet, ImageBackground, TouchableOpacity } from 'react-native';
 import { TextInput, IconButton, Card, Text } from 'react-native-paper';
 import io from 'socket.io-client';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import moment from 'moment';
-import { ipAdress } from '../config';
 import AudioRecorderPlayer from 'react-native-audio-recorder-player';
 import RNFS from 'react-native-fs';
+import { request, PERMISSIONS } from 'react-native-permissions';
+import { ipAdress } from '../config';
 
 const SERVER_ENDPOINT = `http://${ipAdress}:4001`;
-
-const audioRecorderPlayer = new AudioRecorderPlayer();
 
 const Chat = ({ navigation, route }) => {
   const { roomId, roomName } = route.params;
@@ -19,6 +18,9 @@ const Chat = ({ navigation, route }) => {
   const [messageInput, setMessageInput] = useState('');
   const [userId, setUserId] = useState('');
   const [socket, setSocket] = useState(null);
+  const [recording, setRecording] = useState(false);
+  const audioRecorderPlayer = useRef(new AudioRecorderPlayer()).current;
+  const [currentAudio, setCurrentAudio] = useState(null);
 
   useEffect(() => {
     const retrieveData = async () => {
@@ -95,81 +97,132 @@ const Chat = ({ navigation, route }) => {
     }
   };
 
-  const playAudio = async (filePath) => {
-    try {
-      console.log('Playing audio from:', filePath);
-      const result = await audioRecorderPlayer.startPlayer(filePath);
-      if (result === 'success') {
-        audioRecorderPlayer.addPlayBackListener((e) => {
-          console.log({
-            currentPosition: e.currentPosition,
-            duration: e.duration,
-          });
-          if (e.currentPosition === e.duration) {
-            audioRecorderPlayer.stopPlayer();
-            audioRecorderPlayer.removePlayBackListener();
-          }
-        });
-      } else {
-        console.error('Failed to start audio player:', result);
-        Alert.alert('Error', 'Failed to start audio player');
-      }
-    } catch (error) {
-      console.error('Error playing audio:', error);
-      Alert.alert('Error', `Error playing audio: ${error.message}`);
+  const startRecording = async () => {
+    const result = await request(PERMISSIONS.ANDROID.RECORD_AUDIO);
+    if (result === 'granted') {
+      const path = RNFS.DocumentDirectoryPath + '/voiceMessage.m4a';
+      await audioRecorderPlayer.startRecorder(path);
+      audioRecorderPlayer.addRecordBackListener((e) => {});
+      setRecording(true);
     }
   };
-  
-  
+
+  const stopRecording = async () => {
+    const result = await audioRecorderPlayer.stopRecorder();
+    audioRecorderPlayer.removeRecordBackListener();
+    setRecording(false);
+    setCurrentAudio(result);
+  };
+
+  const playAudio = async (path) => {
+    await audioRecorderPlayer.startPlayer(path);
+    audioRecorderPlayer.addPlayBackListener((e) => {
+      if (e.current_position === e.duration) {
+        audioRecorderPlayer.stopPlayer();
+        audioRecorderPlayer.removePlayBackListener();
+      }
+    });
+  };
+
+  const sendAudioMessage = async () => {
+    if (socket && currentAudio) {
+      const audioPath = currentAudio;
+      const newMessage = {
+        senderId: userId,
+        content: audioPath,
+        roomId: roomId,
+        timestamp: new Date(),
+        isAudio: true,
+      };
+
+      socket.emit('send_message', newMessage, async (acknowledgement) => {
+        if (acknowledgement === 'success') {
+          setMessages((prevMessages) => [...prevMessages, newMessage]);
+          const formData = new FormData();
+          formData.append('audio', {
+            uri: `file://${audioPath}`,
+            type: 'audio/m4a',
+            name: 'voiceMessage.m4a',
+          });
+          formData.append('senderId', userId);
+          formData.append('roomId', roomId);
+          formData.append('isAudio', true);
+
+          await axios.post(`http://${ipAdress}:3000/api/messages/audio`, formData, {
+            headers: { 'Content-Type': 'multipart/form-data' },
+          });
+
+          setCurrentAudio(null);
+        } else {
+          console.error('Failed to send message:', acknowledgement);
+        }
+      });
+    }
+  };
 
   return (
-      <ImageBackground source={require('../image/bgg.jpeg')} style={styles.background}>
-        <View style={styles.container}>
-          <ScrollView contentContainerStyle={styles.messagesContainer}>
-            {messages.map((message, index) => (
-              <Card
-                key={index}
-                style={[
-                  styles.message,
-                  message.senderId === userId ? styles.sender : styles.receiver,
-                ]}
-              >
-                <Card.Content>
-                  {message.isAudio ? (
-                    <TouchableOpacity onPress={() => playAudio(message.content)}>
-                      <Text style={styles.audioMessage}>Play Audio</Text>
-                    </TouchableOpacity>
-                  ) : (
-                    <>
-                      <Text style={styles.messageText}>{message.content}</Text>
-                      <Text style={styles.timestampText}>{moment(message.timestamp).fromNow()}</Text>
-                    </>
-                  )}
-                </Card.Content>
-              </Card>
-            ))}
-          </ScrollView>
-          <View style={styles.inputContainer}>
-            <TextInput
-              style={styles.messageInput}
-              value={messageInput}
-              onChangeText={setMessageInput}
-              placeholder="Type a message..."
-              mode="outlined"
-              outlineStyle={styles.textInputOutline}
-            />
+    <ImageBackground source={require('../image/bgg.jpeg')} style={styles.background}>
+      <View style={styles.container}>
+        <ScrollView contentContainerStyle={styles.messagesContainer}>
+          {messages.map((message, index) => (
+            <Card
+              key={index}
+              style={[
+                styles.message,
+                message.senderId === userId ? styles.sender : styles.receiver,
+              ]}
+            >
+              <Card.Content>
+                {message.isAudio ? (
+                  <TouchableOpacity onPress={() => playAudio(message.content)}>
+                    <Text style={styles.audioText}>Play Audio Message</Text>
+                  </TouchableOpacity>
+                ) : (
+                  <>
+                    <Text style={styles.messageText}>{message.content}</Text>
+                    <Text style={styles.timestampText}>{moment(message.timestamp).fromNow()}</Text>
+                  </>
+                )}
+              </Card.Content>
+            </Card>
+          ))}
+        </ScrollView>
+        <View style={styles.inputContainer}>
+          <TextInput
+            style={styles.messageInput}
+            value={messageInput}
+            onChangeText={setMessageInput}
+            placeholder="Type a message..."
+            mode="outlined"
+            outlineStyle={styles.textInputOutline}
+          />
+          <IconButton
+            icon="send"
+            color="#dba617"
+            size={30}
+            onPress={sendMessage}
+            style={styles.sendButton}
+          />
+          <IconButton
+            icon={recording ? "stop" : "microphone"}
+            color="#dba617"
+            size={30}
+            onPress={recording ? stopRecording : startRecording}
+            style={styles.sendButton}
+          />
+          {currentAudio && (
             <IconButton
               icon="send"
               color="#dba617"
               size={30}
-              onPress={sendMessage}
+              onPress={sendAudioMessage}
               style={styles.sendButton}
             />
-          </View>
+          )}
         </View>
-      </ImageBackground>
-    );
-    
+      </View>
+    </ImageBackground>
+  );
 };
 
 const styles = StyleSheet.create({
@@ -207,6 +260,10 @@ const styles = StyleSheet.create({
     textAlign: 'right',
     marginTop: 4,
   },
+  audioText: {
+    fontSize: 16,
+    color: '#dba617',
+  },
   inputContainer: {
     flexDirection: 'row',
     padding: 8,
@@ -226,11 +283,6 @@ const styles = StyleSheet.create({
   sendButton: {
     justifyContent: 'center',
     alignSelf: 'center',
-  },
-  audioMessage: {
-    fontSize: 16,
-    color: '#dba617',
-    textDecorationLine: 'underline',
   },
 });
 

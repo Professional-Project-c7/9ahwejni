@@ -1,4 +1,5 @@
 const express = require('express');
+const path = require('path');
 const http = require('http');
 const socketIo = require('socket.io');
 
@@ -25,7 +26,6 @@ io.on('connection', (socket) => {
     console.log(`User ID: ${userId}, Room: ${room}`);
     userSockets[userId] = socket.id;
     connectedUsers[userId] = true;
-
     socket.join(room);
   }
 
@@ -35,7 +35,7 @@ io.on('connection', (socket) => {
       senderId: userId,
       content,
       roomId: parseInt(roomId, 10) || 1,
-      isAudio: isAudio || false,
+      isAudio
     };
 
     if (recipientId && userSockets[recipientId]) {
@@ -57,12 +57,6 @@ io.on('connection', (socket) => {
       }
     }
   });
-});
-
-app.get('/isConnected', (req, res) => {
-  const userId = req.headers.userid;
-  const isConnected = !!connectedUsers[userId];
-  res.json({ isConnected });
 });
 
 server.listen(PORT, () => {
