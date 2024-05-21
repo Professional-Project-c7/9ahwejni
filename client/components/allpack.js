@@ -19,40 +19,40 @@ import { ipAdress } from '../config';
 import packos from '../image/packos.png';
 
 const Allpack = ({ navigation }) => {
-  const [drinks, setDrinks] = useState([]);
+  const [packs, setPacks] = useState([]);
   const [favorites, setFavorites] = useState({});
   const [searchQuery, setSearchQuery] = useState('');
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    const fetchDrinks = async () => {
+    const fetchPacks = async () => {
       try {
         const productsResponse = await axios.get(`http://${ipAdress}:3000/api/packs`);
         const reviewsResponse = await axios.get(`http://${ipAdress}:3000/api/review`);
 
-        const drinksWithReviews = productsResponse.data.map(drink => {
-          const drinkReviews = reviewsResponse.data.filter(review => review.prodId === drink.id);
-          const totalReviews = drinkReviews.length;
-          const averageRating = totalReviews ? drinkReviews.reduce((acc, review) => acc + review.stars, 0) / totalReviews : 0;
+        const packsWithReviews = productsResponse.data.map(pack => {
+          const packReviews = reviewsResponse.data.filter(review => review.prodId === pack.id);
+          const totalReviews = packReviews.length;
+          const averageRating = totalReviews ? packReviews.reduce((acc, review) => acc + review.stars, 0) / totalReviews : 0;
           return {
-            ...drink,
+            ...pack,
             totalReviews,
             averageRating: averageRating.toFixed(1),
           };
         });
 
-        setDrinks(drinksWithReviews);
+        setPacks(packsWithReviews);
       } catch (err) {
         setError(err.message);
       }
     };
-    fetchDrinks();
+    fetchPacks();
   }, []);
 
   const toggleFeature = async (id, feature) => {
     try {
       const isFavorited = favorites[id]?.[feature];
-      const drink = drinks.find((drink) => drink.id === id);
+      const pack = packs.find((pack) => pack.id === id);
       const storedFavorites = await AsyncStorage.getItem('favorites');
       let favoritesArray = storedFavorites ? JSON.parse(storedFavorites) : [];
       if (!isFavorited) {
@@ -63,7 +63,7 @@ const Allpack = ({ navigation }) => {
             [feature]: true,
           },
         }));
-        favoritesArray.push(drink);
+        favoritesArray.push(pack);
         await AsyncStorage.setItem('favorites', JSON.stringify(favoritesArray));
 
         // Displaying a toast message at the top
@@ -74,17 +74,17 @@ const Allpack = ({ navigation }) => {
     }
   };
 
-  const handleNavigateToDetails = async (drink) => {
+  const handleNavigateToDetails = async (pack) => {
     try {
-      await AsyncStorage.setItem('selectedProductId', drink.id.toString());
-      navigation.navigate('prd', { product: drink });
+      await AsyncStorage.setItem('selectedProductId', pack.id.toString());
+      navigation.navigate('prd', { product: pack });
     } catch (error) {
       console.log('Error storing selected product ID:', error);
     }
   };
 
-  const filteredDrinks = drinks.filter(drink =>
-    drink.name.toLowerCase().includes(searchQuery.toLowerCase())
+  const filteredPacks = packs.filter(pack =>
+    pack.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   return (
@@ -103,7 +103,7 @@ const Allpack = ({ navigation }) => {
       <View style={styles.searchSection}>
         <TextInput
           style={styles.input}
-          placeholder="Search drinks..."
+          placeholder="Search packs..."
           onChangeText={text => setSearchQuery(text)}
           value={searchQuery}
         />
@@ -113,25 +113,25 @@ const Allpack = ({ navigation }) => {
           <Text>Error: {error}</Text>
         ) : (
           <View style={styles.productsContainer}>
-            {filteredDrinks.map((drink) => (
-              <View style={styles.card} key={drink.id}>
-                <TouchableOpacity onPress={() => handleNavigateToDetails(drink)}>
-                  <Image source={{ uri: drink.imgUrl }} style={styles.image} />
+            {filteredPacks.map((pack) => (
+              <View style={styles.card} key={pack.id}>
+                <TouchableOpacity onPress={() => handleNavigateToDetails(pack)}>
+                  <Image source={{ uri: pack.imgUrl }} style={styles.image} />
                 </TouchableOpacity>
                 <Icon
-                  name={favorites[drink.id]?.favored ? 'heart' : 'heart-outline'}
-                  color={favorites[drink.id]?.favored ? 'red' : '#dba617'}
+                  name={favorites[pack.id]?.favored ? 'heart' : 'heart-outline'}
+                  color={favorites[pack.id]?.favored ? 'red' : '#dba617'}
                   size={27}
                   style={styles.favIcon}
                 />
                 <View style={styles.infoContainer}>
-                  <Text style={styles.reviews}>{`${drink.totalReviews} 👤 ⭐: ${drink.averageRating}`}</Text>
-                  <Text style={styles.name}>{drink.name}</Text>
-                  <Text style={styles.price}>${drink.price}</Text>
+                  <Text style={styles.reviews}>{`${pack.totalReviews} 👤 ⭐: ${pack.averageRating}`}</Text>
+                  <Text style={styles.name}>{pack.name}</Text>
+                  <Text style={styles.price}>${pack.price}</Text>
                   <Icon
-                    name={favorites[drink.id]?.inCart ? 'cart' : 'cart-outline'}
+                    name={favorites[pack.id]?.inCart ? 'cart' : 'cart-outline'}
                     size={24}
-                    onPress={() => toggleFeature(drink.id, 'inCart')}
+                    onPress={() => toggleFeature(pack.id, 'inCart')}
                     style={styles.cartIcon}
                   />
                 </View>
@@ -191,11 +191,11 @@ const styles = StyleSheet.create({
   productsContainer: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    justifyContent: 'space-evenly',
+    justifyContent: 'space-between',
     paddingHorizontal: 10,
   },
   card: {
-    width: '48%',
+    width: '100%',
     marginVertical: 10,
     borderRadius: 10,
     backgroundColor: '#fff',
@@ -207,7 +207,7 @@ const styles = StyleSheet.create({
     elevation: 5,
   },
   image: {
-    height: 150,
+    height: 300,
     width: '100%',
     borderTopLeftRadius: 10,
     borderTopRightRadius: 10,
@@ -227,7 +227,6 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#333',
     marginBottom: 5,
-    
   },
   price: {
     fontSize: 16,
@@ -244,7 +243,7 @@ const styles = StyleSheet.create({
   cartIcon: {
     position: 'absolute',
     right: 10,
-    bottom: 10,
+    bottom: 5,
     backgroundColor: '#dba617',
     padding: 5,
     borderRadius: 15,
