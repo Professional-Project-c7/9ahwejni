@@ -87,16 +87,25 @@ module.exports = async (sequelize) => {
             name = faker.random.word() + " Coffee Pack";
             description = faker.lorem.sentence();
         }
-
+        let imgUrl;
+        if (category === "coffee") {
+            imgUrl = faker.image.imageUrl(400, 400, "coffee", true, true);
+        } else if (category === "cake") {
+            imgUrl = faker.image.imageUrl(400, 400, "cake", true, true);
+        } else {
+            imgUrl = faker.image.imageUrl(400, 400, "drink", true, true);
+        }
         return await db.Pack.create({
             name: name,
             price: faker.commerce.price(),
             description: description,
             category: category,
             userId: user.id,
+            imgUrl: imgUrl,
         });
     })
 );
+
 
 
       const packproduct =await Promise.all(

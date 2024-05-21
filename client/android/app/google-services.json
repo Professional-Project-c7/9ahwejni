@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "671204276868",
+    "project_id": "ahwejni",
+    "storage_bucket": "ahwejni.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:671204276868:android:01b34b6d73d780f99860d1",
+        "android_client_info": {
+          "package_name": "com.client"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAIselDZpIdSn5fSYKbsIm0BqPV8SGVMO4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

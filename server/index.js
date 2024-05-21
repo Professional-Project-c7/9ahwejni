@@ -21,7 +21,6 @@ const roomRouters = require('./Routers/room.routers')
 const Payment=require('./Routers/Payment.js')
 const reviewRouter = require('./Routers/review.router.js');
 const reviewzRouter = require('./Routers/reviewz.router.js');
-
 const Notification = require('./Routers/Notification.routes.js')
 
 
@@ -33,7 +32,6 @@ app.use('/api/messages', messagesRouter);
 app.use('/api/roomRouter', roomRouters);
 app.use('/api/user', User);
 app.use('/api/favorit', favorit);
-
 app.use("/api/product", ProductRoutes);
 app.use("/api/packs", packs);
 app.use('/api/payment', Payment);
