@@ -4,7 +4,6 @@ import { TextInput, Button } from 'react-native-paper';
 import { Rating } from 'react-native-ratings';
 import axios from 'axios';
 import { ipAdress } from '../config';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import Toast from 'react-native-toast-message';
 
 const AddReview = ({ productId, userId, onReviewSubmitted }) => {
@@ -115,6 +114,7 @@ const styles = StyleSheet.create({
     },
     button: {
         marginTop: 20,
+        color:'pink'
     },
 });
 
