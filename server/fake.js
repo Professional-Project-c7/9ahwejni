@@ -107,6 +107,7 @@ module.exports = async (sequelize) => {
 );
 
 
+
       const packproduct =await Promise.all(
         Array.from({ length: packCount }).map(async () => {
             const onepack = pack[Math.floor(Math.random() * packCount)];

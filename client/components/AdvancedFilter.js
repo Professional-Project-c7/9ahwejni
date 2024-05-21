@@ -99,10 +99,10 @@ const AdvancedFilter = () => {
     );
   };
 
-  const handleNavigateToDetails = async (product) => {
+  const handleNavigateToDetails = async (item) => {
     try {
-      await AsyncStorage.setItem('selectedProductId', product.id.toString());
-      navigation.navigate('ProductDetailsPage', { product });
+      await AsyncStorage.setItem('selectedProductId', item.id.toString());
+      navigation.navigate('prd', { item });
     } catch (error) {
       console.error('Error navigating to product details:', error);
     }

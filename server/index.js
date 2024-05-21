@@ -33,7 +33,6 @@ app.use('/api/messages', messagesRouter);
 app.use('/api/roomRouter', roomRouters);
 app.use('/api/user', User);
 app.use('/api/favorit', favorit);
-
 app.use("/api/product", ProductRoutes);
 app.use("/api/packs", packs);
 app.use('/api/payment', Payment);
