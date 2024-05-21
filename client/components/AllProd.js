@@ -62,13 +62,45 @@ const AllProducts = ({ navigation }) => {
         }));
         favoritesArray.push(product);
         await AsyncStorage.setItem('favorites', JSON.stringify(favoritesArray));
+  
+        // Displaying a toast message at the top
         ToastAndroid.showWithGravity('Item added to cart', ToastAndroid.TOP, ToastAndroid.TOP);
       }
     } catch (error) {
       console.log('Error toggling feature:', error);
     }
   };
-
+  const handleAddToFavorites = async (product) => {
+    try {
+      // Validate product
+      if (!product || !product.id) {
+        throw new Error('Invalid product data');
+      }
+  
+      // Get existing favorites or initialize an empty array
+      const existingFavorites = await AsyncStorage.getItem('favv');
+      let favoritesArray = existingFavorites ? JSON.parse(existingFavorites) : [];
+  
+      // Check for duplicate
+      const isDuplicate = favoritesArray.some((fav) => fav.id === product.id);
+      if (isDuplicate) {
+        throw new Error('Product already exists in favorites');
+      }
+  
+      // Add the product to favorites (immutable update)
+      favoritesArray = [...favoritesArray, product];
+  
+      // Save the updated favorites back to AsyncStorage
+      await AsyncStorage.setItem('favv', JSON.stringify(favoritesArray));
+  
+      // Display toast message
+      ToastAndroid.showWithGravity('Item added to favorites', ToastAndroid.TOP, ToastAndroid.TOP);
+    } catch (error) {
+      console.error('Error storing favorite:', error.message);
+      // Optionally, show a toast message for the error
+      ToastAndroid.showWithGravity('Failed to add item to favorites', ToastAndroid.TOP, ToastAndroid.TOP);
+    }
+  };
   const goToHomePage = () => {
     navigation.navigate('homePage');
   };
@@ -107,10 +139,10 @@ const AllProducts = ({ navigation }) => {
                   <Image source={{ uri: product.imgUrl }} style={styles.image} />
                 </TouchableOpacity>
                 <Icon
-                  name={favorites[product.id]?.favored ? 'heart' : 'heart-outline'}
-                  color={favorites[product.id]?.favored ? 'red' : '#dba617'}
+                  name={'heart-outline'}
                   size={27}
                   style={styles.favIcon}
+                  onPress={() => handleAddToFavorites(product)} // Pass the product to handleAddToFavorites
                 />
                 <View style={styles.infoContainer}>
                   <Text style={styles.reviews}>{`${product.totalReviews} 👤 ⭐: ${product.averageRating}`}</Text>
