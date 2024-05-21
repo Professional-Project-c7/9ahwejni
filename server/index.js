@@ -17,6 +17,7 @@ const favorit=require("./Routers/favorit.routes.js")
 const packs = require('./Routers/packs.routes.js')
 const Authentication = require('./Routers/login.routers.js');
 const messagesRouter = require('./Routers/messages.routers')
+const roomRouters = require('./Routers/room.routers')
 const Payment=require('./Routers/Payment.js')
 const reviewRouter = require('./Routers/review.router.js');
 const reviewzRouter = require('./Routers/reviewz.router.js');
@@ -29,6 +30,7 @@ app.use(cors())
 app.use("/api/not", Notification);
 app.use("/api/auth", Authentication);
 app.use('/api/messages', messagesRouter);
+app.use('/api/roomRouter', roomRouters);
 app.use('/api/user', User);
 app.use('/api/favorit', favorit);
 
