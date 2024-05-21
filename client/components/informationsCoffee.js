@@ -85,7 +85,7 @@ useEffect(() => {
                   style={{ height: 100, width: 100 }}
                   imageStyle={{ borderRadius: 15 }}>
                   <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-                    <Icon name="camera" size={35} color='#dba617' style={{ opacity: 0.7 }} />
+                    {/* <Icon name="camera" size={35} color='#dba617' style={{ opacity: 0.7 }} /> */}
                   </View>
                 </ImageBackground>
               </View>

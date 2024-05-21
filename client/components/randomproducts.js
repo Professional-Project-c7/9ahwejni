@@ -21,7 +21,6 @@ const RandomProducts = () => {
   const navigation = useNavigation();
   const [products, setProducts] = useState([]);
   const [favorites, setFavorites] = useState({});
-  const [favoritess, setFavoritess] = useState({});
 
   const [error, setError] = useState(null);
 
@@ -31,7 +30,6 @@ const RandomProducts = () => {
         const productsResponse = await axios.get(`http://${ipAdress}:3000/api/product`);
         const reviewsResponse = await axios.get(`http://${ipAdress}:3000/api/review`);
 
-        // Mapping products to include review data
         const productsWithReviews = productsResponse.data.map(product => {
           const productReviews = reviewsResponse.data.filter(review => review.prodId === product.id);
           const totalReviews = productReviews.length;
@@ -44,7 +42,7 @@ const RandomProducts = () => {
         });
 
         // Sorting products by averageRating in descending order and taking top 6
-        const topRatedProducts = productsWithReviews.sort((a, b) => b.averageRating - a.averageRating).slice(0, 6);
+        const topRatedProducts = productsWithReviews.sort((a, b) => b.averageRating - a.averageRating).slice(0, 10);
 
         setProducts(topRatedProducts);
       } catch (err) {

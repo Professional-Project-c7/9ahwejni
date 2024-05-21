@@ -77,11 +77,13 @@ db.Reviewz.belongsTo(db.User, { as: 'Reviewer', foreignKey: 'reviewerId' });
 db.Reviewz.belongsTo(db.User, { as: 'Reviewee', foreignKey: 'revieweeId' });
 
 
-// db.Room.hasMany(db.Message, { foreignKey: 'roomId' });
-// db.Message.belongsTo(db.Room, { foreignKey: 'roomId' });
+db.Room.hasMany(db.Message, { foreignKey: 'roomId' });
+db.Message.belongsTo(db.Room, { foreignKey: 'roomId' });
 
-// db.Room.belongsToMany(db.User,{ through: db.RoomUser });
-// db.User.belongsToMany(db.Room,{ through: db.RoomUser }); 
+db.User.hasMany(db.Message, { foreignKey: 'senderId' });
+db.Message.belongsTo(db.User, { foreignKey: 'senderId' });
+
+
 db.Room.belongsToMany(db.User, {
   through: {
     model: db.RoomUser,
@@ -108,12 +110,12 @@ db.User.belongsToMany(db.Room, {
 
 // Sync the models with the database
 
-//  connection.sync()
-//     .then(() => {
-//         console.log('Models synced with the database.')
-//     })
-//     .catch((error) => {
-//         console.error('Unable to sync models with the database: ', error)
-//     })
+ connection.sync()
+    .then(() => {
+        console.log('Models synced with the database.')
+    })
+    .catch((error) => {
+        console.error('Unable to sync models with the database: ', error)
+    })
 
 module.exports =db 

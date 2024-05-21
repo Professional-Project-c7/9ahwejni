@@ -52,7 +52,7 @@ const Panier = ({ navigation }) => {
     });
     setTotalPrice(totalPrice);
   };
-  console.log(totalPrice);
+  // console.log(totalPrice);
 
   return (
     <View style={styles.container}>
