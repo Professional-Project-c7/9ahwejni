@@ -166,7 +166,7 @@ const RandomProducts = () => {
                   onPress={() => handleAddToFavorites(product)} // Pass the product to handleAddToFavorites
                 />
                 <View style={styles.infoContainer}>
-                  <Text style={styles.reviews}>{`${product.totalReviews} 👤 ⭐: ${product.averageRating}`}</Text>
+                  <Text style={styles.reviews}>{`${product.totalReviews}👤 ⭐: ${product.averageRating}`}</Text>
                   <Text style={styles.name}>{product.name}</Text>
                   <Text style={styles.price}>${product.price}</Text>
                   <Icon
@@ -232,6 +232,7 @@ const styles = StyleSheet.create({
     textAlign: 'left',
     bottom: 5,
     right: 5,
+    marginRight : 9
   },
   description: {
     fontSize: 14,
@@ -239,7 +240,7 @@ const styles = StyleSheet.create({
     marginBottom: 5,
   },
   price: {
-    fontSize: 16,
+    fontSize: 17,
     fontWeight: 'bold',
     color: '#000',
     right: 5,

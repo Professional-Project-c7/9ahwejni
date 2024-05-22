@@ -3,17 +3,17 @@ import { View, Text, StyleSheet, useWindowDimensions } from 'react-native';
 import FastImage from 'react-native-fast-image';
 
 function OnboardingItem({ item }) {
-  const { width } = useWindowDimensions();
+  const { width, height } = useWindowDimensions();
 
   return (
     <View style={[styles.container, { width }]}>
       <FastImage
         source={item.image}
-        style={[styles.image, { width, resizeMode: 'contain' }]}
+        style={[styles.image, { width: width * 0.8, height: height * 0.4 }]}
       />
-      <View style={{ flex: 0.4 }}>  
-        <Text style={styles.title}> {item.title} </Text>
-        <Text style={styles.description}> {item.description} </Text>
+      <View style={styles.textContainer}>
+        <Text style={styles.title}>{item.title}</Text>
+        <Text style={styles.description}>{item.description}</Text>
       </View>
     </View>
   );
@@ -22,27 +22,31 @@ function OnboardingItem({ item }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'flex-end',
+    justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: 'white',
-    paddingTop: 40,  
   },
   image: {
-    flex: 0.4, 
-    marginBottom: 20, 
+    marginVertical: 20,
+    resizeMode: 'contain',
   },
-  description: {
-    fontSize: 17,
-    fontWeight: '500',
-    color: '#322C2B',
-    textAlign: 'center',
-    paddingHorizontal: 64,
+  textContainer: {
+    flex: 0.5,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingHorizontal: 20,
   },
   title: {
     fontWeight: '800',
-    fontSize: 28,
+    fontSize: 24,
     marginBottom: 10,
-    color: 'black',
+    color: '#333',
+    textAlign: 'center',
+  },
+  description: {
+    fontSize: 16,
+    fontWeight: '400',
+    color: '#555',
     textAlign: 'center',
   },
 });

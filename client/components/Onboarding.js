@@ -8,35 +8,36 @@ import FastImage from 'react-native-fast-image';
 import anicoffee from '../image/anicoffee.gif';
 import protection from '../image/protection.gif';
 import gps from '../image/gps.gif';
+import waw from '../image/waaw.webp'
 
 const dummyData = [
   {
-    "id": 1,
-    "title": "Enjoy Your Coffee",
-    "description": "Start your day with a smile and a great cup of coffee. Discover our wide range of coffee selections just for you.",
-    image: anicoffee
+    id: 1,
+    title: "Enjoy Your Coffee",
+    description: "Start your day with a smile and a great cup of coffee. Discover our wide range of coffee selections just for you.",
+    image: anicoffee,
   },
   {
-    "id": 2,
-    "title": "Secure and Reliable",
-    "description": "Your security is our priority. Enjoy a seamless and secure experience with our app.",
-    image: protection
+    id: 2,
+    title: "Secure and Reliable",
+    description: "Your security is our priority. Enjoy a seamless and secure experience with our app.",
+    image: protection,
   },
   {
-    "id": 3,
-    "title": "Find Your Way",
-    "description": "Locate the best coffee shops around you with our easy-to-use GPS feature.",
-    image: gps
+    id: 3,
+    title: "Find Your Way",
+    description: "Locate the best coffee shops around you with our easy-to-use GPS feature.",
+    image: gps,
   }, 
   {
-    "id": 4,
-    "title": "Welcome to 9ahwejni",
-    "description": "Join us and enjoy the best coffee experience with our app. Let's get started!",
-    image: require("../image/logo.png")  }
+    id: 4,
+    title: "Welcome to 9ahwejni",
+    description: "Join us and enjoy the best coffee experience with our app. Let's get started!",
+    image: waw
+  }
 ];
 
 function Onboarding({ navigation }) {
-
   const [currentIndex, setCurrentIndex] = useState(0);
   const scrollX = useRef(new Animated.Value(0)).current;
   const SlidesRef = useRef(null);
@@ -72,24 +73,22 @@ function Onboarding({ navigation }) {
 
   return (
     <View style={styles.container}>
-      <View style={{ flex: 2 }}>
-        <FlatList
-          data={dummyData}
-          renderItem={({ item }) => <OnboardingItem item={item} />}
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          pagingEnabled
-          bounces={false}
-          keyExtractor={(item) => item.id.toString()}
-          onScroll={Animated.event([{ nativeEvent: { contentOffset: { x: scrollX } } }], {
-            useNativeDriver: false
-          })}
-          scrollEventThrottle={32}
-          onViewableItemsChanged={viewableItemsChanged}
-          viewabilityConfig={viewConfig}
-          ref={SlidesRef}
-        />
-      </View>
+      <FlatList
+        data={dummyData}
+        renderItem={({ item }) => <OnboardingItem item={item} />}
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        pagingEnabled
+        bounces={false}
+        keyExtractor={(item) => item.id.toString()}
+        onScroll={Animated.event([{ nativeEvent: { contentOffset: { x: scrollX } } }], {
+          useNativeDriver: false
+        })}
+        scrollEventThrottle={32}
+        onViewableItemsChanged={viewableItemsChanged}
+        viewabilityConfig={viewConfig}
+        ref={SlidesRef}
+      />
       <Paginator data={dummyData} scrollX={scrollX} />
       <NextButtonOnboarding scrollTo={scrollTo} percentage={(currentIndex + 1) * (100 / dummyData.length)} />
       <View style={styles.buttonContainer}>
@@ -99,19 +98,20 @@ function Onboarding({ navigation }) {
           </TouchableOpacity>
         )}
         {!showGetStarted && (
-          <TouchableOpacity onPress={scrollTo} style={styles.NextButton} activeOpacity={0.6}>
-            <Icon name="arrow-circle-right" size={60}  />
+          <TouchableOpacity onPress={scrollTo} style={styles.nextButton} activeOpacity={0.6}>
+            <Icon name="arrow-circle-right" size={50} color="#333" />
           </TouchableOpacity>
         )}
         {showGetStarted && (
-          <TouchableOpacity onPress={navigateToUserAccount} style={styles.button} activeOpacity={0.6}>
+          <TouchableOpacity onPress={navigateToUserAccount} style={styles.getStartedButton} activeOpacity={0.6}>
             <Text style={styles.getStartedText}>Get Started</Text>
           </TouchableOpacity>
         )}
       </View>
     </View>
-  )
+  );
 }
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -119,32 +119,35 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: 'white',
   },
-  
   buttonContainer: {
     position: 'absolute',
-    bottom: 20,
+    bottom: 30,
     flexDirection: 'row',
-    alignItems: 'center'
-  },
-  button: {
-    borderRadius: 100,
-    padding: 20,
-    marginHorizontal: 10,
-  },
-  NextButton : {
-    marginLeft : 190,
-  },
-  getStartedText: {
-    fontSize: 30,
-    color: 'black',
+    alignItems: 'center',
   },
   skipButton: {
-    marginLeft: -10,
-    padding: 20,
+    marginHorizontal: 10,
+    padding: 10,
   },
   skipText: {
-    fontSize: 30,
-    color: 'black'
+    fontSize: 25,
+    color: '#333',
+    
   },
-})
+  nextButton: {
+    marginLeft: 'auto',
+    marginRight: 20,
+    padding: 15,
+  },
+  getStartedButton: {
+    padding: 15,
+    backgroundColor: '#dba617',
+    borderRadius: 30,
+  },
+  getStartedText: {
+    fontSize: 18,
+    color: 'white',
+  },
+});
+
 export default Onboarding;

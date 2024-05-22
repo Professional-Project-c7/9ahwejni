@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, Image, StyleSheet, TouchableOpacity, ScrollView, Modal, Button } from 'react-native';
+import { View, Text, Image, StyleSheet, TouchableOpacity, ScrollView, Modal } from 'react-native';
 import axios from 'axios';
 import { ipAdress } from '../config';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -69,11 +69,6 @@ const ProductDetailsPage = ({ navigation }) => {
         retrieveData();
     }, []);
 
-    const handleAddToHome = () => {
-        navigation.navigate('Tabs');
-        AsyncStorage.removeItem('selectedProductId');
-    };
-
     const goToHomePage = () => {
         AsyncStorage.removeItem('selectedProductId');
         navigation.navigate('homePage');
@@ -105,6 +100,9 @@ const ProductDetailsPage = ({ navigation }) => {
 
     return (
         <ScrollView style={styles.container}>
+            <TouchableOpacity onPress={goToHomePage} style={styles.backButton}>
+                <Icon name="arrow-left" size={30} color="#dba617" />
+            </TouchableOpacity>
             {products.map((product, index) => (
                 <View key={index} style={styles.productContainer}>
                     <Image source={{ uri: product.imgUrl }} style={styles.productImage} />
@@ -127,34 +125,6 @@ const ProductDetailsPage = ({ navigation }) => {
                                     </TouchableOpacity>
                                 </View>
                             </View>
-                            {/* <View style={styles.optionContainer}>
-                                <View style={styles.optionButtonsContainer}>
-                                    <Text style={styles.optionTitle}>Sugar:</Text>
-                                    <TouchableOpacity style={[styles.optionButton, selectedSugar === 'Normal' && styles.selectedOption]} onPress={() => handleSugarSelection('Normal')}>
-                                        <Text style={styles.optionButtonText}>Normal</Text>
-                                    </TouchableOpacity>
-                                    <TouchableOpacity style={[styles.optionButton, selectedSugar === 'Less' && styles.selectedOption]} onPress={() => handleSugarSelection('Less')}>
-                                        <Text style={styles.optionButtonText}>Less</Text>
-                                    </TouchableOpacity>
-                                    <TouchableOpacity style={[styles.optionButton, selectedSugar === 'No' && styles.selectedOption]} onPress={() => handleSugarSelection('No')}>
-                                        <Text style={styles.optionButtonText}>No</Text>
-                                    </TouchableOpacity>
-                                </View>
-                            </View>
-                            <View style={styles.optionContainer}>
-                                <View style={styles.optionButtonsContainer}>
-                                    <Text style={styles.optionTitle}>Ice:</Text>
-                                    <TouchableOpacity style={[styles.optionButton, selectedIce === 'Normal' && styles.selectedOption]} onPress={() => handleIceSelection('Normal')}>
-                                        <Text style={styles.optionButtonText}>Normal</Text>
-                                    </TouchableOpacity>
-                                    <TouchableOpacity style={[styles.optionButton, selectedIce === 'Less' && styles.selectedOption]} onPress={() => handleIceSelection('Less')}>
-                                        <Text style={styles.optionButtonText}>Less</Text>
-                                    </TouchableOpacity>
-                                    <TouchableOpacity style={[styles.optionButton, selectedIce === 'No' && styles.selectedOption]} onPress={() => handleIceSelection('No')}>
-                                        <Text style={styles.optionButtonText}>No</Text>
-                                    </TouchableOpacity>
-                                </View>
-                            </View> */}
                             <Text style={styles.productPrice}>{product.price} TND</Text>
                             <View style={styles.priceContainer}>
                                 <TouchableOpacity onPress={handleAddToCart} style={styles.addToCartButton}>
@@ -214,9 +184,9 @@ const styles = StyleSheet.create({
         backgroundColor: '#FFFFFF',
         padding: 10,
     },
-    adad: {
-        marginTop: 50,
-        borderRadius: 25,
+    backButton: {
+        marginTop: 1,
+        marginLeft: 1,
     },
     productContainer: {
         marginBottom: 30,
