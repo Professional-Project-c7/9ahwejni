@@ -74,14 +74,9 @@ const ProductDetailsPage = ({ navigation }) => {
         AsyncStorage.removeItem('selectedProductId');
     };
 
-    const goToHomePage = () => {
-        AsyncStorage.removeItem('selectedProductId');
-        navigation.navigate('homePage');
-    };
 
     const handleSizeSelection = size => setSelectedSize(size);
-    const handleSugarSelection = sugar => setSelectedSugar(sugar);
-    const handleIceSelection = ice => setSelectedIce(ice);
+
 
     const handleAddToCart = async () => {
         try {
@@ -127,34 +122,7 @@ const ProductDetailsPage = ({ navigation }) => {
                                     </TouchableOpacity>
                                 </View>
                             </View>
-                            {/* <View style={styles.optionContainer}>
-                                <View style={styles.optionButtonsContainer}>
-                                    <Text style={styles.optionTitle}>Sugar:</Text>
-                                    <TouchableOpacity style={[styles.optionButton, selectedSugar === 'Normal' && styles.selectedOption]} onPress={() => handleSugarSelection('Normal')}>
-                                        <Text style={styles.optionButtonText}>Normal</Text>
-                                    </TouchableOpacity>
-                                    <TouchableOpacity style={[styles.optionButton, selectedSugar === 'Less' && styles.selectedOption]} onPress={() => handleSugarSelection('Less')}>
-                                        <Text style={styles.optionButtonText}>Less</Text>
-                                    </TouchableOpacity>
-                                    <TouchableOpacity style={[styles.optionButton, selectedSugar === 'No' && styles.selectedOption]} onPress={() => handleSugarSelection('No')}>
-                                        <Text style={styles.optionButtonText}>No</Text>
-                                    </TouchableOpacity>
-                                </View>
-                            </View>
-                            <View style={styles.optionContainer}>
-                                <View style={styles.optionButtonsContainer}>
-                                    <Text style={styles.optionTitle}>Ice:</Text>
-                                    <TouchableOpacity style={[styles.optionButton, selectedIce === 'Normal' && styles.selectedOption]} onPress={() => handleIceSelection('Normal')}>
-                                        <Text style={styles.optionButtonText}>Normal</Text>
-                                    </TouchableOpacity>
-                                    <TouchableOpacity style={[styles.optionButton, selectedIce === 'Less' && styles.selectedOption]} onPress={() => handleIceSelection('Less')}>
-                                        <Text style={styles.optionButtonText}>Less</Text>
-                                    </TouchableOpacity>
-                                    <TouchableOpacity style={[styles.optionButton, selectedIce === 'No' && styles.selectedOption]} onPress={() => handleIceSelection('No')}>
-                                        <Text style={styles.optionButtonText}>No</Text>
-                                    </TouchableOpacity>
-                                </View>
-                            </View> */}
+                           
                             <Text style={styles.productPrice}>{product.price} TND</Text>
                             <View style={styles.priceContainer}>
                                 <TouchableOpacity onPress={handleAddToCart} style={styles.addToCartButton}>
