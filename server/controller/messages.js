@@ -33,41 +33,30 @@ const getMessages = async (req, res) => {
     res.status(500).json({ error: 'Failed to fetch messages' });
   }
 };
-const saveAudioMessage = async (audioData) => {
-    const filePath = path.join(__dirname, 'uploads', 'voiceMessage.m4a');
-    await fs.promises.writeFile(filePath, audioData, 'base64');
-    return `/uploads/voiceMessage.m4a`; // Return relative path for easy URL construction
-  };
-  
+
 const postMessage = async (req, res) => {
-    try {
-      const { content, senderId, roomId, isAudio } = req.body;
-      const parsedSenderId = parseInt(senderId, 10);
-      const parsedRoomId = parseInt(roomId, 10);
-  
-      if (isNaN(parsedSenderId) || isNaN(parsedRoomId)) {
-        return res.status(400).json({ error: 'Invalid senderId or roomId' });
-      }
-  
-      let audioPath = '';
-      if (isAudio && content) {
-        audioPath = await saveAudioMessage(content);
-      }
-  
-      const message = await Message.create({
-        content: isAudio ? audioPath : content,
-        senderId: parsedSenderId,
-        roomId: parsedRoomId,
-        isAudio
-      });
-  
-      res.status(201).json(message);
-    } catch (error) {
-      console.error('Error sending message:', error);
-      res.status(500).json({ error: 'Failed to send message' });
+  try {
+    const { content, senderId, roomId, isAudio } = req.body;
+    const parsedSenderId = parseInt(senderId, 10);
+    const parsedRoomId = parseInt(roomId, 10);
+
+    if (isNaN(parsedSenderId) || isNaN(parsedRoomId)) {
+      return res.status(400).json({ error: 'Invalid senderId or roomId' });
     }
-  };
-  
+
+    const message = await Message.create({
+      content,
+      senderId: parsedSenderId,
+      roomId: parsedRoomId,
+      isAudio
+    });
+
+    res.status(201).json(message);
+  } catch (error) {
+    console.error('Error sending message:', error);
+    res.status(500).json({ error: 'Failed to send message' });
+  }
+};
 
 const postAudioMessage = async (req, res) => {
   try {
@@ -80,7 +69,13 @@ const postAudioMessage = async (req, res) => {
       return res.status(400).json({ error: 'Invalid senderId or roomId' });
     }
 
-    const message = await Message.create({ content: filePath, senderId: parsedSenderId, roomId: parsedRoomId, isAudio: true });
+    const message = await Message.create({
+      content: filePath,
+      senderId: parsedSenderId,
+      roomId: parsedRoomId,
+      isAudio: true
+    });
+
     res.status(201).json({ success: true, filePath });
   } catch (error) {
     console.error('Error sending audio message:', error);

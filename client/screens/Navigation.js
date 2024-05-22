@@ -49,6 +49,7 @@ import TestCloud from "../components/testcloudinary"
 import PaymentSuccessPage from "../components/paymentSucces"
 import PaymentSuccess from '../components/paymentSucces';
 import Allpack from '../components/allpack';
+import RoomsChat from '../components/RoomsChat'
 // import PackDetails from '../components/PackDetails';
 
 // import { useNavigation } from '@react-navigation/native';
@@ -258,6 +259,8 @@ function NAVSTART() {
         <Stack.Screen name="chat" component={chat} options={{ headerShown: false }}/>
         <Stack.Screen name="paymentSucces" component={PaymentSuccessPage}  />
         <Stack.Screen  name="SettingComponent" component={SettingComponent} />
+        <Stack.Screen  name="RoomsChat" component={RoomsChat} /> 
+         
         {/* <Stack.Screen name="pck" component={PackDetails} options={{ headerShown: false }} /> */}
 
       </Stack.Navigator>

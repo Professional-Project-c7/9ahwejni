@@ -5,34 +5,35 @@ import NextButtonOnboarding from './NextButtonOnboarding';
 import Paginator from './Paginator';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import FastImage from 'react-native-fast-image';
-import anicoffee from '../image/anicoffee.gif'
+import anicoffee from '../image/anicoffee.gif';
+import protection from '../image/protection.gif';
+import gps from '../image/gps.gif';
 
 const dummyData = [
   {
     "id": 1,
     "title": "Enjoy Your Coffee",
     "description": "Start your day with a smile and a great cup of coffee. Discover our wide range of coffee selections just for you.",
-    image: require("../image/ob1.png")
+    image: anicoffee
   },
   {
     "id": 2,
     "title": "Secure and Reliable",
     "description": "Your security is our priority. Enjoy a seamless and secure experience with our app.",
-    image: require("../image/ob2.png")
+    image: protection
   },
   {
     "id": 3,
     "title": "Find Your Way",
     "description": "Locate the best coffee shops around you with our easy-to-use GPS feature.",
-    image: require("../image/ob3.png")
+    image: gps
   }, 
   {
     "id": 4,
     "title": "Welcome to 9ahwejni",
     "description": "Join us and enjoy the best coffee experience with our app. Let's get started!",
-    image: require("../image/logo.png")
-  }
-]
+    image: require("../image/logo.png")  }
+];
 
 function Onboarding({ navigation }) {
 
@@ -71,7 +72,7 @@ function Onboarding({ navigation }) {
 
   return (
     <View style={styles.container}>
-      <View style={{ flex: 3 }}>
+      <View style={{ flex: 2 }}>
         <FlatList
           data={dummyData}
           renderItem={({ item }) => <OnboardingItem item={item} />}

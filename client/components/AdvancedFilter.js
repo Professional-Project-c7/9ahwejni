@@ -187,7 +187,7 @@ const AdvancedFilter = () => {
         <Button mode="contained" style={styles.button} onPress={filterProducts}>
           Apply Filter
         </Button>
-      </Card>
+        </Card>
       <Modal
         visible={resultsModalVisible}
         animationType="slide"
@@ -244,7 +244,6 @@ const styles = StyleSheet.create({
     marginVertical: 5,
     justifyContent: 'center',
     alignItems: 'center',
-    
   },
   selectedCategoryItem: {
     backgroundColor: '#dba617',
