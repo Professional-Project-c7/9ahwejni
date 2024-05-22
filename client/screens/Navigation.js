@@ -51,6 +51,7 @@ import PaymentSuccess from '../components/paymentSucces';
 import Allpack from '../components/allpack';
 import Availability from '../components/availibility';
 import RoomsChat from '../components/RoomsChat'
+import editusers from '../components/edituser'
 // import { useNavigation } from '@react-navigation/native';
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -181,6 +182,9 @@ function TabNavigator() {
         <Tab.Screen name="Edit" component={EditCoffee}  options={{
           tabBarButton: () => null, // This hides the tab from the tab bar
         }} />
+         <Tab.Screen name="editusers" component={editusers}  options={{
+          tabBarButton: () => null, // This hides the tab from the tab bar
+        }} />
          <Tab.Screen name="TransactionScreenCoffee" component={TransactionScreenCoffee}  options={{
           tabBarButton: () => null, // This hides the tab from the tab bar
         }} />
@@ -219,7 +223,7 @@ function NAVSTART() {
         <Stack.Screen name="UserSignUp" component={SignUser} options={{ headerShown: false }} />
         <Stack.Screen name="CoffeeShopSignUp" component={SignCofee} options={{ headerShown: false }} />
         <Stack.Screen name="UserAccount" component={SignACC} options={{ headerShown: false }} />
-        <Stack.Screen name="ProductList" component={ProductList} options={{ headerShown: false }} />
+        <Stack.Screen name="ProductList" component={ProductList} />
         <Stack.Screen name="AddPacks" component={AddPacks} options={{ headerShown: false }} />
         <Stack.Screen name="AddProducts" component={AddProducts} options={{ headerShown: false }} />
         <Stack.Screen name="Orders" component={Orders}options={{ headerShown: false }}  />
@@ -260,9 +264,9 @@ function NAVSTART() {
         <Stack.Screen name="paymentSucces" component={PaymentSuccessPage}  />
         <Stack.Screen  name="SettingComponent" component={SettingComponent} />
         <Stack.Screen  name="RoomsChat" component={RoomsChat} /> 
+        <Stack.Screen  name="editusers" component={editusers} /> 
          
-        {/* <Stack.Screen name="pck" component={PackDetails} options={{ headerShown: false }} /> */}
-
+        
       </Stack.Navigator>
     </NavigationContainer>
   );

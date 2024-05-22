@@ -51,6 +51,7 @@ const styles = StyleSheet.create({
   categoryText: {
     fontSize: 18,
     color: '#000',
+    fontStyle: 'italic'
   },
 });
 

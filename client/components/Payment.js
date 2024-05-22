@@ -199,7 +199,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#fff',
-    height: 40,
+    height:44,
     paddingHorizontal: 20,
     borderBottomWidth: 1,
     borderBottomColor: '#ccc',
@@ -215,7 +215,7 @@ const styles = StyleSheet.create({
     width: '100%',
     height: 250,
     alignSelf: 'center',
-    borderRadius: 25
+    borderRadius: 35
   },
   paymentOptions: {
     flexDirection: 'row',
@@ -225,7 +225,7 @@ const styles = StyleSheet.create({
   creditCardDetails: {
     backgroundColor: '#fff',
     borderRadius: 30,
-    padding: 20,
+    padding: 25,
     shadowColor: '#000',
     shadowOffset: {
       width: 0,
@@ -241,6 +241,8 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#333',
     marginBottom: 20,
+    fontStyle: 'italic',
+
   },
   input: {
     borderWidth: 1,
@@ -249,6 +251,8 @@ const styles = StyleSheet.create({
     padding: 10,
     marginBottom: 15,
     fontSize: 16,
+    fontStyle: 'italic',
+
   },
   inputContainer: {
     flexDirection: 'row',
@@ -269,6 +273,8 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontSize: 18,
     fontWeight: 'bold',
+    fontStyle: 'italic',
+
   },
 });
 
