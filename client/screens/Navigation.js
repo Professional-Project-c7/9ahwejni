@@ -49,6 +49,8 @@ import TestCloud from "../components/testcloudinary";
 import PaymentSuccessPage from "../components/paymentSucces";
 import PaymentSuccess from '../components/paymentSucces';
 import Allpack from '../components/allpack';
+import { ipAdress } from '../config'; // Make sure you have the correct IP address
+import axios from 'axios';
 import RoomsChat from '../components/RoomsChat'
 import editusers from '../components/edituser'
 // import PackDetails from '../components/PackDetails';
@@ -277,7 +279,7 @@ console.log('--------------------------------', Name);
         <Stack.Screen name="AllCakes" component={AllCakes} options={{ headerShown: false }} />
         <Stack.Screen name="AllCoffees" component={AllCoffees} options={{ headerShown: false }} />
         <Stack.Screen name="AllDrinks" component={AllDrinks} options={{ headerShown: false }} />
-        <Stack.Screen name="chat" component={chat} options={{ headerShown: false }}/>
+        <Stack.Screen name="chat" component={chat} />
         <Stack.Screen name="paymentSucces" component={PaymentSuccessPage}  />
         <Stack.Screen  name="SettingComponent" component={SettingComponent} />
         <Stack.Screen  name="RoomsChat" component={RoomsChat} /> 
