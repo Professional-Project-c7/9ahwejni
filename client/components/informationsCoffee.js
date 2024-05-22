@@ -16,7 +16,7 @@ const ProfileScreen = ({ navigation }) => {
   const [userData, setUserData] = useState(null);
 const [userID,setuserID] = useState(null)
 
-
+console.log(userData);
 const retrieveData = async () => {
   try {
     const value = await AsyncStorage.getItem('IdUser');
