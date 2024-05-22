@@ -21,6 +21,7 @@ import { ipAdress } from '../config';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import { launchImageLibrary } from 'react-native-image-picker';
+import { ActivityIndicator, MD2Colors } from 'react-native-paper';
 
 const ProductCard = ({ product }) => {
   return (
@@ -64,7 +65,8 @@ const ProductList = ({ navigation }) => {
   const [options, setOptions] = useState([]);
   const [category, setCategory] = useState('');
   const [isModalVisible, setIsModalVisible] = useState(false);
-
+  const [refresh, setrefresh] = useState(false);
+  const [isloading,setisloading]=useState(false)
 
   const handleSizeSelection = (size, price, setSelected) => {
     setSelected(prevSelected => {
@@ -114,6 +116,7 @@ const ProductList = ({ navigation }) => {
   };
 
   const pickImage = () => {
+    setisloading(true)
     launchImageLibrary({}, async response => {
       if (response.didCancel) {
         console.log('User cancelled image picker');
@@ -123,7 +126,9 @@ const ProductList = ({ navigation }) => {
         try {
           const imageUri = await imageHandler(response);
           console.log('Image URI:', imageUri);
+          setisloading(false)
           setimgUrl(imageUri);
+          
         } catch (error) {
           console.error('Error uploading image:', error);
           Alert.alert('Upload Failed', 'Failed to upload image. Please try again.');
@@ -159,11 +164,11 @@ const ProductList = ({ navigation }) => {
         console.error('Error fetching user data:', error.message);
       }
     };
-
+    // setrefresh(!refresh)
     if (userID) {
       getUserData(userID);
     }
-  }, [userID]);
+  }, [userID,refresh]);
 
   const handleAddProduct = async () => {
     try {
@@ -245,8 +250,13 @@ const ProductList = ({ navigation }) => {
         onRequestClose={toggleModal}
       >
         <ScrollView>
+          
         <View style={styles.centeredView}>
+          
           <View style={styles.modalView}>
+          <TouchableOpacity style={styles.cameraIconContainer} onPress={pickImage}>
+<FontAwesome name="camera" color={'#dba617'} size={30} />
+</TouchableOpacity>
             <View style={styles.modalHeader}>
               {/* <Text style={styles.modalTitle}>Add Product</Text> */}
               <Pressable onPress={toggleModal}>
@@ -254,9 +264,14 @@ const ProductList = ({ navigation }) => {
               </Pressable>
             </View>
             <View style={styles.modalContent}>
-              <View style={styles.imageContainer}>
-    <Image source={{ uri: imgUrl }} style={styles.image} />
-  </View>
+  {       !isloading ?    (<View style={styles.imageContainer}>
+    <Image  source={{ uri: imgUrl }} style={styles.image} />
+  </View>):
+(  <View>
+<ActivityIndicator animating={true} color={MD2Colors.red800} />
+
+  </View>)
+  }
               <View style={styles.action}>
                 <FontAwesome name="user-o" color={'#dba617'} size={20} />
                 <TextInput
@@ -365,7 +380,7 @@ const ProductList = ({ navigation }) => {
                   </View>
                 </View>
               </View>
-              <View style={styles.action}>
+              <View style={styles.action2}>
                 <Text style={styles.optionTitle}>Category</Text>
                 <View style={styles.optionButtonsContainer}>
                   <TouchableOpacity
@@ -411,9 +426,7 @@ const ProductList = ({ navigation }) => {
                     onChangeText={setimgUrl}
                     editable={false}
                   /> */}
-                     <TouchableOpacity style={styles.cameraIconContainer} onPress={pickImage}>
-  <FontAwesome name="camera" color={'#dba617'} size={30} />
-</TouchableOpacity>
+                   
                 </TouchableOpacity>
                 
               </View>
@@ -449,12 +462,11 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     marginTop: 0, // remove the marginTop property
-    
   },
   modalView: {
     margin: 20,
     backgroundColor: 'white',
-    borderRadius: 20,
+    borderRadius: 10,
     padding: 35,
     alignItems: 'center',
     shadowColor: '#000',
@@ -475,12 +487,12 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   modalTitle: {
-    fontSize: 20,
+    fontSize: 24,
     fontWeight: 'bold',
     textAlign: 'center',
   },
   modalContent: {
-    width: '70%',
+    width: '100%',
     margin: 10,
     alignItems: 'center',
     maxHeight: '70%', // Limit the height of the modal content to 70% of the screen height
@@ -519,7 +531,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#ccc',
     borderRadius: 15,
-    marginLeft: 36,
+    marginLeft: 35,
     width: 60,
   },
 
@@ -531,13 +543,13 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#ccc',
     borderRadius: 15,
-    marginLeft: 55,
+    marginLeft: 35,
     width: 60,
   },
   cameraIconContainer: {
     position: 'absolute',
-    top: '50%',
-    left: '50%',
+    top: '30%',
+    left: '100%',
     transform: [{ translateX: -20 }, { translateY: -20 }],
     // backgroundColor: '#000',
     padding: 10,
@@ -563,13 +575,14 @@ const styles = StyleSheet.create({
     borderRadius: 15,
     paddingHorizontal: 5,
     paddingVertical: 8,
-    marginHorizontal: 10, // add this line to add some space between the buttons
+    marginHorizontal: 6, 
     borderWidth: 1,
     borderColor: '#FFBB70',
     overflow: 'hidden',
+    width:68
   },
   optionButtonText: {
-    fontSize: 17,
+    fontSize: 15,
     color: '#666',
   },
   selectedOption: {
@@ -641,30 +654,30 @@ borderRadius: 20,
     padding: 10,
   },
   name: {
-    fontSize: 18,
+    fontSize: 20,
     fontWeight: 'bold',
     color: '#dba617',
     marginBottom: 5,
-    display:"flex",
-    flexDirection: 'row',
-    alignItems: 'center',
+    textAlign: 'center',  // Center the text
   },
   description: {
-    fontSize: 14,
+    fontSize: 18,
     color: '#888',
     marginBottom: 5,
+    textAlign: 'center',  // Center the text
   },
+
 
   container: {
     backgroundColor: 'white',
     paddingHorizontal: 10,
     paddingVertical: 10,
   },
-  optionContainer: {
-    flexDirection: 'flex',
-    alignItems: 'center',
-    marginTop: 5,
-  },
+  // optionContainer: {
+  //   flexDirection: 'flex',
+  //   alignItems: 'center',
+  //   marginTop: 5,
+  // },
   option: {
     paddingHorizontal: 10,
     paddingVertical: 5,
@@ -747,7 +760,7 @@ borderRadius: 20,
   action2: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginTop: 10,
+    marginTop: 15,
     // borderBottomWidth: 1,
     borderBottomColor: '#ccc',
     paddingBottom: 5,

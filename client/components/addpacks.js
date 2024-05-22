@@ -71,12 +71,13 @@ const AddPacks = ({navigation}) => {
   const [selectedPack, setSelectedPack] = useState(null);
   const [isProductModalVisible, setIsProductModalVisible] = useState(false);
   const [imgUrl, setimgUrl] = useState('');
-console.log(array);
+  console.log(array);
+
   const handleShowProducts = (pack) => {
     setSelectedPack(pack);
     setIsProductModalVisible(true);
   };
-
+  console.log(userID);
   const imageHandler = async (image) => {
     try {
       const data = new FormData();
@@ -93,6 +94,7 @@ console.log(array);
         body: data
       });
       const result = await response.json();
+      console.log('Cloudinary response:', result);
       return result.secure_url;
     } catch (error) {
       console.error('Error uploading image:', error);
@@ -130,6 +132,7 @@ console.log(array);
       if (value !== null) {
         const tokenObject = JSON.parse(value);
         const userId = tokenObject; 
+        console.log("taww",userId);
         setUserID(userId);
       }
     } catch (error) {
@@ -197,7 +200,7 @@ console.log(array);
       setpackSize('');
       setpackPrice('');
       setimgUrl('')
-      // setarray([])
+      
     } catch (error) {
       console.error('Error adding pack:', error);
     }
@@ -316,7 +319,7 @@ const firstTwoImages = filteredProducts.slice(0, 2)
             <TextInput
               placeholder="Description"
               placeholderTextColor="#666666"
-              keyboardType="number-pad"
+              
               autoCorrect={false}
               style={[
                 styles.textInput,
@@ -328,27 +331,12 @@ const firstTwoImages = filteredProducts.slice(0, 2)
               onChangeText={setpackDescription}
             />
           </View>
-          {/* <View style={styles.action}>
-            <FontAwesome name="expand" color={'#dba617'} size={20} />
-            <TextInput
-              placeholder="Size"
-              placeholderTextColor="#666666"
-              keyboardType="email-address"
-              autoCorrect={false}
-              style={[
-                styles.textInput,
-                {
-                  color: colors.text,
-                },
-              ]}
-              value={packSize}
-              onChangeText={setpackSize}
-            />
-          </View> */}
+          
           <View style={styles.action}>
             <FontAwesome name="dollar" color={'#dba617'} size={20} />
             <TextInput
               placeholder="Price"
+              keyboardType="number-pad"
               placeholderTextColor="#666666"
               autoCorrect={false}
               style={[
@@ -367,9 +355,7 @@ const firstTwoImages = filteredProducts.slice(0, 2)
           <TouchableOpacity style={styles.commandButton} onPress={handleAddpack}>
             <Text style={styles.panelButtonTitle}>Submit</Text>
           </TouchableOpacity>
-          {/* <TouchableOpacity style={styles.commandButton}  onPress={() => navigation.navigate('TestCloud')}>
-            <Text style={styles.panelButtonTitle}>Submit</Text>
-          </TouchableOpacity> */}
+          
          
           
         </View>
