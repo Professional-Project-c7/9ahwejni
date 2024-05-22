@@ -23,10 +23,10 @@ const NumberInput = ({ value, onIncrement, onDecrement }) => {
 const CoffeeProductList = ({navigation}) => {
   const [userData, setUserData] = useState(null);
   const [userID, setUserID] = useState(null);
-  const [checkedItems, setCheckedItems] = useState({}); // Store checked state for each product
-  const [productQuantities, setProductQuantities] = useState({}); // Store selected quantities for each product
-  const [checkedProductIDs, setCheckedProductIDs] = useState([]); // Array to store checked product IDs
-
+  const [checkedItems, setCheckedItems] = useState({});
+  const [productQuantities, setProductQuantities] = useState({}); 
+  const [checkedProductIDs, setCheckedProductIDs] = useState([]); 
+console.log("checkedProductIDs" ,checkedProductIDs);
   useEffect(() => {
     const retrieveData = async () => {
       try {

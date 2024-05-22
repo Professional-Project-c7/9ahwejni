@@ -50,6 +50,8 @@ import PaymentSuccessPage from "../components/paymentSucces"
 import PaymentSuccess from '../components/paymentSucces';
 import Allpack from '../components/allpack';
 import RoomsChat from '../components/RoomsChat'
+// import PackDetails from '../components/PackDetails';
+
 // import { useNavigation } from '@react-navigation/native';
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -259,6 +261,8 @@ function NAVSTART() {
         <Stack.Screen  name="SettingComponent" component={SettingComponent} />
         <Stack.Screen  name="RoomsChat" component={RoomsChat} /> 
          
+        {/* <Stack.Screen name="pck" component={PackDetails} options={{ headerShown: false }} /> */}
+
       </Stack.Navigator>
     </NavigationContainer>
   );

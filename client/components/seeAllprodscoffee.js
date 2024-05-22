@@ -8,44 +8,7 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Feather from 'react-native-vector-icons/Feather';
 
-// const data = [
-//   {
-//     id: '1',
-//     name: 'Product 1',
-//     description: 'Description for Product 1',
-//     imagelink_square: require("../image/breakfast.webp"),
-//     prices: [
-//       { size: 'S', price: '10', currency: '$' },
-//       { size: 'M', price: '15', currency: '$' },
-//       { size: 'L', price: '20', currency: '$' },
-//     ],
-//     average_rating: 4,
-//   },
-//   {
-//     id: '2',
-//     name: 'Product 2',
-//     description: 'Description for Product 2',
-//     imagelink_square: require("../image/breakfast.webp"),
-//     prices: [
-//       { size: 'S', price: '12', currency: '$' },
-//       { size: 'M', price: '18', currency: '$' },
-//       { size: 'L', price: '24', currency: '$' },
-//     ],
-//     average_rating: 3,
-//   },
-//   {
-//     id: '3',
-//     name: 'Product 3',
-//     description: 'Description for Product 3',
-//     imagelink_square: require("../image/breakfast.webp"),
-//     prices: [
-//       { size: 'S', price: '8', currency: '$' },
-//       { size: 'M', price: '12', currency: '$' },
-//       { size: 'L', price: '16', currency: '$' },
-//     ],
-//     average_rating: 5,
-//   },
-// ];
+
 
 const ProductCard = ({ product }) => {
   return (
@@ -54,9 +17,16 @@ const ProductCard = ({ product }) => {
       <View style={styles.details}>
         <Text style={styles.name}>{product.name}</Text>
         <Text style={styles.description}>{product.description}</Text>
+        <Text style={styles.description}>{product.category}</Text>
+
         {/* <Text style={styles.price}>{product.price} $</Text> */}
         {(product.options || []).map((option, index) => (
-          <Text key={index} style={styles.price}>{option.option}: {option.price} $</Text>
+            <View key={index}>
+            <View style={styles.optionWrapper}>
+              <Text style={styles.option}>{option.option}</Text>
+              <Text style={styles.price}>{option.price} $</Text>
+            </View>
+          </View>
         ))}
         <View style={styles.bottomRow}>
           {/* <Text style={styles.size}>Size: {product.prices[0].size}</Text> */}
@@ -167,7 +137,25 @@ const filteredProducts = userData ? userData.filter(product => product.userId ==
 };
 
 const styles = StyleSheet.create({
-  
+  option: {
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    marginRight: 5,
+    borderRadius: 5,
+    color: 'white',
+    fontSize: 18,
+  },
+  optionWrapper: {
+    backgroundColor: '#dba617',
+    borderRadius: 20,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    padding: 4,
+    marginBottom: 5,
+    overflow: 'hidden',
+    elevation: 10,
+  },
   top: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -197,10 +185,10 @@ const styles = StyleSheet.create({
   card: {
     flex: 1,
     margin: 10,
-    borderRadius: 10,
+    borderRadius: 30,
     backgroundColor: '#EFECEC',
     overflow: 'hidden',
-    elevation: 4, // Add shadow
+    elevation: 15,
   },
   image: {
     width: '100%',
@@ -213,20 +201,27 @@ const styles = StyleSheet.create({
     padding: 10,
   },
   name: {
-    fontSize: 18,
+    fontSize: 20,
     fontWeight: 'bold',
     color: '#dba617',
     marginBottom: 5,
+    textAlign: 'center',  // Center the text
   },
   description: {
-    fontSize: 14,
+    fontSize: 18,
     color: '#888',
     marginBottom: 5,
+    textAlign: 'center',  // Center the text
   },
   price: {
-    fontSize: 16,
-    color: '#f85c24',
+    fontSize: 15,
+    color: 'black',
     marginBottom: 5,
+    backgroundColor: 'white',
+    padding: 4,
+borderRadius: 20,
+    marginTop: 5,
+    marginRight: 5,
   },
   container: {
     backgroundColor: 'white',

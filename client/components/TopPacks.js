@@ -14,6 +14,9 @@ const TopPacks = ({ navigation }) => {
       try {
         const packsResponse = await axios.get(`http://${ipAdress}:3000/api/packs`);
         const reviewsResponse = await axios.get(`http://${ipAdress}:3000/api/packreview`);
+        
+        console.log("Packs response:", packsResponse.data);
+        console.log("Reviews response:", reviewsResponse.data);
 
         const packsWithReviews = packsResponse.data.map(pack => {
           const packReviews = reviewsResponse.data.filter(review => review.PackId === pack.id);
@@ -26,11 +29,12 @@ const TopPacks = ({ navigation }) => {
           };
         });
 
-        const shuffledPacks = packsWithReviews.sort(() => 0.5 - Math.random());
-        const selectedPacks = shuffledPacks.slice(0, 5);
-        setPacks(selectedPacks);
+        const topRatedPacks = packsWithReviews.sort((a, b) => b.averageRating - a.averageRating).slice(0, 6);
+        setPacks(topRatedPacks);
+        console.log("Top rated packs:", topRatedPacks);
       } catch (err) {
         setError(err.message);
+        console.error("Error fetching packs or reviews:", err);
       }
     };
 
@@ -64,8 +68,8 @@ const TopPacks = ({ navigation }) => {
             <Image source={{ uri: item.imgUrl }} style={styles.image} />
             <View style={styles.info}>
               <Text style={styles.name}>{item.name}</Text>
-              <Text style={styles.price}>${item.price}</Text>
               <Text style={styles.reviews}>{`${item.totalReviews} 👤 ⭐: ${item.averageRating}`}</Text>
+              <Text style={styles.price}>${item.price}</Text>
             </View>
           </TouchableOpacity>
         )}
@@ -98,7 +102,7 @@ const styles = StyleSheet.create({
     shadowRadius: 8,
     elevation: 5,
     marginHorizontal: 10,
-    marginVertical: 10,
+    marginVertical: 5,
     width: 220,
     overflow: 'hidden',
   },
@@ -107,7 +111,7 @@ const styles = StyleSheet.create({
     height: 140,
   },
   info: {
-    padding: 15,
+    padding: 10,
     backgroundColor: '#fff',
   },
   name: {
@@ -124,7 +128,7 @@ const styles = StyleSheet.create({
   reviews: {
     fontSize: 14,
     color: '#999',
-    marginTop: 5,
+    marginBottom: 5,
   },
   errorText: {
     color: 'red',
