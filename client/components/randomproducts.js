@@ -21,11 +21,14 @@ const RandomProducts = () => {
   const [products, setProducts] = useState([]);
   const [favorites, setFavorites] = useState({});
   const [error, setError] = useState(null);
-
+  const [type, setType] = useState('');
+console.log('type',type);
   const fetchProducts = async () => {
     try {
       const productsResponse = await axios.get(`http://${ipAdress}:3000/api/product`);
       const reviewsResponse = await axios.get(`http://${ipAdress}:3000/api/review`);
+      const storedPrice = await AsyncStorage.getItem('userToken');
+      setType(storedPrice);
 
       const productsWithReviews = productsResponse.data.map(product => {
         const productReviews = reviewsResponse.data.filter(review => review.prodId === product.id);
@@ -38,9 +41,7 @@ const RandomProducts = () => {
         };
       });
 
-      // Sorting products by averageRating in descending order and taking top 6
       const topRatedProducts = productsWithReviews.sort((a, b) => b.averageRating - a.averageRating).slice(0, 10);
-
       setProducts(topRatedProducts);
     } catch (err) {
       setError(err.message);
@@ -48,30 +49,6 @@ const RandomProducts = () => {
   };
 
   useEffect(() => {
-    const fetchProducts = async () => {
-      try {
-        const productsResponse = await axios.get(`http://${ipAdress}:3000/api/product`);
-        const reviewsResponse = await axios.get(`http://${ipAdress}:3000/api/review`);
-
-        const productsWithReviews = productsResponse.data.map(product => {
-          const productReviews = reviewsResponse.data.filter(review => review.prodId === product.id);
-          const totalReviews = productReviews.length;
-          const averageRating = totalReviews ? productReviews.reduce((acc, review) => acc + review.stars, 0) / totalReviews : 0;
-          return {
-            ...product,
-            totalReviews,
-            averageRating: averageRating.toFixed(1),
-          };
-        });
-
-        // Sorting products by averageRating in descending order and taking top 6
-        const topRatedProducts = productsWithReviews.sort((a, b) => b.averageRating - a.averageRating).slice(0, 6);
-
-        setProducts(topRatedProducts);
-      } catch (err) {
-        setError(err.message);
-      }
-    };
     fetchProducts();
 
     const intervalId = setInterval(() => {
@@ -83,32 +60,24 @@ const RandomProducts = () => {
 
   const handleAddToFavorites = async (product) => {
     try {
-      // Validate product
       if (!product || !product.id) {
         throw new Error('Invalid product data');
       }
-  
-      // Get existing favorites or initialize an empty array
+
       const existingFavorites = await AsyncStorage.getItem('favv');
       let favoritesArray = existingFavorites ? JSON.parse(existingFavorites) : [];
-  
-      // Check for duplicate
+
       const isDuplicate = favoritesArray.some((fav) => fav.id === product.id);
       if (isDuplicate) {
         throw new Error('Product already exists in favorites');
       }
-  
-      // Add the product to favorites (immutable update)
+
       favoritesArray = [...favoritesArray, product];
-  
-      // Save the updated favorites back to AsyncStorage
       await AsyncStorage.setItem('favv', JSON.stringify(favoritesArray));
-  
-      // Display toast message
+
       ToastAndroid.showWithGravity('Item added to favorites', ToastAndroid.TOP, ToastAndroid.TOP);
     } catch (error) {
       console.error('Error storing favorite:', error.message);
-      // Optionally, show a toast message for the error
       ToastAndroid.showWithGravity('Failed to add item to favorites', ToastAndroid.TOP, ToastAndroid.TOP);
     }
   };
@@ -116,7 +85,6 @@ const RandomProducts = () => {
   const handleNavigateToDetails = async (product) => {
     try {
       await AsyncStorage.setItem('selectedProductId', product.id.toString());
-      console.log(product.id.toString());
       navigation.navigate('prd', { product });
     } catch (error) {
       console.log('Error storing selected product ID:', error);
@@ -139,7 +107,7 @@ const RandomProducts = () => {
         }));
         favoritesArray.push(product);
         await AsyncStorage.setItem('favorites', JSON.stringify(favoritesArray));
-  
+
         ToastAndroid.showWithGravity('Item added to cart', ToastAndroid.TOP, ToastAndroid.TOP);
       }
     } catch (error) {
@@ -159,22 +127,26 @@ const RandomProducts = () => {
                 <TouchableOpacity onPress={() => handleNavigateToDetails(product)}>
                   <Image source={{ uri: product.imgUrl }} style={styles.image} />
                 </TouchableOpacity>
-                <Icon
-                  name={'heart-outline'}
-                  size={27}
-                  style={styles.favIcon}
-                  onPress={() => handleAddToFavorites(product)} // Pass the product to handleAddToFavorites
-                />
+                {type === '"client"' && (
+                  <Icon
+                    name={'heart-outline'}
+                    size={27}
+                    style={styles.favIcon}
+                    onPress={() => handleAddToFavorites(product)}
+                  />
+                )}
                 <View style={styles.infoContainer}>
                   <Text style={styles.reviews}>{`${product.totalReviews} 👤 ⭐: ${product.averageRating}`}</Text>
                   <Text style={styles.name}>{product.name}</Text>
                   <Text style={styles.price}>${product.price}</Text>
-                  <Icon
-                    name={favorites[product.id]?.inCart ? 'cart' : 'cart'}
-                    size={24}
-                    onPress={() => toggleFeature(product.id, 'inCart')}
-                    style={styles.cartIcon}
-                  />
+                  {type === '"client"' && (
+                    <Icon
+                      name={favorites[product.id]?.inCart ? 'cart' : 'cart-outline'}
+                      size={24}
+                      onPress={() => toggleFeature(product.id, 'inCart')}
+                      style={styles.cartIcon}
+                    />
+                  )}
                 </View>
               </View>
             ))}
@@ -232,11 +204,6 @@ const styles = StyleSheet.create({
     textAlign: 'left',
     bottom: 5,
     right: 5,
-  },
-  description: {
-    fontSize: 14,
-    color: '#666',
-    marginBottom: 5,
   },
   price: {
     fontSize: 16,
