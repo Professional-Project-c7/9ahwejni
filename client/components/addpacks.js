@@ -570,9 +570,12 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 10, // Add border radius to top-left and top-right corners
     borderTopRightRadius: 10,
   },
-  details: {
-    padding: 10,
-  },
+  
+    details: {
+      alignItems: 'center',
+      padding: 10,
+    },
+  
   name: {
     fontSize: 18,
     fontWeight: 'bold',

@@ -49,6 +49,7 @@ import TestCloud from "../components/testcloudinary"
 import PaymentSuccessPage from "../components/paymentSucces"
 import PaymentSuccess from '../components/paymentSucces';
 import Allpack from '../components/allpack';
+import Availability from '../components/availibility';
 // import { useNavigation } from '@react-navigation/native';
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -256,6 +257,8 @@ function NAVSTART() {
         <Stack.Screen name="chat" component={chat} options={{ headerShown: false }}/>
         <Stack.Screen name="paymentSucces" component={PaymentSuccessPage}  />
         <Stack.Screen  name="SettingComponent" component={SettingComponent} />
+        <Stack.Screen  name="Availability" component={Availability} />
+
       </Stack.Navigator>
     </NavigationContainer>
   );
