@@ -42,7 +42,7 @@ const RandomProducts = () => {
         });
 
         // Sorting products by averageRating in descending order and taking top 6
-        const topRatedProducts = productsWithReviews.sort((a, b) => b.averageRating - a.averageRating).slice(0, 10);
+        const topRatedProducts = productsWithReviews.sort((a, b) => b.averageRating - a.averageRating).slice(0, 6);
 
         setProducts(topRatedProducts);
       } catch (err) {
@@ -111,7 +111,6 @@ const RandomProducts = () => {
         favoritesArray.push(product);
         await AsyncStorage.setItem('favorites', JSON.stringify(favoritesArray));
   
-        // Displaying a toast message at the top
         ToastAndroid.showWithGravity('Item added to cart', ToastAndroid.TOP, ToastAndroid.TOP);
       }
     } catch (error) {

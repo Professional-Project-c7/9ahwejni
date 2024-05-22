@@ -26,9 +26,8 @@ const TopPacks = ({ navigation }) => {
           };
         });
 
-        const shuffledPacks = packsWithReviews.sort(() => 0.5 - Math.random());
-        const selectedPacks = shuffledPacks.slice(0, 5);
-        setPacks(selectedPacks);
+        const topRatedPacks = packsWithReviews.sort((a, b) => b.averageRating - a.averageRating).slice(0, 6);
+        setPacks(topRatedPacks);
       } catch (err) {
         setError(err.message);
       }
@@ -98,9 +97,10 @@ const styles = StyleSheet.create({
     shadowRadius: 8,
     elevation: 5,
     marginHorizontal: 10,
-    marginVertical: 10,
+    marginVertical: 5,
     width: 220,
     overflow: 'hidden',
+    
   },
   image: {
     width: '100%',
