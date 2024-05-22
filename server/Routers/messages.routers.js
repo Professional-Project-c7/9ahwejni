@@ -1,10 +1,11 @@
 const express = require('express');
+const { getMessages, postMessage, postAudioMessage, deleteMessage, upload } = require('../controller/messages');
+
 const router = express.Router();
-const { getMessages, postMessage, deleteMessage, postAudioMessage, upload } = require('../controller/messages');
 
 router.get('/:room', getMessages);
 router.post('/', postMessage);
-router.post('/audio', upload.single('file'), postAudioMessage);
+router.post('/audio', upload.single('audio'), postAudioMessage);
 router.delete('/:id', deleteMessage);
 
 module.exports = router;
