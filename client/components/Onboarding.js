@@ -4,6 +4,8 @@ import OnboardingItem from './OnboardingItem';
 import NextButtonOnboarding from './NextButtonOnboarding';
 import Paginator from './Paginator';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import FastImage from 'react-native-fast-image';
+import anicoffee from '../image/anicoffee.gif'
 
 const dummyData = [
   {
