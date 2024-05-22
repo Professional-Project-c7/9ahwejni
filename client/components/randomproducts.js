@@ -48,6 +48,30 @@ const RandomProducts = () => {
   };
 
   useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const productsResponse = await axios.get(`http://${ipAdress}:3000/api/product`);
+        const reviewsResponse = await axios.get(`http://${ipAdress}:3000/api/review`);
+
+        const productsWithReviews = productsResponse.data.map(product => {
+          const productReviews = reviewsResponse.data.filter(review => review.prodId === product.id);
+          const totalReviews = productReviews.length;
+          const averageRating = totalReviews ? productReviews.reduce((acc, review) => acc + review.stars, 0) / totalReviews : 0;
+          return {
+            ...product,
+            totalReviews,
+            averageRating: averageRating.toFixed(1),
+          };
+        });
+
+        // Sorting products by averageRating in descending order and taking top 6
+        const topRatedProducts = productsWithReviews.sort((a, b) => b.averageRating - a.averageRating).slice(0, 6);
+
+        setProducts(topRatedProducts);
+      } catch (err) {
+        setError(err.message);
+      }
+    };
     fetchProducts();
 
     const intervalId = setInterval(() => {
@@ -115,8 +139,7 @@ const RandomProducts = () => {
         }));
         favoritesArray.push(product);
         await AsyncStorage.setItem('favorites', JSON.stringify(favoritesArray));
-
-        // Displaying a toast message at the top
+  
         ToastAndroid.showWithGravity('Item added to cart', ToastAndroid.TOP, ToastAndroid.TOP);
       }
     } catch (error) {
