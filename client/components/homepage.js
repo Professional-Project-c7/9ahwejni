@@ -76,7 +76,7 @@ const HomePage = ({ navigation }) => {
       >
         <View style={styles.top}>
           <IconButton icon="bell" iconColor="#FFF" onPress={toggleNotification} />
-          {type && <IconButton icon="chat" iconColor='#FFF' onPress={() => navigation.navigate('chat' ,{ roomId : 1,  RoomName : "general" })} />}
+          {type && <IconButton icon="chat" iconColor='#FFF' onPress={() => navigation.navigate('RoomsChat' ,{ roomId : 1,  RoomName : "general" })} />}
         </View>
       </LinearGradient>
       <View style={styles.searchContainer}>

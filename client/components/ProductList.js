@@ -19,7 +19,7 @@ import { ipAdress } from '../config';
 import AddReviewz from './AddReviewz';
 import LinearGradient from 'react-native-linear-gradient';
 import Toast from 'react-native-toast-message';
-
+import chatcoffee from '../image/chatcoffee.png';
 const ProductList = ({ navigation, route }) => {
   const { coffeeShopId } = route.params;
   const { products, getProducts, status, error } = useProducts();
@@ -135,7 +135,7 @@ const ProductList = ({ navigation, route }) => {
 
   const handleCreateOrJoinChatRoom = async () => {
     try {
-      
+        // Room does not exist, create a new room
         const value = await AsyncStorage.getItem('IdUser');
         const userId = JSON.parse(value);
         var RoomName = shopDetails.FirstName
@@ -143,50 +143,26 @@ const ProductList = ({ navigation, route }) => {
         const createResponse = await axios.post(`http://${ipAdress}:3000/api/roomRouter`, { name: RoomName});
        var roomId = createResponse.data.id;
 
+      // Add user to the room
       await axios.post(`http://${ipAdress}:3000/api/roomRouter/user`, { roomId, userId });
+      // Navigate to the Chat screen
       navigation.navigate('chat', { roomId,  RoomName });
     } catch (error) {
       console.error('Error checking or creating chat room:', error);
     }
   };
-  const handleAddToFavorites = async (product) => {
-    try {
-      // Validate product
-      if (!product || !product.id) {
-        throw new Error('Invalid product data');
-      }
-  
-      // Get existing favorites or initialize an empty array
-      const existingFavorites = await AsyncStorage.getItem('favv');
-      let favoritesArray = existingFavorites ? JSON.parse(existingFavorites) : [];
-  
-      // Check for duplicate
-      const isDuplicate = favoritesArray.some((fav) => fav.id === product.id);
-      if (isDuplicate) {
-        throw new Error('Product already exists in favorites');
-      }
-  
-      // Add the product to favorites (immutable update)
-      favoritesArray = [...favoritesArray, product];
-  
-      // Save the updated favorites back to AsyncStorage
-      await AsyncStorage.setItem('favv', JSON.stringify(favoritesArray));
-  
-      // Display toast message
-      ToastAndroid.showWithGravity('Item added to favorites', ToastAndroid.TOP, ToastAndroid.TOP);
-    } catch (error) {
-      console.error('Error storing favorite:', error.message);
-      // Optionally, show a toast message for the error
-      ToastAndroid.showWithGravity('Failed to add item to favorites', ToastAndroid.TOP, ToastAndroid.TOP);
-    }
-  };
-  
+
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView>
         {filteredProducts.length > 0 ? (
           <>
-            <Title style={styles.shopTitle}>{shopDetails.FirstName} {shopDetails.LastName}</Title>
+            <View style={styles.header}>
+              <Title style={styles.shopTitle}>{shopDetails.FirstName} {shopDetails.LastName}</Title>
+              <TouchableOpacity onPress={handleCreateOrJoinChatRoom}>
+                <Image source={chatcoffee} style={styles.chatIcon} />
+              </TouchableOpacity>
+            </View>
             <Image
               style={styles.shopImage}
               source={{ uri: shopDetails.ImageUrl }}
@@ -213,11 +189,12 @@ const ProductList = ({ navigation, route }) => {
                       <Image source={{ uri: product.imgUrl }} style={styles.image} />
                     </TouchableOpacity>
                     <Icon
-                  name={'heart-outline'}
-                  size={27}
-                  style={styles.favIcon}
-                  onPress={() => handleAddToFavorites(product)} // Pass the product to handleAddToFavorites
-                />
+                      name={favorites[product.id]?.favored ? 'heart' : 'heart-outline'}
+                      color={favorites[product.id]?.favored ? 'red' : '#dba617'}
+                      size={27}
+                      onPress={() => toggleFeature(product.id, 'favored')}
+                      style={styles.favIcon}
+                    />
                     <View style={styles.infoContainer}>
                       <TouchableOpacity onPress={() => handleNavigateToDetails(product)}>
                         <Text style={styles.name}>{product.name}</Text>
@@ -225,11 +202,11 @@ const ProductList = ({ navigation, route }) => {
                       <Text style={styles.price}>${product.price}</Text>
                       <Text style={styles.reviews}>{`${product.totalReviews} 👤 ⭐: ${product.averageRating}`}</Text>
                       <Icon
-                    name={favorites[product.id]?.inCart ? 'cart' : 'cart'}
-                    size={24}
-                    onPress={() => toggleFeature(product.id, 'inCart')}
-                    style={styles.cartIcon}
-                  />
+                        name={favorites[product.id]?.inCart ? 'cart' : 'cart-outline'}
+                        size={24}
+                        onPress={() => toggleFeature(product.id, 'inCart')}
+                        style={styles.cartIcon}
+                      />
                     </View>
                   </View>
                 );
@@ -238,7 +215,12 @@ const ProductList = ({ navigation, route }) => {
           </>
         ) : (
           <>
-            <Title style={styles.shopTitle}>{shopDetails.FirstName} {shopDetails.LastName}</Title>
+            <View style={styles.header}>
+              <Title style={styles.shopTitle}>{shopDetails.FirstName} {shopDetails.LastName}</Title>
+              <TouchableOpacity onPress={handleCreateOrJoinChatRoom}>
+                <Image source={chatcoffee} style={styles.chatIcon} />
+              </TouchableOpacity>
+            </View>
             <Image
               style={styles.shopImage}
               source={{ uri: shopDetails.ImageUrl }}
