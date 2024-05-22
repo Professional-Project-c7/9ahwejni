@@ -13,6 +13,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import { ipAdress } from '../config';
 import Slider from '@react-native-community/slider';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 const AdvancedFilter = () => {
   const [products, setProducts] = useState([]);
@@ -36,9 +37,11 @@ const AdvancedFilter = () => {
       try {
         const productsResponse = await axios.get(`http://${ipAdress}:3000/api/product`);
         const reviewsResponse = await axios.get(`http://${ipAdress}:3000/api/review`);
+        const packsResponse = await axios.get(`http://${ipAdress}:3000/api/packs`);
+        const packReviewsResponse = await axios.get(`http://${ipAdress}:3000/api/packreview`);
 
-        const productsWithReviews = productsResponse.data.map(product => {
-          const productReviews = reviewsResponse.data.filter(review => review.prodId === product.id);
+        const productsWithReviews = [...productsResponse.data, ...packsResponse.data].map(product => {
+          const productReviews = reviewsResponse.data.concat(packReviewsResponse.data).filter(review => review.prodId === product.id || review.PackId === product.id);
           const totalReviews = productReviews.length;
           const averageRating = totalReviews
             ? productReviews.reduce((acc, review) => acc + review.stars, 0) / totalReviews
@@ -60,15 +63,6 @@ const AdvancedFilter = () => {
     fetchProductsAndReviews();
   }, []);
 
-  const fetchPacks = async () => {
-    try {
-      const packsResponse = await axios.get(`http://${ipAdress}:3000/api/packs`);
-      setProducts(packsResponse.data);
-    } catch (error) {
-      console.error('Error fetching packs:', error);
-    }
-  };
-
   const filterProducts = () => {
     const [minPrice, maxPrice] = priceRange;
     let filteredProductsList = products.filter(product => {
@@ -88,8 +82,6 @@ const AdvancedFilter = () => {
       const allCategories = categories.map(category => category.value).filter(v => v);
       setSelectedCategories(allCategories);
       return;
-    } else if (value === 'packs') {
-      await fetchPacks();
     }
 
     setSelectedCategories((prevSelected) =>
@@ -167,8 +159,8 @@ const AdvancedFilter = () => {
         />
         <Slider
           style={styles.slider}
-          minimumValue={-10}
-          maximumValue={100}
+          minimumValue={0}
+          maximumValue={1000}
           step={1}
           value={priceRange[1]}
           onValueChange={(value) => setPriceRange([priceRange[0], value])}
@@ -204,6 +196,12 @@ const AdvancedFilter = () => {
       >
         <View style={styles.resultsModalContainer}>
           <View style={styles.resultsModalContent}>
+            <TouchableOpacity
+              style={styles.closeIconContainer}
+              onPress={() => setResultsModalVisible(false)}
+            >
+              <Icon name="close" size={24} color="#dba617" />
+            </TouchableOpacity>
             <FlatList
               data={filteredProducts}
               keyExtractor={(item, index) => index.toString()}
@@ -221,7 +219,7 @@ const AdvancedFilter = () => {
 const styles = StyleSheet.create({
   fullScreenCard: {
     flex: 1,
-    padding: 2.5,
+    padding: 10,
     backgroundColor: 'white',
     borderRadius: 12,
   },
@@ -246,17 +244,17 @@ const styles = StyleSheet.create({
     marginVertical: 5,
     justifyContent: 'center',
     alignItems: 'center',
+    
   },
   selectedCategoryItem: {
     backgroundColor: '#dba617',
   },
   unselectedCategoryItem: {
-    backgroundColor: '#e0e0e0',
+    backgroundColor: '#A9A9A6',
   },
   categoryText: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: '#fff',
+    fontSize: 19,
+    color: '#FFFFFF',
   },
   picker: {
     height: 50,
@@ -266,15 +264,6 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     marginBottom: 10,
   },
-  filterInput: {
-    backgroundColor: '#fff',
-    borderColor: '#dba617',
-    borderWidth: 1,
-    borderRadius: 10,
-    marginBottom: 10,
-    paddingHorizontal: 10,
-    height: 50,
-  },
   button: {
     backgroundColor: '#dba617',
     height: 50,
@@ -283,7 +272,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
   },
   spaceBetweenInputs: {
-    marginVertical: 5,
+    marginVertical: 10,
   },
   dropdownItem: {
     borderBottomWidth: 1,
@@ -305,6 +294,9 @@ const styles = StyleSheet.create({
   },
   resultsDropdownList: {
     marginTop: 10,
+  },
+  closeIconContainer: {
+    alignSelf: 'flex-end',
   },
   slider: {
     width: '100%',
