@@ -8,6 +8,7 @@ import AddReview from './AddReview';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import user from '../image/user.png';
 import moment from 'moment';
+import basket from '../image/addtobasket.png';
 
 const ProductDetailsPage = ({ navigation }) => {
     const [products, setProducts] = useState([]);
@@ -56,7 +57,7 @@ const ProductDetailsPage = ({ navigation }) => {
 
                 const response = await axios.get(`http://${ipAdress}:3000/api/product/SearchById/${productId}`);
                 setProducts(response.data);
-                fetchReviews(productId);  // Fetch reviews for the current product
+                fetchReviews(productId);
             } catch (error) {
                 console.error('Error fetching product details:', error);
             }
@@ -75,7 +76,7 @@ const ProductDetailsPage = ({ navigation }) => {
 
     const goToHomePage = () => {
         AsyncStorage.removeItem('selectedProductId');
-        navigation.navigate('homePage'); // Assuming 'Home' is the name of your home page screen
+        navigation.navigate('homePage');
     };
 
     const handleSizeSelection = size => setSelectedSize(size);
@@ -155,21 +156,15 @@ const ProductDetailsPage = ({ navigation }) => {
                                 </View>
                             </View>
                             <Text style={styles.productPrice}>{product.price} TND</Text>
-
                             <View style={styles.priceContainer}>
-                                <TouchableOpacity onPress={handleAddToCart}>
-                                    <Text style={styles.addReviewButton}>Add to cart</Text>
+                                <TouchableOpacity onPress={handleAddToCart} style={styles.addToCartButton}>
+                                    <Image source={basket} style={styles.basketIcon} />
+                                    <Text style={styles.addToCartButtonText}>Add to cart</Text>
                                 </TouchableOpacity>
-                                <TouchableOpacity onPress={toggleModalVisibility}>
-                                    <Text style={styles.addReviewButton}>Add Review</Text>
+                                <TouchableOpacity onPress={toggleModalVisibility} style={styles.addReviewButton}>
+                                    <Text style={styles.addReviewButtonText}>Add Review ⭐</Text>
                                 </TouchableOpacity>
                             </View>
-                            <Button
-                                title="Go to Home"
-                                onPress={() => navigation.navigate('homePage')}
-                                color="#FFBB70"
-                                style={styles.adad}
-                            />
                         </View>
                     </View>
                 </View>
@@ -217,108 +212,128 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: '#FFFFFF',
-        padding: 10
+        padding: 10,
     },
     adad: {
         marginTop: 50,
+        borderRadius: 25,
     },
     productContainer: {
         marginBottom: 30,
         backgroundColor: '#FFFFFF',
         borderRadius: 15,
-        overflow: 'hidden'
+        overflow: 'hidden',
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.1,
+        shadowRadius: 5,
+        elevation: 3,
     },
     productImage: {
         width: '100%',
         height: 250,
     },
     body: {
-        padding: 20
+        padding: 20,
     },
     name: {
         fontSize: 27,
         fontWeight: 'bold',
         textAlign: 'center',
-        color: '#FFBB70',
-        marginBottom: 15
+        color: '#dba617',
+        marginBottom: 15,
+        // fontFamily: 'SFProDisplay-Regular'
     },
     description: {
         fontSize: 18,
         textAlign: 'center',
-        color: 'black'
+        color: '#666',
+        marginBottom: 13,
+        // fontFamily: 'SFProDisplay-Regular'
     },
     bottomContainer: {
-        marginTop: 60
-    },
-    add: {
-        color: '#FFBB70',
-        textAlign: 'center',
-        marginTop: 30,
-        fontSize: 35,
-    },
-    addReviewButton: {
-        backgroundColor: '#FFBB70',
-        color: 'white',
-        padding: 10,
-        textAlign: 'center',
-        borderRadius: 25,
-        fontSize: 22,
-        fontWeight: 'bold',
-        overflow: 'hidden'
+        marginTop: 14,
     },
     sectionTitle: {
-        fontSize: 18,
+        fontSize: 20,
+        fontWeight: 'bold',
+        marginBottom: 10,
+        color: '#333',
     },
     priceContainer: {
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
-        padding: 10,
+        paddingVertical: 10,
     },
     productPrice: {
-        fontSize: 25,
+        fontSize: 22,
         fontWeight: 'bold',
         color: '#fff',
-        backgroundColor: '#FFBB70',
-        borderRadius: 15,
+        backgroundColor: '#dba617',
+        borderRadius: 10,
         paddingHorizontal: 10,
         paddingVertical: 5,
-        marginTop: 30,
-        marginLeft: 115,
-        width: 120
+        textAlign: 'center',
     },
     optionContainer: {
-        backgroundColor: '#FFFFFF',
-        borderRadius: 15,
-        paddingVertical: 10,
-        borderColor: '#000000',
+        marginBottom: 15,
     },
     optionButtonsContainer: {
         flexDirection: 'row',
-        justifyContent: 'space-around'
+        justifyContent: 'space-around',
     },
     optionTitle: {
-        fontSize: 22,
-        fontWeight: 'bold'
+        fontSize: 18,
+        fontWeight: 'bold',
+        marginBottom: 5,
+        color: '#333',
     },
     optionButton: {
         backgroundColor: '#fff',
-        borderRadius: 15,
+        borderRadius: 10,
         paddingHorizontal: 12,
+        paddingVertical: 5,
         borderWidth: 1,
-        borderColor: '#FFBB70',
-        overflow: 'hidden'
+        borderColor: '#dba617',
+        overflow: 'hidden',
     },
     optionButtonText: {
-        fontSize: 17,
-        color: '#666'
+        fontSize: 16,
+        color: '#111',
     },
     selectedOption: {
-        backgroundColor: '#FFBB70',
-        color: '#FFFF'
+        backgroundColor: '#dba617',
     },
     selectedOptionText: {
         color: 'white',
+    },
+    addToCartButton: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        backgroundColor: '#dba617',
+        padding: 10,
+        borderRadius: 10,
+    },
+    basketIcon: {
+        width: 20,
+        height: 20,
+        marginRight: 10,
+    },
+    addToCartButtonText: {
+        color: 'white',
+        fontSize: 18,
+        fontWeight: 'bold',
+    },
+    addReviewButton: {
+        backgroundColor: '#dba617',
+        padding: 10,
+        borderRadius: 10,
+    },
+    addReviewButtonText: {
+        color: 'white',
+        fontSize: 18,
+        fontWeight: 'bold',
     },
     modalOverlay: {
         flex: 1,
@@ -350,11 +365,11 @@ const styles = StyleSheet.create({
     },
     reviewsContainer: {
         padding: 10,
-        marginTop: 50
+        marginTop: 20,
     },
     reviewCard: {
         flexDirection: 'row',
-        marginBottom: 10,
+        marginBottom: 15,
         backgroundColor: '#f9f9f9',
         padding: 15,
         borderRadius: 10,
@@ -369,7 +384,7 @@ const styles = StyleSheet.create({
         height: 50,
         marginRight: 15,
         borderRadius: 25,
-        overflow: 'hidden'
+        overflow: 'hidden',
     },
     reviewContent: {
         flex: 1,
@@ -378,15 +393,15 @@ const styles = StyleSheet.create({
         fontSize: 18,
         fontWeight: 'bold',
         marginBottom: 5,
-        color: '#481E14',
+        color: '#333',
     },
     rating: {
         marginVertical: 5,
-        right: 90
+        alignSelf: 'flex-start',
     },
     comment: {
         fontSize: 16,
-        color: '#200E3A',
+        color: '#666',
     },
 });
 
