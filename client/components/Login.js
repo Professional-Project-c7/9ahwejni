@@ -33,7 +33,7 @@ const Login = ({ navigation }) => {
       await AsyncStorage.setItem('NAME', JSON.stringify(response.data.name));
 
       await AsyncStorage.setItem('welcomeBack', 'true');  // Set flag for welcome message
-
+console.log(response.data.userId);
        // Clear input fields
        setEmail('');
        setPassword('');
