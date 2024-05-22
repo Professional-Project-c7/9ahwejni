@@ -226,6 +226,7 @@ function NAVSTART() {
         <Stack.Screen name="Info" component={InfoCoffee} options={{ headerShown: false }} />
         <Stack.Screen name="Coffeelist" component={Coffeelist} options={{ headerShown: false }}/>
         <Stack.Screen name="TestCloud" component={TestCloud} />
+        <Stack.Screen name="Availability" component={Availability} />
 
         <Stack.Screen
           name="TransactionScreenCoffee"
