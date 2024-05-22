@@ -91,6 +91,8 @@ const styles = StyleSheet.create({
     color: '#dba617',
     marginBottom: 10,
     marginLeft: 10,
+    fontStyle: 'italic',
+
   },
   card: {
     flexDirection: 'column',
@@ -119,11 +121,15 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     color: '#333',
     marginBottom: 5,
+    fontStyle: 'italic',
+
   },
   price: {
     fontSize: 16,
     fontWeight: 'bold',
     color: '#000',
+    fontStyle: 'italic',
+
   },
   reviews: {
     fontSize: 14,
@@ -134,6 +140,8 @@ const styles = StyleSheet.create({
     color: 'red',
     textAlign: 'center',
     marginTop: 20,
+    fontStyle: 'italic',
+
   },
 });
 

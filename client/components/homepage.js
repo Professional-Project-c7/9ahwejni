@@ -17,6 +17,8 @@ import Notification from './Notification';
 import Toast from 'react-native-toast-message';
 import TopPacks from '../components/TopPacks';
 import chatcoffee from '../image/chatcoffee.png';
+// import "fontsource/poppins/400.css"
+
 
 const HomePage = ({ navigation }) => {
   const [filterVisible, setFilterVisible] = useState(false);
@@ -87,7 +89,7 @@ const HomePage = ({ navigation }) => {
       </View>
       <Pub />
       <View style={styles.top}>
-        <Text style={[styles.Texttitlecoffee, { marginLeft: 0 }]}>Products of the Day!</Text>
+        <Text style={[styles.Texttitlecoffee, { marginLeft: 0, fontFamily:'Poppins Light' }]}>Products of the Day!</Text>
         <TouchableOpacity onPress={seeAll}>
           <Text style={styles.seeAllText}>See All</Text>
         </TouchableOpacity>
@@ -173,6 +175,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#000',
     marginBottom: 10,
+    fontStyle: 'italic'
   },
   categoryBarContainer: {
     flexDirection: 'column',
@@ -184,7 +187,7 @@ const styles = StyleSheet.create({
   Texttitlecoffee: {
     fontSize: 20,
     fontWeight: 'bold',
-    fontFamily: 'Montserrat',
+    fontStyle: 'italic',
     color: '#dba617',
     textAlign: 'left',
     marginTop: 40,
@@ -197,7 +200,7 @@ const styles = StyleSheet.create({
     color: '#dba617',
     marginTop: 40,
     marginRight: 20,
-    fontFamily: 'Montserrat',
+    fontStyle: 'italic',
   },
   fullScreenModal: {
     flex: 1,
