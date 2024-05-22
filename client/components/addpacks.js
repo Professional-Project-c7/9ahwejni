@@ -319,7 +319,7 @@ const firstTwoImages = filteredProducts.slice(0, 2)
             <TextInput
               placeholder="Description"
               placeholderTextColor="#666666"
-              keyboardType="number-pad"
+              
               autoCorrect={false}
               style={[
                 styles.textInput,
@@ -331,27 +331,12 @@ const firstTwoImages = filteredProducts.slice(0, 2)
               onChangeText={setpackDescription}
             />
           </View>
-          {/* <View style={styles.action}>
-            <FontAwesome name="expand" color={'#dba617'} size={20} />
-            <TextInput
-              placeholder="Size"
-              placeholderTextColor="#666666"
-              keyboardType="email-address"
-              autoCorrect={false}
-              style={[
-                styles.textInput,
-                {
-                  color: colors.text,
-                },
-              ]}
-              value={packSize}
-              onChangeText={setpackSize}
-            />
-          </View> */}
+          
           <View style={styles.action}>
             <FontAwesome name="dollar" color={'#dba617'} size={20} />
             <TextInput
               placeholder="Price"
+              keyboardType="number-pad"
               placeholderTextColor="#666666"
               autoCorrect={false}
               style={[
@@ -370,9 +355,7 @@ const firstTwoImages = filteredProducts.slice(0, 2)
           <TouchableOpacity style={styles.commandButton} onPress={handleAddpack}>
             <Text style={styles.panelButtonTitle}>Submit</Text>
           </TouchableOpacity>
-          {/* <TouchableOpacity style={styles.commandButton}  onPress={() => navigation.navigate('TestCloud')}>
-            <Text style={styles.panelButtonTitle}>Submit</Text>
-          </TouchableOpacity> */}
+          
          
           
         </View>

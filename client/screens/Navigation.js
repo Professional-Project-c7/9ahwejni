@@ -257,7 +257,7 @@ function NAVSTART() {
         <Stack.Screen name="chat" component={chat} options={{ headerShown: false }}/>
         <Stack.Screen name="paymentSucces" component={PaymentSuccessPage}  />
         <Stack.Screen  name="SettingComponent" component={SettingComponent} />
-        <Stack.Screen  name="Availability" component={Availability} />
+        {/* <Stack.Screen name="pck" component={PackDetails} options={{ headerShown: false }} /> */}
 
       </Stack.Navigator>
     </NavigationContainer>
