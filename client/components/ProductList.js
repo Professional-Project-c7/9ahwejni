@@ -281,6 +281,8 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginTop: 16,
     color: '#dba617',
+    fontStyle: 'italic'
+
   },
   chatIcon: {
     width: 40,
@@ -312,6 +314,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginBottom: 10,
     color: '#666',
+    fontStyle: 'italic'
   },
   gradientButton: {
     borderRadius: 10,
@@ -324,6 +327,7 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontSize: 18,
     fontWeight: 'bold',
+    fontStyle: 'italic'
   },
   productListTitle: {
     fontSize: 20,
@@ -331,6 +335,7 @@ const styles = StyleSheet.create({
     marginLeft: 16,
     marginBottom: 8,
     color: '#dba617',
+    fontStyle: 'italic'
   },
   productsContainer: {
     flexDirection: 'row',
@@ -374,6 +379,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#333',
     marginBottom: 5,
+    fontStyle: 'italic'
   },
   description: {
     fontSize: 14,
@@ -384,6 +390,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
     color: '#000',
+    fontStyle: 'italic'
   },
   reviews: {
     fontSize: 14,
@@ -391,6 +398,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: 10,
     right: 10,
+    
   },
   cartIcon: {
     position: 'absolute',
@@ -415,6 +423,7 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
+    fontStyle: 'italic'
   },
   modalOverlay: {
     flex: 1,

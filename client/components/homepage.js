@@ -175,6 +175,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#000',
     marginBottom: 10,
+    fontStyle: 'italic'
   },
   categoryBarContainer: {
     flexDirection: 'column',
@@ -186,7 +187,7 @@ const styles = StyleSheet.create({
   Texttitlecoffee: {
     fontSize: 20,
     fontWeight: 'bold',
-    fontFamily: 'Montserrat',
+    fontStyle: 'italic',
     color: '#dba617',
     textAlign: 'left',
     marginTop: 40,
@@ -199,7 +200,7 @@ const styles = StyleSheet.create({
     color: '#dba617',
     marginTop: 40,
     marginRight: 20,
-    fontFamily: 'Montserrat',
+    fontStyle: 'italic',
   },
   fullScreenModal: {
     flex: 1,

@@ -212,14 +212,15 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         color: '#dba617',
         marginBottom: 15,
-        // fontFamily: 'SFProDisplay-Regular'
+        fontStyle: 'italic'
+
     },
     description: {
         fontSize: 18,
         textAlign: 'center',
         color: '#666',
         marginBottom: 13,
-        // fontFamily: 'SFProDisplay-Regular'
+        fontStyle: 'italic'
     },
     bottomContainer: {
         marginTop: 14,
@@ -229,6 +230,8 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         marginBottom: 10,
         color: '#333',
+        fontStyle: 'italic'
+
     },
     priceContainer: {
         flexDirection: 'row',
@@ -245,6 +248,8 @@ const styles = StyleSheet.create({
         paddingHorizontal: 10,
         paddingVertical: 5,
         textAlign: 'center',
+        fontStyle: 'italic'
+
     },
     optionContainer: {
         marginBottom: 15,
@@ -258,6 +263,8 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         marginBottom: 5,
         color: '#333',
+        fontStyle: 'italic'
+
     },
     optionButton: {
         backgroundColor: '#fff',
@@ -271,6 +278,8 @@ const styles = StyleSheet.create({
     optionButtonText: {
         fontSize: 16,
         color: '#111',
+        fontStyle: 'italic'
+
     },
     selectedOption: {
         backgroundColor: '#dba617',
@@ -294,6 +303,8 @@ const styles = StyleSheet.create({
         color: 'white',
         fontSize: 18,
         fontWeight: 'bold',
+        fontStyle: 'italic'
+
     },
     addReviewButton: {
         backgroundColor: '#dba617',
@@ -304,6 +315,8 @@ const styles = StyleSheet.create({
         color: 'white',
         fontSize: 18,
         fontWeight: 'bold',
+        fontStyle: 'italic'
+
     },
     modalOverlay: {
         flex: 1,
@@ -364,6 +377,8 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         marginBottom: 5,
         color: '#333',
+        fontStyle: 'italic'
+
     },
     rating: {
         marginVertical: 5,
@@ -372,6 +387,8 @@ const styles = StyleSheet.create({
     comment: {
         fontSize: 16,
         color: '#666',
+        fontStyle: 'italic'
+
     },
 });
 

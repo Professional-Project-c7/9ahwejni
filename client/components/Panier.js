@@ -130,17 +130,22 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 20,
     fontWeight: 'bold',
+    fontStyle: 'italic',
+
   },
   description: {
     color: '#6e695b',
     fontSize: 16,
     flexWrap: 'wrap',
     marginBottom: 10,
+    fontStyle: 'italic',
+
   },
   price: {
     fontSize: 19,
     fontWeight: 'bold',
     color: '#38761d',
+    
   },
   deleteButton: {
     position: 'absolute',
@@ -156,6 +161,8 @@ const styles = StyleSheet.create({
     fontSize: 18,
     color: '#6e695b',
     marginTop: 20,
+    fontStyle: 'italic',
+
   },
   footer: {
     padding: 20,
@@ -167,6 +174,7 @@ const styles = StyleSheet.create({
     fontSize: 22,
     fontWeight: 'bold',
     color: '#444',
+    
   },
   paymentButton: {
     marginTop: 12,
@@ -179,6 +187,8 @@ const styles = StyleSheet.create({
     fontSize: 18,
     color: '#fff',
     fontWeight: 'bold',
+    fontStyle: 'italic',
+
   },
 });
 

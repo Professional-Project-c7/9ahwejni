@@ -226,6 +226,8 @@ const styles = StyleSheet.create({
   cardTitle: {
     fontSize: 26,
     color: '#dba617',
+    fontStyle: 'italic',
+
   },
   divider: {
     marginBottom: 15,
@@ -234,6 +236,8 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
     marginBottom: 5,
+    fontStyle: 'italic',
+
   },
   categoryItem: {
     flex: 1,
@@ -254,6 +258,8 @@ const styles = StyleSheet.create({
   categoryText: {
     fontSize: 19,
     color: '#FFFFFF',
+    fontStyle: 'italic',
+
   },
   picker: {
     height: 50,
@@ -269,6 +275,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     borderRadius: 10,
+    
   },
   spaceBetweenInputs: {
     marginVertical: 10,
@@ -305,6 +312,8 @@ const styles = StyleSheet.create({
     fontSize: 16,
     textAlign: 'center',
     marginBottom: 10,
+    fontStyle: 'italic',
+
   },
 });
 

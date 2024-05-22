@@ -9,6 +9,7 @@ import anicoffee from '../image/anicoffee.gif';
 import protection from '../image/protection.gif';
 import gps from '../image/gps.gif';
 import waw from '../image/waaw.webp'
+// import wawi from '../image/logowaw.gif'
 
 const dummyData = [
   {
@@ -132,6 +133,7 @@ const styles = StyleSheet.create({
   skipText: {
     fontSize: 25,
     color: '#333',
+    
     
   },
   nextButton: {

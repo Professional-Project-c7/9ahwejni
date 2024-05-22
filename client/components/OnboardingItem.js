@@ -42,12 +42,15 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     color: '#333',
     textAlign: 'center',
+    fontStyle: 'italic'
   },
   description: {
-    fontSize: 16,
-    fontWeight: '400',
+    fontSize: 19,
+    fontWeight: '500',
     color: '#555',
     textAlign: 'center',
+    fontStyle: 'italic',
+
   },
 });
 

@@ -204,7 +204,9 @@ const styles = StyleSheet.create({
     textAlign: 'left',
     bottom: 5,
     right: 5,
-    marginRight : 9
+    marginRight : 9,
+    fontStyle: 'italic',
+
   },
   price: {
     fontSize: 17,
@@ -212,6 +214,8 @@ const styles = StyleSheet.create({
     color: '#000',
     right: 5,
     top: 5,
+    fontStyle: 'italic',
+
   },
   reviews: {
     fontSize: 14,
