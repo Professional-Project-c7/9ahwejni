@@ -126,7 +126,7 @@ const ProductDetailsPage = ({ navigation }) => {
                                     </TouchableOpacity>
                                 </View>
                             </View>
-                            <View style={styles.optionContainer}>
+                            {/* <View style={styles.optionContainer}>
                                 <View style={styles.optionButtonsContainer}>
                                     <Text style={styles.optionTitle}>Sugar:</Text>
                                     <TouchableOpacity style={[styles.optionButton, selectedSugar === 'Normal' && styles.selectedOption]} onPress={() => handleSugarSelection('Normal')}>
@@ -153,7 +153,7 @@ const ProductDetailsPage = ({ navigation }) => {
                                         <Text style={styles.optionButtonText}>No</Text>
                                     </TouchableOpacity>
                                 </View>
-                            </View>
+                            </View> */}
                             <Text style={styles.productPrice}>{product.price} TND</Text>
 
                             <View style={styles.priceContainer}>
