@@ -49,10 +49,8 @@ import TestCloud from "../components/testcloudinary";
 import PaymentSuccessPage from "../components/paymentSucces";
 import PaymentSuccess from '../components/paymentSucces';
 import Allpack from '../components/allpack';
-import RoomsChat from '../components/RoomsChat';
-import { ipAdress } from '../config'; // Make sure you have the correct IP address
-import axios from 'axios';
-
+import RoomsChat from '../components/RoomsChat'
+import editusers from '../components/edituser'
 // import PackDetails from '../components/PackDetails';
 
 // import { useNavigation } from '@react-navigation/native';
@@ -162,45 +160,57 @@ function TabNavigator() {
           }}
         />
       ) : null}
-      <Tab.Screen name="Panier" component={Panier} options={{
-        tabBarButton: () => null, // This hides the tab from the tab bar
-      }} />
-      <Tab.Screen name="Allpack" component={Allpack} options={{
-        tabBarButton: () => null, // This hides the tab from the tab bar
-      }} />
-      <Tab.Screen name="SeeAllPacksCoffee" component={SeeAllPacksCoffee} options={{
-        tabBarButton: () => null, // This hides the tab from the tab bar
-      }} />
-      <Tab.Screen name="Coffeelist" component={Coffeelist} options={{
-        tabBarButton: () => null, // This hides the tab from the tab bar
-      }} />
-      <Tab.Screen name="InfoCoffee" component={InfoCoffee} options={{
-        tabBarButton: () => null, // This hides the tab from the tab bar
-      }} />
-      <Tab.Screen name="Favorit" component={Favorit} options={{
-        tabBarButton: () => null, // This hides the tab from the tab bar
-      }} />
-      <Tab.Screen name="Edit" component={EditCoffee} options={{
-        tabBarButton: () => null, // This hides the tab from the tab bar
-      }} />
-      <Tab.Screen name="TransactionScreenCoffee" component={TransactionScreenCoffee} options={{
-        tabBarButton: () => null, // This hides the tab from the tab bar
-      }} />
-      <Tab.Screen name="AllProducts" component={AllProducts} options={{
-        tabBarButton: () => null, // This hides the tab from the tab bar
-      }} />
-      <Tab.Screen name="Orders" component={Orders} options={{
-        tabBarButton: () => null, // This hides the tab from the tab bar
-      }} />
-      <Tab.Screen name="SettingComponent" component={SettingComponent} options={{
-        tabBarButton: () => null, // This hides the tab from the tab bar
-      }} />
-      <Tab.Screen name="PaymentCardsDetails" component={PaymentCardsDetails} options={{
-        tabBarButton: () => null, // This hides the tab from the tab bar
-      }} />
-      <Tab.Screen name="prd" component={ProductDetailsPage} options={{
-        tabBarButton: () => null, // This hides the tab from the tab bar
-      }} />
+       <Tab.Screen name="  Panier" component={  Panier}  options={{
+          tabBarButton: () => null, // This hides the tab from the tab bar
+        }} />
+      <Tab.Screen name="Allpack" component={  Allpack}  options={{
+          tabBarButton: () => null, // This hides the tab from the tab bar
+        }} />
+      <Tab.Screen name="  SeeAllPacksCoffee" component={  SeeAllPacksCoffee}  options={{
+          tabBarButton: () => null, // This hides the tab from the tab bar
+        }} />
+        
+    
+      <Tab.Screen name="  Coffeelist" component={  Coffeelist}  options={{
+          tabBarButton: () => null, // This hides the tab from the tab bar
+        }} />
+          <Tab.Screen name="  InfoCoffee" component={  InfoCoffee}  options={{
+          tabBarButton: () => null, // This hides the tab from the tab bar
+        }} />
+      
+       <Tab.Screen name="Favorit" component={Favorit}  options={{
+          tabBarButton: () => null, // This hides the tab from the tab bar
+        }} />
+        <Tab.Screen name="Edit" component={EditCoffee}  options={{
+          tabBarButton: () => null, // This hides the tab from the tab bar
+        }} />
+         <Tab.Screen name="editusers" component={editusers}  options={{
+          tabBarButton: () => null, // This hides the tab from the tab bar
+        }} />
+         <Tab.Screen name="TransactionScreenCoffee" component={TransactionScreenCoffee}  options={{
+          tabBarButton: () => null, // This hides the tab from the tab bar
+        }} />
+         <Tab.Screen name="AllProducts" component={AllProducts}  options={{
+          tabBarButton: () => null, // This hides the tab from the tab bar
+        }} />
+        
+          <Tab.Screen name="Orders" component={Orders}  options={{
+          tabBarButton: () => null, // This hides the tab from the tab bar
+        }} />
+        <Tab.Screen name="SettingComponent" component={SettingComponent}  options={{
+          tabBarButton: () => null, // This hides the tab from the tab bar
+        }} />
+          <Tab.Screen name="PaymentCardsDetails" component={PaymentCardsDetails}  options={{
+          tabBarButton: () => null, // This hides the tab from the tab bar
+        }} />
+          {/* <Tab.Screen name="paymentSucces" component={PaymentSuccess}  options={{
+          tabBarButton: () => null, // This hides the tab from the tab bar
+        }} /> */}
+        
+         <Tab.Screen name="  prd" component={  ProductDetailsPage}  options={{
+          tabBarButton: () => null, // This hides the tab from the tab bar
+        }} />
+    
     </Tab.Navigator>
   );
 }
@@ -236,7 +246,7 @@ console.log('--------------------------------', Name);
         <Stack.Screen name="UserSignUp" component={SignUser} options={{ headerShown: false }} />
         <Stack.Screen name="CoffeeShopSignUp" component={SignCofee} options={{ headerShown: false }} />
         <Stack.Screen name="UserAccount" component={SignACC} options={{ headerShown: false }} />
-        <Stack.Screen name="ProductList" component={ProductList} options={{ headerShown: false }} />
+        <Stack.Screen name="ProductList" component={ProductList} />
         <Stack.Screen name="AddPacks" component={AddPacks} options={{ headerShown: false }} />
         <Stack.Screen name="AddProducts" component={AddProducts} options={{ headerShown: false }} />
         <Stack.Screen name="Orders" component={Orders} options={{ headerShown: false }} />
@@ -267,11 +277,13 @@ console.log('--------------------------------', Name);
         <Stack.Screen name="AllCakes" component={AllCakes} options={{ headerShown: false }} />
         <Stack.Screen name="AllCoffees" component={AllCoffees} options={{ headerShown: false }} />
         <Stack.Screen name="AllDrinks" component={AllDrinks} options={{ headerShown: false }} />
-        <Stack.Screen name="chat"  component={chat}  />
-        <Stack.Screen name="paymentSucces" component={PaymentSuccessPage} />
-        <Stack.Screen name="SettingComponent" component={SettingComponent} />
-        <Stack.Screen name="RoomsChat" component={RoomsChat} />
-        {/* <Stack.Screen name="pck" component={PackDetails} options={{ headerShown: false }} /> */}
+        <Stack.Screen name="chat" component={chat} options={{ headerShown: false }}/>
+        <Stack.Screen name="paymentSucces" component={PaymentSuccessPage}  />
+        <Stack.Screen  name="SettingComponent" component={SettingComponent} />
+        <Stack.Screen  name="RoomsChat" component={RoomsChat} /> 
+        <Stack.Screen  name="editusers" component={editusers} /> 
+         
+        
       </Stack.Navigator>
     </NavigationContainer>
   );

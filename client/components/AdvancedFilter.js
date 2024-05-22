@@ -12,7 +12,7 @@ import { useNavigation } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import { ipAdress } from '../config';
-import Slider from '@react-native-community/slider';
+import MultiSlider from '@ptomasroos/react-native-multi-slider';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 const AdvancedFilter = () => {
@@ -46,7 +46,7 @@ const AdvancedFilter = () => {
           const averageRating = totalReviews
             ? productReviews.reduce((acc, review) => acc + review.stars, 0) / totalReviews
             : 0;
-          
+
           return {
             ...product,
             totalReviews,
@@ -67,9 +67,9 @@ const AdvancedFilter = () => {
     const [minPrice, maxPrice] = priceRange;
     let filteredProductsList = products.filter(product => {
       return (!selectedCategories.length || selectedCategories.includes(product.category)) &&
-             (product.price >= minPrice) &&
-             (product.price <= maxPrice) &&
-             (!rating || product.averageRating >= parseFloat(rating));
+        (product.price >= minPrice) &&
+        (product.price <= maxPrice) &&
+        (!rating || product.averageRating >= parseFloat(rating));
     });
 
     setFilteredProducts(filteredProductsList);
@@ -146,27 +146,16 @@ const AdvancedFilter = () => {
         />
         <Text style={styles.label}>Price Range</Text>
         <Text style={styles.sliderLabel}>{`$${priceRange[0]} - $${priceRange[1]}`}</Text>
-        <Slider
-          style={styles.slider}
-          minimumValue={0}
-          maximumValue={1000}
+        <MultiSlider
+          values={[priceRange[0], priceRange[1]]}
+          sliderLength={350}
+          onValuesChange={(values) => setPriceRange(values)}
+          min={0}
+          max={1000}
           step={1}
-          value={priceRange[0]}
-          onValueChange={(value) => setPriceRange([value, priceRange[1]])}
-          minimumTrackTintColor="#dba617"
-          maximumTrackTintColor="#dba617"
-          thumbTintColor="#dba617"
-        />
-        <Slider
-          style={styles.slider}
-          minimumValue={0}
-          maximumValue={1000}
-          step={1}
-          value={priceRange[1]}
-          onValueChange={(value) => setPriceRange([priceRange[0], value])}
-          minimumTrackTintColor="#dba617"
-          maximumTrackTintColor="#dba617"
-          thumbTintColor="#dba617"
+          selectedStyle={{ backgroundColor: '#dba617' }}
+          unselectedStyle={{ backgroundColor: '#e0e0e0' }}
+          markerStyle={{ backgroundColor: '#dba617' }}
         />
         <View style={styles.spaceBetweenInputs} />
         <Text style={styles.label}>Rating</Text>
@@ -226,6 +215,7 @@ const styles = StyleSheet.create({
   cardTitle: {
     fontSize: 26,
     color: '#dba617',
+    fontStyle: 'italic',
   },
   divider: {
     marginBottom: 15,
@@ -234,6 +224,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
     marginBottom: 5,
+    fontStyle: 'italic',
   },
   categoryItem: {
     flex: 1,
@@ -244,7 +235,6 @@ const styles = StyleSheet.create({
     marginVertical: 5,
     justifyContent: 'center',
     alignItems: 'center',
-    
   },
   selectedCategoryItem: {
     backgroundColor: '#dba617',
@@ -255,6 +245,7 @@ const styles = StyleSheet.create({
   categoryText: {
     fontSize: 19,
     color: '#FFFFFF',
+    fontStyle: 'italic',
   },
   picker: {
     height: 50,
@@ -263,6 +254,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderRadius: 12,
     marginBottom: 10,
+  
   },
   button: {
     backgroundColor: '#dba617',
@@ -298,14 +290,11 @@ const styles = StyleSheet.create({
   closeIconContainer: {
     alignSelf: 'flex-end',
   },
-  slider: {
-    width: '100%',
-    height: 40,
-  },
   sliderLabel: {
     fontSize: 16,
     textAlign: 'center',
     marginBottom: 10,
+    fontStyle: 'italic',
   },
 });
 

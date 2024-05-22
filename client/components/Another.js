@@ -121,7 +121,9 @@ const styles = StyleSheet.create({
   },
   cardImage: {
     width: 120,
-    height: 120,
+    height: 177,
+    borderTopLeftRadius: 15,
+    borderBottomLeftRadius: 15,
   },
   cardContent: {
     flex: 1,
@@ -132,14 +134,18 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
     color: '#333',
+    fontStyle: 'italic',
+
   },
   description: {
     color: '#6e695b',
-    fontSize: 14,
+    fontSize: 15,
     marginVertical: 5,
+    fontStyle: 'italic',
+
   },
   price: {
-    fontSize: 16,
+    fontSize: 17,
     fontWeight: 'bold',
     color: '#38761d',
   },
