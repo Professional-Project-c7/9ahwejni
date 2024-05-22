@@ -1,279 +1,219 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, Modal,TouchableOpacity, Image, StyleSheet, ScrollView,ImageBackground } from 'react-native';
-import { IconButton } from 'react-native-paper';
+import { View, Text, Modal, TouchableOpacity, Image, StyleSheet, ScrollView, ImageBackground, Alert } from 'react-native';
 import { ipAdress } from '../config';
-import addProducts from './addproducts';
-import { NavigationContainer } from '@react-navigation/native';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { useNavigation } from '@react-navigation/native';
-import SettingComponent from './Setting';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import { launchImageLibrary } from 'react-native-image-picker';
 
-const Stack = createNativeStackNavigator();
-const Tab = createBottomTabNavigator();
-const MyComponent = ({navigation}) => {
-
+const MyComponent = ({ navigation }) => {
   const [userData, setUserData] = useState(null);
-const [userID,setuserID] = useState(null)
-const [isModalVisible, setIsModalVisible] = useState(false);
-const [imgUrl, setimgUrl] = useState('');
-// console.log(userData.ImageUrl);
+  const [userID, setUserID] = useState(null);
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [imgUrl, setImgUrl] = useState('');
 
-const imageHandler = async (image) => {
-  try {
-    const data = new FormData();
-    data.append('file', {
-      uri: image.assets[0].uri,
-      type: image.assets[0].type,
-      name: 'photo.jpg'
-    });
-    data.append('upload_preset', 'i38oelnt'); // Replace 'your_upload_preset' with your Cloudinary upload preset
-    data.append('cloud_name', 'dqyx6lht5'); // Replace 'your_cloud_name' with your Cloudinary cloud name
+  const imageHandler = async (image) => {
+    try {
+      const data = new FormData();
+      data.append('file', {
+        uri: image.assets[0].uri,
+        type: image.assets[0].type,
+        name: 'photo.jpg',
+      });
+      data.append('upload_preset', 'i38oelnt');
+      data.append('cloud_name', 'dqyx6lht5');
 
-    const response = await fetch('https://api.cloudinary.com/v1_1/dqyx6lht5/image/upload', {
-      method: 'POST',
-      body: data
-    });
-    const result = await response.json();
-    // console.log('Cloudinary response:', result);
-    return result.secure_url;
-    setimgUrl( result.secure_url)
-  } catch (error) {
-    console.error('Error uploading image:', error);
-    throw error;
-  }
-};
+      const response = await fetch('https://api.cloudinary.com/v1_1/dqyx6lht5/image/upload', {
+        method: 'POST',
+        body: data,
+      });
+      const result = await response.json();
+      return result.secure_url;
+    } catch (error) {
+      console.error('Error uploading image:', error);
+      throw error;
+    }
+  };
 
-const pickImage = () => {
-  launchImageLibrary({}, async (response) => {
-    if (response.didCancel) {
-      console.log('User cancelled image picker');
-    } else if (response.error) {
-      console.log('ImagePicker Error: ', response.error);
-    } else {
-      try {
-        const imageUri = await imageHandler(response);
-        console.log('Image URI:', imageUri);
-        setimgUrl(imageUri);
-      } catch (error) {
-        console.error('Error uploading image:', error);
-        Alert.alert('Upload Failed', 'Failed to upload image. Please try again.');
+  const pickImage = () => {
+    launchImageLibrary({}, async (response) => {
+      if (response.didCancel) {
+        console.log('User cancelled image picker');
+      } else if (response.error) {
+        console.log('ImagePicker Error: ', response.error);
+      } else {
+        try {
+          const imageUri = await imageHandler(response);
+          console.log('Image URI:', imageUri);
+          setImgUrl(imageUri);
+        } catch (error) {
+          console.error('Error uploading image:', error);
+          Alert.alert('Upload Failed', 'Failed to upload image. Please try again.');
+        }
       }
+    });
+  };
+
+  const removeTokenFromStorage = async () => {
+    try {
+      await AsyncStorage.removeItem('IdUser');
+      await AsyncStorage.removeItem('favorites');
+      console.log('Token removed successfully');
+    } catch (error) {
+      console.error('Error removing token:', error);
     }
-  });
-};
-const removeTokenFromStorage = async () => {
-  try {
-    await AsyncStorage.removeItem('IdUser');
-    await AsyncStorage.removeItem('favorites');
+  };
 
-    // console.log('Token removed successfully');
-  } catch (error) {
-    console.error('Error removing token:', error);
-  }
-};
+  const toggleModal = () => {
+    setIsModalVisible(!isModalVisible);
+  };
 
-const toggleModal = () => {
-  setIsModalVisible(!isModalVisible);
-};
-    
-const retrieveData = async () => {
-  try {
-    const value = await AsyncStorage.getItem('IdUser');
-    if (value !== null) {
-      const tokenObject = JSON.parse(value);
-      const userId = tokenObject; 
-      // console.log('helllllo',userId);
-      setuserID(userId);
+  const retrieveData = async () => {
+    try {
+      const value = await AsyncStorage.getItem('IdUser');
+      if (value !== null) {
+        const tokenObject = JSON.parse(value);
+        setUserID(tokenObject);
+      }
+    } catch (error) {
+      console.error('Error retrieving data:', error);
     }
-  } catch (error) {
-    console.error('Error retrieving data:', error);
-  }
-};
+  };
 
-  
-
-const getUserData = async (userId) => {
-  try {
-    const response = await axios.get(`http://${ipAdress}:3000/api/user/${userId}`);
-    console.log(response.data); // Check response data
-    if (response.status === 200) {
-      setUserData(response.data);
-    } else {
-      console.error('Failed to fetch user data');
+  const getUserData = async (userId) => {
+    try {
+      const response = await axios.get(`http://${ipAdress}:3000/api/user/${userId}`);
+      if (response.status === 200) {
+        setUserData(response.data);
+      } else {
+        console.error('Failed to fetch user data');
+      }
+    } catch (error) {
+      console.error('Error fetching user data:', error.message);
     }
-  } catch (error) {
-    console.error('Error fetching user data:', error.message);
-  }
-};
-const handleUpdateProfile = async () => {
-  try {
-    const userData = {  
-      ImageUrl: imgUrl,
-     
-    };
-    const response = await axios.put(`http://${ipAdress}:3000/api/user/${userID}`, userData);
-    
-    console.log('Update successful:', response.data);
-   
-    console.log(userID);
-    navigation.navigate('User');
-  } catch (error) {
-    console.error('Update failed:', error);
-  }
-};
+  };
 
-useEffect(() => {
-  retrieveData();
-}, []);
+  const handleUpdateProfile = async () => {
+    try {
+      const userData = { ImageUrl: imgUrl };
+      const response = await axios.put(`http://${ipAdress}:3000/api/user/${userID}`, userData);
+      console.log('Update successful:', response.data);
+      navigation.navigate('User');
+    } catch (error) {
+      console.error('Update failed:', error);
+    }
+  };
 
-useEffect(() => {
-  if (userID) {
-    getUserData(userID);
-  }
-}, [userID]);
-// useEffect(() => {
-//   registerForPushNotificationsAsync();
-// }, []);
-const handleLogout = () => {
-  AsyncStorage.removeItem('favorites')
-  AsyncStorage.removeItem('favv')
+  useEffect(() => {
+    retrieveData();
+  }, []);
 
-  removeTokenFromStorage();
-  navigation.navigate('Login');
-};
+  useEffect(() => {
+    if (userID) {
+      getUserData(userID);
+    }
+  }, [userID]);
 
+  const handleLogout = () => {
+    removeTokenFromStorage();
+    navigation.navigate('Login');
+  };
 
-const defaultImgUrl = imgUrl ||"https://img.freepik.com/premium-photo/bearded-man-illustration_665280-67047.jpg?w=826";
   return (
     <ScrollView>
       <View style={styles.container}>
-      {userData && (
-        <>
-      <View style={{alignItems: 'center',marginTop:40}}>
-          <TouchableOpacity >
-            <View
-              style={{
-                height: 100,
-                width: 100,
-                borderRadius: 15,
-                justifyContent: 'center',
-                alignItems: 'center',
-              }}>
-           <ImageBackground
-                  source={{ uri: userData.ImageUrl }}
-                  style={{ height: 100, width: 100 }}
-                  imageStyle={{ borderRadius: 15 }}>
-                  <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-                  
-                  </View>
-                </ImageBackground>
-                <Icon
+        {userData && (
+          <>
+            <View style={{ alignItems: 'center', marginTop: 40 }}>
+              <TouchableOpacity>
+                <View style={{ height: 100, width: 100, borderRadius: 15, justifyContent: 'center', alignItems: 'center' }}>
+                  <ImageBackground
+                    source={{ uri: userData.ImageUrl || imgUrl || "https://img.freepik.com/premium-photo/bearded-man-illustration_665280-67047.jpg?w=826" }}
+                    style={{ height: 100, width: 100 }}
+                    imageStyle={{ borderRadius: 15 }}>
+                    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}></View>
+                  </ImageBackground>
+                  <Icon
                     onPress={pickImage}
-                      name="camera"
-                      size={35}
-                      color='black'
-                      style={{
-                        opacity: 0.7,
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        marginLeft:65,
-                        borderColor:'black'
-                      }}
-                    />
+                    name="camera"
+                    size={35}
+                    color="black"
+                    style={{ opacity: 0.7, alignItems: 'center', justifyContent: 'center', marginLeft: 65, borderColor: 'black' }}
+                  />
+                </View>
+              </TouchableOpacity>
+              <Text style={{ marginTop: 10, fontSize: 18, fontWeight: 'bold', color: 'black' }}>
+                {userData.FirstName + ' ' + userData.LastName}
+              </Text>
+            </View>
+          </>
+        )}
+        <View style={styles.optionsContainerOne}>
+          <TouchableOpacity style={styles.optionOne} onPress={() => navigation.navigate('Info')}>
+            <View style={styles.optionContent}>
+              <Image source={require("../image/profile.png")} style={styles.optionImageE} />
+              <Text style={styles.optionText}>INFORMATIONS</Text>
             </View>
           </TouchableOpacity>
-          <Text style={{ marginTop: 10, fontSize: 18, fontWeight: 'bold',color:'black' }}>{userData.FirstName + ' ' + userData.LastName}</Text>
 
+          <TouchableOpacity style={styles.optionOne} onPress={() => navigation.navigate('InfoCoffee')} />
+
+          <TouchableOpacity style={styles.optionOne} onPress={() => navigation.navigate('Edit')}>
+            <View style={styles.optionContent}>
+              <Image source={require("../image/settings.png")} style={styles.optionImageE} />
+              <Text style={styles.optionText}>SETTINGS</Text>
+            </View>
+          </TouchableOpacity>
         </View>
-       
-    
-        </>
-      )}
-       
-        <View style={styles.optionsContainerOne}>
-        <TouchableOpacity style={styles.optionOne} onPress={() => navigation.navigate('Info')}>
-  <View style={styles.optionContent}>
-    <Image source={require("../image/profile.png")} style={styles.optionImageE} />
-    <Text style={styles.optionText}>INFORMATIONS</Text>
-  </View>
-</TouchableOpacity>
-          
-<TouchableOpacity style={styles.optionOne} onPress={() => navigation.navigate('InfoCoffee')}>
- 
-</TouchableOpacity>
-<TouchableOpacity style={styles.optionOne} onPress={() => navigation.navigate('Edit')}>
-  <View style={styles.optionContent}>
-    <Image source={require("../image/settings.png")} style={styles.optionImageE} />
-    <Text style={styles.optionText}>SETTINGS</Text>
-  </View>
-</TouchableOpacity>
-        </View>
-           
+
         <View style={styles.optionsContainer}>
           <TouchableOpacity style={styles.option} onPress={() => navigation.navigate('panier')}>
-          <View style={styles.test} >
-            <Image source={require("../image/online-order.png")} style={styles.optionImage} /></View>
+            <View style={styles.test}>
+              <Image source={require("../image/online-order.png")} style={styles.optionImage} />
+            </View>
             <Text style={styles.optionText}>ORDERS</Text>
           </TouchableOpacity>
           <TouchableOpacity style={styles.option} onPress={() => navigation.navigate('Favorit')}>
-          <View style={styles.test} >
-            <Image source={require("../image/reviews.png")} style={styles.optionImage} /></View>
+            <View style={styles.test}>
+              <Image source={require("../image/reviews.png")} style={styles.optionImage} />
+            </View>
             <Text style={styles.optionText}>Favorite</Text>
           </TouchableOpacity>
         </View>
         <View style={styles.optionsContainer}>
-        
           <TouchableOpacity style={styles.option} onPress={() => navigation.navigate('TransactionScreenCoffee')}>
-          <View style={styles.test} >
-            <Image source={require("../image/transaction.png")} style={styles.optionImage} /></View>
+            <View style={styles.test}>
+              <Image source={require("../image/transaction.png")} style={styles.optionImage} />
+            </View>
             <Text style={styles.optionText}>TRANSACTIONS</Text>
           </TouchableOpacity>
         </View>
-        
-        {/* Add more options here */}
-        <View style={styles.logout}>
-        <TouchableOpacity style={styles.optionOne} onPress={toggleModal}>
-  <View style={styles.optionContent}>
-    <Image source={require("../image/logout.png")} style={styles.optionImageE} />
-    <Text style={styles.optionText}>LOG OUT  </Text>
-  </View>
-</TouchableOpacity>
-      </View>
-      </View>
-      <View style={styles.container}>
-      {/* <TouchableOpacity style={styles.button} onPress={toggleModal}>
-        <Text style={styles.buttonText}>Show Popup</Text>
-      </TouchableOpacity> */}
 
-      <Modal
-        animationType="slide"
-        transparent={true}
-        visible={isModalVisible}
-        onRequestClose={toggleModal}
-      >
+        <View style={styles.logout}>
+          <TouchableOpacity style={styles.optionOne} onPress={toggleModal}>
+            <View style={styles.optionContent}>
+              <Image source={require("../image/logout.png")} style={styles.optionImageE} />
+              <Text style={styles.optionText}>LOG OUT</Text>
+            </View>
+          </TouchableOpacity>
+        </View>
+      </View>
+
+      <Modal animationType="slide" transparent={true} visible={isModalVisible} onRequestClose={toggleModal}>
         <View style={styles.centeredView}>
           <View style={styles.modalView}>
-            <Text style={styles.modalText}>do you want logout !</Text>
+            <Text style={styles.modalText}>Do you want to logout?</Text>
             <TouchableOpacity style={styles.closeButton} onPress={handleLogout}>
-              <Text style={styles.closeButtonText}>log out</Text>
+              <Text style={styles.closeButtonText}>Log out</Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.closeButton} onPress={toggleModal}>
               <Text style={styles.closeButtonText}>Cancel</Text>
             </TouchableOpacity>
-            
           </View>
         </View>
       </Modal>
-    </View>
-      
     </ScrollView>
-    
-    
   );
 };
 

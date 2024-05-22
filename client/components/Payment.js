@@ -1,15 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, Image, KeyboardAvoidingView, ScrollView } from 'react-native';
-import { useNavigation } from '@react-navigation/native'; // Import from React Navigation
-
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image, KeyboardAvoidingView, ScrollView } from 'react-native';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { ipAdress } from '../config';
-  
+import Toast from 'react-native-toast-message';
 
-function PaymentScreen({navigation}) {
-  // const navigation = useNavigation(); 
-
+function PaymentScreen({ navigation }) {
   const [price, setPrice] = useState(0);
 
   useEffect(() => {
@@ -24,53 +20,28 @@ function PaymentScreen({navigation}) {
         console.log('Error fetching data:', error); 
       }
     };
-
-  }, []);  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const storedPrice = await AsyncStorage.getItem('PRICE');
-        if (storedPrice) {
-          const parsedPrice = JSON.parse(storedPrice);
-          setPrice(parsedPrice);
-        }
-      } catch (error) {
-        console.log('Error fetching data:', error); 
-      }
-    };
     fetchData();
   }, []);
-
 
   const HandleSubmit = async () => {
     try {
       const body = {
-        userId:userId , 
+        userId: userId, 
         amount: price, 
-       
       };
       const userId = await AsyncStorage.getItem('IdUser');
- 
-      const response = await axios.post(
-        `http://${ipAdress}:3000/api/not/`, // Assuming ipAddress is a variable holding the IP address
-        body
-      );
+      await axios.post(`http://${ipAdress}:3000/api/not/`, body);
     } catch (error) {
       console.log(error);
     }
   };
-  
 
-
-
-  console.log("pricepriceprice   in paymenet ",price);
   const [formData, setFormData] = useState({
     cardNumber: '',
     expiryMonth: '',
     expiryYear: '',
     cvv: ''
   });
-
-
 
   const handleChange = (name, value) => {
     setFormData({
@@ -80,9 +51,7 @@ function PaymentScreen({navigation}) {
   };
 
   const formatCardNumber = (value) => {
-    // Remove non-digit characters
     let formattedValue = value.replace(/\D/g, '');
-    // Insert a space every four characters
     formattedValue = formattedValue.replace(/(\d{4})(?=\d)/g, '$1 ');
     return formattedValue;
   };
@@ -90,12 +59,16 @@ function PaymentScreen({navigation}) {
   const handleSubmit = async () => {
     const { cardNumber, expiryMonth, expiryYear, cvv } = formData;
     if (cardNumber === '' || expiryMonth === '' || expiryYear === '' || cvv === '') {
-      Alert.alert('Incomplete Information', 'Please fill in all fields.');
+      Toast.show({
+        type: 'error',
+        text1: 'Incomplete Information',
+        text2: 'Please fill in all fields.'
+      });
       return;
     }
-  
+
     try {
-      HandleSubmit()
+      HandleSubmit();
 
       const paymentData = {
         cardNumber,
@@ -105,11 +78,9 @@ function PaymentScreen({navigation}) {
         amount: price * 100,
         currency: "EUR"
       };
-  
-      // Send payment request
+
       const response = await axios.post(`http://${ipAdress}:3000/api/payment/pay`, paymentData);
       
-      // Store payment confirmation locally
       const userId = await AsyncStorage.getItem('IdUser');
       const paymentConfirmationDate = new Date().toISOString();
       const paymentRecord = {
@@ -117,19 +88,14 @@ function PaymentScreen({navigation}) {
         amount: price.toFixed(2),
         currency: "EUR"
       };
-  
-      // Retrieve existing payments
+
       let existingPayments = await AsyncStorage.getItem(`ALL_PAYMENTS_${userId}`);
       existingPayments = existingPayments ? JSON.parse(existingPayments) : [];
-  
-      // Append new payment record
+
       existingPayments.push(paymentRecord);
-  
-      // Store updated payments in AsyncStorage
       await AsyncStorage.setItem(`ALL_PAYMENTS_${userId}`, JSON.stringify(existingPayments));
-      AsyncStorage.removeItem('favorites')
+      AsyncStorage.removeItem('favorites');
       navigation.navigate('paymentSucces');
-      // Display payment confirmation
       
       setFormData({
         cardNumber: '',
@@ -137,23 +103,32 @@ function PaymentScreen({navigation}) {
         expiryYear: '',
         cvv: ''
       });
+      Toast.show({
+        type: 'success',
+        text1: 'Payment Successful',
+        text2: 'Your payment has been processed successfully.'
+      });
     } catch (error) {
       console.log('Payment error:', error);
+      Toast.show({
+        type: 'error',
+        text1: 'Payment Error',
+        text2: 'There was an error processing your payment.'
+      });
     }
   };
-  
-  // Navigation function to home page
+
   const goToHomePage = () => {
-    navigation.navigate('homePage'); // Assuming 'Home' is the name of your home page screen
+    navigation.navigate('homePage');
   };
 
   return (
-    <KeyboardAvoidingView style={{flex: 1}} behavior={Platform.OS === "ios" ? "padding" : null}>
+    <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === "ios" ? "padding" : null}>
       <View style={styles.container}>
         <View style={styles.topBar}>
           <TouchableOpacity onPress={goToHomePage}>
             <Image
-              source={require('../image/logo.png')} // Assuming 'logo.png' is your logo file
+              source={require('../image/logo.png')}
               style={styles.logo}
               resizeMode="contain"
             />
@@ -175,16 +150,16 @@ function PaymentScreen({navigation}) {
               value={formatCardNumber(formData.cardNumber)}
               onChangeText={(text) => handleChange('cardNumber', text)}
               keyboardType="numeric"
-              maxLength={19} // maximum 16 digits + 3 spaces
+              maxLength={19}
             />
             <View style={styles.inputContainer}>
               <TextInput
-                placeholder="Expiry Month / DAY"
+                placeholder="Expiry Month"
                 style={[styles.input, styles.inputHalf]}
                 value={formData.expiryMonth}
                 onChangeText={(text) => handleChange('expiryMonth', text)}
                 keyboardType="numeric"
-                maxLength={4}
+                maxLength={2}
               />
               <TextInput
                 placeholder="Expiry Year"
@@ -192,11 +167,11 @@ function PaymentScreen({navigation}) {
                 value={formData.expiryYear}
                 onChangeText={(text) => handleChange('expiryYear', text)}
                 keyboardType="numeric"
-                maxLength={4}
+                maxLength={2}
               />
             </View>
             <TextInput
-              placeholder="CVV code here"
+              placeholder="CVV code"
               style={styles.input}
               value={formData.cvv}
               onChangeText={(text) => handleChange('cvv', text)}
@@ -205,11 +180,11 @@ function PaymentScreen({navigation}) {
             />
           </View>
           <TouchableOpacity onPress={handleSubmit} style={styles.button}>
-            <Text>Pay Now</Text>
+            <Text style={styles.buttonText}>Pay Now</Text>
           </TouchableOpacity>
-          
         </ScrollView>
       </View>
+      <Toast ref={(ref) => Toast.setRef(ref)} />
     </KeyboardAvoidingView>
   );
 }
@@ -233,24 +208,24 @@ const styles = StyleSheet.create({
     width: 120,
     height: 60,
   },
-  // contentContainer: {
-  //   padding: 20,
-  // },
+  contentContainer: {
+    padding: 20,
+  },
   paymentCartImage: {
     width: '100%',
     height: 250,
     alignSelf: 'center',
-   
+    borderRadius: 25
   },
   paymentOptions: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-   
+    marginVertical: 20,
   },
   creditCardDetails: {
     backgroundColor: '#fff',
-    borderRadius: 10,
-   
+    borderRadius: 30,
+    padding: 20,
     shadowColor: '#000',
     shadowOffset: {
       width: 0,
@@ -284,17 +259,16 @@ const styles = StyleSheet.create({
   },
   button: {
     backgroundColor: '#dba617',
-    width: '100%',
-    height: 50,
+    padding: 15,
+    borderRadius: 25,
     justifyContent: 'center',
     alignItems: 'center',
-    marginBottom: 20,
-    borderRadius: 25,
+    marginVertical: 20,
   },
-  paymentConfirmation: {
-    textAlign: 'center',
-    color: 'green',
-    marginTop: 10,
+  buttonText: {
+    color: '#fff',
+    fontSize: 18,
+    fontWeight: 'bold',
   },
 });
 
