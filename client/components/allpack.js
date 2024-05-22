@@ -28,7 +28,10 @@ const Allpack = ({ navigation }) => {
       try {
         const packsResponse = await axios.get(`http://${ipAdress}:3000/api/packs`);
         const reviewsResponse = await axios.get(`http://${ipAdress}:3000/api/packreview`);
-
+  
+        console.log('Packs Response:', packsResponse.data); 
+        console.log('Reviews Response:', reviewsResponse.data); 
+  
         const packsWithReviews = packsResponse.data.map(pack => {
           const packReviews = reviewsResponse.data.filter(review => review.PackId === pack.id);
           const totalReviews = packReviews.length;
@@ -39,7 +42,7 @@ const Allpack = ({ navigation }) => {
             averageRating: averageRating.toFixed(1),
           };
         });
-
+  
         setPacks(packsWithReviews);
       } catch (err) {
         setError(err.message);
@@ -47,6 +50,7 @@ const Allpack = ({ navigation }) => {
     };
     fetchPacks();
   }, []);
+  
 
   const toggleFeature = async (id, feature) => {
     try {
@@ -65,7 +69,6 @@ const Allpack = ({ navigation }) => {
         favoritesArray.push(pack);
         await AsyncStorage.setItem('favorites', JSON.stringify(favoritesArray));
 
-        // Displaying a toast message at the top
         ToastAndroid.showWithGravity('Item added to cart', ToastAndroid.SHORT, ToastAndroid.TOP);
       }
     } catch (error) {
@@ -76,7 +79,7 @@ const Allpack = ({ navigation }) => {
   const handleNavigateToDetails = async (pack) => {
     try {
       await AsyncStorage.setItem('selectedProductId', pack.id.toString());
-      navigation.navigate('prd', { product: pack });
+      navigation.navigate('pck', { product: pack });
     } catch (error) {
       console.log('Error storing selected product ID:', error);
     }

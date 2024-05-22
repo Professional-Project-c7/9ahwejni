@@ -12,7 +12,6 @@ console.log(somme);
     try {
       const userId = await AsyncStorage.getItem('IdUser');
       const storedBalance = await AsyncStorage.getItem(`PAYMENT_AMOUNT_${userId}`);
-      console.log("storedBalance",storedBalance);
       console.log("userId",userId);
 
       if (storedBalance !== null) {

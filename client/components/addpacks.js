@@ -1,14 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, Text, View, Image, FlatList,Button, TextInput, TouchableOpacity, ImageBackground, ScrollView, SafeAreaView,Modal } from 'react-native';
-import { useTheme,IconButton } from 'react-native-paper';
+import { StyleSheet, Text, View, Image, FlatList, TextInput, TouchableOpacity, ImageBackground, ScrollView, SafeAreaView, Modal, Alert } from 'react-native';
+import { useTheme } from 'react-native-paper';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import { ipAdress } from '../config';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
-import Feather from 'react-native-vector-icons/Feather';
-import imagee from "../image/expresso.png"
-import { imageHandler } from '../components/imagehandlercloud';
 import { launchImageLibrary } from 'react-native-image-picker';
 
 const PackCard = ({ pack, onPressProducts }) => {
@@ -27,7 +24,7 @@ const PackCard = ({ pack, onPressProducts }) => {
   );
 };
 
-const ProductModal = ({ isVisible, onHide, products,options }) => {
+const ProductModal = ({ isVisible, onHide, products }) => {
   return (
     <Modal
       visible={isVisible}
@@ -38,7 +35,7 @@ const ProductModal = ({ isVisible, onHide, products,options }) => {
         <Text style={styles.modalTitle}>Products</Text>
         <View style={styles.productContainer}>
           {products.map((product, index) => (
-            <View key={product.id} style={styles.productItem}>
+            <View key={index} style={styles.productItem}>
               <Image source={{ uri: product.imgUrl }} style={styles.productImage} />
               <View style={styles.productDetails}>
                 <Text style={styles.productName}>{product.name}</Text>
@@ -48,36 +45,33 @@ const ProductModal = ({ isVisible, onHide, products,options }) => {
             </View>
           ))}
         </View>
-        
       </ScrollView>
       <TouchableOpacity onPress={onHide} style={styles.closeButton}>
-      <Image source={require("../image/logout.png")} style={styles.optionImageE} />
-
-        </TouchableOpacity>
+        <Image source={require("../image/logout.png")} style={styles.optionImageE} />
+      </TouchableOpacity>
     </Modal>
   );
 };
 
+const AddPacks = ({ navigation,route }) => {
+  const { productIds } = route.params || { productIds: null };
 
-const AddPacks = ({navigation}) => {
+
   const { colors } = useTheme();
-  const [packName, setpackName] = useState('');
-  const [packDescription, setpackDescription] = useState('');
-  const [packSize, setpackSize] = useState('');
-  const [packPrice, setpackPrice] = useState('');
+  const [packName, setPackName] = useState('');
+  const [packDescription, setPackDescription] = useState('');
+  const [packPrice, setPackPrice] = useState('');
   const [userID, setUserID] = useState(0);
-  const [array, setarray] = useState([]);
-  const [userpacks, setUserpacks] = useState(null);
+  const [array, setArray] = useState([]);
+  const [userPacks, setUserPacks] = useState(null);
   const [selectedPack, setSelectedPack] = useState(null);
   const [isProductModalVisible, setIsProductModalVisible] = useState(false);
-  const [imgUrl, setimgUrl] = useState('');
-  console.log(array);
-
+  const [imgUrl, setImgUrl] = useState('');
   const handleShowProducts = (pack) => {
     setSelectedPack(pack);
     setIsProductModalVisible(true);
   };
-  console.log(userID);
+  console.log("Product IDs:", productIds);
   const imageHandler = async (image) => {
     try {
       const data = new FormData();
@@ -86,22 +80,21 @@ const AddPacks = ({navigation}) => {
         type: image.assets[0].type,
         name: 'photo.jpg'
       });
-      data.append('upload_preset', 'i38oelnt'); // Replace 'your_upload_preset' with your Cloudinary upload preset
-      data.append('cloud_name', 'dqyx6lht5'); // Replace 'your_cloud_name' with your Cloudinary cloud name
-  
+      data.append('upload_preset', 'i38oelnt');
+      data.append('cloud_name', 'dqyx6lht5');
+
       const response = await fetch('https://api.cloudinary.com/v1_1/dqyx6lht5/image/upload', {
         method: 'POST',
         body: data
       });
       const result = await response.json();
-      console.log('Cloudinary response:', result);
       return result.secure_url;
     } catch (error) {
       console.error('Error uploading image:', error);
       throw error;
     }
   };
-  
+
   const pickImage = () => {
     launchImageLibrary({}, async (response) => {
       if (response.didCancel) {
@@ -111,8 +104,7 @@ const AddPacks = ({navigation}) => {
       } else {
         try {
           const imageUri = await imageHandler(response);
-          console.log('Image URI:', imageUri);
-          setimgUrl(imageUri);
+          setImgUrl(imageUri);
         } catch (error) {
           console.error('Error uploading image:', error);
           Alert.alert('Upload Failed', 'Failed to upload image. Please try again.');
@@ -123,16 +115,15 @@ const AddPacks = ({navigation}) => {
 
   useEffect(() => {
     retrieveData();
-    getArrayOfProductsIds()
+    getArrayOfProductsIds();
   }, []);
-  // console.log("userpacks",userpacks);
+
   const retrieveData = async () => {
     try {
       const value = await AsyncStorage.getItem('IdUser');
       if (value !== null) {
         const tokenObject = JSON.parse(value);
-        const userId = tokenObject; 
-        console.log("taww",userId);
+        const userId = tokenObject;
         setUserID(userId);
       }
     } catch (error) {
@@ -141,11 +132,11 @@ const AddPacks = ({navigation}) => {
   };
 
   useEffect(() => {
-    const getUserpacks = async (userId) => {
+    const getUserPacks = async (userId) => {
       try {
         const response = await axios.get(`http://${ipAdress}:3000/api/packs`);
         if (response.status === 200) {
-          setUserpacks(response.data);
+          setUserPacks(response.data);
         }
       } catch (error) {
         console.error('Error fetching user data:', error.message);
@@ -153,73 +144,66 @@ const AddPacks = ({navigation}) => {
     };
 
     if (userID) {
-      getUserpacks(userID);
+      getUserPacks(userID);
     }
   }, [userID]);
 
   const getArrayOfProductsIds = async () => {
     try {
-      const res = await  AsyncStorage.getItem('ArrayOfProductsIds');
-      console.log("array getted",res);
-      console.log("array getted",JSON.parse(res));
-      setarray(JSON.parse(res))
-
+      const res = await AsyncStorage.getItem('ArrayOfProductsIds');
+      setArray(JSON.parse(res));
     } catch (error) {
-      console.error('Error getted array:', error);
+      console.error('Error getting array:', error);
     }
   };
-  
 
-
-  const handleAddpack = async () => {
+  const handleAddPack = async () => {
     try {
       if (!userID) {
         console.error('User ID not found.');
         return;
       }
-      getArrayOfProductsIds()
-      console.log("array" ,array);
-  console.log("before" ,userID);
-      const newpack = {
+      getArrayOfProductsIds();
+      const newPack = {
         name: packName,
         description: packDescription,
         price: packPrice,
         userId: userID,
-        imgUrl:imgUrl,
-        checkedProductIDs:array
+        imgUrl: imgUrl,
+        checkedProductIDs: productIds
       };
-  
-      const response = await axios.post(`http://${ipAdress}:3000/api/packs`, newpack);
-      console.log('pack added successfully:', response.data);
-  
+
+      const response = await axios.post(`http://${ipAdress}:3000/api/packs`, newPack);
+      console.log('Pack added successfully:', response.data);
+
       // Clear the AsyncStorage after adding a new pack
       removeArrayFromStorage();
-  
-      setpackName('');
-      setpackDescription('');
-      setpackSize('');
-      setpackPrice('');
-      setimgUrl('')
-      
+
+      setPackName('');
+      setPackDescription('');
+      setPackPrice('');
+      setImgUrl('');
     } catch (error) {
       console.error('Error adding pack:', error);
     }
   };
-const removeArrayFromStorage = async () => {
-  try {
-    await AsyncStorage.removeItem('ArrayOfProductsIds');
-    console.log('array removed successfully');
-  } catch (error) {
-    console.error('Error removing array:', error);
-  }
-};
 
-const handleremovearray = () => {
-  removeArrayFromStorage();
-  navigation.navigate('Coffeelist');
-};
+  const removeArrayFromStorage = async () => {
+    try {
+      await AsyncStorage.removeItem('ArrayOfProductsIds');
+      console.log('Array removed successfully');
+    } catch (error) {
+      console.error('Error removing array:', error);
+    }
+  };
 
-const filteredProducts = userpacks ? userpacks.filter(pack => pack.userId === userID) : [];
+  const handleRemoveArray = () => {
+    removeArrayFromStorage();
+    navigation.navigate('Coffeelist');
+  };
+
+
+const filteredProducts = userPacks ? userPacks.filter(pack => pack.userId === userID) : [];
 // console.log("filteredProducts",filteredProducts);
 
 console.log("filteredProductst",filteredProducts);
@@ -311,7 +295,7 @@ const firstTwoImages = filteredProducts.slice(0, 2)
                 },
               ]}
               value={packName}
-              onChangeText={setpackName}
+              onChangeText={setPackName}
             />
           </View>
           <View style={styles.action}>
@@ -328,7 +312,7 @@ const firstTwoImages = filteredProducts.slice(0, 2)
                 },
               ]}
               value={packDescription}
-              onChangeText={setpackDescription}
+              onChangeText={setPackDescription}
             />
           </View>
           
@@ -346,13 +330,13 @@ const firstTwoImages = filteredProducts.slice(0, 2)
                 },
               ]}
               value={packPrice}
-              onChangeText={setpackPrice}h
+              onChangeText={setPackPrice}h
             />
           </View>
-          <TouchableOpacity onPress={handleremovearray}>
+          <TouchableOpacity onPress={handleRemoveArray}>
           <Image source={require("../image/coffee-cup.png")} style={styles.optionImage} />
           </TouchableOpacity>
-          <TouchableOpacity style={styles.commandButton} onPress={handleAddpack}>
+          <TouchableOpacity style={styles.commandButton} onPress={handleAddPack}>
             <Text style={styles.panelButtonTitle}>Submit</Text>
           </TouchableOpacity>
           

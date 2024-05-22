@@ -1,10 +1,10 @@
--- INSERT INTO users (FirstName, LastName, Address, Email, Password, ImageUrl, UserType, createdAt,updatedAt) VALUES
--- ('Iheb', 'ghdifi', '120 city jassmin', 'ihebghdi@live.fr', 'RAMIRAMI', 'https://cdn.mos.cms.futurecdn.net/ardTWtasUnsun7e9F7xYsU-1200-80.jpg', 'client', NOW(),NOW()),
--- ('Ramy', 'sassi', '120 city jassmin', 'ramysa@live.fr', 'RAMIRAMI', 'https://i0.wp.com/www.moyens.net/wp-content/uploads/2021/11/1636254757_219_Comment-utiliser-mon-avatar-Facebook-sur-WhatsApp.jpg?resize=700%2C1515&ssl=1', 'client', NOW(),NOW()),
--- ('Aziz', 'Lajnef', '120 city jassmin', 'azyzzven@live.fr', 'RAMIRAMI', 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSXmftdvgEnKtracmKw2_fsoyxAPZJD1BdujHXz6bgytTF-pEtpASfVEO63qD0E-T_o4vI&usqp=CAU', 'client', NOW(),NOW()),
--- ('Dhia', 'Hamouda', '120 city jassmin', 'dhiaham@live.fr', 'RAMIRAMI', 'https://lifehacker.com/imagery/articles/01HF2GKNRQZ4MN1YA639Q53NQV/hero-image.fill.size_1248x702.v1699833590.png', 'client', NOW(),NOW()),
--- ('Amin', 'oueslaty', '120 city jassmin', 'amineouse@live.fr', 'RAMIRAMI', 'https://pbs.twimg.com/media/EYVxlOSXsAExOpX.jpg', 'client', NOW(),NOW()),
--- ('Coffee', 'Hos', '120 city jassmin', 'houssem@live.fr', 'RAMIRAMI', 'https://scontent.ftun2-2.fna.fbcdn.net/v/t39.30808-1/279660318_5147562128623077_3464542306251958250_n.jpg?stp=c0.2.60.60a_cp0_dst-jpg_p60x60&_nc_cat=103&ccb=1-7&_nc_sid=5f2048&_nc_ohc=XjHS24v2KqsQ7kNvgFSlhBs&_nc_ht=scontent.ftun2-2.fna&oh=00_AYCi4ExX6z31K_IruAjGUPzKLeVkMLeazlamWFEYZ8wRvQ&oe=66525C6D', 'coffee', NOW(),NOW());
+INSERT INTO users (FirstName, LastName, Address, Email, Password, ImageUrl, UserType, createdAt,updatedAt) VALUES
+('Iheb', 'ghdifi', '120 city jassmin', 'ihebghdi@live.fr', 'RAMIRAMI', 'https://cdn.mos.cms.futurecdn.net/ardTWtasUnsun7e9F7xYsU-1200-80.jpg', 'client', NOW(),NOW()),
+('Ramy', 'sassi', '120 city jassmin', 'ramysa@live.fr', 'RAMIRAMI', 'https://i0.wp.com/www.moyens.net/wp-content/uploads/2021/11/1636254757_219_Comment-utiliser-mon-avatar-Facebook-sur-WhatsApp.jpg?resize=700%2C1515&ssl=1', 'client', NOW(),NOW()),
+('Aziz', 'Lajnef', '120 city jassmin', 'azyzzven@live.fr', 'RAMIRAMI', 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSXmftdvgEnKtracmKw2_fsoyxAPZJD1BdujHXz6bgytTF-pEtpASfVEO63qD0E-T_o4vI&usqp=CAU', 'client', NOW(),NOW()),
+('Dhia', 'Hamouda', '120 city jassmin', 'dhiaham@live.fr', 'RAMIRAMI', 'https://lifehacker.com/imagery/articles/01HF2GKNRQZ4MN1YA639Q53NQV/hero-image.fill.size_1248x702.v1699833590.png', 'client', NOW(),NOW()),
+('Amin', 'oueslaty', '120 city jassmin', 'amineouse@live.fr', 'RAMIRAMI', 'https://pbs.twimg.com/media/EYVxlOSXsAExOpX.jpg', 'client', NOW(),NOW()),
+('Coffee', 'Hos', '120 city jassmin', 'houssem@live.fr', 'RAMIRAMI', 'https://scontent.ftun2-2.fna.fbcdn.net/v/t39.30808-1/279660318_5147562128623077_3464542306251958250_n.jpg?stp=c0.2.60.60a_cp0_dst-jpg_p60x60&_nc_cat=103&ccb=1-7&_nc_sid=5f2048&_nc_ohc=XjHS24v2KqsQ7kNvgFSlhBs&_nc_ht=scontent.ftun2-2.fna&oh=00_AYCi4ExX6z31K_IruAjGUPzKLeVkMLeazlamWFEYZ8wRvQ&oe=66525C6D', 'coffee', NOW(),NOW());
 
 
 INSERT INTO prods(name, price, imgUrl, description, category, createdAt,updatedAt) VALUES

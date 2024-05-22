@@ -6,6 +6,7 @@ import {
   ScrollView,
   TouchableOpacity,
   Platform,
+  FlatList,
 } from 'react-native';
 import { Calendar } from 'react-native-calendars';
 import DateTimePicker from '@react-native-community/datetimepicker';
@@ -77,6 +78,9 @@ const Availability = () => {
     },
   ]);
 
+  const [submitted, setSubmitted] = useState(false);
+  const [submittedTimes, setSubmittedTimes] = useState([]);
+
   const toggleDaySelection = (day) => {
     setWeekdays(
       weekdays.map((item) =>
@@ -109,6 +113,12 @@ const Availability = () => {
         return item;
       })
     );
+  };
+
+  const handleSubmit = () => {
+    const submittedTimes = weekdays.filter((item) => item.isSelected);
+    setSubmittedTimes(submittedTimes);
+    setSubmitted(true);
   };
 
   const renderDay = ({ day, startTime, endTime, isSelected, showTimeInput, showStartPicker, showEndPicker }) => {
@@ -179,6 +189,17 @@ const Availability = () => {
     );
   };
 
+  const renderSubmittedTime = ({ day, startTime, endTime }) => {
+    return (
+      <View key={day} style={styles.submittedTimeContainer}>
+        <Text style={styles.submittedTimeText}>{day}</Text>
+        <Text style={styles.submittedTimeText}>
+          {startTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} - {endTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+        </Text>
+      </View>
+    );
+  };
+
   return (
     <ScrollView contentContainerStyle={styles.scrollViewContainer}>
       <View style={styles.container}>
@@ -189,10 +210,21 @@ const Availability = () => {
         <ScrollView style={styles.savedTimesContainer}>
           {weekdays.map((weekday) => renderDay(weekday))}
         </ScrollView>
+        {submitted && (
+          <FlatList
+            data={submittedTimes}
+            renderItem={({ item }) => renderSubmittedTime(item)}
+            keyExtractor={(item) => item.day}
+            style={styles.submittedTimesContainer}
+          />
+        )}
+        <TouchableOpacity style={[styles.submitButton, submitted && styles.submitButtonDisabled]} onPress={handleSubmit}>
+          <Text style={styles.submitButtonText}>Submit</Text>
+        </TouchableOpacity>
       </View>
     </ScrollView>
   );
-};
+}
 
 const styles = StyleSheet.create({
   scrollViewContainer: {
@@ -215,7 +247,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     padding: 10,
-    marginVertical: 5,
+    marginVertical:5,
     borderWidth: 1,
     borderColor: '#dba617',
     borderRadius: 20,
@@ -253,6 +285,29 @@ const styles = StyleSheet.create({
   },
   savedTimesContainer: {
     marginTop: 20,
+  },
+  submittedTimesContainer: {
+    marginTop: 20,
+  },
+  submittedTimeContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginVertical: 5,
+  },
+  submittedTimeText: {
+    color: '#dba617',
+    fontSize: 16,
+  },
+  submitButton: {
+    alignItems: 'center',
+    backgroundColor: '#dba617',
+    padding: 10,
+    borderRadius: 30,
+    marginTop: 20,
+  },
+  submitButtonText: {
+    color: 'white',
+    fontSize: 16,
   },
 });
 
