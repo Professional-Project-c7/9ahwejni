@@ -53,7 +53,7 @@ console.log('type',type);
 
     const intervalId = setInterval(() => {
       fetchProducts();
-    }, 5000); // Refresh data every 5 seconds
+    }, 20000); // Refresh data every 5 seconds
 
     return () => clearInterval(intervalId); // Cleanup interval on unmount
   }, []);
