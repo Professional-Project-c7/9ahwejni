@@ -1,5 +1,6 @@
+
 import React, { useState, useEffect, useRef } from 'react';
-import { View, ScrollView, StyleSheet, ImageBackground, TouchableOpacity } from 'react-native';
+import { View, ScrollView, StyleSheet, ImageBackground, TouchableOpacity, Image } from 'react-native';
 import { TextInput, IconButton, Card, Text } from 'react-native-paper';
 import io from 'socket.io-client';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -9,6 +10,7 @@ import AudioRecorderPlayer from 'react-native-audio-recorder-player';
 import RNFS from 'react-native-fs';
 import { request, PERMISSIONS } from 'react-native-permissions';
 import { ipAdress } from '../config';
+import user from '../image/user.png';
 
 const SERVER_ENDPOINT = `http://${ipAdress}:4001`;
 
@@ -283,6 +285,13 @@ const styles = StyleSheet.create({
   sendButton: {
     justifyContent: 'center',
     alignSelf: 'center',
+  },
+  userImage: {
+    width: 50,
+    height: 50,
+    marginRight: 15,
+    borderRadius: 25,
+    overflow: 'hidden'
   },
 });
 
