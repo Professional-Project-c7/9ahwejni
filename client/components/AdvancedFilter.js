@@ -17,7 +17,7 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 const AdvancedFilter = () => {
   const [products, setProducts] = useState([]);
-  const [priceRange, setPriceRange] = useState([0, 1000]);
+  const [priceRange, setPriceRange] = useState([0, 80]);
   const [rating, setRating] = useState('');
   const [filteredProducts, setFilteredProducts] = useState([]);
   const [selectedCategories, setSelectedCategories] = useState([]);
@@ -151,7 +151,7 @@ const AdvancedFilter = () => {
           sliderLength={350}
           onValuesChange={(values) => setPriceRange(values)}
           min={0}
-          max={1000}
+          max={80}
           step={1}
           selectedStyle={{ backgroundColor: '#dba617' }}
           unselectedStyle={{ backgroundColor: '#e0e0e0' }}
