@@ -12,7 +12,7 @@ Geocoder.init('AIzaSyDYm4cfAj3Lrk6HqMJZHGeB1JevFbEC55o');
 export default function MapCoffee() {
   const [region, setRegion] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
-  const [coffeeShops, setCoffeeShops] = useState([]);
+  const [searchResults, setSearchResults] = useState([]);
   const [selectedCoffeeShop, setSelectedCoffeeShop] = useState(null);
   const [directions, setDirections] = useState(null);
   const [modalVisible, setModalVisible] = useState(false);
@@ -64,7 +64,7 @@ export default function MapCoffee() {
           };
         })
       );
-      setCoffeeShops(coffeeShopsData);
+      setSearchResults(coffeeShopsData);
     } catch (error) {
       console.error(error);
     }
@@ -87,45 +87,49 @@ export default function MapCoffee() {
   };
 
   const handleSearch = async () => {
+    if (!searchQuery.trim()) {
+      setSearchResults([]); // Clear results if search query is empty
+      return;
+    }
+
     try {
-      const response = await Geocoder.from(searchQuery);
-      if (response.results.length === 0) {
-        Alert.alert(
-          'Location Not Found',
-          'No results found for the provided search query. Please try entering a different location name or address.',
-          [{ text: 'OK', onPress: () => console.log('OK Pressed') }]
-        );
-        return;
-      }
-      const { lat, lng } = response.results[0].geometry.location;
-      setRegion({
-        latitude: lat,
-        longitude: lng,
-        latitudeDelta: 0.0922,
-        longitudeDelta: 0.0421,
-      });
-      searchCoffeeShops(lat, lng);
+      const response = await fetch(
+        `https://maps.googleapis.com/maps/api/place/textsearch/json?query=${encodeURIComponent(searchQuery)}&location=${region.latitude},${region.longitude}&radius=5000&key=${'AIzaSyDYm4cfAj3Lrk6HqMJZHGeB1JevFbEC55o'}`
+      );
+      const data = await response.json();
+      const placesData = await Promise.all(
+        data.results.map(async result => {
+          const details = await fetch(
+            `https://maps.googleapis.com/maps/api/place/details/json?place_id=${result.place_id}&fields=name,rating,reviews,photos,geometry&key=${'AIzaSyDYm4cfAj3Lrk6HqMJZHGeB1JevFbEC55o'}`
+          );
+          const detailsData = await details.json();
+          return {
+            name: result.name,
+            latitude: result.geometry.location.lat,
+            longitude: result.geometry.location.lng,
+            photoReference: result.photos ? result.photos[0].photo_reference : null,
+            distance: calculateDistance(region.latitude, region.longitude, result.geometry.location.lat, result.geometry.location.lng),
+            reviews: detailsData.result.reviews || []
+          };
+        })
+      );
+      setSearchResults(placesData);
     } catch (error) {
       console.error(error);
-      Alert.alert(
-        'Error',
-        'An error occurred while searching for the location. Please try again later.',
-        [{ text: 'OK', onPress: () => console.log('OK Pressed') }]
-      );
     }
   };
 
-  const handleGetDirections = async (coffeeShop) => {
+  const handleGetDirections = async (place) => {
     try {
       const userLocation = `${region.latitude},${region.longitude}`;
-      const destination = `${coffeeShop.latitude},${coffeeShop.longitude}`;
+      const destination = `${place.latitude},${place.longitude}`;
       const response = await fetch(
         `https://maps.googleapis.com/maps/api/directions/json?origin=${userLocation}&destination=${destination}&key=${'AIzaSyDYm4cfAj3Lrk6HqMJZHGeB1JevFbEC55o'}`
       );
       const data = await response.json();
       setDirections(data);
-      setSelectedCoffeeShop(coffeeShop);
-      setModalVisible(true); // Show the modal with coffee shop details
+      setSelectedCoffeeShop(place);
+      setModalVisible(true); // Show the modal with place details
     } catch (error) {
       console.error('Error fetching directions:', error);
       Alert.alert(
@@ -176,7 +180,7 @@ export default function MapCoffee() {
           style={styles.input}
           value={searchQuery}
           onChangeText={text => setSearchQuery(text)}
-          placeholder="Search location..."
+          placeholder="Search places or coffee shops..."
         />
         <Button style={styles.button} textColor='white' onPress={handleSearch}>
           Search
@@ -186,7 +190,7 @@ export default function MapCoffee() {
       {region ? (
         <MapView style={styles.map} initialRegion={region}>
           <Marker coordinate={{ latitude: region.latitude, longitude: region.longitude }} />
-          {Array.isArray(coffeeShops) && coffeeShops.map((marker, index) => (
+          {Array.isArray(searchResults) && searchResults.map((marker, index) => (
             <Marker
               key={index}
               coordinate={{ latitude: marker.latitude, longitude: marker.longitude }}
@@ -211,12 +215,12 @@ export default function MapCoffee() {
       )}
 
       <List.Accordion
-        title="Coffee Shops"
+        title="Search Results"
         style={styles.coffeeShopsList}
         left={props => <List.Icon {...props} icon="coffee" />}
       >
         <ScrollView style={styles.coffeeShopsContainer}>
-          {Array.isArray(coffeeShops) && coffeeShops.map((coffeeShop, index) => (
+          {Array.isArray(searchResults) && searchResults.map((coffeeShop, index) => (
             <TouchableOpacity key={index} onPress={() => handleGetDirections(coffeeShop)}>
               <View style={styles.coffeeShopItem}>
                 <View style={styles.coffeeShopInfo}>
@@ -329,6 +333,7 @@ const styles = StyleSheet.create({
   },
   coffeeShopsContainer: {
     padding: 10,
+    marginLeft: -30,
   },
   coffeeShopItem: {
     marginBottom: 10,
