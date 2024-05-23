@@ -69,14 +69,18 @@ const ProductDetailsPage = ({ navigation }) => {
         retrieveData();
     }, []);
 
+    const handleAddToHome = () => {
+        navigation.navigate('Tabs');
+        AsyncStorage.removeItem('selectedProductId');
+    };
+
     const goToHomePage = () => {
         AsyncStorage.removeItem('selectedProductId');
         navigation.navigate('homePage');
     };
 
     const handleSizeSelection = size => setSelectedSize(size);
-    const handleSugarSelection = sugar => setSelectedSugar(sugar);
-    const handleIceSelection = ice => setSelectedIce(ice);
+
 
     const handleAddToCart = async () => {
         try {
@@ -125,6 +129,7 @@ const ProductDetailsPage = ({ navigation }) => {
                                     </TouchableOpacity>
                                 </View>
                             </View>
+                           
                             <Text style={styles.productPrice}>{product.price} TND</Text>
                             <View style={styles.priceContainer}>
                                 <TouchableOpacity onPress={handleAddToCart} style={styles.addToCartButton}>

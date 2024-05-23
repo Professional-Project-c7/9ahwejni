@@ -53,7 +53,7 @@ console.log('type',type);
 
     const intervalId = setInterval(() => {
       fetchProducts();
-    }, 5000); // Refresh data every 5 seconds
+    }, 20000); // Refresh data every 5 seconds
 
     return () => clearInterval(intervalId); // Cleanup interval on unmount
   }, []);
@@ -138,7 +138,7 @@ console.log('type',type);
                 <View style={styles.infoContainer}>
                   <Text style={styles.reviews}>{`${product.totalReviews}👤 ⭐: ${product.averageRating}`}</Text>
                   <Text style={styles.name}>{product.name}</Text>
-                  <Text style={styles.price}>${product.price}</Text>
+                  <Text style={styles.price}>{product.price} {""} TND</Text>
                   {type === '"client"' && (
                     <Icon
                       name={favorites[product.id]?.inCart ? 'cart' : 'cart-outline'}
