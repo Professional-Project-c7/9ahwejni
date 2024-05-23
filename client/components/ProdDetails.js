@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, Image, StyleSheet, TouchableOpacity, ScrollView, Modal, Button } from 'react-native';
+import { View, Text, Image, StyleSheet, TouchableOpacity, ScrollView, Modal } from 'react-native';
 import axios from 'axios';
 import { ipAdress } from '../config';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -74,6 +74,10 @@ const ProductDetailsPage = ({ navigation }) => {
         AsyncStorage.removeItem('selectedProductId');
     };
 
+    const goToHomePage = () => {
+        AsyncStorage.removeItem('selectedProductId');
+        navigation.navigate('homePage');
+    };
 
     const handleSizeSelection = size => setSelectedSize(size);
 
@@ -100,6 +104,9 @@ const ProductDetailsPage = ({ navigation }) => {
 
     return (
         <ScrollView style={styles.container}>
+            <TouchableOpacity onPress={goToHomePage} style={styles.backButton}>
+                <Icon name="arrow-left" size={30} color="#dba617" />
+            </TouchableOpacity>
             {products.map((product, index) => (
                 <View key={index} style={styles.productContainer}>
                     <Image source={{ uri: product.imgUrl }} style={styles.productImage} />
@@ -182,9 +189,9 @@ const styles = StyleSheet.create({
         backgroundColor: '#FFFFFF',
         padding: 10,
     },
-    adad: {
-        marginTop: 50,
-        borderRadius: 25,
+    backButton: {
+        marginTop: 1,
+        marginLeft: 1,
     },
     productContainer: {
         marginBottom: 30,
@@ -210,14 +217,15 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         color: '#dba617',
         marginBottom: 15,
-        // fontFamily: 'SFProDisplay-Regular'
+        fontStyle: 'italic'
+
     },
     description: {
         fontSize: 18,
         textAlign: 'center',
         color: '#666',
         marginBottom: 13,
-        // fontFamily: 'SFProDisplay-Regular'
+        fontStyle: 'italic'
     },
     bottomContainer: {
         marginTop: 14,
@@ -227,6 +235,8 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         marginBottom: 10,
         color: '#333',
+        fontStyle: 'italic'
+
     },
     priceContainer: {
         flexDirection: 'row',
@@ -243,6 +253,8 @@ const styles = StyleSheet.create({
         paddingHorizontal: 10,
         paddingVertical: 5,
         textAlign: 'center',
+        fontStyle: 'italic'
+
     },
     optionContainer: {
         marginBottom: 15,
@@ -256,6 +268,8 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         marginBottom: 5,
         color: '#333',
+        fontStyle: 'italic'
+
     },
     optionButton: {
         backgroundColor: '#fff',
@@ -269,6 +283,8 @@ const styles = StyleSheet.create({
     optionButtonText: {
         fontSize: 16,
         color: '#111',
+        fontStyle: 'italic'
+
     },
     selectedOption: {
         backgroundColor: '#dba617',
@@ -292,6 +308,8 @@ const styles = StyleSheet.create({
         color: 'white',
         fontSize: 18,
         fontWeight: 'bold',
+        fontStyle: 'italic'
+
     },
     addReviewButton: {
         backgroundColor: '#dba617',
@@ -302,6 +320,8 @@ const styles = StyleSheet.create({
         color: 'white',
         fontSize: 18,
         fontWeight: 'bold',
+        fontStyle: 'italic'
+
     },
     modalOverlay: {
         flex: 1,
@@ -362,6 +382,8 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         marginBottom: 5,
         color: '#333',
+        fontStyle: 'italic'
+
     },
     rating: {
         marginVertical: 5,
@@ -370,6 +392,8 @@ const styles = StyleSheet.create({
     comment: {
         fontSize: 16,
         color: '#666',
+        fontStyle: 'italic'
+
     },
 });
 

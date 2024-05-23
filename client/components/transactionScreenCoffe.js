@@ -1,13 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { View, Text, ScrollView, TouchableOpacity, StyleSheet, Dimensions } from 'react-native';
+import { View, Text, ScrollView, TouchableOpacity, StyleSheet, Dimensions , Modal } from 'react-native';
 import { LineChart } from 'react-native-chart-kit';
+import Notification from './Notification';
+import { IconButton } from 'react-native-paper';
 
 const Transactions = () => {
   const [activeTab, setActiveTab] = useState('Week');
   const [somme, setSomme] = useState(0);
   const [nawsomme, setNawsomme] = useState(0);
 console.log(somme);
+const [showNotification, setShowNotification] = useState(false);
+
   const fetchData = async () => {
     try {
       const userId = await AsyncStorage.getItem('IdUser');
@@ -103,7 +107,9 @@ console.log(somme);
       legend: ["Balance"],
     }
   };
-
+  const toggleNotification = () => {
+    setShowNotification(!showNotification);
+  };
   const transactions = [
     { initials: "JW", name: "Jenny Wilson", amount: "-$9", color: "#FFCC80", time: "Today, 12:30 pm" },
     { initials: "WW", name: "Wade Warren", amount: "-$7", color: "#E1BEE7", time: "Today, 12:30 pm" },
@@ -159,8 +165,8 @@ console.log(somme);
 
       <View style={styles.summarySection}>
         <View style={[styles.summaryBox, styles.balanceBox]}>
-          <Text style={styles.summaryAmount}>${nawsomme}</Text>
-          <Text style={styles.summaryLabel}>Balance</Text>
+          <Text style={styles.summaryAmount} onPress={toggleNotification}   >show</Text>
+   
         </View>
       </View>
 
@@ -185,6 +191,17 @@ console.log(somme);
           </View>
         ))}
       </View>
+      <Modal
+        visible={showNotification}
+        animationType="slide"
+        transparent={true}
+        onRequestClose={toggleNotification}
+      >
+        <View style={styles.notificationModal}>
+         <Notification/>
+          <IconButton icon="close" color="#000" onPress={toggleNotification} />
+        </View>
+      </Modal>
     </ScrollView>
   );
 };
@@ -266,6 +283,13 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     marginBottom: 10,
+  },
+  notificationModal: {
+    flex: 1,
+    backgroundColor: 'white',
+    justifyContent: 'center',
+    alignItems: 'center',
+    height: 150,
   },
   transactionTitle: {
     fontSize: 18,

@@ -99,11 +99,15 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     color: '#333',
     marginBottom: 5,
+    fontStyle: 'italic',
+
   },
   address: {
     fontSize: 14,
     color: '#888',
     marginBottom: 5,
+    fontStyle: 'italic',
+
   },
   ratingText: {
     fontSize: 14,
@@ -114,6 +118,8 @@ const styles = StyleSheet.create({
     color: 'red',
     textAlign: 'center',
     marginTop: 20,
+    fontStyle: 'italic',
+
   },
 });
 

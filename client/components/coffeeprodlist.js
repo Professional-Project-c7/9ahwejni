@@ -131,10 +131,12 @@ console.log("checkedProductIDs" ,checkedProductIDs);
         }
       }
     }
-    // Set the array of product IDs in AsyncStorage
-    setArrayOfProductsIds(productsToAdd);
-    navigation.navigate('AddPacks');
+    // Pass the array of product IDs as a parameter when navigating to AddPacks
+    navigation.navigate('AddPacks', { productIds: checkedProductIDs });
+  // console.log(productIds);
+
   };
+  
 
 
   const filteredProducts = userData ? userData.filter(product => product.userId === userID) : [];

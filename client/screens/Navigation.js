@@ -49,10 +49,9 @@ import TestCloud from "../components/testcloudinary"
 import PaymentSuccessPage from "../components/paymentSucces"
 import PaymentSuccess from '../components/paymentSucces';
 import Allpack from '../components/allpack';
+import Availability from '../components/availibility';
 import RoomsChat from '../components/RoomsChat'
 import editusers from '../components/edituser'
-// import PackDetails from '../components/PackDetails';
-
 // import { useNavigation } from '@react-navigation/native';
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -232,6 +231,7 @@ function NAVSTART() {
         <Stack.Screen name="Info" component={InfoCoffee} options={{ headerShown: false }} />
         <Stack.Screen name="Coffeelist" component={Coffeelist} options={{ headerShown: false }}/>
         <Stack.Screen name="TestCloud" component={TestCloud} />
+        <Stack.Screen name="Availability" component={Availability} />
 
         <Stack.Screen
           name="TransactionScreenCoffee"
