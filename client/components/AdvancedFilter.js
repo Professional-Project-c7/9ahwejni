@@ -303,7 +303,7 @@ const styles = StyleSheet.create({
     alignSelf: 'flex-end',
   },
   sliderLabel: {
-    fontSize: 16,
+    fontSize: 18,
     textAlign: 'center',
     marginBottom: 10,
     fontStyle: 'italic',
