@@ -71,7 +71,7 @@ const AddPacks = ({ navigation,route }) => {
     setSelectedPack(pack);
     setIsProductModalVisible(true);
   };
-  console.log("Product IDs:", productIds);
+  console.log("Product IDs:", selectedPack);
   const imageHandler = async (image) => {
     try {
       const data = new FormData();
