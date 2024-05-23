@@ -10,7 +10,7 @@ import user from '../image/user.png';
 import moment from 'moment';
 import basket from '../image/addtobasket.png';
 
-const ProductDetailsPage = ({ navigation }) => {
+const PackDetailsPage = ({ navigation }) => {
     const [products, setProducts] = useState([]);
     const [selectedSize, setSelectedSize] = useState(null);
     const [selectedSugar, setSelectedSugar] = useState(null);
@@ -55,7 +55,7 @@ const ProductDetailsPage = ({ navigation }) => {
                     }
                 }
 
-                const response = await axios.get(`http://${ipAdress}:3000/api/product/SearchById/${productId}`);
+                const response = await axios.get(`http://${ipAdress}:3000/api/packs/SearchById/14`);
                 setProducts(response.data);
                 fetchReviews(productId);
             } catch (error) {
@@ -397,4 +397,4 @@ const styles = StyleSheet.create({
     },
 });
 
-export default ProductDetailsPage;
+export default PackDetailsPage;
