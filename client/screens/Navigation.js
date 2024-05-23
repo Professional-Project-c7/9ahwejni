@@ -38,50 +38,54 @@ import Panier from '../components/Panier';
 import Allcoffeeshops from '../components/AllCoffeShops';
 import Onboarding from '../components/Onboarding';
 import AdvancedFilter from '../components/AdvancedFilter';
-import Coffeelist from "../components/coffeeprodlist"
-import SeeAllProdsCoffee from "../components/seeAllprodscoffee"
-import SeeAllPacksCoffee from "../components/seeAllpackscoffee"
+import Coffeelist from "../components/coffeeprodlist";
+import SeeAllProdsCoffee from "../components/seeAllprodscoffee";
+import SeeAllPacksCoffee from "../components/seeAllpackscoffee";
 import AllCakes from '../components/AllCakes';
 import AllCoffees from '../components/AllCoffees';
 import AllDrinks from '../components/AllDrinks';
 import AllProducts from '../components/AllProd';
-import TestCloud from "../components/testcloudinary"
-import PaymentSuccessPage from "../components/paymentSucces"
+import TestCloud from "../components/testcloudinary";
+import PaymentSuccessPage from "../components/paymentSucces";
 import PaymentSuccess from '../components/paymentSucces';
 import Allpack from '../components/allpack';
+import { ipAdress } from '../config'; // Make sure you have the correct IP address
+import axios from 'axios';
+import Availability from '../components/availibility';
 import RoomsChat from '../components/RoomsChat'
 import editusers from '../components/edituser'
-// import PackDetails from '../components/PackDetails';
-
 // import { useNavigation } from '@react-navigation/native';
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
+
 function TabNavigator() {
   const [userType, setUserType] = useState("");
+  const [CoffeeShopsData, setCoffeeShopsData] = useState([]);
+  const [FilteredData, setFilteredData] = useState([]);
+
   // const [x,setx]=useState(false);
-  
-    useEffect(() => {
-      const fetchData = async () => {
-        try {
-          const storedUserType = await AsyncStorage.getItem('userToken');
-            setUserType(JSON.parse(storedUserType));
-            console.log("userType",userType);
-          
-        } catch (error) {
-          console.log('Error fetching user type:', error);
-        }
-      };
-      fetchData();
-      
-    }, []);
-  
-    const storeUserType = async (type) => {
+  // const name = user.map(e=>e.FirstName)
+  useEffect(() => {
+    const fetchData = async () => {
       try {
-        await AsyncStorage.setItem('UserType', type);
+        const storedUserType = await AsyncStorage.getItem('userToken');
+        setUserType(JSON.parse(storedUserType));
+        console.log("userType", userType);
       } catch (error) {
-        console.log('Error storing user type:', error);
+        console.log('Error fetching user type:', error);
       }
     };
+    fetchData();
+  }, []);
+
+  const storeUserType = async (type) => {
+    try {
+      await AsyncStorage.setItem('UserType', type);
+    } catch (error) {
+      console.log('Error storing user type:', error);
+    }
+  };
+
   return (
     <Tab.Navigator
       tabBarOptions={{
@@ -89,8 +93,6 @@ function TabNavigator() {
         inactiveTintColor: 'gray',
       }}
     >
-      
-     
       <Tab.Screen
         name="homePage"
         component={HomePage}
@@ -104,7 +106,7 @@ function TabNavigator() {
           headerShown: false
         }}
       />
-       <Tab.Screen
+      <Tab.Screen
         name="Allcoffeeshops"
         component={Allcoffeeshops}
         options={{
@@ -213,12 +215,33 @@ function TabNavigator() {
     </Tab.Navigator>
   );
 }
+
 function NAVSTART() {
+  const [CoffeeShopsData, setCoffeeShopsData] = useState([]);
+  const [FilteredData, setFilteredData] = useState([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get(`http://${ipAdress}:3000/api/user`);
+        const filteredShops = response.data.filter(user => user.UserType === 'coffee');
+        setCoffeeShopsData(filteredShops);
+        setFilteredData(filteredShops);
+        console.log("------------d-d-d-d-d",FilteredData);
+      } catch (error) {
+        console.log('Error fetching data:', error.message);
+      }
+    };
+    fetchData()
+  }, []);
+
+  const Name = FilteredData.map(e=>(e.FirstName + ' ' + e.LastName))
+console.log('--------------------------------', Name);
+  
 
   return (
     <NavigationContainer>
       <Stack.Navigator initialRouteName="Onboarding">
-        {/* <Stack.Screen name="Start" component={Start} options={{ headerShown: false }} /> */}
         <Stack.Screen name="Login" component={Login} options={{ headerShown: false }} />
         <Stack.Screen name="Allpack" component={Allpack} options={{ headerShown: false }} />
         <Stack.Screen name="UserSignUp" component={SignUser} options={{ headerShown: false }} />
@@ -227,11 +250,12 @@ function NAVSTART() {
         <Stack.Screen name="ProductList" component={ProductList} />
         <Stack.Screen name="AddPacks" component={AddPacks} options={{ headerShown: false }} />
         <Stack.Screen name="AddProducts" component={AddProducts} options={{ headerShown: false }} />
-        <Stack.Screen name="Orders" component={Orders}options={{ headerShown: false }}  />
-        <Stack.Screen name="Edit" component={EditCoffee}options={{ headerShown: false }} />
+        <Stack.Screen name="Orders" component={Orders} options={{ headerShown: false }} />
+        <Stack.Screen name="Edit" component={EditCoffee} options={{ headerShown: false }} />
         <Stack.Screen name="Info" component={InfoCoffee} options={{ headerShown: false }} />
-        <Stack.Screen name="Coffeelist" component={Coffeelist} options={{ headerShown: false }}/>
+        <Stack.Screen name="Coffeelist" component={Coffeelist} options={{ headerShown: false }} />
         <Stack.Screen name="TestCloud" component={TestCloud} />
+        <Stack.Screen name="Availability" component={Availability} />
 
         <Stack.Screen
           name="TransactionScreenCoffee"
@@ -240,8 +264,8 @@ function NAVSTART() {
         />
          <Stack.Screen name="SeeAllPacksCoffee" component={SeeAllPacksCoffee} options={{ headerShown: false }} />
         <Stack.Screen name="ReviewsCoffee" component={ReviewsCoffee} options={{ headerShown: false }} />
-        <Stack.Screen name="PaymentCardsDetails" component={PaymentCardsDetails}  />
-        <Stack.Screen name="User" component={UserProfile} options={{ headerShown: false }}/>
+        <Stack.Screen name="PaymentCardsDetails" component={PaymentCardsDetails} />
+        <Stack.Screen name="User" component={UserProfile} options={{ headerShown: false }} />
         <Stack.Screen name="prd" component={ProductDetailsPage} options={{ headerShown: false }} />
         <Stack.Screen name="panier" component={Panier} options={{ headerShown: false }} />
         <Stack.Screen name="Allcoffeeshops" component={Allcoffeeshops} options={{ headerShown: false }} />
@@ -251,16 +275,16 @@ function NAVSTART() {
         <Stack.Screen name="st2" component={Start2} options={{ headerShown: false }} />
         <Stack.Screen name="st3" component={Start3} options={{ headerShown: false }} />
         <Stack.Screen name="st4" component={Start4} options={{ headerShown: false }} />
-        <Stack.Screen name="Tabs"  component={TabNavigator} options={{ headerShown: false }} />
+        <Stack.Screen name="Tabs" component={TabNavigator} options={{ headerShown: false }} />
         <Stack.Screen name="Onboarding" component={Onboarding} options={{ headerShown: false }} />
         <Stack.Screen name="AdvancedFilter" component={AdvancedFilter} options={{ headerShown: false }} />
-        <Stack.Screen name="Favorit" component={Favorit } options={{ headerShown: false }} />
-        <Stack.Screen  name="SeeAllProdsCoffee" component={SeeAllProdsCoffee} options={{ headerShown: false }}/>
+        <Stack.Screen name="Favorit" component={Favorit} options={{ headerShown: false }} />
+        <Stack.Screen name="SeeAllProdsCoffee" component={SeeAllProdsCoffee} options={{ headerShown: false }} />
         <Stack.Screen name="AllProducts" component={AllProducts} options={{ headerShown: false }} />
         <Stack.Screen name="AllCakes" component={AllCakes} options={{ headerShown: false }} />
         <Stack.Screen name="AllCoffees" component={AllCoffees} options={{ headerShown: false }} />
         <Stack.Screen name="AllDrinks" component={AllDrinks} options={{ headerShown: false }} />
-        <Stack.Screen name="chat" component={chat} options={{ headerShown: false }}/>
+        <Stack.Screen name="chat" component={chat} />
         <Stack.Screen name="paymentSucces" component={PaymentSuccessPage}  />
         <Stack.Screen  name="SettingComponent" component={SettingComponent} />
         <Stack.Screen  name="RoomsChat" component={RoomsChat} /> 

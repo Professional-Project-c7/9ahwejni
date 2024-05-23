@@ -53,7 +53,7 @@ console.log('type',type);
 
     const intervalId = setInterval(() => {
       fetchProducts();
-    }, 5000); // Refresh data every 5 seconds
+    }, 20000); // Refresh data every 5 seconds
 
     return () => clearInterval(intervalId); // Cleanup interval on unmount
   }, []);
@@ -136,9 +136,9 @@ console.log('type',type);
                   />
                 )}
                 <View style={styles.infoContainer}>
-                  <Text style={styles.reviews}>{`${product.totalReviews} 👤 ⭐: ${product.averageRating}`}</Text>
+                  <Text style={styles.reviews}>{`${product.totalReviews}👤 ⭐: ${product.averageRating}`}</Text>
                   <Text style={styles.name}>{product.name}</Text>
-                  <Text style={styles.price}>${product.price}</Text>
+                  <Text style={styles.price}>{product.price} {""} TND</Text>
                   {type === '"client"' && (
                     <Icon
                       name={favorites[product.id]?.inCart ? 'cart' : 'cart-outline'}
@@ -204,13 +204,18 @@ const styles = StyleSheet.create({
     textAlign: 'left',
     bottom: 5,
     right: 5,
+    marginRight : 9,
+    fontStyle: 'italic',
+
   },
   price: {
-    fontSize: 16,
+    fontSize: 17,
     fontWeight: 'bold',
     color: '#000',
     right: 5,
     top: 5,
+    fontStyle: 'italic',
+
   },
   reviews: {
     fontSize: 14,

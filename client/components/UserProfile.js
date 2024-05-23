@@ -134,13 +134,13 @@ const MyComponent = ({ navigation }) => {
                     imageStyle={{ borderRadius: 15 }}>
                     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}></View>
                   </ImageBackground>
-                  <Icon
+                  {/* <Icon
                     onPress={pickImage}
                     name="camera"
                     size={35}
                     color="black"
                     style={{ opacity: 0.7, alignItems: 'center', justifyContent: 'center', marginLeft: 65, borderColor: 'black' }}
-                  />
+                  /> */}
                 </View>
               </TouchableOpacity>
               <Text style={{ marginTop: 10, fontSize: 18, fontWeight: 'bold', color: 'black' }}>

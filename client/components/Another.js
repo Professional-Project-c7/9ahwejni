@@ -134,11 +134,15 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
     color: '#333',
+    fontStyle: 'italic',
+
   },
   description: {
     color: '#6e695b',
     fontSize: 15,
     marginVertical: 5,
+    fontStyle: 'italic',
+
   },
   price: {
     fontSize: 17,
