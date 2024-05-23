@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, Modal, TouchableOpacity, Image, StyleSheet, ScrollView,ImageBackground } from 'react-native';
+import { View, Text, Modal, TouchableOpacity, Image, StyleSheet, ScrollView, ImageBackground } from 'react-native';
 import { IconButton } from 'react-native-paper';
 import AddPacks from './addpacks';
 import addProducts from './addproducts';
@@ -14,47 +14,25 @@ import { ipAdress } from '../config';
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 const MyComponent = ({navigation}) => {
-    
   const [userData, setUserData] = useState(null);
-  const [userID,setuserID] = useState(null)
-
+  const [userID, setuserID] = useState(null);
+  const [isModalVisible, setIsModalVisible] = useState(false);
 
   const retrieveData = async () => {
     try {
       const value = await AsyncStorage.getItem('IdUser');
       if (value !== null) {
-        const tokenObject = JSON.parse(value);
-        const userId = tokenObject; 
-        console.log("taww",userId);
+        const userId = JSON.parse(value);
         setuserID(userId);
       }
     } catch (error) {
       console.error('Error retrieving data:', error);
     }
   };
-  
-  
-  
-    const myCustomShare = async() => {
-      const shareOptions = {
-        message: 'Order your next meal from FoodFinder App.',
-        url: "https://parottaexpress.com/wp-content/uploads/2023/11/Coffee.png",
-        // urls: [files.image1, files.image2]
-      }
-  
-      try {
-        const ShareResponse = await Share.open(shareOptions);
-        console.log(JSON.stringify(ShareResponse));
-      } catch(error) {
-        console.log('Error => ', error);
-      }
-    }
-  
+
   const getUserData = async (userId) => {
     try {
       const response = await axios.get(`http://${ipAdress}:3000/api/user/${userId}`);
-      console.log(response.data); // Check response data
-      console.log(userData);
       if (response.status === 200) {
         setUserData(response.data);
       } else {
@@ -64,16 +42,6 @@ const MyComponent = ({navigation}) => {
       console.error('Error fetching user data:', error.message);
     }
   };
-  console.log(userData);
-  useEffect(() => {
-    retrieveData();
-  }, []);
-  
-  useEffect(() => {
-    if (userID) {
-      getUserData(userID);
-    }
-  }, [userID]);
 
   const removeTokenFromStorage = async () => {
     try {
@@ -83,143 +51,151 @@ const MyComponent = ({navigation}) => {
       console.error('Error removing token:', error);
     }
   };
-  const [isModalVisible, setIsModalVisible] = useState(false);
-  
+
   const handleLogout = () => {
     removeTokenFromStorage();
     navigation.navigate('Login');
   };
+
   const toggleModal = () => {
     setIsModalVisible(!isModalVisible);
   };
-// const img = userData.ImageUrl
+
+  useEffect(() => {
+    retrieveData();
+  }, []);
+
+  useEffect(() => {
+    if (userID) {
+      getUserData(userID);
+    }
+  }, [userID]);
+
+  const img = userData ? userData.ImageUrl : 'https://via.placeholder.com/150'; // Default placeholder image
+
   return (
     <ScrollView>
       <View style={styles.container}>
         <View style={styles.header}>
-        {/* <ImageBackground 
-        source={{ uri: img }}
-         style={styles.profileImage}>
- 
-  <View style={styles.leftTextContainer}>
-  <View style={styles.textWithIcon}>
-    <Text style={styles.textrate}>4.5</Text>
-    <IconButton icon="star" iconColor='#dba617' size={23} style={styles.starIcon} />
-  </View>
-</View>
+          <ImageBackground 
+            source={{ uri: img }}
+            style={styles.profileImage}
+          >
+            <View style={styles.leftTextContainer}>
+              <View style={styles.textWithIcon}>
+                <Text style={styles.textrate}>4.5</Text>
+                <IconButton icon="star" iconColor='#dba617' size={23} style={styles.starIcon} />
+              </View>
+            </View>
 
- 
-  <View style={styles.rightTextContainer}>
-  <View style={styles.textWithIcon}>
-    <IconButton icon="google-maps" iconColor='#dba617' size={23} style={styles.locIcon} />
-    <Text style={styles.textloc}>Gabes</Text>
-  </View>
-</View>
-  <IconButton icon="keyboard-backspace" iconColor='#dba617' size={35} style={styles.backIcon} />
-</ImageBackground> */}
-
+            <View style={styles.rightTextContainer}>
+              <View style={styles.textWithIcon}>
+                <IconButton icon="google-maps" iconColor='#dba617' size={23} style={styles.locIcon} />
+                <Text style={styles.textloc}>Gabes</Text>
+              </View>
+            </View>
+            <IconButton icon="keyboard-backspace" iconColor='#dba617' size={35} style={styles.backIcon} />
+          </ImageBackground>
         </View>
-       
 
         <View style={styles.profileInfo}>
           {/* <Text style={styles.name}>{userData.FirstName+" "+userData.LastName}</Text> */}
         </View>
         <View style={styles.optionsContainerOne}>
-        <TouchableOpacity style={styles.optionOne} onPress={() => navigation.navigate('Info')}>
-  <View style={styles.optionContent}>
-    <Image source={require("../image/profile.png")} style={styles.optionImageE} />
-    <Text style={styles.optionText}>INFORMATIONS</Text>
-  </View>
-</TouchableOpacity>
-          
-<TouchableOpacity style={styles.optionOne} onPress={() => navigation.navigate('InfoCoffee')}>
-  <View style={styles.optionContent}>
-    <Image source={require("../image/availability.png")} style={styles.optionImageE} />
-    <Text style={styles.optionText}>AVAILABILITY</Text>
-  </View>
-</TouchableOpacity>
-<TouchableOpacity style={styles.optionOne} onPress={() => navigation.navigate('InfoCoffee')}>
-  <View style={styles.optionContent}>
-    <Image source={require("../image/settings.png")} style={styles.optionImageE} />
-    <Text style={styles.optionText}>SETTINGS</Text>
-  </View>
-</TouchableOpacity>
+          <TouchableOpacity style={styles.optionOne} onPress={() => navigation.navigate('Info')}>
+            <View style={styles.optionContent}>
+              <Image source={require("../image/profile.png")} style={styles.optionImageE} />
+              <Text style={styles.optionText}>INFORMATIONS</Text>
+            </View>
+          </TouchableOpacity>
+
+          <TouchableOpacity style={styles.optionOne} onPress={() => navigation.navigate('Availability')}>
+            <View style={styles.optionContent}>
+              <Image source={require("../image/availability.png")} style={styles.optionImageE} />
+              <Text style={styles.optionText}>AVAILABILITY</Text>
+            </View>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.optionOne} onPress={() => navigation.navigate('InfoCoffee')}>
+            <View style={styles.optionContent}>
+              <Image source={require("../image/settings.png")} style={styles.optionImageE} />
+              <Text style={styles.optionText}>SETTINGS</Text>
+            </View>
+          </TouchableOpacity>
         </View>
         <View style={styles.optionsContainer}>
           <TouchableOpacity style={styles.option} onPress={() => navigation.navigate('AddPacks')}>
             <View style={styles.test} >
-            <Image source={require("../image/packs.png")} style={styles.optionImage} /></View>
-            <Text style={styles.optionText} >ADD PACKS</Text>
+              <Image source={require("../image/packs.png")} style={styles.optionImage} />
+            </View>
+            <Text style={styles.optionText}>ADD PACKS</Text>
           </TouchableOpacity>
           <TouchableOpacity style={styles.option} onPress={() => navigation.navigate('AddProducts')}>
-          <View style={styles.test} >
-            <Image source={require("../image/coffee-cup.png")} style={styles.optionImage} /></View>
+            <View style={styles.test} >
+              <Image source={require("../image/coffee-cup.png")} style={styles.optionImage} />
+            </View>
             <Text style={styles.optionText}>ADD PRODUCTS</Text>
           </TouchableOpacity>
         </View>
         <View style={styles.optionsContainer}>
           <TouchableOpacity style={styles.option} onPress={() => navigation.navigate('Orders')}>
-          <View style={styles.test} >
-            <Image source={require("../image/online-order.png")} style={styles.optionImage} /></View>
+            <View style={styles.test} >
+              <Image source={require("../image/online-order.png")} style={styles.optionImage} />
+            </View>
             <Text style={styles.optionText}>ORDERS</Text>
           </TouchableOpacity>
           <TouchableOpacity style={styles.option} onPress={() => navigation.navigate('ReviewsCoffee')}>
-          <View style={styles.test} >
-            <Image source={require("../image/reviews.png")} style={styles.optionImage} /></View>
+            <View style={styles.test} >
+              <Image source={require("../image/reviews.png")} style={styles.optionImage} />
+            </View>
             <Text style={styles.optionText}>REVIEWS</Text>
           </TouchableOpacity>
         </View>
         <View style={styles.optionsContainer}>
-          <TouchableOpacity style={styles.option } onPress={() => navigation.navigate('PaymentCardsDetails')}>
-          <View style={styles.test} >
-            <Image source={require("../image/credit-card.png")} style={styles.optionImage} /></View>
+          <TouchableOpacity style={styles.option} onPress={() => navigation.navigate('PaymentCardsDetails')}>
+            <View style={styles.test} >
+              <Image source={require("../image/credit-card.png")} style={styles.optionImage} />
+            </View>
             <Text style={styles.optionText}>PAYMENT DETAILS</Text>
           </TouchableOpacity>
           <TouchableOpacity style={styles.option} onPress={() => navigation.navigate('TransactionScreenCoffee')}>
-          <View style={styles.test} >
-            <Image source={require("../image/transaction.png")} style={styles.optionImage} /></View>
+            <View style={styles.test} >
+              <Image source={require("../image/transaction.png")} style={styles.optionImage} />
+            </View>
             <Text style={styles.optionText}>TRANSACTIONS</Text>
           </TouchableOpacity>
         </View>
         
         {/* Add more options here */}
         <View style={styles.logout}>
-        <TouchableOpacity style={styles.optionOne} onPress={toggleModal}>
-  <View style={styles.optionContent}>
-    <Image source={require("../image/logout.png")} style={styles.optionImageE} />
-    <Text style={styles.optionText}>LOG OUT  </Text>
-  </View>
-</TouchableOpacity>
-      </View>
+          <TouchableOpacity style={styles.optionOne} onPress={toggleModal}>
+            <View style={styles.optionContent}>
+              <Image source={require("../image/logout.png")} style={styles.optionImageE} />
+              <Text style={styles.optionText}>LOG OUT</Text>
+            </View>
+          </TouchableOpacity>
+        </View>
       </View>
       <View style={styles.container}>
-      {/* <TouchableOpacity style={styles.button} onPress={toggleModal}>
-        <Text style={styles.buttonText}>Show Popup</Text>
-      </TouchableOpacity> */}
-
-      <Modal
-        animationType="slide"
-        transparent={true}
-        visible={isModalVisible}
-        onRequestClose={toggleModal}
-      >
-        <View style={styles.centeredView}>
-          <View style={styles.modalView}>
-            <Text style={styles.modalText}>do you want logout !</Text>
-            <TouchableOpacity style={styles.closeButton} onPress={handleLogout}>
-              <Text style={styles.closeButtonText}>log out</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.closeButton} onPress={toggleModal}>
-              <Text style={styles.closeButtonText}>Cancel</Text>
-            </TouchableOpacity>
-            
+        <Modal
+          animationType="slide"
+          transparent={true}
+          visible={isModalVisible}
+          onRequestClose={toggleModal}
+        >
+          <View style={styles.centeredView}>
+            <View style={styles.modalView}>
+              <Text style={styles.modalText}>Do you want to logout?</Text>
+              <TouchableOpacity style={styles.closeButton} onPress={handleLogout}>
+                <Text style={styles.closeButtonText}>Log out</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.closeButton} onPress={toggleModal}>
+                <Text style={styles.closeButtonText}>Cancel</Text>
+              </TouchableOpacity>
+            </View>
           </View>
-        </View>
-      </Modal>
-    </View>
-      
+        </Modal>
+      </View>
     </ScrollView>
-    
   );
 };
 

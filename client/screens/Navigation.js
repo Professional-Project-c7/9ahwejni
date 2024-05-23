@@ -51,10 +51,9 @@ import PaymentSuccess from '../components/paymentSucces';
 import Allpack from '../components/allpack';
 import { ipAdress } from '../config'; // Make sure you have the correct IP address
 import axios from 'axios';
+import Availability from '../components/availibility';
 import RoomsChat from '../components/RoomsChat'
 import editusers from '../components/edituser'
-// import PackDetails from '../components/PackDetails';
-
 // import { useNavigation } from '@react-navigation/native';
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -256,8 +255,14 @@ console.log('--------------------------------', Name);
         <Stack.Screen name="Info" component={InfoCoffee} options={{ headerShown: false }} />
         <Stack.Screen name="Coffeelist" component={Coffeelist} options={{ headerShown: false }} />
         <Stack.Screen name="TestCloud" component={TestCloud} />
-        <Stack.Screen name="TransactionScreenCoffee" component={TransactionScreenCoffee} />
-        <Stack.Screen name="SeeAllPacksCoffee" component={SeeAllPacksCoffee} options={{ headerShown: false }} />
+        <Stack.Screen name="Availability" component={Availability} />
+
+        <Stack.Screen
+          name="TransactionScreenCoffee"
+          component={TransactionScreenCoffee}
+         
+        />
+         <Stack.Screen name="SeeAllPacksCoffee" component={SeeAllPacksCoffee} options={{ headerShown: false }} />
         <Stack.Screen name="ReviewsCoffee" component={ReviewsCoffee} options={{ headerShown: false }} />
         <Stack.Screen name="PaymentCardsDetails" component={PaymentCardsDetails} />
         <Stack.Screen name="User" component={UserProfile} options={{ headerShown: false }} />

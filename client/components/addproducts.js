@@ -164,9 +164,9 @@ const ProductList = ({ navigation }) => {
         console.error('Error fetching user data:', error.message);
       }
     };
-    // setrefresh(!refresh)
     if (userID) {
       getUserData(userID);
+
     }
   }, [userID,refresh]);
 
@@ -215,7 +215,7 @@ const ProductList = ({ navigation }) => {
   };
 
   const filteredProducts = userData? userData.filter(product => product.userId === userID) : [];
-  const firstTwoImages = filteredProducts.slice(0, 2);
+  const firstTwoImages = filteredProducts.slice(0, 4);
 
   return (
     <ScrollView>

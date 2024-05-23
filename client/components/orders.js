@@ -1,33 +1,57 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, FlatList, StyleSheet, TouchableOpacity, Modal, TouchableWithoutFeedback } from 'react-native';
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
 
 // Dummy data
-const dummyOrders = [
+const initialOrders = [
   { id: 1, userName: 'John Doe', delivery: 'Latte', price: 4.99, date: '2024-05-13', status: 'Pending', description: 'This is a delicious Latte with extra foam.' },
   { id: 2, userName: 'Jane Smith', delivery: 'Cappuccino', price: 3.99, date: '2024-05-14', status: 'Pending', description: 'A classic Cappuccino with a sprinkle of cocoa.' },
   { id: 3, userName: 'Alice Johnson', delivery: 'Espresso', price: 2.49, date: '2024-05-13', status: 'Pending', description: 'Strong and intense Espresso shot.' },
   // Add more sample orders here
 ];
 
-const OrdersPage = () => {
-  const [filteredOrders, setFilteredOrders] = useState(dummyOrders); // Initially set filtered orders to all orders
+const OrdersPage = ({ navigation }) => {
+  const [orders, setOrders] = useState(initialOrders);
+  const [filteredOrders, setFilteredOrders] = useState(initialOrders);
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [modalVisible, setModalVisible] = useState(false);
 
+  useEffect(() => {
+    setFilteredOrders(orders);
+  }, [orders]);
+
   const handleDateFilter = (date) => {
-    // Filter orders based on selected date
-    const filtered = dummyOrders.filter(order => order.date === date);
+    const filtered = orders.filter(order => order.date === date);
     setFilteredOrders(filtered);
   };
 
   const handleAccept = (id) => {
-    // Handle accept action
-    // You can implement the logic to update the order status in your application
+    navigation.navigate('Map');
   };
 
   const handleReject = (id) => {
-    // Handle reject action
-    // You can implement the logic to update the order status in your application
+    const updatedOrders = orders.map(order => {
+      if (order.id === id) {
+        return { ...order, status: 'accepted' };
+      }
+      return order;
+    });
+
+    setOrders(updatedOrders);
+    setFilteredOrders(updatedOrders);
+    closeModal();
+  };
+
+  const handleRestore = (id) => {
+    const restoredOrders = orders.map(order => {
+      if (order.id === id) {
+        return initialOrders.find(initialOrder => initialOrder.id === id);
+      }
+      return order;
+    });
+
+    setOrders(restoredOrders);
+    setFilteredOrders(restoredOrders);
   };
 
   const openModal = (order) => {
@@ -45,17 +69,24 @@ const OrdersPage = () => {
         <Text style={styles.orderName}>{item.userName}</Text>
         <Text style={styles.orderDetails}>{item.delivery}</Text>
         <Text style={styles.orderDetails}>Price: {item.price}</Text>
-        <View style={styles.buttonContainer}>
-          <TouchableOpacity onPress={() => handleAccept(item.id)} style={[styles.button, styles.acceptButton]}>
-            <Text style={styles.buttonText}>Accept</Text>
-          </TouchableOpacity>
-          <TouchableOpacity onPress={() => handleReject(item.id)} style={[styles.button, styles.rejectButton]}>
-            <Text style={styles.buttonText}>Reject</Text>
-          </TouchableOpacity>
-        </View>
+        {item.status === 'Pending' && (
+          <View style={styles.buttonContainer}>
+            <TouchableOpacity onPress={() => handleAccept(item.id)} style={[styles.button, styles.acceptButton]}>
+              <Text style={styles.buttonText}>location</Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => handleReject(item.id)} style={[styles.button, styles.rejectButton]}>
+              <Text style={styles.buttonText}>shipped</Text>
+            </TouchableOpacity>
+          </View>
+        )}
         <View style={styles.statusContainer}>
           <Text>Status: {item.status}</Text>
         </View>
+        {item.status !== 'Pending' && (
+          <TouchableOpacity onPress={() => handleRestore(item.id)} style={styles.checkmarkContainer}>
+            <FontAwesome name="check-square-o" color={'green'} size={30} />
+          </TouchableOpacity>
+        )}
       </View>
     </TouchableOpacity>
   );
@@ -64,12 +95,11 @@ const OrdersPage = () => {
     <View style={styles.container}>
       <View style={styles.filterContainer}>
         <TouchableOpacity onPress={() => handleDateFilter('2024-05-13')} style={styles.filterButton}>
-          <Text style={styles.filterText}>May 13, 2024</Text>
+          <Text style={styles.filterText}>May 22, 2024</Text>
         </TouchableOpacity>
         <TouchableOpacity onPress={() => handleDateFilter('2024-05-14')} style={styles.filterButton}>
-          <Text style={styles.filterText}>May 14, 2024</Text>
+          <Text style={styles.filterText}>May 23, 2024</Text>
         </TouchableOpacity>
-        {/* Add more filter options here */}
       </View>
       <FlatList
         data={filteredOrders}
@@ -91,17 +121,16 @@ const OrdersPage = () => {
             <View>
               <Text>Delivery: {selectedOrder.delivery}</Text>
               <Text>Description: {selectedOrder.description}</Text>
-              {/* Add more details to display */}
             </View>
           )}
-           <View style={styles.buttonContainerpopup}>
-          <TouchableOpacity onPress={() => handleAccept(item.id)} style={[styles.button, styles.acceptButton]}>
-            <Text style={styles.buttonText}>Accept</Text>
-          </TouchableOpacity>
-          <TouchableOpacity onPress={() => handleReject(item.id)} style={[styles.button, styles.rejectButton]}>
-            <Text style={styles.buttonText}>Reject</Text>
-          </TouchableOpacity>
-        </View>
+          <View style={styles.buttonContainerpopup}>
+            <TouchableOpacity onPress={() => handleAccept(selectedOrder.id)} style={[styles.button, styles.acceptButton]}>
+              <Text style={styles.buttonText}>location</Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => handleReject(selectedOrder.id)} style={[styles.button, styles.rejectButton]}>
+              <Text style={styles.buttonText}>shipped</Text>
+            </TouchableOpacity>
+          </View>
           <TouchableOpacity onPress={closeModal} style={styles.closeButton}>
             <Text style={styles.closeButtonText}>Close</Text>
           </TouchableOpacity>
@@ -134,8 +163,9 @@ const styles = StyleSheet.create({
     backgroundColor: '#f9f9f9',
     padding: 10,
     marginBottom: 10,
-    borderColor:'#dba617',
+    borderColor: '#dba617',
     borderRadius: 5,
+    position: 'relative',
   },
   orderName: {
     fontSize: 16,
@@ -151,7 +181,6 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   buttonContainerpopup: {
-    marginTop: 340,
     flexDirection: 'row',
     justifyContent: 'space-between',
     marginTop: 10,
@@ -176,40 +205,47 @@ const styles = StyleSheet.create({
   statusContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    // borderTopWidth: 1,
     borderColor: '#ccc',
     paddingVertical: 10,
   },
+  checkmarkContainer: {
+    position: 'absolute',
+    top: 0,
+    right: 0,
+    backgroundColor: 'transparent',
+  },
+  checkmark: {
+    fontSize: 20,
+    color: 'green',
+  },
   modalOverlay: {
     flex: 1,
-    // backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    justifyContent: 'center',
   },
   modalContent: {
-    backgroundColor: '#EEEEEE',
-    margin: 50,
-    height:600,
+    backgroundColor: '#fff',
+    marginHorizontal: 20,
     padding: 20,
     borderRadius: 10,
     elevation: 5,
   },
   modalTitle: {
-    fontSize: 18,
+    fontSize: 20,
     fontWeight: 'bold',
-    marginBottom: 10,
+    marginBottom: 15,
   },
   closeButton: {
-    marginTop: 340,
-    marginRight: 70,
     backgroundColor: '#dba617',
     padding: 10,
     borderRadius: 30,
-    // flex: 1,
     alignItems: 'center',
-    alignSelf: 'flex-end',
-    width:120,
-    height:50,
+    alignSelf: 'center',
+    width: 120,
+    height: 50,
     fontSize: 20,
-  
+    justifyContent: 'center',
+    marginTop: 20,
   },
   closeButtonText: {
     color: 'white',
