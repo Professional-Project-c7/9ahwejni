@@ -138,7 +138,7 @@ console.log('type',type);
                 <View style={styles.infoContainer}>
                   <Text style={styles.reviews}>{`${product.totalReviews}👤 ⭐: ${product.averageRating}`}</Text>
                   <Text style={styles.name}>{product.name}</Text>
-                  <Text style={styles.price}>{product.price} {""} DTN</Text>
+                  <Text style={styles.price}>{product.price} {""} TND</Text>
                   {type === '"client"' && (
                     <Icon
                       name={favorites[product.id]?.inCart ? 'cart' : 'cart-outline'}
