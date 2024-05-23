@@ -90,7 +90,7 @@ useEffect(() => {
                 </ImageBackground>
               </View>
             </TouchableOpacity>
-            <Text style={{ marginTop: 10, fontSize: 18, fontWeight: 'bold' }}>{userData.FirstName + userData.LastName}</Text>
+            <Text style={{ marginTop: 10, fontSize: 18, fontWeight: 'bold' }}>{userData.FirstName + " " + userData.LastName}</Text>
           </View>
 
           <View style={styles.userInfoSection}>

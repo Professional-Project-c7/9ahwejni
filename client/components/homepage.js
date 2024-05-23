@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, Text, View, Image, TouchableOpacity, ScrollView, StatusBar, Modal } from 'react-native';
+import { StyleSheet, Text, View, Image, TouchableOpacity, ScrollView, StatusBar, Modal,LogBox } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import { IconButton } from 'react-native-paper';
 import RandomProducts from "../components/randomproducts";
@@ -18,7 +18,9 @@ import Toast from 'react-native-toast-message';
 import TopPacks from '../components/TopPacks';
 import chatcoffee from '../image/chatcoffee.png';
 // import "fontsource/poppins/400.css"
+LogBox.ignoreLogs(['Warning: ...']); //Hide warnings
 
+LogBox.ignoreAllLogs()
 
 const HomePage = ({ navigation }) => {
   const [filterVisible, setFilterVisible] = useState(false);
