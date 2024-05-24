@@ -154,18 +154,24 @@ const styles = StyleSheet.create({
     marginRight: 20,
     backgroundColor: '#dba617',
     padding: 10,
-    borderRadius: 5,
+    borderRadius: 25,
   },
   filterText: {
     fontWeight: 'bold',
   },
   orderItem: {
-    backgroundColor: '#f9f9f9',
-    padding: 10,
-    marginBottom: 10,
-    borderColor: '#dba617',
-    borderRadius: 5,
-    position: 'relative',
+   
+      backgroundColor: 'white',
+      borderRadius: 35,
+      padding: 16,
+      marginVertical: 8,
+      marginHorizontal: 16,
+      shadowColor: 'black',
+      shadowOffset: { width: 0, height: 2 },
+      shadowOpacity: 0.1,
+      shadowRadius: 20,
+      elevation: 10,
+    
   },
   orderName: {
     fontSize: 16,
@@ -213,9 +219,13 @@ const styles = StyleSheet.create({
     top: 0,
     right: 0,
     backgroundColor: 'transparent',
+    marginRight:10,
+    marginTop:  12,
+   
   },
   checkmark: {
     fontSize: 20,
+    
     color: 'green',
   },
   modalOverlay: {

@@ -24,7 +24,7 @@ const PackCard = ({ pack, onPressProducts }) => {
   );
 };
 
-const ProductModal = ({ isVisible, onHide, products }) => {
+const ProductModal = ({ isVisible, onHide, products, pack }) => {
   return (
     <Modal
       visible={isVisible}
@@ -32,6 +32,13 @@ const ProductModal = ({ isVisible, onHide, products }) => {
       animationType="slide"
     >
       <ScrollView style={styles.modalContent}>
+        {pack && (
+          <View>
+        <Text style={styles.modalTitle}>Pack Description</Text>
+
+            <Text style={styles.modalPackDescription}>{pack.description}</Text>
+          </View>
+        )}
         <Text style={styles.modalTitle}>Products</Text>
         <View style={styles.productContainer}>
           {products.map((product, index) => (
@@ -67,6 +74,8 @@ const AddPacks = ({ navigation,route }) => {
   const [selectedPack, setSelectedPack] = useState(null);
   const [isProductModalVisible, setIsProductModalVisible] = useState(false);
   const [imgUrl, setImgUrl] = useState('');
+  const [updater, setupdater] = useState(false);
+
   const handleShowProducts = (pack) => {
     setSelectedPack(pack);
     setIsProductModalVisible(true);
@@ -130,23 +139,24 @@ const AddPacks = ({ navigation,route }) => {
       console.error('Error retrieving data:', error);
     }
   };
+  const getUserPacks = async (userId) => {
 
-  useEffect(() => {
-    const getUserPacks = async (userId) => {
-      try {
-        const response = await axios.get(`http://${ipAdress}:3000/api/packs`);
-        if (response.status === 200) {
-          setUserPacks(response.data);
-        }
-      } catch (error) {
-        console.error('Error fetching user data:', error.message);
+    try {
+      const response = await axios.get(`http://${ipAdress}:3000/api/packs`);
+      if (response.status === 200) {
+        setUserPacks(response.data)
+     ;
       }
-    };
-
+    } catch (error) {
+      console.error('Error fetching user data:', error.message);
+    }
+  };
+  useEffect(() => {
+    
     if (userID) {
       getUserPacks(userID);
     }
-  }, [userID]);
+  }, [updater]);
 
   const getArrayOfProductsIds = async () => {
     try {
@@ -175,14 +185,16 @@ const AddPacks = ({ navigation,route }) => {
 
       const response = await axios.post(`http://${ipAdress}:3000/api/packs`, newPack);
       console.log('Pack added successfully:', response.data);
-
+      
+      
       // Clear the AsyncStorage after adding a new pack
       removeArrayFromStorage();
-
+      
       setPackName('');
       setPackDescription('');
       setPackPrice('');
       setImgUrl('');
+      setupdater(!updater)
     } catch (error) {
       console.error('Error adding pack:', error);
     }
@@ -230,10 +242,12 @@ const firstTwoImages = filteredProducts.slice(0, 2)
 
         </SafeAreaView>
         <ProductModal
-          isVisible={isProductModalVisible}
-          onHide={() => setIsProductModalVisible(false)}
-          products={selectedPack ? selectedPack.prods : []}
-        />
+  isVisible={isProductModalVisible}
+  onHide={() => setIsProductModalVisible(false)}
+  products={selectedPack ? selectedPack.prods : []}
+  pack={selectedPack}
+/>
+
       </View>
     </ScrollView>
 
@@ -368,14 +382,81 @@ const styles = StyleSheet.create({
   //   fontWeight: 'bold',
   // },
 
+  modalPackDescription: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    color: '#333',
+    marginVertical: 10,
+  },
+  modalContent: {
+    flex: 1,
+    backgroundColor: '#fff',
+    padding: 20,
+  },
+  modalTitle: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    marginBottom: 20,
+    textAlign: 'center',
+    color: '#333',
+  },
+  productContainer: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'space-between',
+  },
+  productItem: {
+    width: '48%',
+    marginBottom: 20,
+    borderRadius: 10,
+    backgroundColor: '#EFECEC',
+    overflow: 'hidden',
+  },
+  productImage: {
+    width: '100%',
+    height: 150,
+    resizeMode: 'cover',
+  },
+  productDetails: {
+    padding: 10,
+  },
+  productName: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    marginBottom: 5,
+    color: '#333',
+  },
+  productDescription: {
+    fontSize: 14,
+    color: '#666',
+    marginBottom: 5,
+  },
+  productPrice: {
+    fontSize: 14,
+    color: '#f85c24',
+  },
+  closeButton: {
+    position: 'absolute',
+    bottom: 20,
+    left: '50%',
+    transform: [{ translateX: -50 }],
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+    borderRadius: 10,
+    marginLeft: 22,
+  },
+  closeButtonText: {
+    color: 'white',
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
   optionImageE: {
-    width: 53, // Adjust the width of the image
-    height: 20, // Adjust the height of the image
-    alignSelf: 'center', // Center the image horizontally
-    marginBottom: 10, // Add margin to separate image from text
-    resizeMode: 'contain', // Ensure the image fits within its container
-    marginTop:10,
-    
+    width: 53,
+    height: 20,
+    alignSelf: 'center',
+    marginBottom: 10,
+    resizeMode: 'contain',
+    marginTop: 10,
   },
   productContainer: {
     flexDirection: 'row',
@@ -419,7 +500,7 @@ const styles = StyleSheet.create({
     padding: 20,
   },
   modalTitle: {
-    fontSize: 24,
+    fontSize: 22,
     fontWeight: 'bold',
     marginBottom: 20,
     textAlign: 'center',
