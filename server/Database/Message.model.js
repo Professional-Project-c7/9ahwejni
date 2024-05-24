@@ -10,6 +10,10 @@ module.exports = (sequelize, DataTypes) => {
     isAudio: {
       type: DataTypes.BOOLEAN,
       defaultValue: false,
+    },
+    isImage: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: false,
     }
   });
   return Message;
