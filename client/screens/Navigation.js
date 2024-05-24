@@ -227,7 +227,6 @@ function NAVSTART() {
         const filteredShops = response.data.filter(user => user.UserType === 'coffee');
         setCoffeeShopsData(filteredShops);
         setFilteredData(filteredShops);
-        console.log("------------d-d-d-d-d",FilteredData);
       } catch (error) {
         console.log('Error fetching data:', error.message);
       }
@@ -235,8 +234,7 @@ function NAVSTART() {
     fetchData()
   }, []);
 
-  const Name = FilteredData.map(e=>(e.FirstName + ' ' + e.LastName))
-console.log('--------------------------------', Name);
+
   
 
   return (
@@ -284,7 +282,7 @@ console.log('--------------------------------', Name);
         <Stack.Screen name="AllCakes" component={AllCakes} options={{ headerShown: false }} />
         <Stack.Screen name="AllCoffees" component={AllCoffees} options={{ headerShown: false }} />
         <Stack.Screen name="AllDrinks" component={AllDrinks} options={{ headerShown: false }} />
-        <Stack.Screen name="chat" component={chat} />
+        <Stack.Screen name="chat" component={chat} options={{ headerShown: false }} />
         <Stack.Screen name="paymentSucces" component={PaymentSuccessPage}  />
         <Stack.Screen  name="SettingComponent" component={SettingComponent} />
         <Stack.Screen  name="RoomsChat" component={RoomsChat} /> 

@@ -206,6 +206,12 @@ const Availability = () => {
         <Calendar
           style={styles.calendar}
           markedDates={{}}
+          theme={{
+            todayTextColor: '#dba617',
+            arrowColor: '#dba617',
+            selectedDayBackgroundColor: '#dba617',
+            dotColor: '#dba617',
+          }}
         />
         <ScrollView style={styles.savedTimesContainer}>
           {weekdays.map((weekday) => renderDay(weekday))}
@@ -218,7 +224,10 @@ const Availability = () => {
             style={styles.submittedTimesContainer}
           />
         )}
-        <TouchableOpacity style={[styles.submitButton, submitted && styles.submitButtonDisabled]} onPress={handleSubmit}>
+        <TouchableOpacity
+          style={[styles.submitButton, submitted && styles.submitButtonDisabled]}
+          onPress={handleSubmit}
+        >
           <Text style={styles.submitButtonText}>Submit</Text>
         </TouchableOpacity>
       </View>
@@ -229,10 +238,10 @@ const Availability = () => {
 const styles = StyleSheet.create({
   scrollViewContainer: {
     flexGrow: 1,
+    backgroundColor: '#f9f9f9',
   },
   container: {
     flex: 1,
-    backgroundColor: 'white',
     paddingHorizontal: 20,
     paddingVertical: 30,
   },
@@ -241,47 +250,59 @@ const styles = StyleSheet.create({
     borderColor: '#dba617',
     marginBottom: 20,
     borderRadius: 10,
+    backgroundColor: '#fff',
+    elevation: 3,
   },
   dayContainer: {
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    padding: 10,
-    marginVertical:5,
+    padding: 15,
+    marginVertical: 5,
     borderWidth: 1,
     borderColor: '#dba617',
-    borderRadius: 20,
+    borderRadius: 15,
+    backgroundColor: '#fff',
+    elevation: 2,
   },
   selectedDay: {
-    backgroundColor: 'white',
+    backgroundColor: '#ffe4c4',
   },
   dayText: {
     color: '#dba617',
-    fontSize: 16,
+    fontSize: 18,
+    fontWeight: '600',
+    fontStyle: 'italic',
+
   },
   dot: {
     width: 8,
     height: 8,
     borderRadius: 4,
-    backgroundColor: 'white',
-    marginTop: 2,
+    backgroundColor: '#dba617',
+    marginTop: 5,
   },
   timeInputContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginVertical: 10,
+    marginTop: 10,
   },
   timePickerButton: {
     flex: 1,
     borderWidth: 1,
     borderColor: '#dba617',
-    borderRadius: 5,
+    borderRadius: 10,
     padding: 10,
     marginHorizontal: 5,
     alignItems: 'center',
+    backgroundColor: '#fff',
+    elevation: 2,
   },
   timePickerText: {
     fontSize: 16,
+    color: '#333',
+    fontStyle: 'italic',
+
   },
   savedTimesContainer: {
     marginTop: 20,
@@ -293,21 +314,35 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     marginVertical: 5,
+    padding: 10,
+    backgroundColor: '#fff',
+    borderRadius: 10,
+    elevation: 2,
   },
   submittedTimeText: {
     color: '#dba617',
     fontSize: 16,
+    fontWeight: '600',
+    fontStyle: 'italic',
+
   },
   submitButton: {
     alignItems: 'center',
     backgroundColor: '#dba617',
-    padding: 10,
+    padding: 15,
     borderRadius: 30,
     marginTop: 20,
+    elevation: 3,
+  },
+  submitButtonDisabled: {
+    backgroundColor: '#b8b8b8',
   },
   submitButtonText: {
     color: 'white',
-    fontSize: 16,
+    fontSize: 18,
+    fontWeight: '700',
+    fontStyle: 'italic',
+
   },
 });
 

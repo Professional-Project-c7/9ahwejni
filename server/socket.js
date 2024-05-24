@@ -2,8 +2,16 @@ const express = require('express');
 const path = require('path');
 const http = require('http');
 const socketIo = require('socket.io');
+const multer = require('multer');
+const fs = require('fs');
 
 const PORT = 4001;
+const UPLOAD_DIR = path.join(__dirname, 'uploads');
+
+// Ensure uploads directory exists
+if (!fs.existsSync(UPLOAD_DIR)) {
+  fs.mkdirSync(UPLOAD_DIR, { recursive: true });
+}
 
 const app = express();
 const server = http.createServer(app);
@@ -15,6 +23,17 @@ const io = socketIo(server, {
 
 const userSockets = {};
 const connectedUsers = {};
+
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, UPLOAD_DIR);
+  },
+  filename: function (req, file, cb) {
+    cb(null, `${Date.now()}-${file.originalname}`);
+  },
+});
+
+const upload = multer({ storage });
 
 io.on('connection', (socket) => {
   console.log(`User connected: ${socket.id}`);
@@ -28,18 +47,15 @@ io.on('connection', (socket) => {
     connectedUsers[userId] = true;
     socket.join(room);
   }
-  // socket.on('new_review', (review) => {
-  //   io.to(roomId).emit('new_review', review);
-  // });
-  
 
   socket.on('send_message', (data, callback) => {
-    const { recipientId, content, roomId, isAudio } = data;
+    const { recipientId, content, roomId, isAudio, isImage } = data;
     const message = {
       senderId: userId,
       content,
       roomId: parseInt(roomId, 10) || 1,
-      isAudio
+      isAudio,
+      isImage,
     };
 
     if (recipientId && userSockets[recipientId]) {
@@ -61,6 +77,27 @@ io.on('connection', (socket) => {
       }
     }
   });
+});
+
+app.post('/api/messages/image', upload.single('image'), (req, res) => {
+  try {
+    const { senderId, roomId } = req.body;
+    const filePath = req.file.path.replace(/\\/g, '/'); // Normalize path for different OS
+
+    const message = {
+      senderId: parseInt(senderId, 10),
+      roomId: parseInt(roomId, 10),
+      content: filePath,
+      isImage: true,
+    };
+
+    io.to(message.roomId).emit('receive_message', message);
+
+    res.status(201).json({ success: true, filePath });
+  } catch (error) {
+    console.error('Error sending image message:', error);
+    res.status(500).json({ error: 'Failed to send image message' });
+  }
 });
 
 server.listen(PORT, () => {
