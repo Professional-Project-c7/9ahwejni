@@ -9,6 +9,7 @@ import {
   TouchableOpacity,
   TextInput,
   ToastAndroid,
+  LogBox
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -16,7 +17,11 @@ import LinearGradient from 'react-native-linear-gradient';
 import axios from 'axios';
 import { ipAdress } from '../config';
 import packos from '../image/packos.png';
+// import { LogBox } from 'react-native';
 
+LogBox.ignoreLogs(['Warning: ...']); //Hide warnings
+
+LogBox.ignoreAllLogs()
 const Allpack = ({ navigation }) => {
   const [packs, setPacks] = useState([]);
   const [favorites, setFavorites] = useState({});

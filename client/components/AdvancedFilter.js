@@ -1,10 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
   View,
   TouchableOpacity,
   StyleSheet,
   FlatList,
   Modal,
+  PanResponder,
 } from 'react-native';
 import { Text, Button, Divider, Card, List, Avatar } from 'react-native-paper';
 import { Picker } from '@react-native-picker/picker';
@@ -17,7 +18,9 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 const AdvancedFilter = () => {
   const [products, setProducts] = useState([]);
-  const [priceRange, setPriceRange] = useState([0, 1000]);
+
+  const [priceRange, setPriceRange] = useState([0, 100]);
+
   const [rating, setRating] = useState('');
   const [filteredProducts, setFilteredProducts] = useState([]);
   const [selectedCategories, setSelectedCategories] = useState([]);
@@ -117,8 +120,20 @@ const AdvancedFilter = () => {
     </TouchableOpacity>
   );
 
+  const panResponder = useRef(
+    PanResponder.create({
+      onStartShouldSetPanResponder: () => true,
+      onMoveShouldSetPanResponder: () => true,
+      onPanResponderMove: (_, gestureState) => {
+        if (gestureState.dy > 50) {
+          navigation.navigate('homePage');
+        }
+      },
+    })
+  ).current;
+
   return (
-    <View style={styles.fullScreenCard}>
+    <View style={styles.fullScreenCard} {...panResponder.panHandlers}>
       <Card style={styles.fullScreenCard}>
         <Card.Title title="Advanced Filter" titleStyle={styles.cardTitle} />
         <Divider style={styles.divider} />
@@ -151,7 +166,9 @@ const AdvancedFilter = () => {
           sliderLength={350}
           onValuesChange={(values) => setPriceRange(values)}
           min={0}
-          max={1000}
+
+          max={100}
+
           step={1}
           selectedStyle={{ backgroundColor: '#dba617' }}
           unselectedStyle={{ backgroundColor: '#e0e0e0' }}
@@ -254,7 +271,6 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderRadius: 12,
     marginBottom: 10,
-  
   },
   button: {
     backgroundColor: '#dba617',
@@ -291,11 +307,17 @@ const styles = StyleSheet.create({
     alignSelf: 'flex-end',
   },
   sliderLabel: {
-    fontSize: 16,
+    fontSize: 18,
     textAlign: 'center',
     marginBottom: 10,
     fontStyle: 'italic',
   },
+  closeButtonContainer :{
+    position: 'absolute',
+    top: 10,
+    right: 10,
+    zIndex: 1,
+  }
 });
 
 export default AdvancedFilter;

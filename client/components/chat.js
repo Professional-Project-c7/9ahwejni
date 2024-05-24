@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useRef } from 'react';
 import { View, ScrollView, StyleSheet, ImageBackground, TouchableOpacity, Image } from 'react-native';
 import { TextInput, IconButton, Card, Text } from 'react-native-paper';
@@ -9,6 +8,7 @@ import moment from 'moment';
 import AudioRecorderPlayer from 'react-native-audio-recorder-player';
 import RNFS from 'react-native-fs';
 import { request, PERMISSIONS } from 'react-native-permissions';
+import { launchImageLibrary } from 'react-native-image-picker';
 import { ipAdress } from '../config';
 import user from '../image/user.png';
 
@@ -23,6 +23,7 @@ const Chat = ({ navigation, route }) => {
   const [recording, setRecording] = useState(false);
   const audioRecorderPlayer = useRef(new AudioRecorderPlayer()).current;
   const [currentAudio, setCurrentAudio] = useState(null);
+  const [selectedImage, setSelectedImage] = useState(null);
 
   useEffect(() => {
     const retrieveData = async () => {
@@ -162,9 +163,71 @@ const Chat = ({ navigation, route }) => {
     }
   };
 
+  const selectImage = () => {
+    const options = {
+      mediaType: 'photo',
+    };
+
+    launchImageLibrary(options, (response) => {
+      if (response.didCancel) {
+        console.log('User cancelled image picker');
+      } else if (response.error) {
+        console.error('ImagePicker Error: ', response.error);
+      } else {
+        const { uri } = response.assets[0];
+        setSelectedImage(uri);
+        sendImageMessage(uri);
+      }
+    });
+  };
+
+  const sendImageMessage = async (uri) => {
+    if (socket && uri) {
+      const newMessage = {
+        senderId: userId,
+        content: uri,
+        roomId: roomId,
+        timestamp: new Date(),
+        isImage: true,
+      };
+  
+      socket.emit('send_message', newMessage, async (acknowledgement) => {
+        if (acknowledgement === 'success') {
+          setMessages((prevMessages) => [...prevMessages, newMessage]);
+          const formData = new FormData();
+          formData.append('image', {
+            uri,
+            type: 'image/jpeg',
+            name: 'photo.jpg',
+          });
+          formData.append('senderId', userId);
+          formData.append('roomId', roomId);
+          formData.append('isImage', true);
+  
+          try {
+            await axios.post(`http://${ipAdress}:3000/api/messages/image`, formData, {
+              headers: { 'Content-Type': 'multipart/form-data' },
+            });
+  
+            setSelectedImage(null);
+          } catch (error) {
+            console.error('Failed to upload image:', error);
+          }
+        } else {
+          console.error('Failed to send message:', acknowledgement);
+        }
+      });
+    }
+  };
+  
+
   return (
+ 
     <ImageBackground source={require('../image/bgg.jpeg')} style={styles.background}>
       <View style={styles.container}>
+       < View  style={{backgroundColor:"white" , height:40}}>
+      < Text>hellloooooo</Text>
+      </View>
         <ScrollView contentContainerStyle={styles.messagesContainer}>
           {messages.map((message, index) => (
             <Card
@@ -179,6 +242,8 @@ const Chat = ({ navigation, route }) => {
                   <TouchableOpacity onPress={() => playAudio(message.content)}>
                     <Text style={styles.audioText}>Play Audio Message</Text>
                   </TouchableOpacity>
+                ) : message.isImage ? (
+                  <Image source={{ uri: message.content }} style={styles.imageMessage} />
                 ) : (
                   <>
                     <Text style={styles.messageText}>{message.content}</Text>
@@ -212,6 +277,13 @@ const Chat = ({ navigation, route }) => {
             onPress={recording ? stopRecording : startRecording}
             style={styles.sendButton}
           />
+          <IconButton
+            icon="image"
+            color="#dba617"
+            size={30}
+            onPress={selectImage}
+            style={styles.sendButton}
+          />
           {currentAudio && (
             <IconButton
               icon="send"
@@ -224,6 +296,7 @@ const Chat = ({ navigation, route }) => {
         </View>
       </View>
     </ImageBackground>
+   
   );
 };
 
@@ -265,6 +338,11 @@ const styles = StyleSheet.create({
   audioText: {
     fontSize: 16,
     color: '#dba617',
+  },
+  imageMessage: {
+    width: 200,
+    height: 200,
+    borderRadius: 10,
   },
   inputContainer: {
     flexDirection: 'row',

@@ -19,16 +19,16 @@ selectAll :async function(req,res){
     }
 
     },   
-selectOne: async function(req, res) {
-    try {
-        const pack = await db.Pack.findOne({ where: { id: req.params.id } })
-            res.status(200).json(pack);
+// selectOne: async function(req, res) {
+//     try {
+//         const pack = await db.Pack.findOne({ where: { id: req.body.userId } })
+//             res.status(200).json(pack);
     
-    } catch (error) {
-        throw (error)
-    }
+//     } catch (error) {
+//         throw (error)
+//     }
 
-    },
+//     },
 addOne:async function(req,res){
     try {
        
@@ -73,7 +73,7 @@ UpdateOne :async (req, res) => {
  selectOne:async function(req,res){
     try { 
         const findId=req.params.id
-        const project = await db.Pack.findAll({ where: { id: findId } })
+        const project = await db.Pack.findAll({ where: { userId: findId } })
         res.send(project)
     }
     catch { (error)=> {console.log(error)} }
