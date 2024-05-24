@@ -222,8 +222,12 @@ const Chat = ({ navigation, route }) => {
   
 
   return (
+ 
     <ImageBackground source={require('../image/bgg.jpeg')} style={styles.background}>
       <View style={styles.container}>
+       < View  style={{backgroundColor:"white" , height:40}}>
+      < Text>hellloooooo</Text>
+      </View>
         <ScrollView contentContainerStyle={styles.messagesContainer}>
           {messages.map((message, index) => (
             <Card
@@ -292,6 +296,7 @@ const Chat = ({ navigation, route }) => {
         </View>
       </View>
     </ImageBackground>
+   
   );
 };
 
