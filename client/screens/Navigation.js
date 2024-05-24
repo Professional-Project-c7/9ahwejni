@@ -227,7 +227,6 @@ function NAVSTART() {
         const filteredShops = response.data.filter(user => user.UserType === 'coffee');
         setCoffeeShopsData(filteredShops);
         setFilteredData(filteredShops);
-        console.log("------------d-d-d-d-d",FilteredData);
       } catch (error) {
         console.log('Error fetching data:', error.message);
       }
