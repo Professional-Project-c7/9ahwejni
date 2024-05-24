@@ -185,7 +185,7 @@ function TabNavigator() {
         <Tab.Screen name="Edit" component={EditCoffee}  options={{
           tabBarButton: () => null, // This hides the tab from the tab bar
         }} />
-         <Tab.Screen name="editusers" component={editusers}   s={{
+         <Tab.Screen name="editusers" component={editusers}   options={{
           tabBarButton: () => null, // This hides the tab from the tab bar
         }} />
          <Tab.Screen name="TransactionScreenCoffee" component={TransactionScreenCoffee}  options={{
