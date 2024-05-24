@@ -67,6 +67,7 @@ const ProductList = ({ navigation }) => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [refresh, setrefresh] = useState(false);
   const [isloading,setisloading]=useState(false)
+  const [updater, setupdater] = useState(false);
 
   const handleSizeSelection = (size, price, setSelected) => {
     setSelected(prevSelected => {
@@ -168,7 +169,7 @@ const ProductList = ({ navigation }) => {
       getUserData(userID);
 
     }
-  }, [userID,refresh]);
+  }, [userID,updater]);
 
   const handleAddProduct = async () => {
     try {
@@ -205,6 +206,8 @@ const ProductList = ({ navigation }) => {
       setLargeSelected(false);
       setCategory('');
       setimgUrl('')
+      setupdater(!updater)
+
     } catch (error) {
       console.error('Error adding product:', error);
     }
@@ -654,6 +657,7 @@ borderRadius: 20,
     padding: 10,
   },
   name: {
+    fontStyle: 'italic',
     fontSize: 20,
     fontWeight: 'bold',
     color: '#dba617',
@@ -661,10 +665,14 @@ borderRadius: 20,
     textAlign: 'center',  // Center the text
   },
   description: {
+    borderRadius: 15,
+
+    fontStyle: 'italic',
     fontSize: 18,
     color: '#888',
     marginBottom: 5,
     textAlign: 'center',  // Center the text
+    
   },
 
 
@@ -679,6 +687,7 @@ borderRadius: 20,
   //   marginTop: 5,
   // },
   option: {
+    fontStyle: 'italic',
     paddingHorizontal: 10,
     paddingVertical: 5,
     marginRight: 5,
