@@ -121,11 +121,7 @@ const users = userData.map(e=>(e.FirstName))
               </Text>
               </div>
             <Text color={textColor} fontSize="md" mb="4">{review.comment}</Text>
-            <Flex justifyContent="flex-end">
-              <Button onClick={() => deleteReview(review.id)} colorScheme="red" leftIcon={<DeleteIcon />} variant="outline">
-                Delete Review
-              </Button>
-            </Flex>
+          
           </Box>
         ))}
       </SimpleGrid>

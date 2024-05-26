@@ -275,6 +275,8 @@ function NAVSTART() {
         <Stack.Screen name="Paye" component={Paye} options={{ headerShown: false }} />
         <Stack.Screen name="menu" component={MenuItems} options={{ headerShown: false }} />
         <Stack.Screen name="coffeeProfile" component={coffeeprofile} options={{ headerShown: false }} />
+        <Stack.Screen name="Start" component={Start} options={{ headerShown: false }} />
+
         <Stack.Screen name="st2" component={Start2} options={{ headerShown: false }} />
         <Stack.Screen name="st3" component={Start3} options={{ headerShown: false }} />
         <Stack.Screen name="st4" component={Start4} options={{ headerShown: false }} />
