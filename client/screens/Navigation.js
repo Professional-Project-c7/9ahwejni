@@ -56,6 +56,7 @@ import RoomsChat from '../components/RoomsChat'
 import editusers from '../components/edituser'
 import CoffeeshopReviews from '../components/coffeeshopreviews'
 import SettingsScreen from '../components/settings';
+import Rapport from '../components/Rapport'
 // import { useNavigation } from '@react-navigation/native';
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -154,7 +155,7 @@ function TabNavigator() {
           component={coffeeprofile}
           options={{
             tabBarIcon: ({ color, size }) => (
-              <IconButton icon="coffee" size={size} iconColor={color} />
+              <IconButton icon="account" size={size} iconColor={color} />
             ),
             tabBarLabel: ({ focused, color }) => (
               <Text style={{ color: focused ? '#dba617' : 'gray' }}>Coffee Profile</Text>
@@ -247,7 +248,7 @@ function NAVSTART() {
         <Stack.Screen name="UserSignUp" component={SignUser} options={{ headerShown: false }} />
         <Stack.Screen name="CoffeeShopSignUp" component={SignCofee} options={{ headerShown: false }} />
         <Stack.Screen name="UserAccount" component={SignACC} options={{ headerShown: false }} />
-        <Stack.Screen name="ProductList" component={ProductList} />
+        <Stack.Screen name="ProductList" component={ProductList}  />
         <Stack.Screen name="AddPacks" component={AddPacks} options={{ headerShown: false }} />
         <Stack.Screen name="AddProducts" component={AddProducts} options={{ headerShown: false }} />
         <Stack.Screen name="Orders" component={Orders} options={{ headerShown: false }} />
@@ -256,7 +257,9 @@ function NAVSTART() {
         <Stack.Screen name="Coffeelist" component={Coffeelist} options={{ headerShown: false }} />
         <Stack.Screen name="TestCloud" component={TestCloud} />
         <Stack.Screen name="Availability" component={Availability} />
+       
 
+        
         <Stack.Screen
           name="TransactionScreenCoffee"
           component={TransactionScreenCoffee}
@@ -284,14 +287,15 @@ function NAVSTART() {
         <Stack.Screen name="AllCakes" component={AllCakes} options={{ headerShown: false }} />
         <Stack.Screen name="AllCoffees" component={AllCoffees} options={{ headerShown: false }} />
         <Stack.Screen name="AllDrinks" component={AllDrinks} options={{ headerShown: false }} />
-        <Stack.Screen name="chat" component={chat} options={{ headerShown: false }} />
+        <Stack.Screen name="chat" component={chat}  />
         <Stack.Screen name="paymentSucces" component={PaymentSuccessPage}  />
         <Stack.Screen  name="SettingComponent" component={SettingComponent} />
         <Stack.Screen  name="RoomsChat" component={RoomsChat} /> 
         <Stack.Screen  name="editusers" component={editusers} /> 
         <Stack.Screen  name="CoffeeshopReviews" component={CoffeeshopReviews} /> 
         <Stack.Screen  name="SettingsScreen" component={SettingsScreen} /> 
-        
+        <Stack.Screen  name="Rapport" component={Rapport} /> 
+         
       </Stack.Navigator>
     </NavigationContainer>
   );

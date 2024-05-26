@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, Image, StyleSheet, TouchableOpacity, ScrollView, Modal } from 'react-native';
+import { View, Text, Image, StyleSheet, TouchableOpacity,TextInput, ScrollView, Modal } from 'react-native';
 import axios from 'axios';
 import { ipAdress } from '../config';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -9,6 +9,7 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import user from '../image/user.png';
 import moment from 'moment';
 import basket from '../image/addtobasket.png';
+// import Rapport from './Rapport'
 
 const ProductDetailsPage = ({ navigation }) => {
     const [products, setProducts] = useState([]);
@@ -18,7 +19,12 @@ const ProductDetailsPage = ({ navigation }) => {
     const [selectedProductId, setSelectedProductId] = useState(null);
     const [selectedUserId, setSelectedUserId] = useState(null);
     const [isModalVisible, setIsModalVisible] = useState(false);
+    const [isModalVisiblee, setIsModalVisiblee] = useState(false);
     const [reviews, setReviews] = useState([]);
+    const [Rapport , setRapport] = useState([]);
+    const [description, setDescription] = useState('');
+
+    
 
     const retrieveData = async () => {
         try {
@@ -41,6 +47,52 @@ const ProductDetailsPage = ({ navigation }) => {
             console.error('Error fetching reviews:', error);
         }
     };
+
+    const Rapports = async ()=>{
+        try {
+            const response = await axios.get(`http://${ipAdress}:3000/api/Rapport`)
+            setRapport(response.data.reverse());
+        } catch (error) {
+            console.error('Error fetching reviews:', error);
+        }
+    }
+    const PostRapports = async () => {
+        try {
+            const rapportData = {
+                Description: description,
+                // Add other fields if needed
+            };
+    
+            // Assuming you have an API endpoint to post a report
+            const response = await axios.post(`http://${ipAdress}:3000/api/Rapport`, rapportData);
+            
+            // Assuming your backend returns the newly created report
+            const newReport = response.data;
+    
+            // Assuming your backend returns the newly created report or an updated list of reports
+            // You can update the state with the new report or the updated list of reports
+            // Here, I'm assuming the response contains the updated list of reports
+            if (Array.isArray(newReport)) {
+                setRapport(newReport.reverse()); // Assuming newReport is an array
+            } else {
+                // If newReport is not an array, just fetch the reports again to get the updated list
+                Rapports();
+            }
+            
+            // After posting the report, you can close the modal
+            toggleModal1();
+        } catch (error) {
+            console.error('Error posting report:', error);
+        }
+    };
+    
+    
+
+
+    useEffect(()=>{
+        Rapports();
+    },[])
+    console.log('touuuuuuuuuuuuuuuuuu',Rapport)
 
     useEffect(() => {
         const fetchProductDetails = async () => {
@@ -73,10 +125,20 @@ const ProductDetailsPage = ({ navigation }) => {
         navigation.navigate('Tabs');
         AsyncStorage.removeItem('selectedProductId');
     };
+    // const handleRapport = () => {
+    //     navigation.navigate('Rapport');
+    //     // AsyncStorage.removeItem('selectedProductId');
+    // };
+    
 
     const goToHomePage = () => {
         AsyncStorage.removeItem('selectedProductId');
         navigation.navigate('homePage');
+    };
+    
+    const gotoRapport = () => {
+        AsyncStorage.removeItem('selectedProductId');
+        navigation.navigate('Rapport');
     };
 
     const handleSizeSelection = size => setSelectedSize(size);
@@ -101,6 +163,9 @@ const ProductDetailsPage = ({ navigation }) => {
         fetchReviews(selectedProductId);
         toggleModalVisibility();
     };
+    const toggleModal1 = () => {
+        setIsModalVisiblee(!isModalVisiblee);
+      };
 
     return (
         <ScrollView style={styles.container}>
@@ -158,14 +223,17 @@ const ProductDetailsPage = ({ navigation }) => {
                 </View>
             </Modal>
             <View style={styles.reviewsContainer}>
+                
                 {reviews.map((review, index) => (
                     <View key={index} style={styles.reviewCard}>
                         <Image source={{ uri: review.user ? review.user.ImageUrl : user }} style={styles.userImage} />
                         <View style={styles.reviewContent}>
                             <Text style={styles.userName}>
+                                
                                 {review.user ? `${review.user.FirstName} ${review.user.LastName}` : 'Anonymous'}
                             </Text>
                             <Text>{moment(review.createdAt).fromNow()}</Text>
+                           
                             <Rating
                                 type="star"
                                 ratingCount={5}
@@ -176,6 +244,35 @@ const ProductDetailsPage = ({ navigation }) => {
                             />
                             <Text style={styles.comment}>{review.comment}</Text>
                         </View>
+                        <TouchableOpacity style={styles.optionOne} onPress={toggleModal1}>
+                       <View >
+                  <Icon name="flag" style={{marginLeft:100}} size={30} color="#dba617"   />
+               </View>
+               </TouchableOpacity>
+                      
+                         
+         <Modal animationType="slide" transparent={true} visible={isModalVisiblee} onRequestClose={toggleModal1}>
+        <View style={styles.centeredView}>
+          <View style={styles.modalView}>
+        
+          <TextInput
+          style={styles.textInput}
+          placeholder='add rapport'
+          value={description}
+          onChangeText={setDescription}
+        //   placeholderTextColor="transparent"
+       
+        />
+                    <TouchableOpacity style={styles.closeButton} onPress={PostRapports}>
+              <Text style={styles.closeButtonText}>  send  </Text>
+            </TouchableOpacity>
+           
+            <TouchableOpacity style={styles.closeButton} onPress={toggleModal1}>
+              <Text style={styles.closeButtonText}>Cancel</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
                     </View>
                 ))}
             </View>
@@ -189,6 +286,38 @@ const styles = StyleSheet.create({
         backgroundColor: '#FFFFFF',
         padding: 10,
     },
+    centeredView: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: 'rgba(0, 0, 0, 0.5)',
+        flexDirection: 'row',
+      },
+      modalView: {
+        backgroundColor: 'white',
+        borderRadius: 10,
+        padding: 20,
+        alignItems: 'center',
+        elevation: 5,
+      },
+      placeholder: {
+        position: 'absolute',
+        left: 10,
+        top: 10,
+        color: '#aaa',
+        fontSize: 16, // Adjust this value to change the placeholder text size
+      },
+   
+      textInput: {
+      
+        height: 100,
+        width:320,
+        borderColor: 'gray',
+        borderWidth: 1,
+        paddingLeft: 10,
+        // fontSize: 16,
+    
+      },
     backButton: {
         marginTop: 1,
         marginLeft: 1,
@@ -376,6 +505,12 @@ const styles = StyleSheet.create({
     },
     reviewContent: {
         flex: 1,
+    },
+    reviewContent1: {
+        flex: 1,
+        // justifyContent: 'center',
+        alignItems: 'center',
+        
     },
     userName: {
         fontSize: 18,

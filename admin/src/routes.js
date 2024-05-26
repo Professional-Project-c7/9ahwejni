@@ -52,7 +52,7 @@ const routes = [
     secondary: true,
   },
   {
-    name: "Profile",
+    name: "Rapport",
     layout: "/admin",
     path: "/profile",
     icon: <Icon as={MdPerson} width='20px' height='20px' color='inherit' />,
