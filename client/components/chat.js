@@ -24,6 +24,7 @@ const Chat = ({ navigation, route }) => {
   const audioRecorderPlayer = useRef(new AudioRecorderPlayer()).current;
   const [currentAudio, setCurrentAudio] = useState(null);
   const [selectedImage, setSelectedImage] = useState(null);
+  const [uploading, setUploading] = useState(false);
 
   useEffect(() => {
     const retrieveData = async () => {
@@ -151,11 +152,23 @@ const Chat = ({ navigation, route }) => {
           formData.append('roomId', roomId);
           formData.append('isAudio', true);
 
-          await axios.post(`http://${ipAdress}:3000/api/messages/audio`, formData, {
-            headers: { 'Content-Type': 'multipart/form-data' },
-          });
+          try {
+            const response = await axios.post(`http://${ipAdress}:3000/api/messages/audio`, formData, {
+              headers: { 'Content-Type': 'multipart/form-data' },
+            });
 
-          setCurrentAudio(null);
+            // Update the message content with the correct URL from the server response
+            newMessage.content = response.data.message.content;
+            setMessages((prevMessages) => {
+              const updatedMessages = [...prevMessages];
+              updatedMessages[updatedMessages.length - 1] = newMessage;
+              return updatedMessages;
+            });
+
+            setCurrentAudio(null);
+          } catch (error) {
+            console.error('Failed to upload audio:', error);
+          }
         } else {
           console.error('Failed to send message:', acknowledgement);
         }
@@ -173,61 +186,69 @@ const Chat = ({ navigation, route }) => {
         console.log('User cancelled image picker');
       } else if (response.error) {
         console.error('ImagePicker Error: ', response.error);
-      } else {
+      } else if (response.assets && response.assets.length > 0) {
         const { uri } = response.assets[0];
+        console.log('Selected Image URI: ', uri); // Log the selected image URI
         setSelectedImage(uri);
-        sendImageMessage(uri);
+        uploadImage(uri);
+      } else {
+        console.error('No image selected');
       }
     });
   };
 
-  const sendImageMessage = async (uri) => {
-    if (socket && uri) {
+  const uploadImage = async (uri) => {
+    setUploading(true);
+    const formData = new FormData();
+    formData.append('image', {
+      uri,
+      type: 'image/jpeg',
+      name: 'photo.jpg',
+    });
+    formData.append('senderId', userId);
+    formData.append('roomId', roomId);
+    formData.append('isImage', true);
+
+    try {
+      const response = await axios.post(`http://${ipAdress}:3000/api/messages/image`, formData, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      });
+
+      const filePath = response.data.message.content;
+      sendImageMessage(filePath); // Send the message with the correct file path
+    } catch (error) {
+      console.error('Failed to upload image:', error);
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  const sendImageMessage = (filePath) => {
+    if (socket && filePath) {
       const newMessage = {
         senderId: userId,
-        content: uri,
+        content: filePath,
         roomId: roomId,
         timestamp: new Date(),
         isImage: true,
       };
-  
-      socket.emit('send_message', newMessage, async (acknowledgement) => {
+
+      socket.emit('send_message', newMessage, (acknowledgement) => {
         if (acknowledgement === 'success') {
           setMessages((prevMessages) => [...prevMessages, newMessage]);
-          const formData = new FormData();
-          formData.append('image', {
-            uri,
-            type: 'image/jpeg',
-            name: 'photo.jpg',
-          });
-          formData.append('senderId', userId);
-          formData.append('roomId', roomId);
-          formData.append('isImage', true);
-  
-          try {
-            await axios.post(`http://${ipAdress}:3000/api/messages/image`, formData, {
-              headers: { 'Content-Type': 'multipart/form-data' },
-            });
-  
-            setSelectedImage(null);
-          } catch (error) {
-            console.error('Failed to upload image:', error);
-          }
+          saveMessage(newMessage);
         } else {
           console.error('Failed to send message:', acknowledgement);
         }
       });
+
+      setSelectedImage(null);
     }
   };
-  
 
   return (
- 
     <ImageBackground source={require('../image/bgg.jpeg')} style={styles.background}>
       <View style={styles.container}>
-       < View  style={{backgroundColor:"white" , height:40}}>
-      < Text>hellloooooo</Text>
-      </View>
         <ScrollView contentContainerStyle={styles.messagesContainer}>
           {messages.map((message, index) => (
             <Card
@@ -243,7 +264,7 @@ const Chat = ({ navigation, route }) => {
                     <Text style={styles.audioText}>Play Audio Message</Text>
                   </TouchableOpacity>
                 ) : message.isImage ? (
-                  <Image source={{ uri: message.content }} style={styles.imageMessage} />
+                  <Image source={{ uri: message.content }} style={styles.imageMessage} onError={(e) => console.log('Image Error: ', e.nativeEvent.error)} />
                 ) : (
                   <>
                     <Text style={styles.messageText}>{message.content}</Text>
@@ -296,7 +317,6 @@ const Chat = ({ navigation, route }) => {
         </View>
       </View>
     </ImageBackground>
-   
   );
 };
 
@@ -372,5 +392,5 @@ const styles = StyleSheet.create({
     overflow: 'hidden'
   },
 });
-
+ 
 export default Chat;
