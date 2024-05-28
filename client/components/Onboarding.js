@@ -8,8 +8,9 @@ import FastImage from 'react-native-fast-image';
 import anicoffee from '../image/anicoffee.gif';
 import protection from '../image/protection.gif';
 import gps from '../image/gps.gif';
-import waw from '../image/waaw.webp'
+import waw from '../image/waaw.webp';
 // import wawi from '../image/logowaw.gif'
+// import Logo from '../image'
 
 const dummyData = [
   {

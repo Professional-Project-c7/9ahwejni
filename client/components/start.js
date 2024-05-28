@@ -5,9 +5,6 @@ import { useNavigation } from '@react-navigation/native';
 
 import { RefreshControl } from "react-native";
 
-
-
-
 function Section({ title }) {
   const isDarkMode = useColorScheme() === 'dark';
 
@@ -30,34 +27,30 @@ function Start({navigation}) {
   const isDarkMode = useColorScheme() === 'dark';
   const [isLoading, setIsLoading] = useState(true);
 
-  // Simulating a loading delay
   useEffect(() => {
-    setTimeout(() => {
+    const timer = setTimeout(() => {
       setIsLoading(false);
-    }, 1000); 
-  }, []);
-  const navigateToUserAccount = () => {
-    navigation.navigate('st2'); 
-  };
-  
+      navigation.navigate('Tabs'); 
+    }, 3000);
+
+    return () => clearTimeout(timer); // Cleanup timeout if component unmounts
+  }, [navigation]);
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <ImageBackground
        source={require('../image/logo.png')}
         style={styles.backgroundImage}>
-        {/* Your content goes here */}
         {isLoading ? (
           <View style={styles.loadingContainer}>
             <ActivityIndicator size="large" color="#c1a01d" />
           </View>
         ) : (
-          <TouchableOpacity style={styles.button}   onPress={navigateToUserAccount}>
-            <Text style={styles.buttonText}> Get started</Text>
+          <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Tabs')}>
+            <Text style={styles.buttonText}>Get started</Text>
           </TouchableOpacity>
         )}
       </ImageBackground>
-     
     </SafeAreaView>
   );
 }
@@ -66,7 +59,6 @@ const styles = StyleSheet.create({
   sectionContainer: {
     marginTop: 32,
     paddingHorizontal: 24,
-
   },
   sectionTitle: {
     fontSize: 24,
@@ -77,10 +69,8 @@ const styles = StyleSheet.create({
     resizeMode: 'cover',
     justifyContent: 'center',
     alignItems: 'center',
-    
   },
   button: {
-  
     alignItems: 'center',
     marginTop: 520,
     width: '50%',
@@ -92,19 +82,17 @@ const styles = StyleSheet.create({
     marginVertical: 10,
     marginHorizontal: 5, 
   },
-
   buttonText: {
     color: 'white',
     fontSize: 20,
     fontWeight: 'bold',
-  
   },
   loadingContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+    fontSize:30,
     marginTop: 520,
-
   },
 });
 

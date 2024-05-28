@@ -37,7 +37,7 @@ console.log(response.data.userId);
        // Clear input fields
        setEmail('');
        setPassword('');
-      navigation.navigate('Tabs');
+      navigation.navigate('Start');
     } catch (error) {
       Toast.show({
         type: 'error',

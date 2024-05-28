@@ -270,6 +270,7 @@ export default function MapCoffee() {
               }}
             />
           )}
+          
           <ScrollView style={styles.modalReviewsContainer}>
             {selectedCoffeeShop?.reviews.map((review, index) => (
               <View key={index} style={styles.reviewItem}>
