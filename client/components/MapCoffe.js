@@ -5,7 +5,7 @@ import Geolocation from '@react-native-community/geolocation';
 import Geocoder from 'react-native-geocoding';
 import { Button, List } from 'react-native-paper';
 import coffeeIcon from '../image/coffee-shop-logo.png';
-
+import mapStyle from './MapStyle'
 const GOOGLE_MAPS_API_KEY = 'AIzaSyDYm4cfAj3Lrk6HqMJZHGeB1JevFbEC55o'; // Replace with your Google Maps API Key
 Geocoder.init('AIzaSyDYm4cfAj3Lrk6HqMJZHGeB1JevFbEC55o');
 
@@ -188,7 +188,7 @@ export default function MapCoffee() {
       </View>
 
       {region ? (
-        <MapView style={styles.map} initialRegion={region}>
+        <MapView style={styles.map} initialRegion={region} customMapStyle={mapStyle}>
           <Marker coordinate={{ latitude: region.latitude, longitude: region.longitude }} />
           {Array.isArray(searchResults) && searchResults.map((marker, index) => (
             <Marker
