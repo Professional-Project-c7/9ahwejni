@@ -30,6 +30,7 @@
     "@stripe/stripe-js": "^3.4.0",
     "@stripe/stripe-react-native": "^0.37.3",
     "axios": "^1.6.8",
+    "bcryptjs": "^2.4.3",
     "cloudinary-react-native": "^0.3.0",
     "expo-file-system": "^17.0.1",
     "expo-image-picker": "^14.7.1",

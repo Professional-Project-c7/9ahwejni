@@ -54,6 +54,8 @@ import axios from 'axios';
 import Availability from '../components/availibility';
 import RoomsChat from '../components/RoomsChat'
 import editusers from '../components/edituser'
+import CoffeeshopReviews from '../components/coffeeshopreviews'
+import SettingsScreen from '../components/settings';
 // import { useNavigation } from '@react-navigation/native';
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -234,8 +236,7 @@ function NAVSTART() {
     fetchData()
   }, []);
 
-  const Name = FilteredData.map(e=>(e.FirstName + ' ' + e.LastName))
-console.log('--------------------------------', Name);
+
   
 
   return (
@@ -283,12 +284,13 @@ console.log('--------------------------------', Name);
         <Stack.Screen name="AllCakes" component={AllCakes} options={{ headerShown: false }} />
         <Stack.Screen name="AllCoffees" component={AllCoffees} options={{ headerShown: false }} />
         <Stack.Screen name="AllDrinks" component={AllDrinks} options={{ headerShown: false }} />
-        <Stack.Screen name="chat" component={chat} />
+        <Stack.Screen name="chat" component={chat} options={{ headerShown: false }} />
         <Stack.Screen name="paymentSucces" component={PaymentSuccessPage}  />
         <Stack.Screen  name="SettingComponent" component={SettingComponent} />
         <Stack.Screen  name="RoomsChat" component={RoomsChat} /> 
         <Stack.Screen  name="editusers" component={editusers} /> 
-         
+        <Stack.Screen  name="CoffeeshopReviews" component={CoffeeshopReviews} /> 
+        <Stack.Screen  name="SettingsScreen" component={SettingsScreen} /> 
         
       </Stack.Navigator>
     </NavigationContainer>

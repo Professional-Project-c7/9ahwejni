@@ -115,7 +115,7 @@ const MyComponent = ({navigation}) => {
               <Text style={styles.optionText}>AVAILABILITY</Text>
             </View>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.optionOne} onPress={() => navigation.navigate('InfoCoffee')}>
+          <TouchableOpacity style={styles.optionOne} onPress={() => navigation.navigate('SettingsScreen')}>
             <View style={styles.optionContent}>
               <Image source={require("../image/settings.png")} style={styles.optionImageE} />
               <Text style={styles.optionText}>SETTINGS</Text>
@@ -143,7 +143,7 @@ const MyComponent = ({navigation}) => {
             </View>
             <Text style={styles.optionText}>ORDERS</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.option} onPress={() => navigation.navigate('ReviewsCoffee')}>
+          <TouchableOpacity style={styles.option} onPress={() => navigation.navigate('CoffeeshopReviews')}>
             <View style={styles.test} >
               <Image source={require("../image/reviews.png")} style={styles.optionImage} />
             </View>
