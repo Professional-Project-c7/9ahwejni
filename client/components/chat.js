@@ -345,7 +345,7 @@ const Chat = ({ navigation, route }) => {
   };
 
   return (
-    <ImageBackground source={require('../image/bgg.jpeg')} style={styles.background}>
+    <ImageBackground source={require('../image/pggg.png')} style={styles.background}>
       <View style={styles.container}>
         <ScrollView ref={scrollViewRef} contentContainerStyle={styles.messagesContainer}>
           {messages.map((message, index) => (
