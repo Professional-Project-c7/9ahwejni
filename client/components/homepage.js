@@ -79,7 +79,7 @@ const HomePage = ({ navigation }) => {
         style={styles.topBackground}
       >
         <View style={styles.top}>
-          <IconButton icon="bell" iconColor="#FFF" onPress={toggleNotification} />
+          <IconButton icon="bell" iconColor="#FFF"onPress={() => navigation.navigate('panier')}/>
           {type && <IconButton icon="chat" iconColor='#FFF' onPress={() => navigation.navigate('RoomsChat' ,{ roomId : 1,  RoomName : "general" })} />}
         </View>
       </LinearGradient>

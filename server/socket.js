@@ -9,7 +9,7 @@ const PORT = 4001;
 const UPLOAD_DIR = path.join(__dirname, 'uploads');
 
 // Ensure uploads directory exists
-if (!fs.existsSync(UPLOAD_DIR)) {
+if (!fs.existsSync(UPLOAD_DIR)) { 
   fs.mkdirSync(UPLOAD_DIR, { recursive: true });
 }
 
@@ -82,7 +82,7 @@ io.on('connection', (socket) => {
 app.post('/api/messages/image', upload.single('image'), (req, res) => {
   try {
     const { senderId, roomId } = req.body;
-    const filePath = req.file.path.replace(/\\/g, '/'); // Normalize path for different OS
+    const filePath = `${req.protocol}://${req.get('host')}/${req.file.path.replace(/\\/g, '/')}`;
 
     const message = {
       senderId: parseInt(senderId, 10),

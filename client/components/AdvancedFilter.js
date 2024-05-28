@@ -166,15 +166,12 @@ const AdvancedFilter = () => {
           sliderLength={350}
           onValuesChange={(values) => setPriceRange(values)}
           min={0}
-
           max={100}
-
           step={1}
           selectedStyle={{ backgroundColor: '#dba617' }}
           unselectedStyle={{ backgroundColor: '#e0e0e0' }}
           markerStyle={{ backgroundColor: '#dba617' }}
         />
-        <View style={styles.spaceBetweenInputs} />
         <Text style={styles.label}>Rating</Text>
         <Picker
           selectedValue={rating}
@@ -189,7 +186,6 @@ const AdvancedFilter = () => {
           <Picker.Item label="4 Stars" value="4" />
           <Picker.Item label="5 Stars" value="5" />
         </Picker>
-        <View style={styles.spaceBetweenInputs} />
         <Button mode="contained" style={styles.button} onPress={filterProducts}>
           Apply Filter
         </Button>
@@ -240,7 +236,7 @@ const styles = StyleSheet.create({
   label: {
     fontSize: 18,
     fontWeight: 'bold',
-    marginBottom: 5,
+    marginBottom: 10,
     fontStyle: 'italic',
   },
   categoryItem: {
@@ -270,7 +266,8 @@ const styles = StyleSheet.create({
     borderColor: '#dba617',
     borderWidth: 1,
     borderRadius: 12,
-    marginBottom: 10,
+    marginBottom: 5, // removed bottom margin
+    top:40
   },
   button: {
     backgroundColor: '#dba617',
@@ -278,9 +275,10 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     borderRadius: 10,
+    top: 77,
   },
   spaceBetweenInputs: {
-    marginVertical: 10,
+    marginVertical: 0, // removed top margin
   },
   dropdownItem: {
     borderBottomWidth: 1,
@@ -292,6 +290,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: 'rgba(0,0,0,0.5)',
+    
   },
   resultsModalContent: {
     width: '90%',
@@ -312,12 +311,12 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     fontStyle: 'italic',
   },
-  closeButtonContainer :{
+  closeButtonContainer: {
     position: 'absolute',
     top: 10,
     right: 10,
     zIndex: 1,
-  }
+  },
 });
 
 export default AdvancedFilter;
