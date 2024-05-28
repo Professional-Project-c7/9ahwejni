@@ -11,11 +11,9 @@ import moment from 'moment';
 import basket from '../image/addtobasket.png';
 
 const PackDetailsPage = ({ navigation }) => {
-    const [products, setProducts] = useState([]);
+    const [packs, setPacks] = useState([]);
     const [selectedSize, setSelectedSize] = useState(null);
-    const [selectedSugar, setSelectedSugar] = useState(null);
-    const [selectedIce, setSelectedIce] = useState(null);
-    const [selectedProductId, setSelectedProductId] = useState(null);
+    const [selectedPackId, setSelectedPackId] = useState(null);
     const [selectedUserId, setSelectedUserId] = useState(null);
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [reviews, setReviews] = useState([]);
@@ -33,9 +31,9 @@ const PackDetailsPage = ({ navigation }) => {
         }
     };
 
-    const fetchReviews = async (productId) => {
+    const fetchReviews = async (packId) => {
         try {
-            const response = await axios.get(`http://${ipAdress}:3000/api/review/product/${productId}`);
+            const response = await axios.get(`http://${ipAdress}:3000/api/review/pack/${packId}`);
             setReviews(response.data.reverse());
         } catch (error) {
             console.error('Error fetching reviews:', error);
@@ -43,10 +41,10 @@ const PackDetailsPage = ({ navigation }) => {
     };
 
     useEffect(() => {
-        const fetchProductDetails = async () => {
+        const fetchPackDetails = async () => {
             try {
-                const productId = await AsyncStorage.getItem('selectedProductId');
-                setSelectedProductId(productId);
+                const packId = await AsyncStorage.getItem('selectedPackId');
+                setSelectedPackId(packId);
                 const storedUserId = await AsyncStorage.getItem('userId');
                 if (storedUserId) {
                     const userResponse = await axios.get(`http://${ipAdress}:3000/api/user/${storedUserId}`);
@@ -55,14 +53,14 @@ const PackDetailsPage = ({ navigation }) => {
                     }
                 }
 
-                const response = await axios.get(`http://${ipAdress}:3000/api/packs/SearchById/14`);
-                setProducts(response.data);
-                fetchReviews(productId);
+                const response = await axios.get(`http://${ipAdress}:3000/api/packs/SearchById/${packId}`);
+                setPacks(response.data);
+                fetchReviews(packId);
             } catch (error) {
-                console.error('Error fetching product details:', error);
+                console.error('Error fetching pack details:', error);
             }
         };
-        fetchProductDetails();
+        fetchPackDetails();
     }, []);
 
     useEffect(() => {
@@ -71,25 +69,24 @@ const PackDetailsPage = ({ navigation }) => {
 
     const handleAddToHome = () => {
         navigation.navigate('Tabs');
-        AsyncStorage.removeItem('selectedProductId');
+        AsyncStorage.removeItem('selectedPackId');
     };
 
     const goToHomePage = () => {
-        AsyncStorage.removeItem('selectedProductId');
+        AsyncStorage.removeItem('selectedPackId');
         navigation.navigate('homePage');
     };
 
     const handleSizeSelection = size => setSelectedSize(size);
 
-
     const handleAddToCart = async () => {
         try {
             const existingCartItems = await AsyncStorage.getItem('favorites');
             const cartItems = existingCartItems ? JSON.parse(existingCartItems) : [];
-            cartItems.push(products[0]);
+            cartItems.push(packs[0]);
             await AsyncStorage.setItem('favorites', JSON.stringify(cartItems));
         } catch (error) {
-            console.error('Error adding product to cart:', error);
+            console.error('Error adding pack to cart:', error);
         }
     };
 
@@ -98,7 +95,7 @@ const PackDetailsPage = ({ navigation }) => {
     };
 
     const handleReviewSubmitted = () => {
-        fetchReviews(selectedProductId);
+        fetchReviews(selectedPackId);
         toggleModalVisibility();
     };
 
@@ -107,12 +104,12 @@ const PackDetailsPage = ({ navigation }) => {
             <TouchableOpacity onPress={goToHomePage} style={styles.backButton}>
                 <Icon name="arrow-left" size={30} color="#dba617" />
             </TouchableOpacity>
-            {products.map((product, index) => (
+            {packs.map((pack, index) => (
                 <View key={index} style={styles.productContainer}>
-                    <Image source={{ uri: product.imgUrl }} style={styles.productImage} />
+                    <Image source={{ uri: pack.imgUrl }} style={styles.productImage} />
                     <View style={styles.body}>
-                        <Text style={styles.name}>{product.name}</Text>
-                        <Text style={styles.description}>{product.description}</Text>
+                        <Text style={styles.name}>{pack.name}</Text>
+                        <Text style={styles.description}>{pack.description}</Text>
                         <View style={styles.bottomContainer}>
                             <Text style={styles.sectionTitle}>Customize</Text>
                             <View style={styles.optionContainer}>
@@ -130,7 +127,7 @@ const PackDetailsPage = ({ navigation }) => {
                                 </View>
                             </View>
                            
-                            <Text style={styles.productPrice}>{product.price} TND</Text>
+                            <Text style={styles.productPrice}>{pack.price} TND</Text>
                             <View style={styles.priceContainer}>
                                 <TouchableOpacity onPress={handleAddToCart} style={styles.addToCartButton}>
                                     <Image source={basket} style={styles.basketIcon} />
@@ -150,7 +147,7 @@ const PackDetailsPage = ({ navigation }) => {
                 onRequestClose={toggleModalVisibility}>
                 <View style={styles.modalOverlay}>
                     <View style={styles.modalContainer}>
-                        <AddReview productId={selectedProductId} userId={selectedUserId} onReviewSubmitted={handleReviewSubmitted} />
+                        <AddReview productId={selectedPackId} userId={selectedUserId} onReviewSubmitted={handleReviewSubmitted} />
                         <TouchableOpacity onPress={toggleModalVisibility} style={styles.closeButton}>
                             <Text style={styles.closeButtonText}>Close</Text>
                         </TouchableOpacity>
