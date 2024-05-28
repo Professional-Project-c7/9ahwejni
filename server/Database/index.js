@@ -123,5 +123,5 @@ db.User.belongsToMany(db.Room, {
 //     .catch((error) => {
 //         console.error('Unable to sync models with the database: ', error)
 //     })
-
+ 
 module.exports =db 

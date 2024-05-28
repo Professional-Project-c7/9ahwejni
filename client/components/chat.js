@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { View, ScrollView, StyleSheet, ImageBackground, TouchableOpacity, Image } from 'react-native';
+import { View, ScrollView, StyleSheet, ImageBackground, TouchableOpacity, Image, Platform, PermissionsAndroid } from 'react-native';
 import { TextInput, IconButton, Card, Text } from 'react-native-paper';
 import io from 'socket.io-client';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -7,12 +7,35 @@ import axios from 'axios';
 import moment from 'moment';
 import AudioRecorderPlayer from 'react-native-audio-recorder-player';
 import RNFS from 'react-native-fs';
-import { request, PERMISSIONS } from 'react-native-permissions';
-import { launchImageLibrary } from 'react-native-image-picker';
+import { launchImageLibrary, launchCamera } from 'react-native-image-picker';
 import { ipAdress } from '../config';
 import user from '../image/user.png';
 
 const SERVER_ENDPOINT = `http://${ipAdress}:4001`;
+
+const requestCameraPermission = async () => {
+  if (Platform.OS === 'android') {
+    try {
+      const granted = await PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.CAMERA,
+        {
+          title: 'Camera Permission',
+          message: 'This app needs access to your camera to take photos.',
+          buttonNeutral: 'Ask Me Later',
+          buttonNegative: 'Cancel',
+          buttonPositive: 'OK',
+        }
+      );
+      return granted === PermissionsAndroid.RESULTS.GRANTED;
+    } catch (err) {
+      console.warn(err);
+      return false;
+    }
+  } else {
+    // iOS permissions can be handled differently if needed
+    return true;
+  }
+};
 
 const Chat = ({ navigation, route }) => {
   const { roomId, roomName } = route.params;
@@ -184,40 +207,82 @@ const Chat = ({ navigation, route }) => {
     launchImageLibrary(options, (response) => {
       if (response.didCancel) {
         console.log('User cancelled image picker');
-      } else if (response.error) {
-        console.error('ImagePicker Error: ', response.error);
+      } else if (response.errorCode) {
+        console.error('ImagePicker Error: ', response.errorMessage);
       } else if (response.assets && response.assets.length > 0) {
         const { uri } = response.assets[0];
         console.log('Selected Image URI: ', uri); // Log the selected image URI
         setSelectedImage(uri);
         uploadImage(uri);
       } else {
-        console.error('No image selected');
+        console.error('No image captured');
       }
     });
   };
 
+  const launchCameraToTakePhoto = async () => {
+    const hasPermission = await requestCameraPermission();
+    if (!hasPermission) {
+      console.log('Camera permission denied');
+      return;
+    }
+
+    const options = {
+      mediaType: 'photo',
+    };
+
+    launchCamera(options, (response) => {
+      if (response.didCancel) {
+        console.log('User cancelled camera');
+      } else if (response.errorCode) {
+        console.error('Camera Error: ', response.errorMessage);
+      } else if (response.assets && response.assets.length > 0) {
+        const { uri } = response.assets[0];
+        console.log('Captured Image URI: ', uri); // Log the captured image URI
+        setSelectedImage(uri);
+        uploadImage(uri);
+      } else {
+        console.error('No image captured');
+      }
+    });
+  };
+
+  const retry = async (fn, retriesLeft = 5, interval = 1000) => {
+    try {
+      return await fn();
+    } catch (error) {
+      if (retriesLeft <= 0) throw error;
+      await new Promise(resolve => setTimeout(resolve, interval));
+      return retry(fn, retriesLeft - 1, interval);
+    }
+  };
+
   const uploadImage = async (uri) => {
     setUploading(true);
-    const formData = new FormData();
-    formData.append('image', {
-      uri,
-      type: 'image/jpeg',
-      name: 'photo.jpg',
-    });
-    formData.append('senderId', userId);
-    formData.append('roomId', roomId);
-    formData.append('isImage', true);
 
-    try {
+    const uploadFn = async () => {
+      const formData = new FormData();
+      formData.append('image', {
+        uri,
+        type: 'image/jpeg',
+        name: 'photo.jpg',
+      });
+      formData.append('senderId', userId);
+      formData.append('roomId', roomId);
+      formData.append('isImage', true);
+
       const response = await axios.post(`http://${ipAdress}:3000/api/messages/image`, formData, {
         headers: { 'Content-Type': 'multipart/form-data' },
       });
 
-      const filePath = response.data.message.content;
+      return response.data.message.content;
+    };
+
+    try {
+      const filePath = await retry(uploadFn);
       sendImageMessage(filePath); // Send the message with the correct file path
     } catch (error) {
-      console.error('Failed to upload image:', error);
+      console.error('Failed to upload image after multiple attempts:', error);
     } finally {
       setUploading(false);
     }
@@ -303,6 +368,13 @@ const Chat = ({ navigation, route }) => {
             color="#dba617"
             size={30}
             onPress={selectImage}
+            style={styles.sendButton}
+          />
+          <IconButton
+            icon="camera"
+            color="#dba617"
+            size={30}
+            onPress={launchCameraToTakePhoto}
             style={styles.sendButton}
           />
           {currentAudio && (
@@ -392,5 +464,5 @@ const styles = StyleSheet.create({
     overflow: 'hidden'
   },
 });
- 
+
 export default Chat;
