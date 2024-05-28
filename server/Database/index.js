@@ -37,7 +37,7 @@ async function connectionTest (){
  db.RoomUser=require('./userRooms')(connection,DataTypes)
   db.Noti= require('./Noti')(connection,DataTypes)
   db.PackReview = require('./packreview.model')(connection, DataTypes);
-
+db.Rapport =require('./Rapport')(connection, DataTypes);
 
   db.Pack=require('./pack.model')(connection,DataTypes)
   db.Size=require('./size.model')(connection,DataTypes)
@@ -50,7 +50,8 @@ async function connectionTest (){
   db.Products.hasMany(db.Size);
   db.Size.belongsTo(db.Products);
 
-  // db.favorit.hasMany(db.Products);
+db.Review.hasMany(db.Rapport)
+  db.Rapport.belongsTo(db.User);
   // db.Products.belongsTo(db.favorit);
 
   db.Products.hasMany(db.Options);
