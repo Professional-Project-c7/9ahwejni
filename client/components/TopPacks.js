@@ -77,7 +77,8 @@ const TopPacks = ({ navigation }) => {
           <View style={styles.card}>
             <TouchableOpacity
               style={styles.innerCard}
-              onPress={() => handleNavigateToDetails(item)}
+              onPress={() => handleShowProducts(item)}
+              // onPress={() => handleNavigateToDetails(item)}
             >
               <Image source={{ uri: item.imgUrl }} style={styles.image} />
               <View style={styles.info}>
