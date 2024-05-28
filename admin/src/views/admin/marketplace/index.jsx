@@ -18,6 +18,7 @@ export default function Marketplace() {
 var myImg =productData.map(e=>(e.imgUrl))
 var name = productData.map(e=>(e.name))
 const image = userData.map (e=>(e.ImageUrl))
+const users = userData.map(e=>(e.FirstName))
   useEffect(() => {
     async function fetchReviews() {
       try {
@@ -56,11 +57,11 @@ const image = userData.map (e=>(e.ImageUrl))
 
   const deleteReview = async (reviewId) => {
     try {
-      await axios.delete(`http://localhost:3000/api/review/${reviewId}`);
-      setReviewData((prevData) => prevData.filter((review) => review.id !== reviewId));
+     const response= await axios.delete(`http://localhost:3000/api/review/${reviewId}`);
+      setReviewData(response.data);
     } catch (error) {
       console.error("Error deleting review: ", error);
-      alert("Failed to delete review");
+     
     }
   };
 
@@ -115,16 +116,12 @@ const image = userData.map (e=>(e.ImageUrl))
                 objectFit="cover"
               />
                <Text color={textColor} fontSize="lg" fontWeight="bold" ml="4" marginTop="-13px">
-                {getUserNameById(review.userId)}
+                {users[index]}
               
               </Text>
               </div>
             <Text color={textColor} fontSize="md" mb="4">{review.comment}</Text>
-            <Flex justifyContent="flex-end">
-              <Button onClick={() => deleteReview(review.id)} colorScheme="red" leftIcon={<DeleteIcon />} variant="outline">
-                Delete Review
-              </Button>
-            </Flex>
+          
           </Box>
         ))}
       </SimpleGrid>
