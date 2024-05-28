@@ -308,6 +308,7 @@ const styles = StyleSheet.create({
   },
   button: {
     backgroundColor: '#dba617',
+    padding :  10 , 
   },
   input: {
     flex: 1,

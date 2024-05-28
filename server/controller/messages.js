@@ -68,7 +68,7 @@ const postAudioMessage = async (req, res) => {
     const { senderId, roomId } = req.body;
     const parsedSenderId = parseInt(senderId, 10);
     const parsedRoomId = parseInt(roomId, 10);
-    const filePath = req.file.path.replace(/\\/g, '/'); // Normalize path for different OS
+    const filePath = `${req.protocol}://${req.get('host')}/uploads/${req.file.filename}`;
 
     if (isNaN(parsedSenderId) || isNaN(parsedRoomId)) {
       return res.status(400).json({ error: 'Invalid senderId or roomId' });
@@ -81,7 +81,7 @@ const postAudioMessage = async (req, res) => {
       isAudio: true,
     });
 
-    res.status(201).json({ success: true, filePath });
+    res.status(201).json({ success: true, message });
   } catch (error) {
     console.error('Error sending audio message:', error);
     res.status(500).json({ error: 'Failed to send audio message' });
@@ -93,14 +93,14 @@ const postImageMessage = async (req, res) => {
     const { senderId, roomId } = req.body;
     const parsedSenderId = parseInt(senderId, 10);
     const parsedRoomId = parseInt(roomId, 10);
-    const filePath = req.file.path.replace(/\\/g, '/'); // Normalize path for different OS
+    const filePath = `${req.protocol}://${req.get('host')}/uploads/${req.file.filename}`;
 
     if (isNaN(parsedSenderId) || isNaN(parsedRoomId)) {
       return res.status(400).json({ error: 'Invalid senderId or roomId' });
     }
 
     const message = await Message.create({
-      content: filePath, // Store the path in the content field
+      content: filePath,
       senderId: parsedSenderId,
       roomId: parsedRoomId,
       isImage: true,
@@ -112,6 +112,9 @@ const postImageMessage = async (req, res) => {
     res.status(500).json({ error: 'Failed to send image message' });
   }
 };
+
+
+
 
 const deleteMessage = async (req, res) => {
   try {

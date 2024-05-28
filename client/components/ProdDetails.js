@@ -190,7 +190,7 @@ const ProductDetailsPage = ({ navigation }) => {
                                     <Text style={styles.addToCartButtonText}>Add to cart</Text>
                                 </TouchableOpacity>
                                 <TouchableOpacity onPress={toggleModalVisibility} style={styles.addReviewButton}>
-                                    <Text style={styles.addReviewButtonText}> ⭐Add Review </Text>
+                                    <Text style={styles.addReviewButtonText}>⭐ Add Review</Text>
                                 </TouchableOpacity>
                             </View>
                         </View>
@@ -362,10 +362,10 @@ const styles = StyleSheet.create({
         paddingVertical: 10,
     },
     productPrice: {
-        fontSize: 22,
+        fontSize: 24,
         fontWeight: 'bold',
         color: '#dba617',
-        // backgroundColor: '#dba617',
+        backgroundColor: '#FFFFFF',
         borderRadius: 10,
         paddingHorizontal: 10,
         paddingVertical: 5,

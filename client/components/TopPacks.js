@@ -4,19 +4,19 @@ import axios from 'axios';
 import { ipAdress } from '../config';
 import { useNavigation } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import ProductModal from '../components/PackComponents';
 
 const TopPacks = ({ navigation }) => {
   const [packs, setPacks] = useState([]);
   const [error, setError] = useState(null);
+  const [isProductModalVisible, setIsProductModalVisible] = useState(false);
+  const [selectedPack, setSelectedPack] = useState(null);
 
   useEffect(() => {
     const fetchPacks = async () => {
       try {
         const packsResponse = await axios.get(`http://${ipAdress}:3000/api/packs`);
         const reviewsResponse = await axios.get(`http://${ipAdress}:3000/api/packreview`);
-        
-        console.log("Packs response:", packsResponse.data);
-        console.log("Reviews response:", reviewsResponse.data);
 
         const packsWithReviews = packsResponse.data.map(pack => {
           const packReviews = reviewsResponse.data.filter(review => review.PackId === pack.id);
@@ -26,10 +26,14 @@ const TopPacks = ({ navigation }) => {
             ...pack,
             totalReviews,
             averageRating: averageRating.toFixed(1),
+            prods: pack.prods || [], // Add the products array to each pack object
           };
         });
 
-        const topRatedPacks = packsWithReviews.sort((a, b) => b.averageRating - a.averageRating).slice(0, 6);
+        // Filter out packs with no products
+        const packsWithProducts = packsWithReviews.filter(pack => pack.prods.length > 0);
+
+        const topRatedPacks = packsWithProducts.sort((a, b) => b.averageRating - a.averageRating).slice(0, 4);
         setPacks(topRatedPacks);
         console.log("Top rated packs:", topRatedPacks);
       } catch (err) {
@@ -50,6 +54,15 @@ const TopPacks = ({ navigation }) => {
     }
   };
 
+  const handleShowProducts = (pack) => {
+    setSelectedPack(pack);
+    setIsProductModalVisible(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsProductModalVisible(false);
+  };
+
   if (error) {
     return <Text style={styles.errorText}>Error: {error}</Text>;
   }
@@ -61,87 +74,104 @@ const TopPacks = ({ navigation }) => {
         data={packs}
         keyExtractor={(item) => item.id.toString()}
         renderItem={({ item }) => (
-          <TouchableOpacity
-            style={styles.card}
-            onPress={() => handleNavigateToDetails(item)}
-          >
-            <Image source={{ uri: item.imgUrl }} style={styles.image} />
-            <View style={styles.info}>
-              <Text style={styles.name}>{item.name}</Text>
-              <Text style={styles.reviews}>{`${item.totalReviews} 👤 ⭐: ${item.averageRating}`}</Text>
-              <Text style={styles.price}>${item.price}</Text>
-            </View>
-          </TouchableOpacity>
+          <View style={styles.card}>
+            <TouchableOpacity
+              style={styles.innerCard}
+              onPress={() => handleShowProducts(item)}
+              // onPress={() => handleNavigateToDetails(item)}
+            >
+              <Image source={{ uri: item.imgUrl }} style={styles.image} />
+              <View style={styles.info}>
+                <Text style={styles.name}>{item.name}</Text>
+                <Text style={styles.reviews}>{`${item.totalReviews} 👤 ⭐: ${item.averageRating}`}</Text>
+                <Text style={styles.price}>${item.price}</Text>
+              </View>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.productsButton} onPress={() => handleShowProducts(item)}>
+              <Text style={styles.productsButtonText}>View Products</Text>
+            </TouchableOpacity>
+          </View>
         )}
         horizontal
         showsHorizontalScrollIndicator={false}
       />
+      {isProductModalVisible && (
+        <ProductModal pack={selectedPack} packId={selectedPack.id} visible={isProductModalVisible} onClose={handleCloseModal} />
+      )}
     </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    marginTop: 20,
-    paddingHorizontal: 10,
+    paddingHorizontal: 20,
+    paddingTop: 10,
+    backgroundColor: '#fff',
   },
   title: {
     fontSize: 20,
-    fontWeight: 'bold',
+    fontWeight: '700',
+    marginBottom: 20,
     color: '#dba617',
-    marginBottom: 10,
-    marginLeft: 10,
-    fontStyle: 'italic',
-
   },
   card: {
-    flexDirection: 'column',
-    backgroundColor: '#fdfdfd',
-    borderRadius: 12,
+    backgroundColor: '#ffffff',
+    borderRadius: 15,
+    padding: 15,
+    marginRight: 20,
+    width: 240,
+    height: 350,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.1,
     shadowRadius: 8,
     elevation: 5,
-    marginHorizontal: 10,
-    marginVertical: 5,
-    width: 220,
+  },
+  innerCard: {
+    borderRadius: 15,
     overflow: 'hidden',
   },
   image: {
     width: '100%',
-    height: 140,
+    height: 160,
+    borderRadius: 15,
   },
   info: {
-    padding: 10,
-    backgroundColor: '#fff',
+    marginTop: 15,
   },
   name: {
-    fontSize: 18,
+    fontSize: 20,
     fontWeight: '600',
-    color: '#333',
     marginBottom: 5,
-    fontStyle: 'italic',
-
-  },
-  price: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: '#000',
-    fontStyle: 'italic',
-
+    color: '#2c3e50',
   },
   reviews: {
+    color: '#7f8c8d',
     fontSize: 14,
-    color: '#999',
     marginBottom: 5,
   },
+  price: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: 'black',
+  },
+  productsButton: {
+    backgroundColor: '#dba617',
+    borderRadius: 10,
+    padding: 10,
+    marginTop: 10,
+    alignItems: 'center',
+  },
+  productsButtonText: {
+    color: '#ffffff',
+    fontSize: 16,
+    fontWeight: '600',
+  },
   errorText: {
-    color: 'red',
+    color: '#e74c3c',
+    fontSize: 16,
     textAlign: 'center',
     marginTop: 20,
-    fontStyle: 'italic',
-
   },
 });
 
