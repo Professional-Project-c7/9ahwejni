@@ -47,10 +47,10 @@ function Start({navigation}) {
           </View>
         ) : (
           <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Tabs')}>
-            <Text style={styles.buttonText}>Get started</Text>
+            {/* <Text style={styles.buttonText}>Get started</Text> */}
           </TouchableOpacity>
         )}
-      </ImageBackground>
+      </ImageBackground> 
     </SafeAreaView>
   );
 }
@@ -75,7 +75,7 @@ const styles = StyleSheet.create({
     marginTop: 520,
     width: '50%',
     height: 60,
-    backgroundColor: '#dba617',
+    // backgroundColor: '#dba617',
     paddingVertical: 15,
     paddingHorizontal: 30,
     borderRadius: 25,
