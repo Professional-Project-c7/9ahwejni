@@ -71,7 +71,7 @@ const styles = StyleSheet.create({
   price: {
     fontSize: 20,
     marginBottom: 10,
-    color: '#e74c3c',
+    color: '#dba617',
   },
   reviews: {
     fontSize: 16,
@@ -115,11 +115,11 @@ const styles = StyleSheet.create({
   },
   productPrice: {
     fontSize: 14,
-    color: '#e74c3c',
+    color: '#dba617',
     fontWeight: '600',
   },
   closeButton: {
-    backgroundColor: '#e74c3c',
+    backgroundColor: '#dba617',
     paddingVertical: 10,
     paddingHorizontal: 20,
     borderRadius: 10,
