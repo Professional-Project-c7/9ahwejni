@@ -325,7 +325,7 @@ const Chat = ({ navigation, route }) => {
       const newMessage = {
         senderId: userId,
         content: filePath,
-        roomId: roomId,
+        roomId: roomId, 
         timestamp: new Date(),
         isImage: true,
       };
