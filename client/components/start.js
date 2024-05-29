@@ -50,7 +50,7 @@ function Start({navigation}) {
             {/* <Text style={styles.buttonText}>Get started</Text> */}
           </TouchableOpacity>
         )}
-      </ImageBackground>
+      </ImageBackground> 
     </SafeAreaView>
   );
 }
@@ -76,7 +76,9 @@ const styles = StyleSheet.create({
     marginTop: 520,
     width: '50%',
     height: 60,
-  
+
+    // backgroundColor: '#dba617',
+
     paddingVertical: 15,
     paddingHorizontal: 30,
     borderRadius: 25,

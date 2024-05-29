@@ -6,7 +6,7 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import { launchImageLibrary } from 'react-native-image-picker';
-
+import styled from 'styled-components/native';
 const MyComponent = ({ navigation }) => {
   const [userData, setUserData] = useState(null);
   const [userID, setUserID] = useState(null);
@@ -119,9 +119,12 @@ const MyComponent = ({ navigation }) => {
     removeTokenFromStorage();
     navigation.navigate('Login');
   };
+ 
 
   return (
+  
     <ScrollView>
+       
       <View style={styles.container}>
         {userData && (
           <>
@@ -213,7 +216,9 @@ const MyComponent = ({ navigation }) => {
           </View>
         </View>
       </Modal>
+     
     </ScrollView>
+   
   );
 };
 
