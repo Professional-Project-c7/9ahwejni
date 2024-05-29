@@ -101,7 +101,7 @@ function Onboarding({ navigation }) {
         )}
         {!showGetStarted && (
           <TouchableOpacity onPress={scrollTo} style={styles.nextButton} activeOpacity={0.6}>
-            <Icon name="arrow-circle-right" size={50} color="#333" />
+            <Icon name="arrow-circle-right" size={50} color="#dba617" />
           </TouchableOpacity>
         )}
         {showGetStarted && (

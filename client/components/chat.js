@@ -37,6 +37,30 @@ const requestCameraPermission = async () => {
   }
 };
 
+const requestAudioPermission = async () => {
+  if (Platform.OS === 'android') {
+    try {
+      const granted = await PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.RECORD_AUDIO,
+        {
+          title: 'Audio Permission',
+          message: 'This app needs access to your microphone to record audio.',
+          buttonNeutral: 'Ask Me Later',
+          buttonNegative: 'Cancel',
+          buttonPositive: 'OK',
+        }
+      );
+      return granted === PermissionsAndroid.RESULTS.GRANTED;
+    } catch (err) {
+      console.warn(err);
+      return false;
+    }
+  } else {
+    // iOS permissions can be handled differently if needed
+    return true;
+  }
+};
+
 const Chat = ({ navigation, route }) => {
   const { roomId, roomName } = route.params;
   const [messages, setMessages] = useState([]);
@@ -48,6 +72,7 @@ const Chat = ({ navigation, route }) => {
   const [currentAudio, setCurrentAudio] = useState(null);
   const [selectedImage, setSelectedImage] = useState(null);
   const [uploading, setUploading] = useState(false);
+  const scrollViewRef = useRef();
 
   useEffect(() => {
     const retrieveData = async () => {
@@ -57,7 +82,8 @@ const Chat = ({ navigation, route }) => {
           const id = JSON.parse(value);
           setUserId(id);
           establishSocketConnection(id, roomId);
-          fetchMessages(roomId);
+          await fetchMessages(roomId);
+          scrollViewRef.current.scrollToEnd({ animated: true });
         }
       } catch (error) {
         console.error('Error retrieving data:', error);
@@ -80,6 +106,7 @@ const Chat = ({ navigation, route }) => {
 
     newSocket.on('receive_message', (message) => {
       setMessages((prevMessages) => [...prevMessages, message]);
+      scrollViewRef.current.scrollToEnd({ animated: true });
     });
 
     setSocket(newSocket);
@@ -115,6 +142,7 @@ const Chat = ({ navigation, route }) => {
         if (acknowledgement === 'success') {
           setMessages((prevMessages) => [...prevMessages, newMessage]);
           saveMessage(newMessage);
+          scrollViewRef.current.scrollToEnd({ animated: true });
         } else {
           console.error('Failed to send message:', acknowledgement);
         }
@@ -125,13 +153,16 @@ const Chat = ({ navigation, route }) => {
   };
 
   const startRecording = async () => {
-    const result = await request(PERMISSIONS.ANDROID.RECORD_AUDIO);
-    if (result === 'granted') {
-      const path = RNFS.DocumentDirectoryPath + '/voiceMessage.m4a';
-      await audioRecorderPlayer.startRecorder(path);
-      audioRecorderPlayer.addRecordBackListener((e) => {});
-      setRecording(true);
+    const hasPermission = await requestAudioPermission();
+    if (!hasPermission) {
+      console.log('Audio permission denied');
+      return;
     }
+
+    const path = RNFS.DocumentDirectoryPath + '/voiceMessage.m4a';
+    await audioRecorderPlayer.startRecorder(path);
+    audioRecorderPlayer.addRecordBackListener((e) => {});
+    setRecording(true);
   };
 
   const stopRecording = async () => {
@@ -189,6 +220,7 @@ const Chat = ({ navigation, route }) => {
             });
 
             setCurrentAudio(null);
+            scrollViewRef.current.scrollToEnd({ animated: true });
           } catch (error) {
             console.error('Failed to upload audio:', error);
           }
@@ -293,7 +325,7 @@ const Chat = ({ navigation, route }) => {
       const newMessage = {
         senderId: userId,
         content: filePath,
-        roomId: roomId,
+        roomId: roomId, 
         timestamp: new Date(),
         isImage: true,
       };
@@ -302,6 +334,7 @@ const Chat = ({ navigation, route }) => {
         if (acknowledgement === 'success') {
           setMessages((prevMessages) => [...prevMessages, newMessage]);
           saveMessage(newMessage);
+          scrollViewRef.current.scrollToEnd({ animated: true });
         } else {
           console.error('Failed to send message:', acknowledgement);
         }
@@ -312,9 +345,9 @@ const Chat = ({ navigation, route }) => {
   };
 
   return (
-    <ImageBackground source={require('../image/bgg.jpeg')} style={styles.background}>
+    <ImageBackground source={require('../image/pggg.png')} style={styles.background}>
       <View style={styles.container}>
-        <ScrollView contentContainerStyle={styles.messagesContainer}>
+        <ScrollView ref={scrollViewRef} contentContainerStyle={styles.messagesContainer}>
           {messages.map((message, index) => (
             <Card
               key={index}
@@ -349,34 +382,39 @@ const Chat = ({ navigation, route }) => {
             mode="outlined"
             outlineStyle={styles.textInputOutline}
           />
-          <IconButton
-            icon="send"
-            color="#dba617"
-            size={30}
-            onPress={sendMessage}
-            style={styles.sendButton}
-          />
-          <IconButton
-            icon={recording ? "stop" : "microphone"}
-            color="#dba617"
-            size={30}
-            onPress={recording ? stopRecording : startRecording}
-            style={styles.sendButton}
-          />
-          <IconButton
-            icon="image"
-            color="#dba617"
-            size={30}
-            onPress={selectImage}
-            style={styles.sendButton}
-          />
-          <IconButton
-            icon="camera"
-            color="#dba617"
-            size={30}
-            onPress={launchCameraToTakePhoto}
-            style={styles.sendButton}
-          />
+          {messageInput.trim() ? (
+            <IconButton
+              icon="send"
+              color="#dba617"
+              size={30}
+              onPress={sendMessage}
+              style={styles.sendButton}
+            />
+          ) : (
+            <>
+              <IconButton
+                icon={recording ? "stop" : "microphone"}
+                color="#dba617"
+                size={30}
+                onPress={recording ? stopRecording : startRecording}
+                style={styles.sendButton}
+              />
+              <IconButton
+                icon="image"
+                color="#dba617"
+                size={30}
+                onPress={selectImage}
+                style={styles.sendButton}
+              />
+              <IconButton
+                icon="camera"
+                color="#dba617"
+                size={30}
+                onPress={launchCameraToTakePhoto}
+                style={styles.sendButton}
+              />
+            </>
+          )}
           {currentAudio && (
             <IconButton
               icon="send"
