@@ -66,16 +66,19 @@ const styles = StyleSheet.create({
   },
   backgroundImage: {
     flex: 1,
-    resizeMode: 'cover',
+    // resizeMode: 'cover',
     justifyContent: 'center',
     alignItems: 'center',
+    padding:10
   },
   button: {
     alignItems: 'center',
     marginTop: 520,
     width: '50%',
     height: 60,
+
     // backgroundColor: '#dba617',
+
     paddingVertical: 15,
     paddingHorizontal: 30,
     borderRadius: 25,
