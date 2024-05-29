@@ -11,7 +11,7 @@ const ProductModal = ({ pack, visible, onClose }) => {
             <Image source={{ uri: pack.imgUrl }} style={styles.image} />
           </View>
           <Text style={styles.name}>{pack.name}</Text>
-          <Text style={styles.price}>${pack.price}</Text>
+          <Text style={styles.price}>TND{pack.price}</Text>
           <Text style={styles.reviews}>{`${pack.totalReviews} 👤 ⭐: ${pack.averageRating}`}</Text>
           <Text style={styles.productTitle}>Products:</Text>
           <View style={styles.productContainer}>
@@ -21,7 +21,7 @@ const ProductModal = ({ pack, visible, onClose }) => {
                 <View style={styles.productDetails}>
                   <Text style={styles.productName}>{product.name}</Text>
                   <Text style={styles.productDescription}>{product.description}</Text>
-                  <Text style={styles.productPrice}>${product.price}</Text>
+                  <Text style={styles.productPrice}>TND{product.price}</Text>
                 </View>
               </View>
             ))}
