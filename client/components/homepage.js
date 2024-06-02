@@ -40,8 +40,7 @@ const HomePage = ({ navigation }) => {
   };
 
   const toggleNotification = () => {
-    navigation.navigate('panier');
-
+    setShowNotification(!showNotification);
   };
 
   useEffect(() => {
@@ -80,7 +79,7 @@ const HomePage = ({ navigation }) => {
         style={styles.topBackground}
       >
         <View style={styles.top}>
-          <IconButton icon="cart-outline" iconColor="#FFF" onPress={toggleNotification} />
+          <IconButton icon="bell" iconColor="#FFF" onPress={toggleNotification} />
           {type && <IconButton icon="chat" iconColor='#FFF' onPress={() => navigation.navigate('RoomsChat' ,{ roomId : 1,  RoomName : "general" })} />}
         </View>
       </LinearGradient>

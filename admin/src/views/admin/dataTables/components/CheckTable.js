@@ -88,6 +88,42 @@ export default function DevelopmentTable() {
   const textColor = useColorModeValue("gray.700", "white");
 
   return (
-  <></>
+    <Card direction="column" w="100%" px="0px"   overflowX={{ sm: "scroll", lg: "hidden" }}>
+      <Flex px="25px" justify="space-between" mb="20px" align="center">
+        <Text color={textColor} fontSize="22px" fontWeight="700" lineHeight="100%">
+          Coffee Shops
+        </Text>
+        <Menu />
+      </Flex>
+      <Table {...getTableProps()} variant="simple" color="gray.500" mb="24px">
+        <Thead>
+          {headerGroups.map((headerGroup, index) => (
+            <Tr {...headerGroup.getHeaderGroupProps()} key={index}>
+              {headerGroup.headers.map((column, index) => (
+                <Th {...column.getHeaderProps(column.getSortByToggleProps())} key={index}>
+                  <Text fontSize="sm" fontWeight="600">
+                    {column.render("Header")}
+                  </Text>
+                </Th>
+              ))}
+            </Tr>
+          ))}
+        </Thead>
+        <Tbody {...getTableBodyProps()}>
+          {page.map((row, index) => {
+            prepareRow(row);
+            return (
+              <Tr {...row.getRowProps()} key={index}>
+                {row.cells.map((cell, index) => (
+                  <Td {...cell.getCellProps()} key={index} fontSize="sm" color="black">
+                    {cell.render("Cell")}
+                  </Td>
+                ))}
+              </Tr>
+            );
+          })}
+        </Tbody>
+      </Table>
+    </Card>
   );
 }

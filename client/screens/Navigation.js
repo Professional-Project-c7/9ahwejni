@@ -1,7 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { NavigationContainer , DefaultTheme, DarkTheme, } from '@react-navigation/native';
-import {useColorScheme} from 'react-native';
-import { useTheme } from '@react-navigation/native';
+import { NavigationContainer } from '@react-navigation/native';
 import { Text } from 'react-native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
@@ -90,7 +88,6 @@ function TabNavigator() {
       console.log('Error storing user type:', error);
     }
   };
- 
 
   return (
     <Tab.Navigator
@@ -140,7 +137,6 @@ function TabNavigator() {
       />
       {userType === 'client' ? (
         <Tab.Screen
-        
           name="User"
           component={UserProfile}
           options={{
@@ -240,12 +236,14 @@ function NAVSTART() {
     };
     fetchData()
   }, []);
- 
- 
+
+
+  
+
   return (
-    <NavigationContainer  >
+    <NavigationContainer>
       <Stack.Navigator initialRouteName="Onboarding">
-        <Stack.Screen name="Login" component={Login}  options={{ headerShown: false }} />
+        <Stack.Screen name="Login" component={Login} options={{ headerShown: false }} />
         <Stack.Screen name="Allpack" component={Allpack} options={{ headerShown: false }} />
         <Stack.Screen name="UserSignUp" component={SignUser} options={{ headerShown: false }} />
         <Stack.Screen name="CoffeeShopSignUp" component={SignCofee} options={{ headerShown: false }} />

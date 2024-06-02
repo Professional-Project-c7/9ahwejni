@@ -59,16 +59,28 @@ const ProductDetailsPage = ({ navigation }) => {
     const PostRapports = async () => {
         try {
             const rapportData = {
-                Description: description,};
+                Description: description,
+                // Add other fields if needed
+            };
+    
+            // Assuming you have an API endpoint to post a report
             const response = await axios.post(`http://${ipAdress}:3000/api/Rapport`, rapportData);
+            
+            // Assuming your backend returns the newly created report
             const newReport = response.data;
+    
+            // Assuming your backend returns the newly created report or an updated list of reports
+            // You can update the state with the new report or the updated list of reports
+            // Here, I'm assuming the response contains the updated list of reports
             if (Array.isArray(newReport)) {
-                setRapport(newReport.reverse());
+                setRapport(newReport.reverse()); // Assuming newReport is an array
             } else {
-               
+                // If newReport is not an array, just fetch the reports again to get the updated list
                 Rapports();
             }
-           toggleModal1();
+            
+            // After posting the report, you can close the modal
+            toggleModal1();
         } catch (error) {
             console.error('Error posting report:', error);
         }

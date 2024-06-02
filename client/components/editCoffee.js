@@ -134,7 +134,7 @@ const handleUpdateProfile = async () => {
     console.log('Update successful:', response.data);
    
     console.log(userID);
-    navigation.navigate('Tabs');
+    navigation.navigate('coffeeProfile');
   } catch (error) {
     console.error('Update failed:', error);
   }
